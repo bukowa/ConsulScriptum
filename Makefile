@@ -1,9 +1,15 @@
 MOD_FILE_NAME="consulscriptum.pack"
 #IMG_FILE_NAME="consulscriptum.png"
 
+# required
+init:
+	mkdir rpfm || true
+	cd rpfm && \
+	rpfm_cli --game rome_2 schemas update --schema-path ./
+
 build:
 	rpfm_cli --game rome_2 pack create --pack-path=${MOD_FILE_NAME}
-	rpfm_cli --game rome_2 pack add --pack-path=${MOD_FILE_NAME} -F './pack;'
+	rpfm_cli --game rome_2 pack add --pack-path=${MOD_FILE_NAME} -F './pack/;' -t rpfm/schema_rom2.ron
 
 copy: build
 	cp ${MOD_FILE_NAME} "C:\Games\Total War - Rome 2\data"
