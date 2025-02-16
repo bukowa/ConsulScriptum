@@ -8,6 +8,7 @@ init:
 	rpfm_cli --game rome_2 schemas update --schema-path ./
 
 build:
+	./contrib/etwng/xml2ui "./pack/ui/common ui/multiplayer_chat.xml" "./pack/ui/common ui/multiplayer_chat"
 	rpfm_cli --game rome_2 pack create --pack-path=${MOD_FILE_NAME}
 	rpfm_cli --game rome_2 pack add --pack-path=${MOD_FILE_NAME} -F './pack/;' -t rpfm/schema_rom2.ron
 
@@ -23,6 +24,5 @@ start:
 
 setmod:
 	echo 'mod "consulscriptum.pack";' > "${HOME}/AppData\Roaming\The Creative Assembly\Rome2\scripts/user.script.txt"
-
 
 all: build kill copy setmod start
