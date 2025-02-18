@@ -2,6 +2,31 @@
 MOD_PACKAGE = consulscriptum.pack
 MOD_VERSION = 0.1.0
 
+# ============================================================
+# Instructions for Executing This Makefile on Windows
+# ============================================================
+#
+# 1. Install GNU Make for Windows:
+#    - Download it from:
+#      https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81-bin.zip/download
+#
+# 2. Install Git for Windows (which includes Git Bash):
+#    - Download it from:
+#      https://git-scm.com/downloads/win
+#
+# 3. Update Your System PATH:
+#    - After installing GNU Make, add its installation directory (where make.exe is located)
+#      to your system's PATH environment variable.
+#
+# 4. Running the Makefile:
+#    - Open the Git Bash shell.
+#    - Navigate to the directory containing this Makefile.
+#    - Execute the command: `make setup`
+#
+# Note:
+# This Makefile has been designed and tested for use with GNU Make in the Git Bash shell.
+# ============================================================
+
 # Directories for dependencies and build files
 BUILD_DIR         := ./build
 RPFM_SCHEMA_DIR   := ./.deps/rpfm_schema
@@ -35,6 +60,10 @@ SEVENZIP_BIN          := $(SEVENZIP_DIR)/7za.exe
 ETWNG_REPO     = https://github.com/taw/etwng.git
 ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 
+# ============================================================
+# Start Source Files
+# ============================================================
+
 # UI targets for specific game components
 UI_TARGETS := \
 	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
@@ -61,6 +90,10 @@ $(BUILD_DIR)/ui/common\ ui/options_mods: \
 UI_TARGETS: \
 	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 	$(BUILD_DIR)/ui/common\ ui/options_mods
+
+# ============================================================
+# End Source Files
+# ============================================================
 
 # Setup target to prepare all necessary dependencies
 setup: \
