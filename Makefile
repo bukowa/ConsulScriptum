@@ -1,92 +1,108 @@
-PACK_TARGET = consulscriptum.pack
-PACK_VERSION = 0.1.0
+# Mod package information
+MOD_PACKAGE = consulscriptum.pack
+MOD_VERSION = 0.1.0
 
-BUILD_DIR := ./build
-RPFMSCHEMA_DIR := ./.deps/rpfmschema
-RPFMCLI_DIR := ./.deps/rpfmcli
-ETWNG_DIR := ./.deps/etwng
-RUBY_DIR := ./.deps/ruby
+# Directories for dependencies and build files
+BUILD_DIR         := ./build
+RPFM_SCHEMA_DIR   := ./.deps/rpfm_schema
+RPFM_CLI_DIR      := ./.deps/rpfm_cli
+ETWNG_DIR         := ./.deps/etwng
+RUBY_DIR          := ./.deps/ruby
 
-BIN_RUBY := $(RUBY_DIR)/bin/ruby.exe
-BIN_RPFMCLI := $(RPFMCLI_DIR)/rpfm_cli
-BIN_XML2UI := $(ETWNG_DIR)/ui/bin/xml2ui
-RPFMSCHEMA_PATH := $(RPFMSCHEMA_DIR)/schema_rom2.ron
-BIN_RPFMCLI_ROME2 := $(realpath $(BIN_RPFMCLI)) --game rome_2
+# Binaries and paths
+RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
+RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli
+XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
+RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_rom2.ron
+RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game rome_2
 
-RPFMCLI_VERSION := v4.3.14
-RPFMCLI_BASE_URL := https://github.com/Frodo45127/rpfm/releases/download
-RPFMCLI_DOWNLOADURL := $(RPFMCLI_BASE_URL)/$(RPFMCLI_VERSION)/rpfm-$(RPFMCLI_VERSION)-x86_64-pc-windows-msvc.zip
+# rpfm_cli details
+RPFM_CLI_VERSION       := v4.3.14
+RPFM_CLI_BASE_URL      := https://github.com/Frodo45127/rpfm/releases/download
+RPFM_CLI_DOWNLOAD_URL  := $(RPFM_CLI_BASE_URL)/$(RPFM_CLI_VERSION)/rpfm-$(RPFM_CLI_VERSION)-x86_64-pc-windows-msvc.zip
 
-RUBY_VERSION := 3.4.2-1
-RUBY_DOWNLOADURL := https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-$(RUBY_VERSION)/rubyinstaller-$(RUBY_VERSION)-x64.7z
-RUBY_EXTRACTED_DIR := $(RUBY_DIR)/rubyinstaller-$(RUBY_VERSION)-x64
+# Ruby details
+RUBY_VERSION          := 3.4.2-1
+RUBY_DOWNLOAD_URL     := https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-$(RUBY_VERSION)/rubyinstaller-$(RUBY_VERSION)-x64.7z
+RUBY_EXTRACTED_DIR    := $(RUBY_DIR)/rubyinstaller-$(RUBY_VERSION)-x64
 
-SEVENZIP_URL := https://www.7-zip.org/a/7za920.zip
-SEVENZIP_DIR := ./.deps/7zip
-SEVENZIP_BIN := $(SEVENZIP_DIR)/7za.exe
+# 7-Zip details
+SEVENZIP_DOWNLOAD_URL := https://www.7-zip.org/a/7za920.zip
+SEVENZIP_DIR          := ./.deps/7zip
+SEVENZIP_BIN          := $(SEVENZIP_DIR)/7za.exe
 
-ETWNG_REPO = https://github.com/taw/etwng.git
+# ETWNG repository details
+ETWNG_REPO     = https://github.com/taw/etwng.git
 ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 
+# UI targets for specific game components
 UI_TARGETS := \
 	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 	$(BUILD_DIR)/ui/common\ ui/options_mods
 
-$(PACK_TARGET): $(UI_TARGETS)
+# Rule for creating the mod package with rpfm_cli
+$(MOD_PACKAGE): $(UI_TARGETS)
 	@{ \
-	  ${BIN_RPFMCLI_ROME2} pack create --pack-path=$@ && \
-	  ${BIN_RPFMCLI_ROME2} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFMSCHEMA_PATH}; \
+	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
+	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH}; \
 	} || { rm $@; exit 1; }
 
+# Build rule for multiplayer_chat UI component
 $(BUILD_DIR)/ui/common\ ui/multiplayer_chat: \
-src/ui/common\ ui/multiplayer_chat.xml
-	$(BIN_XML2UI) "$<" "$@"
+	src/ui/common\ ui/multiplayer_chat.xml
+	$(XML2UI_BIN) "$<" "$@"
 
+# Build rule for options_mods UI component
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
-src/ui/common\ ui/options_mods.xml
-	$(BIN_XML2UI) "$<" "$@"
+	src/ui/common\ ui/options_mods.xml
+	$(XML2UI_BIN) "$<" "$@"
 
+# Phony target for grouping UI targets
 UI_TARGETS: \
 	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 	$(BUILD_DIR)/ui/common\ ui/options_mods
 
+# Setup target to prepare all necessary dependencies
 setup: \
-	setup-rpfmcli \
-	setup-rpfmschema \
+	setup-rpfm_cli \
+	setup-rpfm_schema \
 	setup-etwng \
-	setup-7z \
+	setup-7zip \
 	setup-ruby
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(ETWNG_DIR)
-	@mkdir -p $(RPFMCLI_DIR)
-	@mkdir -p $(RPFMSCHEMA_DIR)
+	@mkdir -p $(RPFM_CLI_DIR)
+	@mkdir -p $(RPFM_SCHEMA_DIR)
 	@echo "Setup complete, all dependencies are ready."
 
-setup-rpfmcli:
-	@if [ ! -f $(BIN_RPFMCLI) ]; then \
-		echo "rpfm_cli not found, downloading:"&& \
-		echo "${RPFMCLI_DOWNLOADURL}"&& \
-		mkdir -p $(RPFMCLI_DIR) && \
-		curl -sL $(RPFMCLI_DOWNLOADURL) -o $(RPFMCLI_DIR)/rpfm_cli.zip && \
-		echo "unzipping rpfm_cli..."&& \
-		unzip -q $(RPFMCLI_DIR)/rpfm_cli.zip -d $(RPFMCLI_DIR) && \
-		rm $(RPFMCLI_DIR)/rpfm_cli.zip&& \
+# Rule for setting up rpfm_cli
+setup-rpfm_cli:
+	@if [ ! -f $(RPFM_CLI_BIN) ]; then \
+		echo "rpfm_cli not found, downloading:" && \
+		echo "${RPFM_CLI_DOWNLOAD_URL}" && \
+		mkdir -p $(RPFM_CLI_DIR) && \
+		curl -sL $(RPFM_CLI_DOWNLOAD_URL) -o $(RPFM_CLI_DIR)/rpfm_cli.zip && \
+		echo "unzipping rpfm_cli..." && \
+		unzip -q $(RPFM_CLI_DIR)/rpfm_cli.zip -d $(RPFM_CLI_DIR) && \
+		rm $(RPFM_CLI_DIR)/rpfm_cli.zip && \
 		echo "rpfm_cli has been downloaded and extracted."; \
 	fi
 
-setup-rpfmschema: setup-rpfmcli
-	@if [ ! -f "$(RPFMSCHEMA_PATH)" ]; then \
-		echo "rpfm schema not found, updating..."&& \
-		mkdir -p "$(RPFMSCHEMA_DIR)" && \
-		echo "changing directory to $(RPFMSCHEMA_DIR) to update schema..."&& \
-		echo "$(BIN_RPFMCLI_ROME2) schemas update --schema-path ./"&& \
-		( cd "$(RPFMSCHEMA_DIR)" && $(BIN_RPFMCLI_ROME2) schemas update --schema-path ./ )&& \
+# Rule for setting up rpfm schema
+setup-rpfm_schema: setup-rpfm_cli
+	@if [ ! -f "$(RPFM_SCHEMA_PATH)" ]; then \
+		echo "rpfm schema not found, updating..." && \
+		mkdir -p "$(RPFM_SCHEMA_DIR)" && \
+		echo "changing directory to $(RPFM_SCHEMA_DIR) to update schema..." && \
+		echo "$(RPFM_CLI_ROME2_CMD) schemas update --schema-path ./" && \
+		( cd "$(RPFM_SCHEMA_DIR)" && $(RPFM_CLI_ROME2_CMD) schemas update --schema-path ./ ) && \
 		echo "Schema update complete."; \
 	fi
 
+# Rule for setting up ETWNG (requires Ruby)
 setup-etwng: setup-ruby
-	@if [ ! -f $(BIN_XML2UI) ]; then \
-		echo "etwng not found, cloning..."&& \
+	@if [ ! -f $(XML2UI_BIN) ]; then \
+		echo "etwng not found, cloning..." && \
 		mkdir -p $(ETWNG_DIR) && \
 		git clone --depth 1 $(ETWNG_REPO) $(ETWNG_DIR) && \
 		cd $(ETWNG_DIR) && \
@@ -94,12 +110,13 @@ setup-etwng: setup-ruby
 		echo "Checked out to specific revision."; \
 	fi
 
-setup-ruby: setup-7z
+# Rule for setting up Ruby (requires 7-Zip)
+setup-ruby: setup-7zip
 	@if [ ! -f "$(RUBY_DIR)/bin/ruby" ]; then \
 		echo "ruby not found, downloading ..." && \
-		echo $(RUBY_DOWNLOADURL) && \
+		echo $(RUBY_DOWNLOAD_URL) && \
 		mkdir -p $(RUBY_DIR) && \
-		curl -sL $(RUBY_DOWNLOADURL) -o $(RUBY_DIR)/ruby.7z && \
+		curl -sL $(RUBY_DOWNLOAD_URL) -o $(RUBY_DIR)/ruby.7z && \
 		echo "unzipping ruby..." && \
 		$(SEVENZIP_DIR)/7za x $(RUBY_DIR)/ruby.7z -o$(RUBY_DIR) -y && \
 		mv -f $(RUBY_EXTRACTED_DIR)/* $(RUBY_DIR) && \
@@ -108,17 +125,17 @@ setup-ruby: setup-7z
 		echo "Ruby version $(RUBY_VERSION) has been downloaded and extracted."; \
 	fi
 
-setup-7z:
+# Rule for setting up 7-Zip
+setup-7zip:
 	@if [ ! -f "$(SEVENZIP_BIN)" ]; then \
-		echo "7zip not found, downloading ..."&& \
+		echo "7zip not found, downloading..." && \
 		mkdir -p $(SEVENZIP_DIR) && \
-		curl -sL $(SEVENZIP_URL) -o $(SEVENZIP_DIR)/7za920.zip && \
-		echo "unzipping 7zip..."&& \
+		curl -sL $(SEVENZIP_DOWNLOAD_URL) -o $(SEVENZIP_DIR)/7za920.zip && \
+		echo "unzipping 7zip..." && \
 		powershell -Command "Expand-Archive -Path $(SEVENZIP_DIR)/7za920.zip -DestinationPath $(SEVENZIP_DIR)" && \
-		rm $(SEVENZIP_DIR)/7za920.zip&& \
+		rm $(SEVENZIP_DIR)/7za920.zip && \
 		echo "7zip has been downloaded and extracted."; \
 	fi
 
 # Declare phony targets to prevent conflicts with file names
-.PHONY: setup setup-rpfmcli setup-rpfmschema setup-ruby setup-etwng setup-7z
-
+.PHONY: setup setup-rpfm_cli setup-rpfm_schema setup-ruby setup-etwng setup-7zip
