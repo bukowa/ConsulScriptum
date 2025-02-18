@@ -1,4 +1,0 @@
-key	text	tooltip
-#Loc;1;text/db/chat_shortcuts.loc		
-chat_shortcuts_description_add_gold	add gold to faction (/add_gold <number> <faction>)	true
-chat_shortcuts_description_help	shows all available chat shortcut commands for current game area (/help)	true
