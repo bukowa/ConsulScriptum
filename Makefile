@@ -137,6 +137,18 @@ setup-etwng: setup-ruby
 		echo "Checked out to specific revision."; \
 	fi
 
+# Rule for setting up 7-Zip
+setup-7zip:
+	@if [ ! -f "$(SEVENZIP_BIN)" ]; then \
+		echo "7zip not found, downloading..." && \
+		mkdir -p $(SEVENZIP_DIR) && \
+		curl -sL $(SEVENZIP_DOWNLOAD_URL) -o $(SEVENZIP_DIR)/7za920.zip && \
+		echo "unzipping 7zip..." && \
+		powershell -Command "Expand-Archive -Path $(SEVENZIP_DIR)/7za920.zip -DestinationPath $(SEVENZIP_DIR)" && \
+		rm $(SEVENZIP_DIR)/7za920.zip && \
+		echo "7zip has been downloaded and extracted."; \
+	fi
+
 # Rule for setting up Ruby (requires 7-Zip)
 setup-ruby: setup-7zip
 	@if [ ! -f "$(RUBY_DIR)/bin/ruby" ]; then \
@@ -152,24 +164,10 @@ setup-ruby: setup-7zip
 		echo "Ruby version $(RUBY_VERSION) has been downloaded and extracted."; \
 	fi
 
-# Rule for setting up 7-Zip
-setup-7zip:
-	@if [ ! -f "$(SEVENZIP_BIN)" ]; then \
-		echo "7zip not found, downloading..." && \
-		mkdir -p $(SEVENZIP_DIR) && \
-		curl -sL $(SEVENZIP_DOWNLOAD_URL) -o $(SEVENZIP_DIR)/7za920.zip && \
-		echo "unzipping 7zip..." && \
-		powershell -Command "Expand-Archive -Path $(SEVENZIP_DIR)/7za920.zip -DestinationPath $(SEVENZIP_DIR)" && \
-		rm $(SEVENZIP_DIR)/7za920.zip && \
-		echo "7zip has been downloaded and extracted."; \
-	fi
-
-# Function to install the mod package to a specified directory
-install-to-dir = \
-	@if [ ! -f "$1/$(MOD_PACKAGE)" ] || ! cmp -s "$<" "$1/$(MOD_PACKAGE)"; then \
-		cp "$<" "$1/$(MOD_PACKAGE)" && \
-		echo "Mod package installed successfully to $1."; \
-	fi
+# Install Steam and alone
+install: \
+	install-alone \
+	install-steam
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
@@ -179,8 +177,34 @@ install-steam: $(MOD_PACKAGE)
 install-alone: $(MOD_PACKAGE)
 	$(call install-to-dir,$(INSTALL_ALONE_DIR))
 
-install: install-alone install-steam
+# Function to install the mod package to a specified directory
+install-to-dir = \
+	@if [ ! -f "$1/$(MOD_PACKAGE)" ] || ! cmp -s "$<" "$1/$(MOD_PACKAGE)"; then \
+		cp "$<" "$1/$(MOD_PACKAGE)" && \
+		echo "Mod package installed successfully to $1."; \
+	fi
+
+# Attempt to find and terminate the Rome 2 process by its name.
+kill-rome2:
+	@pid=$$(tasklist | grep Rome2.exe | head -n 1 | awk '{print $$2}') && \
+	if [ -n "$$pid" ]; then \
+		cmd //C "taskkill /F /PID $$pid"; \
+	fi
 
 # Declare phony targets to prevent conflicts with file names
-.PHONY: setup setup-rpfm_cli setup-rpfm_schema setup-ruby setup-etwng setup-7zip \
-		install-alone install-steam install
+.PHONY: setup \
+			setup-7zip \
+			setup-rpfm_cli \
+			setup-rpfm_schema \
+			setup-ruby \
+			setup-etwng \
+		install \
+			install-steam \
+			install-alone \
+		kill-rome \
+		clean
+
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -f $(MOD_PACKAGE)
+	@echo "Cleaned up build directory and mod package."
