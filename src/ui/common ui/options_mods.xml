@@ -2112,7 +2112,7 @@
                                                             <uientry>
                                                                 <u>509434976</u><!-- ID (60 5c 5d 1e) -->
                                                                 <s>button_public</s><!-- title -->
-                                                                <s>ChatTabButton</s><!-- title2 -->
+                                                                <s></s><!-- title2 -->
                                                                 <i>0</i><!-- x offset -->
                                                                 <i>0</i><!-- y offset -->
                                                                 <no /><!-- uientry flag 1 -->
@@ -4584,7 +4584,7 @@
                     <uientry>
                         <u>509460704</u><!-- ID (e0 c0 5d 1e) -->
                         <s>chat_input_box</s><!-- title -->
-                        <s>ChatInput</s><!-- title2 -->
+                        <s>ConsoleCommandTextInput</s><!-- title2 -->
                         <i>14</i><!-- x offset -->
                         <i>184</i><!-- y offset -->
                         <no /><!-- uientry flag 1 -->
@@ -8563,7 +8563,7 @@
                                                             <uientry>
                                                                 <u>509498336</u><!-- ID (e0 53 5e 1e) -->
                                                                 <s>rooms_list_entry</s><!-- title -->
-                                                                <s>MPLobbyRoomListEntry</s><!-- title2 -->
+                                                                <s></s><!-- title2 -->
                                                                 <i>0</i><!-- x offset -->
                                                                 <i>0</i><!-- y offset -->
                                                                 <no /><!-- uientry flag 1 -->
@@ -9883,7 +9883,7 @@
                                     <uientry>
                                         <u>509512992</u><!-- ID (20 8d 5e 1e) -->
                                         <s>popup_create_room</s><!-- title -->
-                                        <s>MPLobbyCreateRoomPopup</s><!-- title2 -->
+                                        <s></s><!-- title2 -->
                                         <i>-57</i><!-- x offset -->
                                         <i>34</i><!-- y offset -->
                                         <no /><!-- uientry flag 1 -->
@@ -14803,7 +14803,7 @@
                             <uientry>
                                 <u>509558464</u><!-- ID (c0 3e 5f 1e) -->
                                 <s>friends_list</s><!-- title -->
-                                <s>MPFriendsList</s><!-- title2 -->
+                                <s></s><!-- title2 -->
                                 <i>0</i><!-- x offset -->
                                 <i>250</i><!-- y offset -->
                                 <no /><!-- uientry flag 1 -->
@@ -17946,7 +17946,7 @@
                     <uientry>
                         <u>509589664</u><!-- ID (a0 b8 5f 1e) -->
                         <s>multiplayer_player_list</s><!-- title -->
-                        <s>MPPlayerList</s><!-- title2 -->
+                        <s></s><!-- title2 -->
                         <i>462</i><!-- x offset -->
                         <i>39</i><!-- y offset -->
                         <no /><!-- uientry flag 1 -->
