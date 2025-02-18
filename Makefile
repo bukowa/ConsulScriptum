@@ -222,6 +222,8 @@ steam: run-steam
 		kill-rome \
 		run-alone \
 		run-steam \
+		steam \
+		alone \
 		clean
 
 # Cleaning up all build artifacts and generated mod packages
