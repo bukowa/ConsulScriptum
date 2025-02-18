@@ -61,8 +61,8 @@ ETWNG_REPO     = https://github.com/taw/etwng.git
 ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 
 # Installation directories
-INSTALL_ALONE_DIR := C:/Games/Total War - Rome 2/data
-INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II/data
+INSTALL_ALONE_DIR := C:/Games/Total War - Rome 2
+INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
 
 # ============================================================
 # Start Source Files
@@ -171,17 +171,17 @@ install: \
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
-	$(call install-to-dir,$(INSTALL_STEAM_DIR))
+	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 # Install the built .pack file only if different for standalone
 install-alone: $(MOD_PACKAGE)
-	$(call install-to-dir,$(INSTALL_ALONE_DIR))
+	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Function to install the mod package to a specified directory
 install-to-dir = \
 	@if [ ! -f "$1/$(MOD_PACKAGE)" ] || ! cmp -s "$<" "$1/$(MOD_PACKAGE)"; then \
 		cp "$<" "$1/$(MOD_PACKAGE)" && \
-		echo "Mod package installed successfully to $1."; \
+		echo "Mod package installed successfully to $1"; \
 	fi
 
 # Attempt to find and terminate the Rome 2 process by its name.
@@ -190,6 +190,24 @@ kill-rome2:
 	if [ -n "$$pid" ]; then \
 		cmd //C "taskkill /F /PID $$pid"; \
 	fi
+
+# Launch the standalone version of Rome2.exe with the specified working directory
+run-alone: \
+	kill-rome2 \
+	install-alone
+	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+
+# Launch the Steam version of Rome2 using its Steam app ID
+run-steam: \
+	kill-rome2 \
+	install-steam
+	@powershell -Command start steam://rungameid/214950
+
+
+alone: run-alone
+
+# Its strongly suggested to run steam in offline mode due to various bugs/
+steam: run-steam
 
 # Declare phony targets to prevent conflicts with file names
 .PHONY: setup \
@@ -202,9 +220,14 @@ kill-rome2:
 			install-steam \
 			install-alone \
 		kill-rome \
+		run-alone \
+		run-steam \
 		clean
 
+# Cleaning up all build artifacts and generated mod packages
 clean:
 	@rm -rf $(BUILD_DIR)
 	@rm -f $(MOD_PACKAGE)
+	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
+	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
 	@echo "Cleaned up build directory and mod package."
