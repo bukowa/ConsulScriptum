@@ -134,8 +134,8 @@
                 <u>509413504</u><!-- ID (80 08 5d 1e) -->
                 <s>multiplayer_chat</s><!-- title -->
                 <s></s><!-- title2 -->
-                <i>374</i><!-- x offset -->
-                <i>354</i><!-- y offset -->
+                <i>0</i><!-- x offset -->
+                <i>0</i><!-- y offset -->
                 <no /><!-- uientry flag 1 -->
                 <yes /><!-- uientry flag 2 -->
                 <byte>1</byte><!-- uientry flag 3 -->
