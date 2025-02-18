@@ -29,10 +29,11 @@ MOD_VERSION = 0.1.0
 
 # Directories for dependencies and build files
 BUILD_DIR         := ./build
-RPFM_SCHEMA_DIR   := ./.deps/rpfm_schema
-RPFM_CLI_DIR      := ./.deps/rpfm_cli
-ETWNG_DIR         := ./.deps/etwng
-RUBY_DIR          := ./.deps/ruby
+DEPS_DIR		  := ./.deps
+RPFM_SCHEMA_DIR   := $(DEPS_DIR)/rpfm_schema
+RPFM_CLI_DIR      := $(DEPS_DIR)/rpfm_cli
+ETWNG_DIR         := $(DEPS_DIR)/etwng
+RUBY_DIR          := $(DEPS_DIR)/ruby
 
 # Binaries and paths
 RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
@@ -53,7 +54,7 @@ RUBY_EXTRACTED_DIR    := $(RUBY_DIR)/rubyinstaller-$(RUBY_VERSION)-x64
 
 # 7-Zip details
 SEVENZIP_DOWNLOAD_URL := https://www.7-zip.org/a/7za920.zip
-SEVENZIP_DIR          := ./.deps/7zip
+SEVENZIP_DIR          := $(DEPS_DIR)/7zip
 SEVENZIP_BIN          := $(SEVENZIP_DIR)/7za.exe
 
 # ETWNG repository details
@@ -229,6 +230,7 @@ steam: run-steam
 # Cleaning up all build artifacts and generated mod packages
 clean:
 	@rm -rf $(BUILD_DIR)
+	@rm -rf $(DEPS_DIR)
 	@rm -f $(MOD_PACKAGE)
 	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
