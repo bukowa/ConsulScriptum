@@ -60,36 +60,30 @@ SEVENZIP_BIN          := $(SEVENZIP_DIR)/7za.exe
 ETWNG_REPO     = https://github.com/taw/etwng.git
 ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 
+# Installation directories
+INSTALL_ALONE_DIR := C:/Games/Total War - Rome 2/data
+INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II/data
+
 # ============================================================
 # Start Source Files
 # ============================================================
 
 # UI targets for specific game components
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 	$(BUILD_DIR)/ui/common\ ui/options_mods
 
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(UI_TARGETS)
 	@{ \
 	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
-	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH}; \
+	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
+	  echo "Pack file built successfully." ; \
 	} || { rm $@; exit 1; }
-
-# Build rule for multiplayer_chat UI component
-$(BUILD_DIR)/ui/common\ ui/multiplayer_chat: \
-	src/ui/common\ ui/multiplayer_chat.xml
-	$(XML2UI_BIN) "$<" "$@"
 
 # Build rule for options_mods UI component
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
 	$(XML2UI_BIN) "$<" "$@"
-
-# Phony target for grouping UI targets
-UI_TARGETS: \
-	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
-	$(BUILD_DIR)/ui/common\ ui/options_mods
 
 # ============================================================
 # End Source Files
@@ -170,5 +164,23 @@ setup-7zip:
 		echo "7zip has been downloaded and extracted."; \
 	fi
 
+# Function to install the mod package to a specified directory
+install-to-dir = \
+	@if [ ! -f "$1/$(MOD_PACKAGE)" ] || ! cmp -s "$<" "$1/$(MOD_PACKAGE)"; then \
+		cp "$<" "$1/$(MOD_PACKAGE)" && \
+		echo "Mod package installed successfully to $1."; \
+	fi
+
+# Install the built .pack file only if different for Steam
+install-steam: $(MOD_PACKAGE)
+	$(call install-to-dir,$(INSTALL_STEAM_DIR))
+
+# Install the built .pack file only if different for standalone
+install-alone: $(MOD_PACKAGE)
+	$(call install-to-dir,$(INSTALL_ALONE_DIR))
+
+install: install-alone install-steam
+
 # Declare phony targets to prevent conflicts with file names
-.PHONY: setup setup-rpfm_cli setup-rpfm_schema setup-ruby setup-etwng setup-7zip
+.PHONY: setup setup-rpfm_cli setup-rpfm_schema setup-ruby setup-etwng setup-7zip \
+		install-alone install-steam install
