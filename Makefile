@@ -69,22 +69,34 @@ INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rom
 # Start Source Files
 # ============================================================
 
-# UI targets for specific game components
+DIR_TARGETS := \
+	$(BUILD_DIR)/lua_scripts \
+	$(BUILD_DIR)/ui/common\ ui
+
 UI_TARGETS := \
 	$(BUILD_DIR)/ui/common\ ui/options_mods
 
+LUA_TARGETS := \
+	$(BUILD_DIR)/lua_scripts/all_scripted.lua
+
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(UI_TARGETS)
+$(MOD_PACKAGE): $(DIR_TARGETS) $(UI_TARGETS) $(LUA_TARGETS)
 	@{ \
 	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
 	  echo "Pack file built successfully." ; \
 	} || { rm $@; exit 1; }
 
-# Build rule for options_mods UI component
+$(DIR_TARGETS):
+	@mkdir -p $@
+
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
 	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/lua_scripts/all_scripted.lua: \
+	src/lua_scripts/all_scripted.lua
+	@cp "$<" "$@"
 
 # ============================================================
 # End Source Files
@@ -102,6 +114,15 @@ setup: \
 	@mkdir -p $(RPFM_CLI_DIR)
 	@mkdir -p $(RPFM_SCHEMA_DIR)
 	@echo "Setup complete, all dependencies are ready."
+
+# Cleaning up all build artifacts and generated mod packages
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -rf $(DEPS_DIR)
+	@rm -f $(MOD_PACKAGE)
+	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
+	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
+	@echo "Cleaned up build directory and mod package."
 
 # Rule for setting up rpfm_cli
 setup-rpfm_cli:
@@ -226,12 +247,3 @@ steam: run-steam
 		steam \
 		alone \
 		clean
-
-# Cleaning up all build artifacts and generated mod packages
-clean:
-	@rm -rf $(BUILD_DIR)
-	@rm -rf $(DEPS_DIR)
-	@rm -f $(MOD_PACKAGE)
-	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
-	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
-	@echo "Cleaned up build directory and mod package."
