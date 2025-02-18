@@ -64,6 +64,7 @@ ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 # Installation directories
 INSTALL_ALONE_DIR := C:/Games/Total War - Rome 2
 INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
+INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
 
 # ============================================================
 # Start Source Files
@@ -193,10 +194,12 @@ install: \
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 # Install the built .pack file only if different for standalone
 install-alone: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Function to install the mod package to a specified directory
