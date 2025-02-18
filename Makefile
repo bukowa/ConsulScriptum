@@ -210,7 +210,8 @@ install-to-dir = \
 kill-rome2:
 	@pid=$$(tasklist | grep Rome2.exe | head -n 1 | awk '{print $$2}') && \
 	if [ -n "$$pid" ]; then \
-		cmd //C "taskkill /F /PID $$pid"; \
+		cmd //C "taskkill /F /PID $$pid" && \
+		while tasklist | grep -q $$pid; do sleep 1; done; \
 	fi
 
 # Launch the standalone version of Rome2.exe with the specified working directory
