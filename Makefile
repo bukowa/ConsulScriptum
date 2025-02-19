@@ -72,13 +72,15 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 
 DIR_TARGETS := \
 	$(BUILD_DIR)/lua_scripts \
+	$(BUILD_DIR)/script/consulscriptum \
 	$(BUILD_DIR)/ui/common\ ui
 
 UI_TARGETS := \
 	$(BUILD_DIR)/ui/common\ ui/options_mods
 
 LUA_TARGETS := \
-	$(BUILD_DIR)/lua_scripts/all_scripted.lua
+	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
+	$(BUILD_DIR)/script/consulscriptum/logging.lua
 
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(DIR_TARGETS) $(UI_TARGETS) $(LUA_TARGETS)
@@ -97,6 +99,10 @@ $(BUILD_DIR)/ui/common\ ui/options_mods: \
 
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	src/lua_scripts/all_scripted.lua
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/script/consulscriptum/logging.lua: \
+	src/script/consulscriptum/logging.lua
 	@cp "$<" "$@"
 
 # ============================================================
