@@ -12487,7 +12487,7 @@
                                     </uientry>
                                     <uientry>
                                         <u>509537728</u><!-- ID (c0 ed 5e 1e) -->
-                                        <s>button_create_room</s><!-- title -->
+                                        <s>button_create_room1</s><!-- title -->
                                         <s>Button</s><!-- title2 -->
                                         <i>172</i><!-- x offset -->
                                         <i>36</i><!-- y offset -->
