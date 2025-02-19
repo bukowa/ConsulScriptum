@@ -4809,7 +4809,7 @@
                     <uientry>
                         <u>209371280</u><!-- ID (90 c0 7a 0c) -->
                         <s>button_twitch_stream</s><!-- title -->
-                        <s>TwitchStreamButton</s><!-- title2 -->
+                        <s></s><!-- title2 -->
                         <i>172</i><!-- x offset -->
                         <i>0</i><!-- y offset -->
                         <no /><!-- uientry flag 1 -->
