@@ -216,19 +216,7 @@
                         </mouse_states>
                     </state>
                 </states>
-                <properties count="3">
-                    <property>
-                        <s>appear_on_mouseover</s><!-- key -->
-                        <s>true</s><!-- value -->
-                    </property>
-                    <property>
-                        <s>time_til_fade</s><!-- key -->
-                        <s>5000</s><!-- value -->
-                    </property>
-                    <property>
-                        <s>duration_of_fade</s><!-- key -->
-                        <s>5000</s><!-- value -->
-                    </property>
+                <properties count="0">
                 </properties>
                 <i>0</i><!-- priority? -->
                 <funcs count="0">
