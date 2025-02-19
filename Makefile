@@ -80,7 +80,7 @@ UI_TARGETS := \
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
-	$(BUILD_DIR)/script/consulscriptum/logging.lua
+	$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua
 
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(DIR_TARGETS) $(UI_TARGETS) $(LUA_TARGETS)
@@ -101,8 +101,8 @@ $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	src/lua_scripts/all_scripted.lua
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consulscriptum/logging.lua: \
-	src/script/consulscriptum/logging.lua
+$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua: \
+	src/script/consulscriptum/consulscriptum_logging.lua
 	@cp "$<" "$@"
 
 # ============================================================
