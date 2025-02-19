@@ -139,7 +139,7 @@
                 <no /><!-- uientry flag 1 -->
                 <yes /><!-- uientry flag 2 -->
                 <byte>1</byte><!-- uientry flag 3 -->
-                <yes /><!-- uientry flag 4 -->
+                <no /><!-- uientry flag 4 -->
                 <no /><!-- uientry flag 5 -->
                 <no /><!-- uientry flag 6 -->
                 <no /><!-- uientry flag 7 -->
