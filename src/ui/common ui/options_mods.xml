@@ -156,14 +156,7 @@
                 <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
                 <no />
                 <i>509414560</i><!-- default state id -->
-                <images count="1">
-                    <image>
-                        <u>509414368</u><!-- ID (e0 0b 5d 1e) -->
-                        <s>ui/skins/default/tooltip_frame.png</s><!-- path -->
-                        <i>64</i><!-- x size -->
-                        <i>64</i><!-- y size -->
-                        <no />
-                    </image>
+                <images count="0">
                 </images>
                 <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
                 <i>0</i>
@@ -215,39 +208,7 @@
                         <flt>0.0</flt><!-- text shader vars -->
                         <flt>0.0</flt><!-- text shader vars -->
                         <flt>0.0</flt><!-- text shader vars -->
-                        <image_uses count="1">
-                            <image_use>
-                                <u>509414368</u><!-- ID (e0 0b 5d 1e) -->
-                                <u>0</u><!-- x offset -->
-                                <u>0</u><!-- y offset -->
-                                <u>0</u><!-- x size -->
-                                <u>0</u><!-- y size -->
-                                <!-- color -->
-                                <color>
-                                    <byte>255</byte><!-- B -->
-                                    <byte>255</byte><!-- G -->
-                                    <byte>255</byte><!-- R -->
-                                    <byte>255</byte><!-- A -->
-                                </color>
-                                <no /><!-- tiled? -->
-                                <no /><!-- flipped x? -->
-                                <no /><!-- flipped y? -->
-                                <i>0</i><!-- dock position (0-9)? -->
-                                <i>0</i><!-- dock offset x? -->
-                                <i>0</i><!-- dock offset y? -->
-                                <yes /><!-- stretch x? -->
-                                <yes /><!-- stretch y? -->
-                                <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
-                                <flt>0.0</flt><!-- rotation pivot x? -->
-                                <flt>0.0</flt><!-- rotation pivot y? -->
-                                <s></s><!-- shader name -->
-                                <flt>0.0</flt><!-- rotation axis x? -->
-                                <flt>0.0</flt><!-- rotation axis y? -->
-                                <flt>0.0</flt><!-- rotation axis z? -->
-                                <i>0</i><!-- always zero -->
-                                <flt>10.0</flt><!-- margin top-bottom? -->
-                                <flt>10.0</flt><!-- margin left-right? -->
-                            </image_use>
+                        <image_uses count="0">
                         </image_uses>
                         <i>0</i>
                         <i>0</i>
