@@ -69,51 +69,50 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # ============================================================
 # Start Source Files
 # ============================================================
-
-DIR_TARGETS := \
-	$(BUILD_DIR)/lua_scripts \
-	$(BUILD_DIR)/script/consulscriptum \
-	$(BUILD_DIR)/ui/common\ ui \
-	$(BUILD_DIR)/ui/frontend\ ui
-
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/options_mods \
-	$(BUILD_DIR)/ui/common\ ui/menu_bar \
-	$(BUILD_DIR)/ui/frontend\ ui/sp_frame
+	$(BUILD_DIR)/ui/common\ ui/options_mods
+#	$(BUILD_DIR)/ui/common\ ui/menu_bar \
+#	$(BUILD_DIR)/ui/frontend\ ui/sp_frame
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua
 
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(DIR_TARGETS) $(UI_TARGETS) $(LUA_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS)
 	@{ \
 	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
 	  echo "Pack file built successfully." ; \
 	} || { rm $@; exit 1; }
 
-$(DIR_TARGETS):
-	@mkdir -p $@
+define create_dir
+	@mkdir -p $(dir $@)
+endef
 
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
+	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/ui/common\ ui/menu_bar: \
 	src/ui/common\ ui/menu_bar.xml
+	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
 	src/ui/frontend\ ui/sp_frame.xml
+	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	src/lua_scripts/all_scripted.lua
+	$(create_dir)
 	@cp "$<" "$@"
 
 $(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua: \
 	src/script/consulscriptum/consulscriptum_logging.lua
+	$(create_dir)
 	@cp "$<" "$@"
 
 # ============================================================
