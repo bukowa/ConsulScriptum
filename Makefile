@@ -73,10 +73,13 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 DIR_TARGETS := \
 	$(BUILD_DIR)/lua_scripts \
 	$(BUILD_DIR)/script/consulscriptum \
-	$(BUILD_DIR)/ui/common\ ui
+	$(BUILD_DIR)/ui/common\ ui \
+	$(BUILD_DIR)/ui/frontend\ ui
 
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/options_mods
+	$(BUILD_DIR)/ui/common\ ui/options_mods \
+	$(BUILD_DIR)/ui/common\ ui/menu_bar \
+	$(BUILD_DIR)/ui/frontend\ ui/sp_frame
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
@@ -95,6 +98,14 @@ $(DIR_TARGETS):
 
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/common\ ui/menu_bar: \
+	src/ui/common\ ui/menu_bar.xml
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
+	src/ui/frontend\ ui/sp_frame.xml
 	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
@@ -200,7 +211,6 @@ install: \
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
-	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 # Install the built .pack file only if different for standalone
