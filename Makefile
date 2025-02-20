@@ -136,7 +136,6 @@ setup: \
 # Cleaning up all build artifacts and generated mod packages
 clean:
 	@rm -rf $(BUILD_DIR)
-	@rm -rf $(DEPS_DIR)
 	@rm -f $(MOD_PACKAGE)
 	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
