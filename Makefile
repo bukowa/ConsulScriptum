@@ -120,6 +120,14 @@ $(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua: \
 # End Source Files
 # ============================================================
 
+# Cleaning up all build artifacts and generated mod packages
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -f $(MOD_PACKAGE)
+	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
+	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
+	@echo "Cleaned up build directory and mod package."
+
 # Setup target to prepare all necessary dependencies
 setup: \
 	setup-rpfm_cli \
@@ -132,14 +140,6 @@ setup: \
 	@mkdir -p $(RPFM_CLI_DIR)
 	@mkdir -p $(RPFM_SCHEMA_DIR)
 	@echo "Setup complete, all dependencies are ready."
-
-# Cleaning up all build artifacts and generated mod packages
-clean:
-	@rm -rf $(BUILD_DIR)
-	@rm -f $(MOD_PACKAGE)
-	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
-	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
-	@echo "Cleaned up build directory and mod package."
 
 # Rule for setting up rpfm_cli
 setup-rpfm_cli:
