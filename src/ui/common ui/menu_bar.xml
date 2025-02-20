@@ -1338,8 +1338,8 @@
                                                                         <yes /><!-- text behavior? -->
                                                                         <unicode></unicode><!-- text label? -->
                                                                         <no /><!-- state stuff 3? -->
-                                                                        <no /><!-- state stuff 4? -->
-                                                                        <unicode>chat_string_NewState_Text_530078</unicode><!-- localization id -->
+                                                                        <yes /><!-- state stuff 4? -->
+                                                                        <unicode></unicode><!-- localization id -->
                                                                         <unicode></unicode><!-- tooltip id -->
                                                                         <s>la_gioconda</s><!-- font -->
                                                                         <i>12</i><!-- font size? line height? -->
@@ -5204,7 +5204,7 @@
                                         <s>NewState</s><!-- title - NewState -->
                                         <i>215</i><!-- x size -->
                                         <i>250</i><!-- y size -->
-                                        <unicode>Chat Rooms</unicode><!-- state text -->
+                                        <unicode>Consul</unicode><!-- state text -->
                                         <unicode></unicode><!-- tooltip -->
                                         <i>4</i><!-- text xsize? -->
                                         <i>0</i><!-- text ysize? -->
@@ -5214,7 +5214,7 @@
                                         <unicode></unicode><!-- text label? -->
                                         <no /><!-- state stuff 3? -->
                                         <yes /><!-- state stuff 4? -->
-                                        <unicode>room_list_NewState_Text_2004ed</unicode><!-- localization id -->
+                                        <unicode></unicode><!-- localization id -->
                                         <unicode></unicode><!-- tooltip id -->
                                         <s>la_gioconda_uppercase</s><!-- font -->
                                         <i>16</i><!-- font size? line height? -->
@@ -6119,7 +6119,7 @@
                                                                                 <s>default</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>dy lobby !!</unicode><!-- state text -->
+                                                                                <unicode>Translatio Civitatis</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -6173,7 +6173,7 @@
                                                                                 <s>active</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>dy lobby name</unicode><!-- state text -->
+                                                                                <unicode>Translatio Civitatis</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -6183,7 +6183,7 @@
                                                                                 <unicode></unicode><!-- text label? -->
                                                                                 <no /><!-- state stuff 3? -->
                                                                                 <yes /><!-- state stuff 4? -->
-                                                                                <unicode>steam_name_NewState_Text_3c0037</unicode><!-- localization id -->
+                                                                                <unicode></unicode><!-- localization id -->
                                                                                 <unicode></unicode><!-- tooltip id -->
                                                                                 <s>la_gioconda</s><!-- font -->
                                                                                 <i>12</i><!-- font size? line height? -->
@@ -6278,7 +6278,7 @@
                                                                                 <s>NewState</s><!-- title - NewState -->
                                                                                 <i>31</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>50</unicode><!-- state text -->
+                                                                                <unicode>?</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>4</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -6781,7 +6781,7 @@
                                                                                 <s>default</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>dy lobby name</unicode><!-- state text -->
+                                                                                <unicode>Migratio Magna</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -6791,7 +6791,7 @@
                                                                                 <unicode></unicode><!-- text label? -->
                                                                                 <no /><!-- state stuff 3? -->
                                                                                 <yes /><!-- state stuff 4? -->
-                                                                                <unicode>steam_name_NewState_Text_3c0037</unicode><!-- localization id -->
+                                                                                <unicode></unicode><!-- localization id -->
                                                                                 <unicode></unicode><!-- tooltip id -->
                                                                                 <s>la_gioconda</s><!-- font -->
                                                                                 <i>12</i><!-- font size? line height? -->
@@ -6835,7 +6835,7 @@
                                                                                 <s>active</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>dy lobby name</unicode><!-- state text -->
+                                                                                <unicode>Migratio Magna</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -6845,7 +6845,7 @@
                                                                                 <unicode></unicode><!-- text label? -->
                                                                                 <no /><!-- state stuff 3? -->
                                                                                 <yes /><!-- state stuff 4? -->
-                                                                                <unicode>steam_name_NewState_Text_3c0037</unicode><!-- localization id -->
+                                                                                <unicode></unicode><!-- localization id -->
                                                                                 <unicode></unicode><!-- tooltip id -->
                                                                                 <s>la_gioconda</s><!-- font -->
                                                                                 <i>12</i><!-- font size? line height? -->
@@ -6940,7 +6940,7 @@
                                                                                 <s>NewState</s><!-- title - NewState -->
                                                                                 <i>31</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>10</unicode><!-- state text -->
+                                                                                <unicode>?</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>4</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -6950,7 +6950,7 @@
                                                                                 <unicode></unicode><!-- text label? -->
                                                                                 <no /><!-- state stuff 3? -->
                                                                                 <yes /><!-- state stuff 4? -->
-                                                                                <unicode>experience_points_NewState_Text_300031</unicode><!-- localization id -->
+                                                                                <unicode></unicode><!-- localization id -->
                                                                                 <unicode></unicode><!-- tooltip id -->
                                                                                 <s>la_gioconda</s><!-- font -->
                                                                                 <i>12</i><!-- font size? line height? -->
@@ -12639,7 +12639,7 @@
                                         <s>NewState</s><!-- title - NewState -->
                                         <i>215</i><!-- x size -->
                                         <i>250</i><!-- y size -->
-                                        <unicode>Friends</unicode><!-- state text -->
+                                        <unicode>Scriptum</unicode><!-- state text -->
                                         <unicode></unicode><!-- tooltip -->
                                         <i>4</i><!-- text xsize? -->
                                         <i>0</i><!-- text ysize? -->
@@ -12649,7 +12649,7 @@
                                         <unicode></unicode><!-- text label? -->
                                         <no /><!-- state stuff 3? -->
                                         <yes /><!-- state stuff 4? -->
-                                        <unicode>friends_list_NewState_Text_730032</unicode><!-- localization id -->
+                                        <unicode></unicode><!-- localization id -->
                                         <unicode></unicode><!-- tooltip id -->
                                         <s>la_gioconda_uppercase</s><!-- font -->
                                         <i>16</i><!-- font size? line height? -->
@@ -13556,7 +13556,7 @@
                                                                                 <s>offline</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>friend name</unicode><!-- state text -->
+                                                                                <unicode>offline</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -13565,8 +13565,8 @@
                                                                                 <yes /><!-- text behavior? -->
                                                                                 <unicode></unicode><!-- text label? -->
                                                                                 <no /><!-- state stuff 3? -->
-                                                                                <no /><!-- state stuff 4? -->
-                                                                                <unicode>name_default_Text_700045</unicode><!-- localization id -->
+                                                                                <yes /><!-- state stuff 4? -->
+                                                                                <unicode></unicode><!-- localization id -->
                                                                                 <unicode></unicode><!-- tooltip id -->
                                                                                 <s>la_gioconda</s><!-- font -->
                                                                                 <i>12</i><!-- font size? line height? -->
@@ -16663,7 +16663,7 @@
                                                                                 <s>default</s><!-- title - NewState -->
                                                                                 <i>168</i><!-- x size -->
                                                                                 <i>28</i><!-- y size -->
-                                                                                <unicode>dy lobby name</unicode><!-- state text -->
+                                                                                <unicode>test</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -16672,8 +16672,8 @@
                                                                                 <yes /><!-- text behavior? -->
                                                                                 <unicode></unicode><!-- text label? -->
                                                                                 <no /><!-- state stuff 3? -->
-                                                                                <no /><!-- state stuff 4? -->
-                                                                                <unicode>steam_name_NewState_Text_3c0037</unicode><!-- localization id -->
+                                                                                <yes /><!-- state stuff 4? -->
+                                                                                <unicode></unicode><!-- localization id -->
                                                                                 <unicode></unicode><!-- tooltip id -->
                                                                                 <s>la_gioconda</s><!-- font -->
                                                                                 <i>12</i><!-- font size? line height? -->
