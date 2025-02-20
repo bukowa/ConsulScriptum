@@ -70,14 +70,15 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # Start Source Files
 # ============================================================
 UI_TARGETS := \
+	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
 	$(BUILD_DIR)/ui/common\ ui/menu_bar
-#	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 #	$(BUILD_DIR)/ui/common\ ui/options_mods
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
-	$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua
+	$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua \
+	$(BUILD_DIR)/script/consulscriptum/consulscriptum.lua
 
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS)
@@ -118,6 +119,11 @@ $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 
 $(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua: \
 	src/script/consulscriptum/consulscriptum_logging.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/script/consulscriptum/consulscriptum.lua: \
+	src/script/consulscriptum/consulscriptum.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
@@ -241,6 +247,11 @@ kill-rome2:
 run-alone: \
 	kill-rome2 \
 	install-alone
+	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+
+# Launch the standalone without mods
+run-standalone: kill-rome2
+	@echo '' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
 # Launch the Steam version of Rome2 using its Steam app ID
