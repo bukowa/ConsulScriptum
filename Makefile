@@ -70,9 +70,10 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # Start Source Files
 # ============================================================
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/options_mods
-#	$(BUILD_DIR)/ui/common\ ui/menu_bar \
-#	$(BUILD_DIR)/ui/frontend\ ui/sp_frame
+	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
+	$(BUILD_DIR)/ui/common\ ui/menu_bar
+#	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
+#	$(BUILD_DIR)/ui/common\ ui/options_mods
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
@@ -89,6 +90,11 @@ $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS)
 define create_dir
 	@mkdir -p $(dir $@)
 endef
+
+$(BUILD_DIR)/ui/common\ ui/multiplayer_chat: \
+	src/ui/common\ ui/multiplayer_chat.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
