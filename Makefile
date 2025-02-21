@@ -77,8 +77,9 @@ UI_TARGETS := \
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
-	$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua \
-	$(BUILD_DIR)/script/consulscriptum/consulscriptum.lua
+	$(BUILD_DIR)/script/consul/consul_logging.lua \
+	$(BUILD_DIR)/script/consul/consul_position.lua \
+	$(BUILD_DIR)/script/consul/consul.lua
 
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS)
@@ -117,13 +118,18 @@ $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua: \
-	src/script/consulscriptum/consulscriptum_logging.lua
+$(BUILD_DIR)/script/consul/consul_logging.lua: \
+	src/script/consul/consul_logging.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consulscriptum/consulscriptum.lua: \
-	src/script/consulscriptum/consulscriptum.lua
+$(BUILD_DIR)/script/consul/consul_position.lua: \
+	src/script/consul/consul_position.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/script/consul/consul.lua: \
+	src/script/consul/consul.lua
 	$(create_dir)
 	@cp "$<" "$@"
 

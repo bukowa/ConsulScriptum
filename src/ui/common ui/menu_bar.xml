@@ -364,7 +364,7 @@
                 <children count="7">
                     <uientry>
                         <u>509490176</u><!-- ID (00 34 5e 1e) -->
-                        <s>chat_bar</s><!-- title -->
+                        <s>consul_scriptum</s><!-- title -->
                         <s>ChatBar</s><!-- title2 -->
                         <i>0</i><!-- x offset -->
                         <i>0</i><!-- y offset -->
