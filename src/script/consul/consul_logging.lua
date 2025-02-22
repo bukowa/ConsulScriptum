@@ -214,7 +214,7 @@ function Logger:log_events(events, filter_func)
     }
 
     -- Load scripting module
-    local scripting = self:require('lua_scripts.episodicscripting')
+    local scripting = self:require('lua_scripts.EpisodicScripting')
 
     -- Loop through all events and apply the filter
     for event, _ in pairs(events) do
