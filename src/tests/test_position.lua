@@ -1,4 +1,4 @@
-package.path = package.path .. ";script/consul/?.lua"
+package.path = package.path .. ";consul/?.lua"
 require('consul')
 
 -- Mock m_root
@@ -31,7 +31,7 @@ CONSULSCRIPTUM_COMPONENT = UIComponent()
 CONSULSCRIPTUM_COMPONENT:MoveTo(0, 0)
 
 -- Import the module
-local POSITION = require('script.consul.consul_position')
+local POSITION = require('consul_position')
 POSITION._remove_file()
 
 -- Test function

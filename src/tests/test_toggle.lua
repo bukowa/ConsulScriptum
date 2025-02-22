@@ -1,4 +1,4 @@
-package.path = package.path .. ";script/consul/?.lua"
+package.path = package.path .. ";consul/?.lua"
 require('consul')
 
 -- Mock m_root
@@ -29,7 +29,7 @@ CONSULSCRIPTUM_COMPONENT = UIComponent()
 CONSULSCRIPTUM_COMPONENT:SetVisible(true)
 
 -- Import the module
-local TOGGLE = require('script.consul.consul_toggle')
+local TOGGLE = require('consul.consul_toggle')
 
 -- Test function
 local function test_can_toggle_visibility()

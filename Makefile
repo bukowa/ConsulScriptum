@@ -77,10 +77,10 @@ UI_TARGETS := \
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/lua_scripts/frontend_scripted.lua \
-	$(BUILD_DIR)/script/consul/consul_logging.lua \
-	$(BUILD_DIR)/script/consul/consul_position.lua \
-	$(BUILD_DIR)/script/consul/consul_toggle.lua \
-	$(BUILD_DIR)/script/consul/consul.lua
+	$(BUILD_DIR)/consul/consul_logging.lua \
+	$(BUILD_DIR)/consul/consul_position.lua \
+	$(BUILD_DIR)/consul/consul_toggle.lua \
+	$(BUILD_DIR)/consul/consul.lua
 #	$(BUILD_DIR)/lua_scripts/battle_scripted.lua \
 
 CONTRIB_TARGETS := \
@@ -142,28 +142,28 @@ $(BUILD_DIR)/lua_scripts/battle_scripted.lua: \
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consul/consul_logging.lua: \
-	src/script/consul/consul_logging.lua
+$(BUILD_DIR)/consul/consul_logging.lua: \
+	src/consul/consul_logging.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consul/consul_position.lua: \
-	src/script/consul/consul_position.lua
+$(BUILD_DIR)/consul/consul_position.lua: \
+	src/consul/consul_position.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consul/consul_toggle.lua: \
-	src/script/consul/consul_toggle.lua
+$(BUILD_DIR)/consul/consul_toggle.lua: \
+	src/consul/consul_toggle.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consul/consul.lua: \
-	src/script/consul/consul.lua
+$(BUILD_DIR)/consul/consul.lua: \
+	src/consul/consul.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consul: \
-	src/script/consul/consul.lua
+$(BUILD_DIR)/consul: \
+	src/consul/consul.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
