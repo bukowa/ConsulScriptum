@@ -70,7 +70,6 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # Start Source Files
 # ============================================================
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/multiplayer_chat \
 	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
 	$(BUILD_DIR)/ui/common\ ui/menu_bar
 #	$(BUILD_DIR)/ui/common\ ui/options_mods
@@ -79,6 +78,7 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/script/consul/consul_logging.lua \
 	$(BUILD_DIR)/script/consul/consul_position.lua \
+	$(BUILD_DIR)/script/consul/consul_toggle.lua \
 	$(BUILD_DIR)/script/consul/consul.lua
 
 # Rule for creating the mod package with rpfm_cli
@@ -113,6 +113,11 @@ $(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
+$(BUILD_DIR)/ui/common\ ui/encyclopedia_unit_info_template: \
+	src/ui/common\ ui/encyclopedia_unit_info_template.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	src/lua_scripts/all_scripted.lua
 	$(create_dir)
@@ -128,10 +133,16 @@ $(BUILD_DIR)/script/consul/consul_position.lua: \
 	$(create_dir)
 	@cp "$<" "$@"
 
+$(BUILD_DIR)/script/consul/consul_toggle.lua: \
+	src/script/consul/consul_toggle.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
 $(BUILD_DIR)/script/consul/consul.lua: \
 	src/script/consul/consul.lua
 	$(create_dir)
 	@cp "$<" "$@"
+
 
 # ============================================================
 # End Source Files

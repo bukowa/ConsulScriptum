@@ -1,6 +1,9 @@
 require 'consul'
+
+-- Create a logger for this script
 local log_consul_position = require 'consul_logging'.new_logger("consul_position")
 
+-- The name of the file to save the position to
 local FILENAME = "consul_scriptum_persistence"
 
 local function _remove_file()
@@ -8,7 +11,7 @@ local function _remove_file()
 end
 
 local function OnUIComponentMoved(context)
-    if context.string == CONSUL.ROOT_COMPONENT_NAME then
+    if context.string == CONSUL.COMPONENT.ROOT then
         log_consul_position:debug("Saving position to file")
         local c = UIComponent(context.component)
         local x, y = c:Position()
@@ -32,7 +35,7 @@ local function OnUICreated(context)
     end
 
     -- Find the root component
-    local consul_root = m_root:Find(CONSUL.ROOT_COMPONENT_NAME)
+    local consul_root = m_root:Find(CONSUL.COMPONENT.ROOT)
 
     -- Fail if the root component is not found
     if not consul_root then
@@ -54,7 +57,7 @@ local function OnUICreated(context)
             local x, y = line:match("([^,]+),([^,]+)")
 
             -- Convert to numbers and set position
-            log_consul_position:info("Setting position to " .. x .. "," .. y)
+            log_consul_position:debug("Setting position to " .. x .. "," .. y)
             c:SetPosition(tonumber(x), tonumber(y))
 
             -- We are done
@@ -62,8 +65,7 @@ local function OnUICreated(context)
 
         end
     else
-        log_consul_position:error("Error opening file for reading: " .. err)
-        print("Error opening file for reading: " .. err)
+        log_consul_position:warn("Error opening file for reading: " .. err)
     end
 end
 
