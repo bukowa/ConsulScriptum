@@ -58,7 +58,7 @@ local function OnUICreated(context)
 
             -- Convert to numbers and set position
             log_consul_position:debug("Setting position to " .. x .. "," .. y)
-            c:SetPosition(tonumber(x), tonumber(y))
+            c:MoveTo(tonumber(x), tonumber(y))
 
             -- We are done
             return

@@ -15,7 +15,7 @@ UIComponent = function(component)
     local obj = component or {
         x = 0,
         y = 0,
-        SetPosition = function(self, x, y)
+        MoveTo = function(self, x, y)
             self.x = x
             self.y = y
         end,
@@ -28,7 +28,7 @@ end
 
 -- Mock UIComponent instance
 CONSULSCRIPTUM_COMPONENT = UIComponent()
-CONSULSCRIPTUM_COMPONENT:SetPosition(0, 0)
+CONSULSCRIPTUM_COMPONENT:MoveTo(0, 0)
 
 -- Import the module
 local POSITION = require('script.consul.consul_position')
@@ -47,14 +47,14 @@ local function test_can_save_and_load_position()
     assert(x == 0 and y == 0, "Position should still be (0,0) after loading")
 
     -- Move the component
-    CONSULSCRIPTUM_COMPONENT:SetPosition(300, 400)
+    CONSULSCRIPTUM_COMPONENT:MoveTo(300, 400)
     POSITION.OnUIComponentMoved({
         string = CONSUL.COMPONENT.ROOT,
         component = CONSULSCRIPTUM_COMPONENT
     })
 
     -- Reset component position before loading
-    CONSULSCRIPTUM_COMPONENT:SetPosition(0, 0)
+    CONSULSCRIPTUM_COMPONENT:MoveTo(0, 0)
     POSITION.OnUICreated({ string = CONSUL.COMPONENT.ROOT })
 
     -- Validate position persistence
