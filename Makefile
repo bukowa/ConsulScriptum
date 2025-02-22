@@ -80,9 +80,13 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/script/consul/consul_position.lua \
 	$(BUILD_DIR)/script/consul/consul_toggle.lua \
 	$(BUILD_DIR)/script/consul/consul.lua
+#	$(BUILD_DIR)/lua_scripts/battle_scripted.lua \
+
+CONTRIB_TARGETS := \
+	$(BUILD_DIR)/pl
 
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS)
 	@{ \
 	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
@@ -92,6 +96,10 @@ $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS)
 define create_dir
 	@mkdir -p $(dir $@)
 endef
+
+$(BUILD_DIR)/pl: src/pl $(wildcard $(BUILD_DIR)/pl/*.lua)
+	@mkdir -p "$@"
+	@cp -r src/pl/* $@
 
 $(BUILD_DIR)/ui/common\ ui/multiplayer_chat: \
 	src/ui/common\ ui/multiplayer_chat.xml
@@ -123,6 +131,11 @@ $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	$(create_dir)
 	@cp "$<" "$@"
 
+$(BUILD_DIR)/lua_scripts/battle_scripted.lua: \
+	src/lua_scripts/battle_scripted.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
 $(BUILD_DIR)/script/consul/consul_logging.lua: \
 	src/script/consul/consul_logging.lua
 	$(create_dir)
@@ -139,6 +152,11 @@ $(BUILD_DIR)/script/consul/consul_toggle.lua: \
 	@cp "$<" "$@"
 
 $(BUILD_DIR)/script/consul/consul.lua: \
+	src/script/consul/consul.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/script/consul: \
 	src/script/consul/consul.lua
 	$(create_dir)
 	@cp "$<" "$@"
