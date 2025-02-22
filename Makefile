@@ -76,6 +76,7 @@ UI_TARGETS := \
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
+	$(BUILD_DIR)/lua_scripts/frontend_scripted.lua \
 	$(BUILD_DIR)/script/consul/consul_logging.lua \
 	$(BUILD_DIR)/script/consul/consul_position.lua \
 	$(BUILD_DIR)/script/consul/consul_toggle.lua \
@@ -128,6 +129,11 @@ $(BUILD_DIR)/ui/common\ ui/encyclopedia_unit_info_template: \
 
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	src/lua_scripts/all_scripted.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/lua_scripts/frontend_scripted.lua: \
+	src/lua_scripts/frontend_scripted.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
