@@ -26,7 +26,7 @@ function Logger.new(name, log_level, log_file_path)
 
     self.name = name or "main"  -- Default to "Unnamed Logger" if no name is provided
     self.log_file_path = log_file_path or default_log_file_path
-    self.log_level = levels[log_level] or levels.INFO -- Default to INFO if an invalid level is provided
+    self.log_level = levels[log_level] or levels.TRACE -- Default to INFO if an invalid level is provided
 
     -- Internal Libraries
     self._require_func = require

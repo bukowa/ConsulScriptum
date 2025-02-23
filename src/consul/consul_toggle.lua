@@ -1,7 +1,7 @@
 require 'consul'
 
 -- Create a logger for this script
-local log_consul_toggle = require 'consul_logging'.new_logger("consul_toggle")
+local log = require 'consul_logging'.new_logger("consul_toggle")
 
 
 -- Moves the consul root to the center of the screen
@@ -26,30 +26,85 @@ end
 -- Toggles the visibility of the console
 local function OnComponentLClickUp(context)
 
-    if (context.string == CONSUL.COMPONENT.CONSOLE.TOGGLE_BUTTON) then
-        log_consul_toggle:debug("Toggled visibility of console")
-        local consul_console = UIComponent(m_root:Find(
+    if (context.string == CONSUL.COMPONENT.SCRIPTUM.TOGGLE_BUTTON) then
+        log:debug("Toggled visibility of console")
+        local c = UIComponent(m_root:Find(
                 CONSUL.COMPONENT.CONSOLE.ROOT
         ))
-        log_consul_toggle:debug("Current visibility: " .. tostring(consul_console:Visible()))
-        consul_console:SetVisible(not consul_console:Visible())
-        log_consul_toggle:debug("New visibility: " .. tostring(consul_console:Visible()))
+        c:SetVisible(not c:Visible())
         return
     end
 
     if (context.string == CONSUL.COMPONENT.BUTTON_TOGGLE.ROOT) then
-        log_consul_toggle:debug("Toggled visibility of consul root")
-        local consul_root = UIComponent(m_root:Find(
+        log:debug("Toggled visibility of consul root")
+        local c = UIComponent(m_root:Find(
                 CONSUL.COMPONENT.ROOT
         ))
-        log_consul_toggle:debug("Current visibility: " .. tostring(consul_root:Visible()))
-        MoveConsulRootToCenter(consul_root)
-        consul_root:SetVisible(not consul_root:Visible())
-        log_consul_toggle:debug("New visibility: " .. tostring(consul_root:Visible()))
+        MoveConsulRootToCenter(c)
+        c:SetVisible(not c:Visible())
         return
     end
 end
 
+local function OnUIComponentMoved(context)
+
+    if context.string == CONSUL.COMPONENT.ROOT then
+        log:debug("Moved consul root")
+        local c = UIComponent(context.component)
+        local x, y = c:Position()
+        require 'consul_config'.write_config('consul.root.position.x', x)
+        require 'consul_config'.write_config('consul.root.position.y', y)
+    end
+
+end
+
+
+local function OnUICreated(context)
+
+    if not m_root then
+        log:error("m_root not found")
+        return
+    end
+
+    -- Find the root component
+    local consul_root = m_root:Find(CONSUL.COMPONENT.ROOT)
+
+    -- Fail if the root component is not found
+    if not consul_root then
+        log:warn("Root component not found")
+        return
+    end
+
+    -- Convert to UIComponent
+    local c = UIComponent(consul_root)
+
+    -- Open the config file
+    local cfg = require 'consul_config'.read_config()
+
+    -- Get the x and y positions from the config file
+    local x = cfg['consul.root.position.x']
+    local y = cfg['consul.root.position.y']
+
+    -- Get the visibility from the config file
+    local r_visible = cfg['consul.root.visible']
+    local c_visible = cfg['consul.consul.visible']
+    local s_visible = cfg['consul.scriptum.visible']
+
+    -- Set the visibility of the root component
+    c:SetVisible(r_visible)
+
+    -- Set the visibility of the consul console
+    local consul_console = UIComponent(m_root:Find(
+            CONSUL.COMPONENT.CONSOLE.ROOT
+    ))
+    consul_console:SetVisible(c_visible)
+
+    -- Set the minimized state of the consul
+    local consul_
+end
+
+
 return {
-    OnComponentLClickUp = OnComponentLClickUp
+    OnComponentLClickUp = OnComponentLClickUp,
+    OnUIComponentMoved = OnUIComponentMoved,
 }
