@@ -80,8 +80,8 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_logging.lua \
 	$(BUILD_DIR)/consul/consul_toggle.lua \
 	$(BUILD_DIR)/consul/consul_config.lua \
-	$(BUILD_DIR)/consul/consul.lua
-#	$(BUILD_DIR)/lua_scripts/battle_scripted.lua
+	$(BUILD_DIR)/consul/consul.lua \
+	$(BUILD_DIR)/lua_scripts/battle_scripted.lua
 
 CONTRIB_TARGETS := \
 	$(BUILD_DIR)/pl
@@ -284,14 +284,20 @@ kill-rome2:
 		while tasklist | grep -q $$pid; do sleep 1; done; \
 	fi
 
+define disable_outdated_mods_popup
+	powershell -Command Start-Process ./scripts/disable_outdated_mods_popup.bat
+endef
+
 # Launch the standalone version of Rome2.exe with the specified working directory
 run-alone: \
 	kill-rome2 \
 	install-alone
+	@$(disable_outdated_mods_popup)
 	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
 # Launch the standalone without mods
 run-standalone: kill-rome2
+	@$(disable_outdated_mods_popup)
 	@echo '' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
@@ -299,6 +305,7 @@ run-standalone: kill-rome2
 run-steam: \
 	kill-rome2 \
 	install-steam
+	@$(disable_outdated_mods_popup)
 	@powershell -Command start steam://rungameid/214950
 
 
