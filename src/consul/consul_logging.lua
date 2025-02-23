@@ -271,8 +271,6 @@ end
 
 -- Module return
 return {
-    new_logger = function(name, log_file_path, log_level)
-        return Logger.new(name, log_file_path, log_level)
-    end,
+    new = Logger.new,
     levels = levels -- Expose logging levels for external use
 }

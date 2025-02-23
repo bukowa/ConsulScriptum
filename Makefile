@@ -75,13 +75,11 @@ UI_TARGETS := \
 #	$(BUILD_DIR)/ui/common\ ui/options_mods
 
 LUA_TARGETS := \
-	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/lua_scripts/frontend_scripted.lua \
+	$(BUILD_DIR)/lua_scripts/battle_scripted.lua \
+	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/consul/consul_logging.lua \
-	$(BUILD_DIR)/consul/consul_toggle.lua \
-	$(BUILD_DIR)/consul/consul_config.lua \
-	$(BUILD_DIR)/consul/consul.lua \
-	$(BUILD_DIR)/lua_scripts/battle_scripted.lua
+	$(BUILD_DIR)/consul/consul.lua
 
 CONTRIB_TARGETS := \
 	$(BUILD_DIR)/pl
@@ -158,11 +156,6 @@ $(BUILD_DIR)/consul/consul_toggle.lua: \
 	@cp "$<" "$@"
 
 $(BUILD_DIR)/consul/consul.lua: \
-	src/consul/consul.lua
-	$(create_dir)
-	@cp "$<" "$@"
-
-$(BUILD_DIR)/consul: \
 	src/consul/consul.lua
 	$(create_dir)
 	@cp "$<" "$@"
