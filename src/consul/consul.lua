@@ -220,8 +220,17 @@ consul = {
                 -- find the root component
                 local r = ui.find(ui.root)
 
-                -- move it first
-                ui.MoveRootToCenter()
+                -- read position from config
+                local cfg = consul.config.read()
+                local x = cfg.ui.position.x
+                local y = cfg.ui.position.y
+
+                -- if they are 0 then move to center
+                if x == 0 and y == 0 then
+                    ui.MoveRootToCenter()
+                else
+                    r:MoveTo(x, y)
+                end
 
                 -- toggle visibility
                 r:SetVisible(not r:Visible())
