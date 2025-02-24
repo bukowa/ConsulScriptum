@@ -8,8 +8,6 @@ consul = {
 
     pl = {
         serpent = require 'serpent',
-        pretty = require 'pl.pretty',
-        tablex = require 'pl.tablex',
     },
 
     config = {
@@ -29,6 +27,22 @@ consul = {
             }
         },
 
+        new = function()
+            return {
+                ui = {
+                    position = {
+                        x = 0,
+                        y = 0
+                    },
+                    visibility = {
+                        root = 1,
+                        consul = 1,
+                        scriptum = 1,
+                    }
+                }
+            }
+        end,
+
         validate = function(_config)
             return type(_config) == "table"
                     and type(_config.ui) == "table"
@@ -41,9 +55,6 @@ consul = {
                     and type(_config.ui.visibility.scriptum) == "number"
         end,
 
-        deepcopy = function()
-            return consul.pl.tablex.deepcopy(consul.config.default)
-        end,
 
         read = function()
             local serpent, log, config = consul.pl.serpent, consul.log, consul.config
@@ -70,7 +81,7 @@ consul = {
             end
 
             log:debug("Creating default config file: " .. config.path)
-            local cfg = config.deepcopy()
+            local cfg = config.new()
             config.write(cfg)
             return cfg
         end,
@@ -99,6 +110,8 @@ consul = {
         console_input = "consul_console_input",
         -- sends the input to the console
         console_send = "consul_send_cmd",
+        -- displays console output
+        console_output_text_1 = "console_output_text1",
         -- minimizes the consul listview
         consul_minimize = "room_list_button_minimize",
         -- turns visibility of the root component on and off
@@ -381,8 +394,55 @@ consul = {
                 local c = ui.find(ui.console_input)
                 c:SetStateText(hst.current)
                 return
+
+                --elseif context.string == ui.console_input then
+                --    log:debug("History click... ;(")
+                --    -- click on input clears the text field
+                --    local c = ui.find('textinput')
+                --    c:SetStateText(hst.current)
+                --    return
             end
 
         end,
     },
+
+    console = {
+
+        -- should hold current session pages
+        pages = {},
+        -- should hold the current page
+        page = 1,
+
+        -- reads the input from the console
+        read = function()
+            local ui = consul.ui
+            local c = ui.find(ui.console_input)
+            return c:GetStateText()
+        end,
+
+        -- writes a message to the console
+        write = function(msg)
+            local ui = consul.ui
+            local c = ui.find(ui.console_output_text_1)
+            text = c:GetStateText()
+            c:SetStateText(text .. '\n' .. msg)
+        end,
+
+        -- todo
+        execute = function(cmd)
+        end,
+
+        OnComponentLClickUp = function(context)
+            local ui = consul.ui
+            local cnsl = consul.console
+
+            if context.string == ui.console_send then
+                cmd = cnsl.read()
+                -- todo
+                --cnsl.execute(cmd)
+                return
+            end
+        end,
+
+    }
 }
