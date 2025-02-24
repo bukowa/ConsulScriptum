@@ -394,13 +394,6 @@ consul = {
                 local c = ui.find(ui.console_input)
                 c:SetStateText(hst.current)
                 return
-
-                --elseif context.string == ui.console_input then
-                --    log:debug("History click... ;(")
-                --    -- click on input clears the text field
-                --    local c = ui.find('textinput')
-                --    c:SetStateText(hst.current)
-                --    return
             end
 
         end,
@@ -440,6 +433,7 @@ consul = {
                         return 'return ' .. string.sub(_cmd, 4)
                     end,
                     exec = true,
+                    returns = true,
                 }
             },
             exact = {
@@ -458,7 +452,16 @@ consul = {
                         return string.sub(help, 1, string.len(help) - 1)
                     end,
                     exec = false,
-                }
+                    returns = true,
+                },
+                ['/clear'] = {
+                    help = "clears the console output",
+                    func = function()
+                        consul.ui.find(consul.ui.console_output_text_1):SetStateText('')
+                    end,
+                    exec = false,
+                    returns = false,
+                },
             }
         },
 
@@ -476,17 +479,13 @@ consul = {
             local success, result = pcall(f)
 
             -- if cmd did not start with 'return' statement
-            -- then lua will just return true as the result
-            -- meaning we don't want to print it
-            -- just assert false here
-            log:info(tostring(success) .. " ; " .. tostring(result) .. " ; " .. string.sub(cmd, 1, 7))
+            -- then lua will just return nil as the result
+            -- we don't want to print it as this is not the standard lua behavior
             if success and (not result) and (string.sub(cmd, 1, 7) ~= "return ") then
-                log:debug('we are here')
                 assert(false, "this value should not be returned")
-                log:debug('wtf')
             end
 
-            -- return the result
+            -- return error message if failed
             if not success then
                 return tostring('lua pcall: ' .. tostring(result))
             end
@@ -508,7 +507,9 @@ consul = {
                     if v.exec then
                         r = console._execute(r)
                     end
-                    console.write(r)
+                    if v.returns then
+                        console.write(r)
+                    end
                     return
                 end
             end
@@ -520,7 +521,9 @@ consul = {
                     if v.exec then
                         r = console._execute(r)
                     end
-                    console.write(r)
+                    if v.returns then
+                        console.write(r)
+                    end
                     return
                 end
             end
@@ -534,8 +537,6 @@ consul = {
             local console = consul.console
 
             if context.string == ui.console_send then
-                log:debug("Console send")
-
                 console.execute(console.read())
                 return
             end
