@@ -430,13 +430,14 @@ consul = {
             c:SetStateText(text .. '\n' .. msg)
         end,
 
+        -- defines the commands that can be executed in the console
         commands = {
             -- these should include extra space if they take params
             starts_with = {
                 ['/r '] = {
                     help = "shorthand for: return <statement>)",
                     func = function(_cmd)
-                        return 'return ' .. _cmd
+                        return 'return ' .. string.sub(_cmd, 4)
                     end,
                     exec = true,
                 }
@@ -453,30 +454,61 @@ consul = {
                         for k, v in pairs(consul.console.commands.starts_with) do
                             help = help .. k .. " - " .. v.help .. "\n"
                         end
-                        return help
+                        -- strip the last newline
+                        return string.sub(help, 1, string.len(help) - 1)
                     end,
                     exec = false,
                 }
             }
         },
 
-        -- todo
+        -- internal function to execute a command
+        _execute = function(cmd)
+
+            -- make function from string
+            local f, err = loadstring(cmd)
+            log:info(tostring(f) .. " ; " .. tostring(err))
+            if err then
+                return tostring('lua loadstring: ' .. tostring(err))
+            end
+
+            -- execute the function
+            local success, result = pcall(f)
+
+            -- if cmd did not start with 'return' statement
+            -- then lua will just return true as the result
+            -- meaning we don't want to print it
+            -- just assert false here
+            log:info(tostring(success) .. " ; " .. tostring(result) .. " ; " .. string.sub(cmd, 1, 7))
+            if success and (not result) and (string.sub(cmd, 1, 7) ~= "return ") then
+                log:debug('we are here')
+                assert(false, "this value should not be returned")
+                log:debug('wtf')
+            end
+
+            -- return the result
+            if not success then
+                return tostring('lua pcall: ' .. tostring(result))
+            end
+
+            return tostring(result)
+        end,
+
+        -- executes a command from the console
         execute = function(cmd)
             local console = consul.console
 
             -- first write the command to the output window
             console.write("$ " .. cmd)
 
-            -- handle super cases or user provided commands
+            -- exact
             for k, v in pairs(console.commands.exact) do
                 if cmd == k then
                     local r = v.func()
-
                     if v.exec then
-                        --todo exec command
-                    else
-                        console.write(r)
+                        r = console._execute(r)
                     end
+                    console.write(r)
                     return
                 end
             end
@@ -485,15 +517,16 @@ consul = {
             for k, v in pairs(console.commands.starts_with) do
                 if string.sub(cmd, 1, string.len(k)) == k then
                     local r = v.func(cmd)
-
                     if v.exec then
-                        --todo exec command
-                    else
-                        console.write(r)
+                        r = console._execute(r)
                     end
+                    console.write(r)
                     return
                 end
             end
+
+            -- otherwise raw exec
+            console.write(console._execute(cmd))
         end,
 
         OnComponentLClickUp = function(context)
