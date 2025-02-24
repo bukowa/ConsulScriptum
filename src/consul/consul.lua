@@ -396,7 +396,6 @@ consul = {
             local hst = consul.history
 
             if context.string == ui.console_send then
-                log:debug("History add")
                 local c = ui.find(ui.console_input)
                 local entry = c:GetStateText()
                 hst.add(entry)
@@ -404,14 +403,19 @@ consul = {
             end
 
             if context.string == ui.history_up then
-                log:debug("History up")
                 hst.up()
                 local c = ui.find(ui.console_input)
+
+                -- if current input is equal to the current history entry
+                -- move history index up
+                if c:GetStateText() == hst.current then
+                    hst.up()
+                end
+
                 c:SetStateText(hst.current)
                 return
 
             elseif context.string == ui.history_down then
-                log:debug("History down")
                 hst.down()
                 local c = ui.find(ui.console_input)
                 c:SetStateText(hst.current)
