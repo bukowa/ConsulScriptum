@@ -409,7 +409,6 @@ consul = {
         -- reads the input from the console
         read = function()
             local ui = consul.ui
-
             local c = ui.find(ui.console_input)
             return c:GetStateText()
         end,
@@ -418,9 +417,18 @@ consul = {
         write = function(msg)
             local ui = consul.ui
 
+            -- find the console output component
             local c = ui.find(ui.console_output_text_1)
+
+            -- grab the current text
             text = c:GetStateText()
-            c:SetStateText(text .. '\n' .. msg)
+
+            -- if text is empty, we don't want to add a newline
+            if text == "" then
+                c:SetStateText(msg)
+            else
+                c:SetStateText(text .. '\n' .. msg)
+            end
         end,
 
         -- defines the commands that can be executed in the console
@@ -470,7 +478,6 @@ consul = {
 
             -- make function from string
             local f, err = loadstring(cmd)
-            log:info(tostring(f) .. " ; " .. tostring(err))
             if err then
                 return tostring('lua loadstring: ' .. tostring(err))
             end
