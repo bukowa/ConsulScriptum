@@ -27,6 +27,9 @@ consul = {
                     consul = 1,
                     scriptum = 1,
                 }
+            },
+            console = {
+                autoclear = false,
             }
         },
 
@@ -42,6 +45,9 @@ consul = {
                         consul = 1,
                         scriptum = 1,
                     }
+                },
+                console = {
+                    autoclear = false,
                 }
             }
         end,
@@ -56,6 +62,9 @@ consul = {
                     and type(_config.ui.visibility.root) == "number"
                     and type(_config.ui.visibility.consul) == "number"
                     and type(_config.ui.visibility.scriptum) == "number"
+
+                    and type(_config.console) == "table"
+                    and type(_config.console.autoclear) == "boolean"
         end,
 
 
@@ -86,6 +95,7 @@ consul = {
             log:debug("Creating default config file: " .. config.path)
             local cfg = config.new()
             config.write(cfg)
+
             return cfg
         end,
 
@@ -418,6 +428,12 @@ consul = {
         -- should hold the current page
         page = 1,
 
+        -- clears the console output
+        clear = function()
+            local ui = consul.ui
+            ui.find(ui.console_output_text_1):SetStateText('')
+        end,
+
         -- reads the input from the console
         read = function()
             local ui = consul.ui
@@ -445,6 +461,27 @@ consul = {
 
         -- defines the commands that can be executed in the console
         commands = {
+
+            -- setups the commands
+            setup = function()
+                cfg = consul.config.read()
+
+                for k, v in pairs(consul.console.commands.exact) do
+                    if v.setup then
+                        v.setup(cfg)
+                    end
+                end
+                for k, v in pairs(consul.console.commands.starts_with) do
+                    if v.setup then
+                        v.setup(cfg)
+                    end
+                end
+            end,
+
+            settings = {
+                autoclear = false,
+            },
+
             -- these should include extra space if they take params
             starts_with = {
                 ['/r '] = {
@@ -468,6 +505,25 @@ consul = {
                     end,
                     exec = true,
                     returns = true,
+                },
+                ['/autoclear'] = {
+                    help = function()
+                        return "Toggles console autoclear setting."
+                    end,
+                    func = function()
+                        local commands = consul.console.commands
+                        -- toggle the setting
+                        commands.settings.autoclear = not commands.settings.autoclear
+                        -- write the new setting to the config
+                        local cfg = consul.config.read()
+                        cfg.console.autoclear = commands.settings.autoclear
+                        consul.config.write(cfg)
+                    end,
+                    exec = false,
+                    returns = false,
+                    setup = function(cfg)
+                        consul.console.commands.settings.autoclear = cfg.console.autoclear
+                    end
                 },
             },
             exact = {
@@ -498,15 +554,15 @@ consul = {
                 },
                 ['/clear'] = {
                     help = function()
-                        return "clears the console output"
+                        return "Clears the console output."
                     end,
                     func = function()
-                        consul.ui.find(consul.ui.console_output_text_1):SetStateText('')
+                        consul.console.clear()
                     end,
                     exec = false,
                     returns = false,
                 },
-            }
+            },
         },
 
         -- internal function to execute a command
@@ -539,6 +595,11 @@ consul = {
         -- executes a command from the console
         execute = function(cmd)
             local console = consul.console
+
+            -- check for autoclear setting
+            if console.commands.settings.autoclear then
+                console.clear()
+            end
 
             -- first write the command to the output window
             console.write("$ " .. cmd)
