@@ -301,16 +301,16 @@ consul = {
                 if #hst.entries > hst.max then
                     table.remove(hst.entries, 1)
                 end
+                -- write the entry to the history file
+                local f = io.open(hst.path, "a")
+                if f then
+                    f:write(entry .. "\n")
+                    f:close()
+                end
+
             end
             hst.index = #hst.entries + 1
             hst.current = ""
-
-            -- write the entry to the history file
-            local f = io.open(hst.path, "a")
-            if f then
-                f:write(entry .. "\n")
-                f:close()
-            end
         end,
 
         -- reads the initial history from the history file
@@ -416,6 +416,7 @@ consul = {
         -- reads the input from the console
         read = function()
             local ui = consul.ui
+
             local c = ui.find(ui.console_input)
             return c:GetStateText()
         end,
@@ -423,23 +424,86 @@ consul = {
         -- writes a message to the console
         write = function(msg)
             local ui = consul.ui
+
             local c = ui.find(ui.console_output_text_1)
             text = c:GetStateText()
             c:SetStateText(text .. '\n' .. msg)
         end,
 
+        commands = {
+            -- these should include extra space if they take params
+            starts_with = {
+                ['/r '] = {
+                    help = "shorthand for: return <statement>)",
+                    func = function(_cmd)
+                        return 'return ' .. _cmd
+                    end,
+                    exec = true,
+                }
+            },
+            exact = {
+                ['/help'] = {
+                    help = "displays help",
+                    func = function(...)
+                        -- build the help message from other commands
+                        local help = ""
+                        for k, v in pairs(consul.console.commands.exact) do
+                            help = help .. k .. " - " .. v.help .. "\n"
+                        end
+                        for k, v in pairs(consul.console.commands.starts_with) do
+                            help = help .. k .. " - " .. v.help .. "\n"
+                        end
+                        return help
+                    end,
+                    exec = false,
+                }
+            }
+        },
+
         -- todo
         execute = function(cmd)
+            local console = consul.console
+
+            -- first write the command to the output window
+            console.write("$ " .. cmd)
+
+            -- handle super cases or user provided commands
+            for k, v in pairs(console.commands.exact) do
+                if cmd == k then
+                    local r = v.func()
+
+                    if v.exec then
+                        --todo exec command
+                    else
+                        console.write(r)
+                    end
+                    return
+                end
+            end
+
+            -- handle starts with cases
+            for k, v in pairs(console.commands.starts_with) do
+                if string.sub(cmd, 1, string.len(k)) == k then
+                    local r = v.func(cmd)
+
+                    if v.exec then
+                        --todo exec command
+                    else
+                        console.write(r)
+                    end
+                    return
+                end
+            end
         end,
 
         OnComponentLClickUp = function(context)
             local ui = consul.ui
-            local cnsl = consul.console
+            local console = consul.console
 
             if context.string == ui.console_send then
-                cmd = cnsl.read()
-                -- todo
-                --cnsl.execute(cmd)
+                log:debug("Console send")
+
+                console.execute(console.read())
                 return
             end
         end,
