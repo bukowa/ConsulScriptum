@@ -1,14 +1,17 @@
 consul = {
 
     VERSION = "0.1.0",
+    URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
 
     log = require 'consul_logging'.new(),
 
-    pl = {
-        serpent = require 'serpent',
-    },
+    -- game requires a char before a tab
+    tab = string.char(1) .. '   ',
+
+    serpent = require 'serpent',
+    inspect = require 'inspect',
 
     config = {
         path = "consul.config",
@@ -57,7 +60,7 @@ consul = {
 
 
         read = function()
-            local serpent, log, config = consul.pl.serpent, consul.log, consul.config
+            local serpent, log, config = consul.serpent, consul.log, consul.config
 
             log:debug("Reading config file: " .. config.path)
 
@@ -91,7 +94,7 @@ consul = {
             local f = io.open(consul.config.path, "w")
             if f then
                 -- remember to pass maxlevel as Rome2 LUA has no math.huge defined
-                f:write(consul.pl.serpent.dump(cfg, { maxlevel = 10000, comment = false, indent = '\t' }))
+                f:write(consul.serpent.dump(cfg, { maxlevel = 10000, comment = false, indent = '\t' }))
                 f:close()
             end
         end
@@ -445,26 +448,48 @@ consul = {
             -- these should include extra space if they take params
             starts_with = {
                 ['/r '] = {
-                    help = "shorthand for: return <statement>)",
+                    help = function()
+                        return "Shorthand for 'return <Lua code>. "
+                                .. "Example: /r 2 + 2"
+                    end,
                     func = function(_cmd)
                         return 'return ' .. string.sub(_cmd, 4)
                     end,
                     exec = true,
                     returns = true,
-                }
+                },
+                ['/p '] = {
+                    help = function()
+                        return "Pretty-prints a Lua value using 'inspect'. "
+                                .. "Example: /p _G"
+                    end,
+                    func = function(_cmd)
+                        return 'return consul.inspect(' .. string.sub(_cmd, 4) .. ', {newline=\'\\n\', indent=\'' .. consul.tab .. '\'})'
+                    end,
+                    exec = true,
+                    returns = true,
+                },
             },
             exact = {
                 ['/help'] = {
-                    help = "displays help",
+                    help = function()
+                        return "displays help"
+                    end,
                     func = function(...)
+
+                        -- using raw \t doesn't work as it requires a string
+                        local tab = consul.tab
+
                         -- build the help message from other commands
-                        local help = ""
+                        -- first section are the console commands
+                        local help = "Console commands:\n"
                         for k, v in pairs(consul.console.commands.exact) do
-                            help = help .. k .. " - " .. v.help .. "\n"
+                            help = help .. tab .. k .. " - " .. v.help() .. "\n"
                         end
                         for k, v in pairs(consul.console.commands.starts_with) do
-                            help = help .. k .. " - " .. v.help .. "\n"
+                            help = help .. tab .. k .. " - " .. v.help() .. "\n"
                         end
+
                         -- strip the last newline
                         return string.sub(help, 1, string.len(help) - 1)
                     end,
@@ -472,7 +497,9 @@ consul = {
                     returns = true,
                 },
                 ['/clear'] = {
-                    help = "clears the console output",
+                    help = function()
+                        return "clears the console output"
+                    end,
                     func = function()
                         consul.ui.find(consul.ui.console_output_text_1):SetStateText('')
                     end,
