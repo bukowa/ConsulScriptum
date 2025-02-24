@@ -79,7 +79,9 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/battle_scripted.lua \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/consul/consul_logging.lua \
-	$(BUILD_DIR)/consul/consul.lua
+	$(BUILD_DIR)/consul/consul.lua \
+	$(BUILD_DIR)/serpent/serpent.lua \
+	$(BUILD_DIR)/inspect/inspect.lua \
 
 CONTRIB_TARGETS := \
 	$(BUILD_DIR)/pl
@@ -157,6 +159,16 @@ $(BUILD_DIR)/consul/consul_toggle.lua: \
 
 $(BUILD_DIR)/consul/consul.lua: \
 	src/consul/consul.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/serpent/serpent.lua: \
+	src/serpent/serpent.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/inspect/inspect.lua: \
+	src/inspect/inspect.lua
 	$(create_dir)
 	@cp "$<" "$@"
 

@@ -1,6 +1,6 @@
 local n, v = "serpent", "0.303" -- (C) 2012-18 Paul Kulchenko; MIT License
 local c, d = "Paul Kulchenko", "Lua serializer and pretty printer"
-local snum = {[tostring(1/0)]='1/0 --[[math.huge]]',[tostring(-1/0)]='-1/0 --[[-math.huge]]',[tostring(0/0)]='0/0'}
+local snum = {[tostring(1/0)]='1/0 --[[1/0]]',[tostring(-1/0)]='-1/0 --[[-1/0]]',[tostring(0/0)]='0/0'}
 local badtype = {thread = true, userdata = true, cdata = true}
 local getmetatable = debug and debug.getmetatable or getmetatable
 local pairs = function(t) return next, t end -- avoid using __pairs in Lua 5.2+
@@ -15,9 +15,9 @@ for _,g in ipairs({'coroutine', 'debug', 'io', 'math', 'string', 'table', 'os'})
 local function s(t, opts)
     local name, indent, fatal, maxnum = opts.name, opts.indent, opts.fatal, opts.maxnum
     local sparse, custom, huge = opts.sparse, opts.custom, not opts.nohuge
-    local space, maxl = (opts.compact and '' or ' '), (opts.maxlevel or math.huge)
+    local space, maxl = (opts.compact and '' or ' '), (opts.maxlevel or 1/0)
     local maxlen, metatostring = tonumber(opts.maxlength), opts.metatostring
-    local iname, comm = '_'..(name or ''), opts.comment and (tonumber(opts.comment) or math.huge)
+    local iname, comm = '_'..(name or ''), opts.comment and (tonumber(opts.comment) or 1/0)
     local numformat = opts.numformat or "%.17g"
     local seen, sref, syms, symn = {}, {'local '..iname..'={}'}, {}, 0
     local function gensym(val) return '_'..(tostring(tostring(val)):gsub("[^%w]",""):gsub("(%d%w+)",
