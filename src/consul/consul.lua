@@ -900,6 +900,10 @@ consul.console.write('Hello from consul_example.lua')
             -- at start just clean all the entries
             -- and set all the elements to invisible
             -- this can be reloaded while the game is running
+            -- p.s this is required as setting any element in list
+            -- as invisible by default in the ui file will break display of it
+            -- just make sure they are always visible by default and turn them
+            -- off ... this probably applies to all element based ui components
             for i = 1, max do
                 local ui_root_name = ui.scriptum_entry .. tostring(i)
                 local ui_state_name = ui.scriptum_entry_text .. tostring(i)
