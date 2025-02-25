@@ -18,6 +18,9 @@ consul = {
         table.insert(events.UICreated, consul.history.OnUICreated)
         table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
         table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
+        -- access to 'EpisodicScripting' is required
+        -- if we try to access it before ...things will break... (upstream)
+        table.insert(events.UICreated, consul.scripts.setup)
     end,
 
     -- logging
@@ -807,7 +810,13 @@ consul = {
     event_handlers = {
         ['SettlementSelected'] = {
             ['transfer_settlement'] = nil,
-        }
+        },
+        ['CharacterSelected'] = {
+            ['transfer_settlement'] = nil,
+        },
+        ['ComponentLClickUp'] = {
+            ['transfer_settlement'] = nil,
+        },
     },
 
     -- dispatches an event
@@ -831,6 +840,7 @@ consul = {
             if consul.scripts._is_ready then
                 return
             end
+
             -- setup the event handlers
             scripting = require 'lua_scripts.EpisodicScripting'
             for k, _ in pairs(consul.event_handlers) do
@@ -842,27 +852,78 @@ consul = {
 
         -- transfer a region to a faction
         transfer_settlement = {
-
             _region = nil,
             _faction = nil,
 
-            stop = function()
-                consul.scripts.transfer_settlement._region = nil
-                consul.scripts.transfer_settlement._faction = nil
-                consul.event_handlers[ev][en] = nil
+            transfer = function()
+                local scripting = require 'lua_scripts.EpisodicScripting'
             end,
 
-            start = function()
+            OnComponentLClickUp = function(context)
 
-                -- there can be multiple events
-                -- you can click on settlement or army
-                -- or even click from the strategic view?
-                local ev = {
-                    'SettlementSelected',
-                    'CharacterSelected',
-                }
+                -- if we clicked radar_icon in the strategic view
+                if string.sub(context.string, 1, 21) == "radar_icon_settlement" then
 
-                local en = 'transfer_settlement'
+                    -- split string by :
+                    local parts = {}
+                    for part in string.gmatch(context.string, "[^:]+") do
+                        table.insert(parts, part)
+                    end
+
+                    -- we need 3 parts
+                    if #parts ~= 3 then
+                        return
+                    end
+
+                    -- grab the region name
+                    local region = parts[2]
+
+                    -- if _region is not set, set it
+                    -- otherwise its a faction to which we transfer
+                    local script = consul.scripts.transfer_settlement
+                    consul.log:debug("Selected settlement to transfer: " .. region)
+
+                    if not script._region then
+                        script._region = region
+                        consul.console.write("Selected settlement to transfer: " .. region)
+                        return
+                    end
+
+                    -- this is a faction
+                    script._faction = region
+                end
+
+            end,
+
+            -- scripting.AddEventCallBack('SettlementSelected', function(c)consul.write(c.garrison_residence:settlement_interface():region():name())end)
+
+            OnSettlementSelected = function(context)
+                consul.log:debug(consul.pretty(debug.getmetatable(context)))
+                consul.write(c.garrison_residence:settlement_interface():region():name())
+            end,
+
+            OnCharacterSelected = function(context)
+                consul.log:debug(consul.pretty(debug.getmetatable(context)))
+            end,
+
+            OnStart = function()
+                -- just make sure we are stopped :)
+                consul.scripts.transfer_settlement.OnStop()
+
+                log:debug("Starting transfer settlement script")
+                consul.event_handlers['SettlementSelected']['transfer_settlement']
+                = consul.scripts.transfer_settlement.OnSettlementSelected
+                consul.event_handlers['CharacterSelected']['transfer_settlement']
+                = consul.scripts.transfer_settlement.OnCharacterSelected
+                consul.event_handlers['ComponentLClickUp']['transfer_settlement']
+                = consul.scripts.transfer_settlement.OnComponentLClickUp
+            end,
+
+            OnStop = function()
+                log:debug("Stopping transfer settlement script")
+                consul.event_handlers['SettlementSelected']['transfer_settlement'] = nil
+                consul.event_handlers['CharacterSelected']['transfer_settlement'] = nil
+                consul.event_handlers['ComponentLClickUp']['transfer_settlement'] = nil
 
                 local eh_settlement = function(context)
 
