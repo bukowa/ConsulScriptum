@@ -13,9 +13,13 @@ consul = {
     serpent = require 'serpent',
     inspect = require 'inspect',
 
+    -- pretty prints a table
+    pretty = function(any)
+        return consul.inspect(any, { newline = '\n', indent = consul.tab })
+    end,
+
     -- compatibility patches for other mods
     compat = {
-
         -- DEI removes the Prologue button in main menu
         -- it is done by modifying the sp_frame ui file which we override
         -- just disable the Prologue button in the main menu
@@ -23,6 +27,7 @@ consul = {
             -- todo first check if DEI is loaded
             consul.ui.find('button_introduction'):SetState('inactive')
         end,
+
     },
 
     config = {
@@ -478,20 +483,81 @@ consul = {
 
         -- the current page
         page = 1,
+
         -- the maximum number of characters per page
         page_max_chars = 1000,
+
         -- pages
-        pages = {},
+        pages = {""},
 
+        -- maximum number of pages
+        pages_max = 100,
 
-        write_page = function(text)
+        -- returns the text of the current page
+        current_page_text = function()
+            return consul.console.pages[consul.console.page]
+        end,
 
+        -- method used for writing into console
+        write_paged = function(text)
+
+            -- shorthand
+            local console = consul.console
+            local text_len = string.len(text)
+
+            -- calculate how much space is left on the current page
+            local space_left = console.page_max_chars - #console.current_page_text()
+
+            -- if there is enough space on the current page
+            -- just write the text with a new line and quit
+            if text_len <= space_left then
+                console.pages[console.page] = console.current_page_text() .. text .. '\n'
+            else
+
+                -- remove whatever text fits into current page
+                local fits = string.sub(text, 1, space_left)
+
+                -- add this to the current page
+                console.pages[console.page] = console.current_page_text() .. '\n' .. fits .. '\n'
+
+                --  now split the rest of the text into new pages
+                -- meaning do that until there is no text left
+                local new_pages = {}
+                local rest = string.sub(text, space_left + 1)
+
+                while string.len(rest) > 0 do
+                    local new_page = string.sub(rest, 1, console.page_max_chars)
+                    table.insert(new_pages, new_page)
+                    rest = string.sub(rest, console.page_max_chars + 1)
+                end
+
+                -- add the new pages to the pages
+                for _, v in ipairs(new_pages) do
+                    table.insert(console.pages, v)
+                end
+
+                -- add new line to the last page
+                console.pages[#console.pages] = console.pages[#console.pages] .. '\n'
+
+                -- go to the last page
+                console.page = #console.pages
+            end
+
+            -- if we are over max pages, trim them
+            while #console.pages > console.pages_max do
+                table.remove(console.pages, 1)
+                console.page = math.max(1, console.page - 1)
+            end
+
+            console.set_text(console.current_page_text())
         end,
 
         -- clears the console output
         clear = function()
-            local ui = consul.ui
-            ui.find(ui.console_output_text_1):SetStateText('')
+            local console = consul.console
+            console.page = 1
+            console.pages = {""}
+            console.set_text("")
         end,
 
         -- reads the input from the console
@@ -499,6 +565,13 @@ consul = {
             local ui = consul.ui
             local c = ui.find(ui.console_input)
             return c:GetStateText()
+        end,
+
+        -- sets text in the console
+        set_text = function(msg)
+            local ui = consul.ui
+            local c = ui.find(ui.console_output_text_1)
+            c:SetStateText(msg)
         end,
 
         -- writes a message to the console
@@ -662,7 +735,7 @@ consul = {
             end
 
             -- first write the command to the output window
-            console.write("$ " .. cmd)
+            console.write_paged("$ " .. cmd)
 
             -- exact
             for k, v in pairs(console.commands.exact) do
@@ -672,7 +745,7 @@ consul = {
                         r = console._execute(r)
                     end
                     if v.returns then
-                        console.write(r)
+                        console.write_paged(r)
                     end
                     return
                 end
@@ -686,14 +759,14 @@ consul = {
                         r = console._execute(r)
                     end
                     if v.returns then
-                        console.write(r)
+                        console.write_paged(r)
                     end
                     return
                 end
             end
 
             -- otherwise raw exec
-            console.write(console._execute(cmd))
+            console.write_paged(console._execute(cmd))
         end,
 
         OnComponentLClickUp = function(context)
@@ -706,6 +779,25 @@ consul = {
                 console.execute(console.read())
                 return
             end
+
+            if context.string == ui.page_next then
+                console.page = console.page + 1
+                if console.page > #console.pages then
+                    console.page = #console.pages
+                end
+                console.set_text(console.current_page_text())
+                return
+            end
+
+            if context.string == ui.page_prev then
+                console.page = console.page - 1
+                if console.page < 1 then
+                    console.page = 1
+                end
+                console.set_text(console.current_page_text())
+                return
+            end
+
         end,
 
     }
