@@ -21,10 +21,16 @@ consul = {
         -- access to 'EpisodicScripting' is required
         -- if we try to access it before ...things will break... (upstream)
         table.insert(events.UICreated, consul.scripts.setup)
+        table.insert(events.UICreated, consul.scriptum.setup)
     end,
 
     -- logging
     log = require 'consul_logging'.new(),
+
+    -- shortcut to create a new logger
+    new_log = function(name)
+        return require 'consul_logging'.new(name)
+    end,
 
     -- contrib
     serpent = require 'serpent',
@@ -106,7 +112,9 @@ consul = {
 
 
         read = function()
-            local serpent, log, config = consul.serpent, consul.log, consul.config
+            local log = consul.new_log('config:read')
+            local serpent = consul.serpent
+            local config = consul.config
 
             log:debug("Reading config file: " .. config.path)
 
@@ -115,7 +123,6 @@ consul = {
                 log:debug("File exists: " .. config.path)
                 local f_content = f:read("*all")
                 f:close()
-                --log:debug("File content: " .. f_content)
 
                 local ok, cfg = serpent.load(f_content)
                 if ok then
@@ -137,7 +144,8 @@ consul = {
         end,
 
         write = function(cfg)
-            consul.log:debug("Writing config file: " .. consul.config.path)
+            local log = consul.new_log('config:write')
+            log:debug("Writing config file: " .. consul.config.path)
             local f = io.open(consul.config.path, "w")
             if f then
                 -- remember to pass maxlevel as Rome2 LUA has no math.huge defined
@@ -173,6 +181,10 @@ consul = {
         -- history down
         history_down = "consul_history_down_btn",
 
+        -- scriptum entry
+        scriptum_entry = "scriptum_entry",
+        scriptum_entry_text = "scriptum_entry_text",
+
         -- keep internals private
         _UIRoot = nil,
         _UIComponent = nil,
@@ -180,6 +192,7 @@ consul = {
 
         -- shortcut to find a UIComponent with some guards
         find = function(key)
+            local log = consul.new_log('ui:find')
 
             -- make sure the key is of type string- if not, and you pass something
             -- that cannot be resolved to a string, it may break the upstream game code
@@ -249,6 +262,8 @@ consul = {
 
         -- event handler to be set in the main script
         OnUICreated = function(context)
+            local log = consul.new_log('ui:OnUICreated')
+            local ui = consul.ui
 
             -- if UIComponent is nil grab it from package.loaded
             if not UIComponent then
@@ -264,10 +279,6 @@ consul = {
             end
 
             log:debug("UIComponent: " .. tostring(UIComponent))
-
-            -- shorthand
-            local ui = consul.ui
-            local log = consul.log
 
             -- set the root and UIComponent
             ui._UIRoot = UIComponent(context.component)
@@ -294,7 +305,7 @@ consul = {
 
             -- shorthand
             local ui = consul.ui
-            local log = consul.log
+            local log = consul.new_log('ui:OnComponentLClickUp')
 
             -- top menu toggle button
             if context.string == ui.button_toggle then
@@ -318,6 +329,11 @@ consul = {
                 -- toggle visibility
                 r:SetVisible(not r:Visible())
 
+
+                -- setup scriptum
+                -- doing it here allows for
+                -- reload each time the consul is toggled
+                consul.scriptum.setup()
                 return
             end
 
@@ -344,7 +360,7 @@ consul = {
 
             -- shorthand
             local ui = consul.ui
-            local log = consul.log
+            local log = consul.new_log('ui:OnComponentMoved')
             local config = consul.config
 
             -- when root is moved
@@ -462,7 +478,7 @@ consul = {
 
             -- shorthand
             local ui = consul.ui
-            local log = consul.log
+            local log = consul.new_log('history:OnComponentLClickUp')
             local hst = consul.history
 
             if context.string == ui.console_send then
@@ -831,6 +847,136 @@ consul = {
         end
     end,
 
+    -- scripts to be run from the 'scriptum' view
+    scriptum = {
+
+        path = "consul.scriptum",
+        path_example = "consul_example.lua",
+        example_script = [[
+-- Example script for consul
+require 'consul'
+consul.console.write('Hello from consul_example.lua')
+        ]],
+
+        -- because we don't know how to create elements
+        -- dynamically, we have to set a maximum number of entries
+        -- they are pre-created in the ui file
+        max_entries = 10,
+
+        -- this is a map of ui listview entries to the scripts
+        -- example scriptum_text1 -> consul_example.lua
+        ui_scripts_map = {},
+
+        -- read paths to files from inside consul.scriptum file
+        -- each lines is a path to a file that can be executed from the listview
+        -- if the consul.scriptum file is not found, it will be created
+        -- and then if consul_example.lua does not exist, it will be created
+        -- and added to the list
+        setup = function()
+
+            local ui = consul.ui
+            local log = consul.new_log('scriptum:setup')
+            local path = consul.scriptum.path
+            local max = consul.scriptum.max_entries
+
+            log:debug("Setting up scriptum")
+
+            local f = io.open(path, "r")
+            if not f then
+                f = io.open(path, "w")
+                if f then
+                    f:write(consul.scriptum.path_example .. "\n")
+                    f:close()
+                end
+
+                -- write example
+                f = io.open(consul.scriptum.path_example, "w")
+                if f then
+                    f:write(consul.scriptum.example_script)
+                    f:close()
+                end
+            end
+
+            -- at start just clean all the entries
+            -- and set all the elements to invisible
+            -- this can be reloaded while the game is running
+            for i = 1, max do
+                local ui_root_name = ui.scriptum_entry .. tostring(i)
+                local ui_state_name = ui.scriptum_entry_text .. tostring(i)
+                local ui_root = ui.find(ui_root_name)
+                local ui_state = ui.find(ui_state_name)
+
+                if ui_root and ui_state then
+                    ui_root:SetVisible(false)
+                    ui_state:SetVisible(false)
+                else
+                    -- this is bad
+                    log:error("Could not find scriptum entry: " .. ui_root_name)
+                end
+            end
+
+            log:debug("Loading scriptum scripts from: " .. path)
+            -- now we can open the file and read its lines
+            -- each line is a path to a script that can be executed
+            -- it will be added to the listview by toggling visibility flag
+            -- we can support up to 10 scripts for now, and each script
+            -- has to find ui element with index +1 after the scriptum_entry
+
+            -- first read all lines to local var so we can close the file
+            local lines = {}
+            f = io.open(path, "r")
+            if not f then
+                log:error("Could not open scriptum file, this should never happen " .. path)
+                return
+            end
+            for line in f:lines() do
+                table.insert(lines, line)
+            end
+            f:close()
+
+            log:debug("Loaded scriptum scripts: " .. consul.inspect(lines))
+
+            -- shorten lines to max
+            if #lines > max then
+                log:warn("Too many scripts in the scriptum file, only first " .. max .. " will be loaded")
+                lines = {table.unpack(lines, 1, max)}
+            end
+
+            -- now we can iterate over the lines
+            local i = 1
+            for _, line in pairs(lines) do
+                log:info("Adding script to the listview: " .. line)
+
+                -- make sure the line is not empty
+                if line ~= "" then
+                    -- if the file exists, add it to the list
+                    local f = io.open(line, "r")
+                    if f then
+                        f:close()
+
+                        -- now find the elements
+                        local ui_root_name = ui.scriptum_entry .. tostring(i)
+                        local ui_state_name = ui.scriptum_entry_text .. tostring(i)
+                        local ui_root = ui.find(ui_root_name)
+                        local ui_state = ui.find(ui_state_name)
+
+                        -- and switch the flags
+                        if ui_root then
+                            log:debug("Setting scriptum entries: " .. ui_root_name .. " " .. ui_state_name)
+                            ui_root:SetVisible(true)
+                            ui_state:SetStateText(line)
+                            ui_state:SetVisible(true)
+                            consul.scriptum.ui_scripts_map[ui_root_name] = line
+
+                            -- only then increment the index
+                            i = i + 1
+                        end
+                    end
+                end
+            end
+        end,
+    },
+
     -- scripts to be run from 'consul' listview
     scripts = {
         _is_ready = false,
@@ -860,6 +1006,7 @@ consul = {
             end,
 
             OnComponentLClickUp = function(context)
+                local log = consul.new_log('scripts:transfer_settlement:OnComponentLClickUp')
 
                 -- if we clicked radar_icon in the strategic view
                 if string.sub(context.string, 1, 21) == "radar_icon_settlement" then
@@ -881,7 +1028,7 @@ consul = {
                     -- if _region is not set, set it
                     -- otherwise its a faction to which we transfer
                     local script = consul.scripts.transfer_settlement
-                    consul.log:debug("Selected settlement to transfer: " .. region)
+                    log:debug("Selected settlement to transfer: " .. region)
 
                     if not script._region then
                         script._region = region
@@ -910,17 +1057,14 @@ consul = {
                 -- just make sure we are stopped :)
                 consul.scripts.transfer_settlement.OnStop()
 
-                log:debug("Starting transfer settlement script")
-                consul.event_handlers['SettlementSelected']['transfer_settlement']
-                = consul.scripts.transfer_settlement.OnSettlementSelected
-                consul.event_handlers['CharacterSelected']['transfer_settlement']
-                = consul.scripts.transfer_settlement.OnCharacterSelected
-                consul.event_handlers['ComponentLClickUp']['transfer_settlement']
-                = consul.scripts.transfer_settlement.OnComponentLClickUp
+                consul.log:debug("Starting transfer settlement script")
+                consul.event_handlers['SettlementSelected']['transfer_settlement'] = consul.scripts.transfer_settlement.OnSettlementSelected
+                consul.event_handlers['CharacterSelected']['transfer_settlement'] = consul.scripts.transfer_settlement.OnCharacterSelected
+                consul.event_handlers['ComponentLClickUp']['transfer_settlement'] = consul.scripts.transfer_settlement.OnComponentLClickUp
             end,
 
             OnStop = function()
-                log:debug("Stopping transfer settlement script")
+                consul.log:debug("Stopping transfer settlement script")
                 consul.event_handlers['SettlementSelected']['transfer_settlement'] = nil
                 consul.event_handlers['CharacterSelected']['transfer_settlement'] = nil
                 consul.event_handlers['ComponentLClickUp']['transfer_settlement'] = nil
