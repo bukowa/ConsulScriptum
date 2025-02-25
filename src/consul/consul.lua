@@ -135,6 +135,10 @@ consul = {
         history_up = "consul_history_up_btn",
         -- history down
         history_down = "consul_history_down_btn",
+        -- page next
+        page_next = "consul_page_next_btn",
+        -- page prev
+        page_prev = "consul_page_prev_btn",
 
         -- keep internals private
         _UIRoot = nil,
