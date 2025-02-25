@@ -148,22 +148,49 @@ consul = {
         -- shortcut to find a UIComponent with some guards
         find = function(key)
 
+            -- make sure the key is of type string- if not, and you pass something
+            -- that cannot be resolved to a string, it may break the upstream game code
+            -- making all kind of weird things happen
+            if type(key) ~= "string" then
+                return "error: key passed to find is not a string"
+            end
+
             -- try recreating the UIComponent in case something bad happened
             if not consul.ui._UIRoot then
                 log:warn("Recreating UIComponent: " .. tostring(consul.ui._UIContext))
                 consul.ui._UIRoot = UIComponent(consul.ui._UIContext.component)
             end
 
-            -- make sure the key is of type string- if not, and you pass something
-            -- that cannot be resolved to a string, it may break the upstream game code
-            -- making all kind of weird things happen, like interacting with UIComponent methods
-            -- won't work anymore - just return a string with error in this case
-            if type(key) ~= "string" then
-                return "error: key passed to find is not a string"
+            -- if still nil, return error and log it
+            if (not consul.ui._UIRoot) or (not consul.ui._UIComponent) then
+                log:error("No access to UIComponent")
+                return nil
+            end
+
+            -- try to find locally and check if it still works
+            local c = consul.ui._UIComponent(consul.ui._UIRoot:Find(key))
+
+            -- check if component handling is still functional
+            if (not consul.ui._UIRoot) or (not consul.ui._UIComponent) then
+                log:error('Something went wrong with the UIComponent handling; UIComponent is nil')
+                return nil
+            end
+
+            -- c is nil
+            if not c then
+                log:warn('Could not find component: ' .. key)
+                return nil
+            end
+
+            -- even if the component is found, some actions may not work
+            -- assume that everything works if Visible is not nil (it may be any method)
+            if c:Visible() == nil then
+                log:error('Something went wrong with the UIComponent handling; visible is nil')
+                return nil
             end
 
             -- all fine
-            return consul.ui._UIComponent(consul.ui._UIRoot:Find(key))
+            return c
         end,
 
         -- moves the consul root to the center of the screen
@@ -188,25 +215,31 @@ consul = {
         end,
 
         -- event handler to be set in the main script
-        -- keep them private in case something goes wrong with the globals
         OnUICreated = function(context)
+
+            -- if UIComponent is nil grab it from package.loaded
+            if not UIComponent then
+                log:warn('UIComponent is nil; trying to grab it from other modules')
+
+                -- when in campaign
+                if package.loaded ~= nil then
+                    if package.loaded.CoreUtils ~= nil then
+                        log:debug("Finding UIComponent in CoreUtils")
+                        UIComponent = package.loaded.CoreUtils.UIComponent
+                    end
+                end
+            end
+
+            log:debug("UIComponent: " .. tostring(UIComponent))
 
             -- shorthand
             local ui = consul.ui
             local log = consul.log
 
-            -- started!
-            log:debug("UICreated start: " .. context.string)
-
             -- set the root and UIComponent
             ui._UIRoot = UIComponent(context.component)
             ui._UIComponent = UIComponent
             ui._UIContext = context
-
-            -- finished!
-            log:debug("UICreated end  : " .. context.string
-                    .. ' m_root :' .. tostring(consul.ui._UIRoot)
-                    .. 'UIComponent :' .. tostring(consul.ui._UIComponent))
 
             -- log errors
             if not consul.ui._UIRoot then
@@ -429,12 +462,20 @@ consul = {
         end,
     },
 
-    console = {
+    paging = {
+        -- the current page
+        current = 1,
 
-        -- should hold current session pages
+        -- the maximum number of pages
         pages = {},
-        -- should hold the current page
-        page = 1,
+
+        -- the maximum number of characters per page
+        max_chars = 1000,
+
+
+    },
+
+    console = {
 
         -- clears the console output
         clear = function()
@@ -472,7 +513,7 @@ consul = {
 
             -- setups the commands
             setup = function()
-                cfg = consul.config.read()
+                local cfg = consul.config.read()
 
                 for k, v in pairs(consul.console.commands.exact) do
                     if v.setup then
@@ -649,6 +690,8 @@ consul = {
             local console = consul.console
 
             if context.string == ui.console_send then
+                log:debug("Sending command from console")
+
                 console.execute(console.read())
                 return
             end
