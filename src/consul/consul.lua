@@ -61,6 +61,7 @@ consul = {
             },
             console = {
                 autoclear = false,
+                autoclear_after = 1,
             }
         },
 
@@ -79,6 +80,7 @@ consul = {
                 },
                 console = {
                     autoclear = false,
+                    autoclear_after = 1,
                 }
             }
         end,
@@ -96,6 +98,7 @@ consul = {
 
                     and type(_config.console) == "table"
                     and type(_config.console.autoclear) == "boolean"
+                    and type(_config.console.autoclear_after) == "number"
         end,
 
 
@@ -554,6 +557,8 @@ consul = {
 
             settings = {
                 autoclear = false,
+                autoclear_after = 1,
+                _autoclear_current = 0,
             },
 
             -- these should include extra space if they take params
@@ -580,23 +585,30 @@ consul = {
                     exec = true,
                     returns = true,
                 },
-                ['/autoclear'] = {
+                ['/autoclear_after'] = {
                     help = function()
-                        return "Toggles console autoclear setting."
+                        return "Sets number of entries after which console will autoclear. "
                     end,
-                    func = function()
-                        local commands = consul.console.commands
-                        -- toggle the setting
-                        commands.settings.autoclear = not commands.settings.autoclear
-                        -- write the new setting to the config
+                    func = function(_cmd)
+
+                        -- convert to number
+                        local n = tonumber(string.sub(_cmd, 18))
+                        if not n then
+                            return "Invalid number: " .. tostring(n)
+                        end
+
+                        -- write to config
+                        consul.console.commands.settings.autoclear_after = n
                         local cfg = consul.config.read()
-                        cfg.console.autoclear = commands.settings.autoclear
+                        cfg.console.autoclear_after = n
                         consul.config.write(cfg)
+
+                        return tostring(n)
                     end,
                     exec = false,
-                    returns = false,
+                    returns = true,
                     setup = function(cfg)
-                        consul.console.commands.settings.autoclear = cfg.console.autoclear
+                        consul.console.commands.settings.autoclear_after = cfg.console.autoclear_after
                     end
                 },
             },
@@ -654,6 +666,40 @@ consul = {
                     exec = false,
                     returns = false,
                 },
+                ['/history'] = {
+                    help = function()
+                        return "Prints the history of the console."
+                    end,
+                    func = function()
+                        local hst = consul.history
+                        local out = ""
+                        for _, v in pairs(hst.entries) do
+                            out = out .. v .. "\n"
+                        end
+                        return out
+                    end,
+                    exec = false,
+                    returns = true,
+                },
+                ['/autoclear'] = {
+                    help = function()
+                        return "Toggles console autoclear setting."
+                    end,
+                    func = function()
+                        local commands = consul.console.commands
+
+                        commands.settings.autoclear = not commands.settings.autoclear
+                        local cfg = consul.config.read()
+                        cfg.console.autoclear = commands.settings.autoclear
+                        consul.config.write(cfg)
+                        return tostring(commands.settings.autoclear)
+                    end,
+                    exec = false,
+                    returns = true,
+                    setup = function(cfg)
+                        consul.console.commands.settings.autoclear = cfg.console.autoclear
+                    end
+                },
             },
         },
 
@@ -686,12 +732,20 @@ consul = {
 
         -- executes a command from the console
         execute = function(cmd)
+
             local console = consul.console
+            local settings = console.commands.settings
 
             -- check for autoclear setting
-            if console.commands.settings.autoclear then
-                console.clear()
+            if settings.autoclear then
+                if settings._autoclear_current >= settings.autoclear_after then
+                    console.clear()
+                    settings._autoclear_current = 0
+                end
             end
+
+            -- increase _autoclear_current
+            settings._autoclear_current = settings._autoclear_current + 1
 
             -- first write the command to the output window
             console.write("$ " .. cmd)
@@ -699,7 +753,7 @@ consul = {
             -- exact
             for k, v in pairs(console.commands.exact) do
                 if cmd == k then
-                    local r = v.func()
+                    local r = v.func(cmd)
                     if v.exec then
                         r = console._execute(r)
                     end
