@@ -5,13 +5,32 @@ consul = {
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
 
-    log = require 'consul_logging'.new(),
-
-    -- game requires a char before a tab
+    -- game requires a char before /t
+    -- it also makes /t very long, so just use spaces
     tab = string.char(1) .. '   ',
 
+    -- setup consul
+    setup = function()
+        consul.console.commands.setup()
+        table.insert(events.UICreated, consul.ui.OnUICreated)
+        table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
+        table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
+        table.insert(events.UICreated, consul.history.OnUICreated)
+        table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
+        table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
+    end,
+
+    -- logging
+    log = require 'consul_logging'.new(),
+
+    -- contrib
     serpent = require 'serpent',
     inspect = require 'inspect',
+
+    -- helper function to pretty print a table
+    pretty = function(_obj)
+        return consul.inspect(_obj, {newline='\n', indent=consul.tab})
+    end,
 
     -- compatibility patches for other mods
     compat = {
@@ -435,13 +454,6 @@ consul = {
         -- register event handler for handling the buttons that move the history
         OnComponentLClickUp = function(context)
 
-            -- raw dump to file
-            local f = io.open(consul.console.output_path, "a")
-            if f then
-                f:write(text .. "\n")
-                f:close()
-            end
-
             -- shorthand
             local ui = consul.ui
             local log = consul.log
@@ -497,6 +509,14 @@ consul = {
 
         -- writes a message to the console
         write = function(msg)
+
+            -- raw dump to file
+            local f = io.open(consul.console.output_path, "a")
+            if f then
+                f:write(msg .. "\n")
+                f:close()
+            end
+
             local ui = consul.ui
 
             -- find the console output component
@@ -583,7 +603,7 @@ consul = {
             exact = {
                 ['/help'] = {
                     help = function()
-                        return "displays help"
+                        return "Show help message."
                     end,
                     func = function(...)
 
@@ -591,13 +611,31 @@ consul = {
                         local tab = consul.tab
 
                         -- build the help message from other commands
-                        -- first section are the console commands
-                        local help = "Console commands:\n"
+                        -- so all the keys so they are aligned
+                        local keys = {}
                         for k, v in pairs(consul.console.commands.exact) do
-                            help = help .. tab .. k .. " - " .. v.help() .. "\n"
+                            table.insert(keys, k)
                         end
                         for k, v in pairs(consul.console.commands.starts_with) do
-                            help = help .. tab .. k .. " - " .. v.help() .. "\n"
+                            table.insert(keys, k)
+                        end
+                        table.sort(keys)
+
+                        -- now we have to take longest key to calculate the padding
+                        local max = 0
+                        for _, v in pairs(keys) do
+                            if string.len(v) > max then
+                                max = string.len(v)
+                            end
+                        end
+
+                        -- now we can build the help message
+                        local help = "Console commands:\n"
+                        for _, k in pairs(keys) do
+                            local v = consul.console.commands.exact[k]
+                                    or consul.console.commands.starts_with[k]
+                            local padding = string.rep(' ', max - string.len(k) + 1)
+                            help = help .. tab .. k .. padding .. " - " .. v.help() .. "\n"
                         end
 
                         -- strip the last newline
