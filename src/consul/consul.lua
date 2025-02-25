@@ -13,6 +13,18 @@ consul = {
     serpent = require 'serpent',
     inspect = require 'inspect',
 
+    -- compatibility patches for other mods
+    compat = {
+
+        -- DEI removes the Prologue button in main menu
+        -- it is done by modifying the sp_frame ui file which we override
+        -- just disable the Prologue button in the main menu
+        dei = function()
+            -- todo first check if DEI is loaded
+            consul.ui.find('button_introduction'):SetState('inactive')
+        end,
+    },
+
     config = {
         path = "consul.config",
 
@@ -462,20 +474,19 @@ consul = {
         end,
     },
 
-    paging = {
-        -- the current page
-        current = 1,
+    console = {
 
-        -- the maximum number of pages
+        -- the current page
+        page = 1,
+        -- the maximum number of characters per page
+        page_max_chars = 1000,
+        -- pages
         pages = {},
 
-        -- the maximum number of characters per page
-        max_chars = 1000,
 
+        write_page = function(text)
 
-    },
-
-    console = {
+        end,
 
         -- clears the console output
         clear = function()
