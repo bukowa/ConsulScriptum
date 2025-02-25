@@ -789,9 +789,10 @@ consul = {
             local console = consul.console
 
             if context.string == ui.console_send then
-                log:debug("Sending command from console")
-
                 console.execute(console.read())
+
+                -- put the cursor back to the input field
+                ui.find(ui.console_input):SimulateClick()
                 return
             end
         end,
