@@ -22,6 +22,7 @@ consul = {
         -- if we try to access it before ...things will break... (upstream)
         table.insert(events.UICreated, consul.scripts.setup)
         table.insert(events.UICreated, consul.scriptum.setup)
+        table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
     end,
 
     -- logging
@@ -811,7 +812,8 @@ consul = {
                 console.execute(console.read())
 
                 -- put the cursor back to the input field
-                ui.find(ui.console_input):SimulateClick()
+                -- WARNING this will break the history handling
+                --ui.find(ui.console_input):SimulateClick()
                 return
             end
         end,
@@ -851,13 +853,21 @@ consul = {
     scriptum = {
 
         path = "consul.scriptum",
-        path_example = "consul_example.lua",
+        path_example = "consul.lua",
         example_script = [[
 -- Example script for consul
 require 'consul'
-consul.console.write('Hello from consul_example.lua')
-        ]],
-
+consul.console.write(
+    'Hello from consul.lua!\n\n' ..
+    'This script runs from Scriptum when you click on it.\n' ..
+    'To add your own, list their paths in consul.scriptum.\n' ..
+    'Check out consul.scriptum and consul.lua in the game folder.\n' ..
+    'It runs in the global scope, so you can access game functions and variables.\n' ..
+    'Use consul.console.write("message") to print to the console.\n\n' ..
+    'Type /help for more info. Type /clear to clear the console.\n' ..
+    'You can also run Lua commands here. Try typing:\nreturn 2+2\n'
+)
+]],
         -- because we don't know how to create elements
         -- dynamically, we have to set a maximum number of entries
         -- they are pre-created in the ui file
@@ -940,16 +950,16 @@ consul.console.write('Hello from consul_example.lua')
 
             log:debug("Loaded scriptum scripts: " .. consul.inspect(lines))
 
-            -- shorten lines to max
-            if #lines > max then
-                log:warn("Too many scripts in the scriptum file, only first " .. max .. " will be loaded")
-                lines = {table.unpack(lines, 1, max)}
-            end
-
             -- now we can iterate over the lines
             local i = 1
             for _, line in pairs(lines) do
                 log:info("Adding script to the listview: " .. line)
+
+                -- if we are over the limit notify and break
+                if i > max then
+                    log:warn("Too many scripts in the scriptum file, only first " .. max .. " will be loaded")
+                    break
+                end
 
                 -- make sure the line is not empty
                 if line ~= "" then
@@ -978,6 +988,29 @@ consul.console.write('Hello from consul_example.lua')
                     end
                 end
             end
+        end,
+
+        -- let's handle the event when we click on the scriptum entry
+        OnComponentLClickUp = function(context)
+            local log = consul.new_log('scriptum:OnComponentLClickUp')
+            local ui = consul.ui
+
+            if string.sub(context.string, 1, 14) == ui.scriptum_entry then
+                log:debug("Clicked on scriptum entry: " .. context.string)
+
+                local script = consul.scriptum.ui_scripts_map[context.string]
+
+                if script then
+                    log:debug("Executing script: " .. script)
+                    local f = dofile(script)
+
+                    --if f then
+                    --    f()
+                    --end
+
+                end
+            end
+
         end,
     },
 
