@@ -539,27 +539,29 @@ consul = {
         -- defines the commands that can be executed in the console
         commands = {
 
-            -- setups the commands
-            setup = function()
-                local cfg = consul.config.read()
-
-                for k, v in pairs(consul.console.commands.exact) do
-                    if v.setup then
-                        v.setup(cfg)
-                    end
-                end
-                for k, v in pairs(consul.console.commands.starts_with) do
-                    if v.setup then
-                        v.setup(cfg)
-                    end
-                end
-            end,
-
+            -- settings for the console commands
             settings = {
                 autoclear = false,
                 autoclear_after = 1,
                 _autoclear_current = 0,
             },
+
+            -- setups the commands
+            setup = function()
+                local cfg = consul.config.read()
+                local commands = consul.console.commands
+
+                for k, v in pairs(commands.exact) do
+                    if v.setup then
+                        v.setup(cfg)
+                    end
+                end
+                for k, v in pairs(commands.starts_with) do
+                    if v.setup then
+                        v.setup(cfg)
+                    end
+                end
+            end,
 
             -- these should include extra space if they take params
             starts_with = {
@@ -793,6 +795,7 @@ consul = {
                 return
             end
         end,
+
 
     }
 }
