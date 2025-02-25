@@ -29,7 +29,7 @@ consul = {
 
     -- helper function to pretty print a table
     pretty = function(_obj)
-        return consul.inspect(_obj, {newline='\n', indent=consul.tab})
+        return consul.inspect(_obj, { newline = '\n', indent = consul.tab })
     end,
 
     -- compatibility patches for other mods
@@ -797,6 +797,104 @@ consul = {
             end
         end,
 
+    },
 
+    -- custom event handlers
+    -- in order to dynamically delete events
+    -- we need to keep track of them and delete when needed
+    -- so we attach to the game events only once and then
+    -- we call anything that is registered in the event_handlers
+    event_handlers = {
+        ['SettlementSelected'] = {
+            ['transfer_settlement'] = nil,
+        }
+    },
+
+    -- dispatches an event
+    event_dispatcher = function(event_name)
+        return function(context)
+            local eh = consul.event_handlers[event_name]
+            for _, v in pairs(eh) do
+                if v then
+                    v(context)
+                end
+            end
+        end
+    end,
+
+    -- scripts to be run from 'consul' listview
+    scripts = {
+        _is_ready = false,
+
+        -- setup the script, should be called once
+        setup = function()
+            if consul.scripts._is_ready then
+                return
+            end
+            -- setup the event handlers
+            scripting = require 'lua_scripts.EpisodicScripting'
+            for k, _ in pairs(consul.event_handlers) do
+                scripting.AddEventCallBack(k, consul.event_dispatcher(k))
+            end
+
+            consul.scripts._is_ready = true
+        end,
+
+        -- transfer a region to a faction
+        transfer_settlement = {
+
+            _region = nil,
+            _faction = nil,
+
+            stop = function()
+                consul.scripts.transfer_settlement._region = nil
+                consul.scripts.transfer_settlement._faction = nil
+                consul.event_handlers[ev][en] = nil
+            end,
+
+            start = function()
+
+                -- there can be multiple events
+                -- you can click on settlement or army
+                -- or even click from the strategic view?
+                local ev = {
+                    'SettlementSelected',
+                    'CharacterSelected',
+                }
+
+                local en = 'transfer_settlement'
+
+                local eh_settlement = function(context)
+
+                    local console = consul.console
+                    local script = consul.scripts.transfer_settlement
+
+                    -- first we pick the settlement to transfer
+                    if not script._region then
+                        script._region = context.settlement:region():name()
+                        console.write("Selected settlement to transfer: " .. script._region)
+                        return
+                    end
+
+                    -- then we pick the faction to transfer to
+                    if not script._faction then
+                        tf = context.settlement():faction():name()
+                        consul.console.write("Transferring settlement: " .. tr .. " to faction: " .. tf .. "?")
+                    end
+
+                    -- if both are set, transfer the region
+                    if tr and tf then
+                        scripting.game_interface:transfer_region_to_faction(tr, tf)
+                        consul.console.write("Transferred settlement: " .. tr .. " to faction: " .. tf)
+                    end
+
+                    consul.scripts.transfer_settlement.stop()
+
+                end,
+
+                consul.console.write("Select a settlement to transfer")
+            end
+        }
+        --
     }
 }
