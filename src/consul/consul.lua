@@ -147,10 +147,6 @@ consul = {
         history_up = "consul_history_up_btn",
         -- history down
         history_down = "consul_history_down_btn",
-        -- page next
-        page_next = "consul_page_next_btn",
-        -- page prev
-        page_prev = "consul_page_prev_btn",
 
         -- keep internals private
         _UIRoot = nil,
@@ -439,6 +435,13 @@ consul = {
         -- register event handler for handling the buttons that move the history
         OnComponentLClickUp = function(context)
 
+            -- raw dump to file
+            local f = io.open(consul.console.output_path, "a")
+            if f then
+                f:write(text .. "\n")
+                f:close()
+            end
+
             -- shorthand
             local ui = consul.ui
             local log = consul.log
@@ -476,17 +479,8 @@ consul = {
 
     console = {
 
-        -- the current page
-        page = 1,
-        -- the maximum number of characters per page
-        page_max_chars = 1000,
-        -- pages
-        pages = {},
-
-
-        write_page = function(text)
-
-        end,
+        -- dump the console output to a file
+        output_path = "consul.output",
 
         -- clears the console output
         clear = function()
