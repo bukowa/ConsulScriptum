@@ -71,23 +71,28 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # ============================================================
 UI_TARGETS := \
 	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
-	$(BUILD_DIR)/ui/common\ ui/menu_bar
-#	$(BUILD_DIR)/ui/common\ ui/options_mods
+	$(BUILD_DIR)/ui/common\ ui/menu_bar \
+	$(BUILD_DIR)/ui/campaign\ ui/pre_battle_post_battle
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/frontend_scripted.lua \
 	$(BUILD_DIR)/lua_scripts/battle_scripted.lua \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/consul/consul_logging.lua \
-	$(BUILD_DIR)/consul/consul.lua \
-	$(BUILD_DIR)/serpent/serpent.lua \
-	$(BUILD_DIR)/inspect/inspect.lua \
+	$(BUILD_DIR)/consul/consul.lua
+
+
+IMAGE_TARGETS := \
+	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png
+
 
 CONTRIB_TARGETS := \
-	$(BUILD_DIR)/pl
+	$(BUILD_DIR)/pl \
+	$(BUILD_DIR)/inspect/inspect.lua \
+	$(BUILD_DIR)/serpent/serpent.lua
 
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
 	@{ \
 	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
@@ -124,6 +129,11 @@ $(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
 
 $(BUILD_DIR)/ui/common\ ui/encyclopedia_unit_info_template: \
 	src/ui/common\ ui/encyclopedia_unit_info_template.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/campaign\ ui/pre_battle_post_battle: \
+	src/ui/campaign\ ui/pre_battle_post_battle.xml
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
@@ -169,6 +179,11 @@ $(BUILD_DIR)/serpent/serpent.lua: \
 
 $(BUILD_DIR)/inspect/inspect.lua: \
 	src/inspect/inspect.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png: \
+	src/ui/skins/default/consul_v_slider_end.png
 	$(create_dir)
 	@cp "$<" "$@"
 
