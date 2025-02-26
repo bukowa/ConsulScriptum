@@ -1208,7 +1208,9 @@ consul.console.write(
 
                     -- destroy
                     log:debug("Target: " .. target)
-                    consul._game():kill_character(target, false, true)
+
+                    -- TODO we can switch flag to only kill character (now it kills the whole army)
+                    consul._game():kill_character(target, true, true)
                 end
 
                 log:debug("Started.")
