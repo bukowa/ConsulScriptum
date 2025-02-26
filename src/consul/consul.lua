@@ -35,8 +35,8 @@ consul = {
     end,
 
     -- contrib
-    serpent = require 'consul.serpent',
-    inspect = require 'consul.inspect',
+    serpent = require 'consul.serpent.serpent',
+    inspect = require 'consul.inspect.inspect',
     pretty = require 'consul.penlight.pretty'.write,
 
     pretty_inspect = function(_obj)
