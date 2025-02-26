@@ -69,45 +69,163 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # ============================================================
 # Start Source Files
 # ============================================================
-
-DIR_TARGETS := \
-	$(BUILD_DIR)/lua_scripts \
-	$(BUILD_DIR)/script/consulscriptum \
-	$(BUILD_DIR)/ui/common\ ui
-
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/options_mods
+	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
+	$(BUILD_DIR)/ui/common\ ui/menu_bar
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
-	$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua
+	$(BUILD_DIR)/consul/consul_logging.lua \
+	$(BUILD_DIR)/consul/consul.lua
+
+
+IMAGE_TARGETS :=
+#	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png
+
+CONTRIB_TARGETS := \
+	$(BUILD_DIR)/consul/inspect/inspect.lua \
+	$(BUILD_DIR)/consul/serpent/serpent.lua \
+	$(BUILD_DIR)/consul/penlight/compat.lua \
+	$(BUILD_DIR)/consul/penlight/lexer.lua \
+	$(BUILD_DIR)/consul/penlight/pretty.lua \
+	$(BUILD_DIR)/consul/penlight/stringx.lua \
+	$(BUILD_DIR)/consul/penlight/types.lua \
+	$(BUILD_DIR)/consul/penlight/utils.lua
 
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(DIR_TARGETS) $(UI_TARGETS) $(LUA_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
 	@{ \
 	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
 	  echo "Pack file built successfully." ; \
 	} || { rm $@; exit 1; }
 
-$(DIR_TARGETS):
-	@mkdir -p $@
+define create_dir
+	@mkdir -p $(dir $@)
+endef
+
+$(BUILD_DIR)/pl: src/pl $(wildcard $(BUILD_DIR)/pl/*.lua)
+	@mkdir -p "$@"
+	@cp -r src/pl/* $@
+
+$(BUILD_DIR)/ui/common\ ui/multiplayer_chat: \
+	src/ui/common\ ui/multiplayer_chat.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/common\ ui/menu_bar: \
+	src/ui/common\ ui/menu_bar.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
+	src/ui/frontend\ ui/sp_frame.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/common\ ui/encyclopedia_unit_info_template: \
+	src/ui/common\ ui/encyclopedia_unit_info_template.xml
+	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
 	src/lua_scripts/all_scripted.lua
+	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/script/consulscriptum/consulscriptum_logging.lua: \
-	src/script/consulscriptum/consulscriptum_logging.lua
+$(BUILD_DIR)/lua_scripts/frontend_scripted.lua: \
+	src/lua_scripts/frontend_scripted.lua
+	$(create_dir)
 	@cp "$<" "$@"
+
+$(BUILD_DIR)/lua_scripts/battle_scripted.lua: \
+	src/lua_scripts/battle_scripted.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_logging.lua: \
+	src/consul/consul_logging.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_config.lua: \
+	src/consul/consul_config.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_toggle.lua: \
+	src/consul/consul_toggle.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul.lua: \
+	src/consul/consul.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/serpent/serpent.lua: \
+	src/serpent/serpent.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/inspect/inspect.lua: \
+	src/inspect/inspect.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/compat.lua: \
+	src/penlight/compat.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/lexer.lua: \
+	src/penlight/lexer.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/pretty.lua: \
+	src/penlight/pretty.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/stringx.lua: \
+	src/penlight/stringx.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/types.lua: \
+	src/penlight/types.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/utils.lua: \
+	src/penlight/utils.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+
+#$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png: \
+#	src/ui/skins/default/consul_v_slider_end.png
+	#$(create_dir)
+	@#cp "$<" "$@"
+
 
 # ============================================================
 # End Source Files
 # ============================================================
+
+# Cleaning up all build artifacts and generated mod packages
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -f $(MOD_PACKAGE)
+	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
+	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
+	@echo "Cleaned up build directory and mod package."
 
 # Setup target to prepare all necessary dependencies
 setup: \
@@ -121,15 +239,6 @@ setup: \
 	@mkdir -p $(RPFM_CLI_DIR)
 	@mkdir -p $(RPFM_SCHEMA_DIR)
 	@echo "Setup complete, all dependencies are ready."
-
-# Cleaning up all build artifacts and generated mod packages
-clean:
-	@rm -rf $(BUILD_DIR)
-	@rm -rf $(DEPS_DIR)
-	@rm -f $(MOD_PACKAGE)
-	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
-	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
-	@echo "Cleaned up build directory and mod package."
 
 # Rule for setting up rpfm_cli
 setup-rpfm_cli:
@@ -200,7 +309,6 @@ install: \
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
-	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 # Install the built .pack file only if different for standalone
@@ -223,16 +331,28 @@ kill-rome2:
 		while tasklist | grep -q $$pid; do sleep 1; done; \
 	fi
 
+define disable_outdated_mods_popup
+	powershell -Command Start-Process ./scripts/disable_outdated_mods_popup.bat
+endef
+
 # Launch the standalone version of Rome2.exe with the specified working directory
 run-alone: \
 	kill-rome2 \
 	install-alone
+	@$(disable_outdated_mods_popup)
+	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+
+# Launch the standalone without mods
+run-standalone: kill-rome2
+	@$(disable_outdated_mods_popup)
+	@echo '' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
 # Launch the Steam version of Rome2 using its Steam app ID
 run-steam: \
 	kill-rome2 \
 	install-steam
+	@$(disable_outdated_mods_popup)
 	@powershell -Command start steam://rungameid/214950
 
 
