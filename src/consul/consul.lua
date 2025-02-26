@@ -40,7 +40,7 @@ consul = {
     pretty = require 'penlight.pretty'.write,
 
     pretty_inspect = function(_obj)
-        return consul.inspect(_obj, { newline = '\n'})
+        return consul.inspect(_obj, { newline = '\n' })
     end,
 
     -- compatibility patches for other mods
@@ -788,6 +788,26 @@ consul = {
                         consul.console.commands.settings.autoclear = cfg.console.autoclear
                     end
                 },
+                ['/faction_list'] = {
+                    help = function()
+                        return "Prints the list of factions."
+                    end,
+                    func = function()
+                        return consul.pretty(consul.game.faction_list())
+                    end,
+                    exec = false,
+                    returns = true,
+                },
+                ['/region_list'] = {
+                    help = function()
+                        return "Prints the list of regions."
+                    end,
+                    func = function()
+                        return consul.pretty(consul.game.region_list())
+                    end,
+                    exec = false,
+                    returns = true,
+                }
             },
         },
 
@@ -1113,6 +1133,60 @@ consul.console.write(
             end
 
         end,
+    },
+
+    -- consul._game is shorten
+    _game = function()
+        if scripting and scripting.game_interface then
+            return scripting.game_interface
+        end
+        return nil
+    end,
+
+    -- neat shortcuts for game functions
+    -- they should be used in the scripts
+    -- they should be a fixed api that never breaks
+
+    game = {
+
+        model = function()
+            return consul._game():model()
+        end,
+
+        world = function()
+            return consul._game():model():world()
+        end,
+
+        region = function(key)
+            return consul._game():model():world():region_manager():region_by_key(key)
+        end,
+
+        region_list = function()
+            local region_list = consul._game():model():world():region_manager():region_list()
+
+            local regions = {}
+            for i = 0, region_list:num_items() - 1 do
+                table.insert(regions, region_list:item_at(i):name())
+            end
+
+            return regions
+        end,
+
+        faction = function(key)
+            return consul._game():model():world():faction_by_key(key)
+        end,
+
+        faction_list = function()
+            local faction_list = consul._game():model():world():faction_list()
+
+            local factions = {}
+            for i = 0, faction_list:num_items() - 1 do
+                table.insert(factions, faction_list:item_at(i):name())
+            end
+
+            return factions
+        end,
+
     },
 
     -- scripts to be run from 'consul' listview
