@@ -35,9 +35,9 @@ consul = {
     end,
 
     -- contrib
-    serpent = require 'consul.serpent.serpent',
-    inspect = require 'consul.inspect.inspect',
-    pretty = require 'consul.penlight.pretty'.write,
+    serpent = require 'serpent.serpent',
+    inspect = require 'inspect.inspect',
+    pretty = require 'penlight.pretty'.write,
 
     pretty_inspect = function(_obj)
         return consul.inspect(_obj, { newline = '\n'})
@@ -912,10 +912,12 @@ consul = {
 
     -- dispatches an event
     event_dispatcher = function(event_name)
+        log = consul.new_log('scripts:event_dispatcher')
         return function(context)
             local eh = consul.event_handlers[event_name]
             for _, v in pairs(eh) do
                 if v then
+                    log:debug("Dispatching event: " .. event_name)
                     v(context)
                 end
             end
@@ -1140,26 +1142,6 @@ consul.console.write(
         transfer_settlement = {
             _region = nil,
             _faction = nil,
-
-            _set_region_or_faction = function(str)
-
-                if not str then
-                    return
-                end
-
-                if _region == nil then
-                    _region = str
-                    consul.console.write("Selected region: " .. _region)
-                    return
-                end
-
-                _faction = str
-                consul.console.write("Transferring region: " .. _region .. " to faction: " .. _faction)
-                consul.scripts.transfer_settlement.transfer()
-
-                _region = nil
-                _faction = nil
-            end,
 
             transfer = function()
                 local scripting = require 'lua_scripts.EpisodicScripting'
