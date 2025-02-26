@@ -1,18 +1,26 @@
 # Consul Scriptum
+"Consul Scriptum" is a Latin phrase that combines two terms:
 
-*Consul Scriptum* is a Latin phrase that translates to "written with consideration" or "deliberately written." 
+Consul: In ancient Rome, a consul was one of the two highest-ranking elected officials who jointly governed the republic. The term later came to denote high-ranking officials or diplomats in other contexts.
 
-The term "consul" comes from "consulere," meaning "to consider" or "to deliberate," and "scriptum" means "written." This phrase could be used to emphasize that something was written thoughtfully or with careful consideration, rather than hastily or without intent.
+Scriptum: This means "written" (from the verb scribere, "to write"). It can refer to a document, text, or written work.
 
-In historical or legal contexts, it might refer to documents or texts that were prepared with significant deliberation or formal intent. However, the phrase is not commonly used in modern language, so its meaning can vary depending on the context in which it is applied.
+Literally, "Consul Scriptum" translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on context:
 
+It could metaphorically imply "the written authority" or "a document issued by a consul."
+
+In a creative or modern context, it might be used as a title for a fictional work, legal decree, or diplomatic text.
+
+
+In reality this is a scripting console for Total War Rome 2.
+
+![](./consul.png)
 
 ### Consul
 What is consul?
 
 ### Scriptum
 What is scriptum?
-
 
 ### Limitations:
  - cannot use ENTER to send the command
