@@ -9869,7 +9869,7 @@
                                                                         <u>509452608</u><!-- ID (40 a1 5d 1e) -->
                                                                         <s>NewState</s><!-- title - NewState -->
                                                                         <i>667</i><!-- x size -->
-                                                                        <i>4800</i><!-- y size -->
+                                                                        <i>12000</i><!-- y size -->
                                                                         <unicode></unicode><!-- state text -->
                                                                         <unicode></unicode><!-- tooltip -->
                                                                         <i>2</i><!-- text xsize? -->
@@ -10136,7 +10136,7 @@
                                                     </property>
                                                     <property>
                                                         <s>maxValue</s><!-- key -->
-                                                        <s>4800</s><!-- value -->
+                                                        <s>12000</s><!-- value -->
                                                     </property>
                                                     <property>
                                                         <s>Notify</s><!-- key -->
