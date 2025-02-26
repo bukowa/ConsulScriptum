@@ -14797,7 +14797,7 @@
                                                         <children count="2">
                                                             <uientry>
                                                                 <u>509498336</u><!-- ID (e0 53 5e 1e) -->
-                                                                <s>rooms_list_entry</s><!-- title -->
+                                                                <s>consul_exterminare_entry</s><!-- title -->
                                                                 <s></s><!-- title2 -->
                                                                 <i>0</i><!-- x offset -->
                                                                 <i>0</i><!-- y offset -->
@@ -14814,7 +14814,7 @@
                                                                 <no /><!-- uientry flag 11 -->
                                                                 <no /><!-- uientry flag 12 -->
                                                                 <yes />
-                                                                <unicode></unicode><!-- tooltip text -->
+                                                                <unicode>When activated, any character you select will be exterminated.</unicode><!-- tooltip text -->
                                                                 <unicode></unicode><!-- tooltip id -->
                                                                 <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
                                                                 <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
@@ -15186,7 +15186,7 @@
                                                                 <children count="1">
                                                                     <uientry>
                                                                         <u>509502112</u><!-- ID (a0 62 5e 1e) -->
-                                                                        <s>room_name</s><!-- title -->
+                                                                        <s>consul_exterminare_script</s><!-- title -->
                                                                         <s></s><!-- title2 -->
                                                                         <i>6</i><!-- x offset -->
                                                                         <i>0</i><!-- y offset -->
@@ -15220,7 +15220,7 @@
                                                                                 <s>default</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>Translatio Civitatis</unicode><!-- state text -->
+                                                                                <unicode>Exterminare</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -15274,7 +15274,7 @@
                                                                                 <s>active</s><!-- title - NewState -->
                                                                                 <i>137</i><!-- x size -->
                                                                                 <i>22</i><!-- y size -->
-                                                                                <unicode>Translatio Civitatis</unicode><!-- state text -->
+                                                                                <unicode>Exterminare</unicode><!-- state text -->
                                                                                 <unicode></unicode><!-- tooltip -->
                                                                                 <i>2</i><!-- text xsize? -->
                                                                                 <i>4</i><!-- text ysize? -->
@@ -15365,7 +15365,7 @@
                                                                 <no /><!-- uientry flag 5 -->
                                                                 <no /><!-- uientry flag 6 -->
                                                                 <no /><!-- uientry flag 7 -->
-                                                                <yes /><!-- uientry flag 8 -->
+                                                                <no /><!-- uientry flag 8 -->
                                                                 <no /><!-- uientry flag 9 -->
                                                                 <no /><!-- uientry flag 10 -->
                                                                 <no /><!-- uientry flag 11 -->

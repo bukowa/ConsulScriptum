@@ -21,7 +21,8 @@ consul = {
         table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
         -- access to 'EpisodicScripting' may be required
         -- load later to avoid any issues with the game
-        --table.insert(events.UICreated, consul.scripts.setup)
+        table.insert(events.UICreated, consul.consul_scripts.setup)
+        table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
         table.insert(events.UICreated, consul.scriptum.setup)
         table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
     end,
@@ -221,6 +222,10 @@ consul = {
         -- scriptum entry
         scriptum_entry = "scriptum_entry",
         scriptum_entry_text = "scriptum_entry_text",
+
+        -- consul entries
+        consul_exterminare_entry = "consul_exterminare_entry",
+        consul_exterminare_script = "consul_exterminare_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1102,6 +1107,148 @@ consul.console.write(
             end
 
         end,
+    },
+
+    -- consul scripts window
+    consul_scripts = {
+
+        -- scripts register their event handlers here
+        -- just add empty ones here so other scripts don't
+        -- have to check if they exist before adding
+        event_handlers = {
+            ["CharacterSelected"] = {},
+        },
+
+        -- dispatches an event
+        event_dispatcher = function(event_name)
+            log = consul.new_log('consul_scripts:event_dispatcher')
+
+            return function(context)
+                local eh = consul.consul_scripts.event_handlers[event_name]
+                for _, v in pairs(eh) do
+                    if v then
+                        log:debug("Dispatching event: " .. event_name)
+                        v(context)
+                    end
+                end
+            end
+        end,
+
+        -- setup only once
+        _is_ready = false,
+
+        -- setup the script, should be called once
+        setup = function()
+            local log, scripts = consul.new_log('consul_scripts:setup'), consul.consul_scripts
+            log:debug("Setting up scripts")
+
+            -- skip if already set up
+            if scripts._is_ready then
+                log:debug("Scripts are already set up")
+                return
+            end
+
+            -- call all scripts setup
+            scripts.exterminare.setup()
+            log:debug("Finished setting up scripts")
+
+            -- setup the event handlers
+            local ok, scripting = pcall(require, 'lua_scripts.EpisodicScripting')
+            if not ok then
+                log:warn("Could not load EpisodicScripting, it's ok if we are in frontend")
+                return
+            end
+
+            log:debug("Setting up event handlers")
+            for k, _ in pairs(scripts.event_handlers) do
+                log:debug("Setting up event handler: " .. k)
+                scripting.AddEventCallBack(k, scripts.event_dispatcher(k))
+            end
+
+            -- mark as ready
+            log:debug("Setup finished")
+            scripts._is_ready = true
+        end,
+
+        exterminare = {
+            -- is there a GetState method?
+            -- i don't think so ...
+            state = 'default',
+
+            get_logger = function()
+                return consul.new_log('consul_scripts:exterminare')
+            end,
+
+            setup = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.exterminare.get_logger()
+                log:debug("Setting up...")
+
+                -- unregister event handler
+                scripts.event_handlers['CharacterSelected']['exterminare'] = nil
+            end,
+
+            start = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.exterminare.get_logger()
+                log:debug("Starting...")
+
+                -- register event handler
+                -- script and concepts modded by: Jake Armitage and ivanpera from TWC
+                scripts.event_handlers['CharacterSelected']['exterminare'] = function(context)
+                    log:debug("CharacterSelected:exterminare")
+
+                    -- get the faction and forename
+                    local faction = context:character():faction():name()
+                    local forename = context:character():get_forename()
+
+                    -- build the target
+                    local target = "faction:" .. tostring(faction) .. "," ..
+                            "forename:" .. string.gsub(forename, "names_name_", "")
+
+                    -- destroy
+                    log:debug("Target: " .. target)
+                    consul._game():kill_character(target, false, true)
+                end
+
+                log:debug("Started.")
+            end,
+
+            stop = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.exterminare.get_logger()
+                log:debug("Stopping...")
+
+                -- unregister event handler
+                scripts.event_handlers['CharacterSelected']['exterminare'] = nil
+            end,
+        },
+
+        OnComponentLClickUp = function(context)
+            local log = consul.new_log('consul_scripts:OnComponentLClickUp')
+            local scripts = consul.consul_scripts
+            local ui = consul.ui
+
+            if context.string == ui.consul_exterminare_entry then
+                log:debug("Clicked on consul_exterminare")
+
+                local script = scripts.exterminare
+                local c = ui.find(ui.consul_exterminare_script)
+
+                if script.state == 'active' then
+                    -- stop
+                    script.stop()
+                    script.state = 'default'
+                    c:SetState(script.state)
+                else
+                    -- start
+                    script.start()
+                    script.state = 'active'
+                    c:SetState(script.state)
+                end
+            end
+        end,
+
     },
 
     -- consul._game is shorten
