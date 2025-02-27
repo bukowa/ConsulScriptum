@@ -43,3 +43,4 @@ What is scriptum?
  - cannot use the mouse to select text in the command that comes from history
  - cannot paste long commands - but you can type them...?! (I have no idea how to handle this and this is very annoying, the current workaround is to use scripting file via 'scriptum' as this will be loaded dynamically)
  - scriptum accepts only 10 custom scripts for now, i cannot find a way to dynamically create components (if anyone needs more just lmk)
+ - doesn't work in battle (I can't find a way to get access to UIComponent in the battle.. it's probably made on purpose by CA)
