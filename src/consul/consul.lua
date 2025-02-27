@@ -1335,10 +1335,7 @@ consul.console.write(
 
                         if script._region and script._faction then
                             script._transfer()
-                            -- refresh root
-                            consul.ui.find('map'):HudRefresh()
                         end
-
                     end
                 end
             end,
