@@ -226,6 +226,8 @@ consul = {
         -- consul entries
         consul_exterminare_entry = "consul_exterminare_entry",
         consul_exterminare_script = "consul_exterminare_script",
+        consul_transfersettlement_entry = "consul_transfersettlement_entry",
+        consul_transfersettlement_script = "consul_transfersettlement_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1117,6 +1119,8 @@ consul.console.write(
         -- have to check if they exist before adding
         event_handlers = {
             ["CharacterSelected"] = {},
+            ["SettlementSelected"] = {},
+            ["ComponentLClickUp"] = {},
         },
 
         -- dispatches an event
@@ -1150,6 +1154,7 @@ consul.console.write(
 
             -- call all scripts setup
             scripts.exterminare.setup()
+            scripts.transfer_settlement.setup()
             log:debug("Finished setting up scripts")
 
             -- setup the event handlers
@@ -1170,6 +1175,35 @@ consul.console.write(
             scripts._is_ready = true
         end,
 
+        _on_click = function(script, component)
+            if script.state == 'active' then
+                script.stop()
+                script.state = 'default'
+                component:SetState(script.state)
+            else
+                script.start()
+                script.state = 'active'
+                component:SetState(script.state)
+            end
+        end,
+
+        OnComponentLClickUp = function(context)
+            local log = consul.new_log('consul_scripts:OnComponentLClickUp')
+            local scripts = consul.consul_scripts
+            local ui = consul.ui
+
+            if context.string == ui.consul_exterminare_entry then
+                log:debug("Clicked on consul_exterminare")
+                scripts._on_click(scripts.exterminare, ui.find(ui.consul_exterminare_script))
+                return
+            end
+
+            if context.string == ui.consul_transfersettlement_entry then
+                log:debug("Clicked on consul_transfersettlement")
+                scripts._on_click(scripts.transfer_settlement, ui.find(ui.consul_transfersettlement_script))
+            end
+        end,
+
         exterminare = {
             -- is there a GetState method?
             -- i don't think so ...
@@ -1184,7 +1218,6 @@ consul.console.write(
                 local log = scripts.exterminare.get_logger()
                 log:debug("Setting up...")
 
-                -- unregister event handler
                 scripts.event_handlers['CharacterSelected']['exterminare'] = nil
             end,
 
@@ -1196,7 +1229,7 @@ consul.console.write(
                 -- register event handler
                 -- script and concepts modded by: Jake Armitage and ivanpera from TWC
                 scripts.event_handlers['CharacterSelected']['exterminare'] = function(context)
-                    log:debug("CharacterSelected:exterminare")
+                    log:debug("CharacterSelected")
 
                     -- get the faction and forename
                     local faction = context:character():faction():name()
@@ -1226,30 +1259,67 @@ consul.console.write(
             end,
         },
 
-        OnComponentLClickUp = function(context)
-            local log = consul.new_log('consul_scripts:OnComponentLClickUp')
-            local scripts = consul.consul_scripts
-            local ui = consul.ui
+        transfer_settlement = {
+            state = 'default',
+            get_logger = function()
+                return consul.new_log('consul_scripts:transfer_settlement')
+            end,
 
-            if context.string == ui.consul_exterminare_entry then
-                log:debug("Clicked on consul_exterminare")
+            setup = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.transfer_settlement.get_logger()
+                log:debug("Setting up...")
 
-                local script = scripts.exterminare
-                local c = ui.find(ui.consul_exterminare_script)
+                scripts.event_handlers['SettlementSelected']['transfersettlement'] = nil
+                scripts.event_handlers['ComponentLClickUp']['transfersettlement'] = nil
+                scripts.event_handlers['CharacterSelected']['transfersettlement'] = nil
+            end,
 
-                if script.state == 'active' then
-                    -- stop
-                    script.stop()
-                    script.state = 'default'
-                    c:SetState(script.state)
-                else
-                    -- start
-                    script.start()
-                    script.state = 'active'
-                    c:SetState(script.state)
+            _faction = nil,
+            _region = nil,
+
+            _transfer = function()
+                local script = consul.consul_scripts.transfer_settlement
+                local log = script.get_logger()
+
+                log:debug("Transferring: " .. script._region .. " to " .. script._faction)
+                consul._game():transfer_region_to_faction(script._region, script._faction)
+
+                script._faction = nil
+                script._region = nil
+            end,
+
+            start = function()
+                local log = consul.consul_scripts.transfer_settlement.get_logger()
+                local script = consul.consul_scripts.transfer_settlement
+                local scripts = consul.consul_scripts
+                log:debug("Starting...")
+
+                scripts.event_handlers['SettlementSelected']['transfersettlement'] = function(context)
+                    log:debug("SettlementSelected")
+
+                    if not script._region then
+                        script._region = context:garrison_residence():region():name()
+                    else
+                        script._faction = context:garrison_residence():faction():name()
+                    end
+                    if script._region and script._faction then
+                        script._transfer()
+                    end
                 end
+            end,
+
+            stop = function()
+                local log = consul.consul_scripts.transfer_settlement.get_logger()
+                local script = consul.consul_scripts.transfer_settlement
+                local scripts = consul.consul_scripts
+                log:debug("Stopping...")
+
+                scripts.event_handlers['SettlementSelected']['transfersettlement'] = nil
+                script._faction = nil
+                script._region = nil
             end
-        end,
+        },
 
     },
 
