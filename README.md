@@ -14,7 +14,8 @@ In a creative or modern context, it might be used as a title for a fictional wor
 
 In reality this is a scripting console for Total War Rome 2.
 
-![](./consul.png)
+![](./extras/scriptumx.png)
+![](./extras/scriptumy.png)
 
 ### Consul
 What is consul?
