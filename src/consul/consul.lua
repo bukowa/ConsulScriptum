@@ -1176,14 +1176,12 @@ consul.console.write(
         end,
 
         _on_click = function(script, component)
-            if script.state == 'active' then
+            if component:CurrentState() == 'active' then
                 script.stop()
-                script.state = 'default'
-                component:SetState(script.state)
+                component:SetState('default')
             else
                 script.start()
-                script.state = 'active'
-                component:SetState(script.state)
+                component:SetState('active')
             end
         end,
 
@@ -1205,9 +1203,6 @@ consul.console.write(
         end,
 
         exterminare = {
-            -- is there a GetState method?
-            -- i don't think so ...
-            state = 'default',
 
             get_logger = function()
                 return consul.new_log('consul_scripts:exterminare')
@@ -1256,11 +1251,12 @@ consul.console.write(
 
                 -- unregister event handler
                 scripts.event_handlers['CharacterSelected']['exterminare'] = nil
+                log:debug("Stopped.")
             end,
         },
 
         transfer_settlement = {
-            state = 'default',
+
             get_logger = function()
                 return consul.new_log('consul_scripts:transfer_settlement')
             end,
@@ -1307,6 +1303,44 @@ consul.console.write(
                         script._transfer()
                     end
                 end
+
+                scripts.event_handlers['ComponentLClickUp']['transfersettlement'] = function(context)
+                    log:debug("ComponentLClickUp")
+
+                    -- if we clicked radar_icon in the strategic view
+                    if string.sub(context.string, 1, 21) == "radar_icon_settlement" then
+                        log:debug("Clicked on radar_icon_settlement")
+
+                        -- split string by :
+                        local parts = {}
+                        for part in string.gmatch(context.string, "[^:]+") do
+                            table.insert(parts, part)
+                        end
+
+                        -- we need 3 parts
+                        if #parts ~= 3 then
+                            return
+                        end
+
+                        -- grab the region name
+                        local region = parts[2]
+
+                        if not script._region then
+                            -- if region is nil, we can just set it
+                            script._region = region
+                        else
+                            -- otherwise query for faction
+                            script._faction = consul.game.region(region):owning_faction():name()
+                        end
+
+                        if script._region and script._faction then
+                            script._transfer()
+                            -- refresh root
+                            consul.ui.find('map'):HudRefresh()
+                        end
+
+                    end
+                end
             end,
 
             stop = function()
@@ -1316,8 +1350,12 @@ consul.console.write(
                 log:debug("Stopping...")
 
                 scripts.event_handlers['SettlementSelected']['transfersettlement'] = nil
+                scripts.event_handlers['ComponentLClickUp']['transfersettlement'] = nil
+                scripts.event_handlers['CharacterSelected']['transfersettlement'] = nil
                 script._faction = nil
                 script._region = nil
+
+                log:debug("Stopped.")
             end
         },
 
