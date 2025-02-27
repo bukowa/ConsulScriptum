@@ -939,14 +939,15 @@ consul = {
 require 'consul'
 consul.console.clear()
 consul.console.write(
-    'Hello from consul.lua!\n\n' ..
-    'This script runs from Scriptum when you click on it.\n' ..
-    'To add your own, list their paths in consul.scriptum.\n' ..
-    'Check out consul.scriptum and consul.lua in the game folder.\n' ..
-    'It runs in the global scope, so you can access game functions and variables.\n' ..
-    'Use consul.console.write("message") to print to the console.\n\n' ..
-    'Type /help for more info. Type /clear to clear the console.\n\n' ..
-    'You can also run Lua commands here. Try typing:\nreturn 2+2\n'
+    'Hello from scriptum.lua!\n\n' ..
+    'This script runs from the Scriptum list menu when you click on it.\n' ..
+    'Its content is located in the game folder in the scriptum.lua file.\n' ..
+    'To add your own scripts, list their paths in the consul.scriptum file.\n' ..
+    'After adding a new script, reopen the console to have it listed in the menu.\n' ..
+    'It runs in the global scope, meaning you can access game functions and variables.\n\n' ..
+    'Type /clear to clear the console.\n' ..
+    'Type /help for more information.\n\n' ..
+    'You can also run Lua commands here.\nTry typing: return 2+2\n'
 )
 -- Uncomment these lines to see what happens
 --scripting = require 'lua_scripts.EpisodicScripting'
