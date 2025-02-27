@@ -2,7 +2,10 @@
 "Consul Scriptum" is a Latin phrase that combines two terms:
 
 Consul: In ancient Rome, a consul was one of the two highest-ranking elected officials who jointly governed the republic. The term later came to denote high-ranking officials or diplomats in other contexts.
+
 Scriptum: This means "written" (from the verb scribere, "to write"). It can refer to a document, text, or written work.
+
+
 Literally, "Consul Scriptum" translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on context:
 It could metaphorically imply "the written authority" or "a document issued by a consul."
 In a creative or modern context, it might be used as a title for a fictional work, legal decree, or diplomatic text.
