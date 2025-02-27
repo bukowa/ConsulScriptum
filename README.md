@@ -14,6 +14,22 @@ In a creative or modern context, it might be used as a title for a fictional wor
 
 In reality this is a scripting console for Total War Rome 2.
 
+Right now, you can run your own scripts without restarting the game.
+I've already added a simple one that lets you kill other characters by clicking on them when it's activated
+
+The overall concept is split into 3 parts (you can drag & drop the window).
+
+console
+consul (window with a list of scripts that you click on) (non-technical)
+scriptum (window with a list of scripts that you click on) (technical)
+
+console gives you raw access to Lua and all the extra commands I implement and distribute with the mod
+consul gives you non-technical access to scripts that I implement and distribute with the mod (like the kill the character script that a lot of players may like to use and doesn’t require using the console so it’s more immersive)
+scriptum allows you to write your own scripts, put them in the game data folder, and execute them by clicking on them (doesn’t require a game restart to load new, just reopen the consul)
+
+extra:
+you can minimize consul/scriptum by clicking on the arrows so the console doesn’t take up half of your screen (it also remembers your position so it always opens in the same spot, and I just must write a few lines to remember which ones you have minimized)
+
 ![](./extras/scriptumx.png)
 ![](./extras/scriptumy.png)
 
