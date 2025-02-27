@@ -11,7 +11,7 @@ consul = {
 
     -- setup consul
     setup = function()
-        consul.console.commands.setup()
+        table.insert(events.UICreated, consul.console.commands.setup)
         table.insert(events.UICreated, consul.ui.OnUICreated)
         table.insert(events.UICreated, consul.compat.setup)
         table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
@@ -625,13 +625,21 @@ consul = {
                 _autoclear_current = 0,
             },
 
+            _is_setup = false,
+
             -- setups the commands
             setup = function()
                 local log = consul.new_log('console:commands:setup')
-                log:debug("Setting up console commands")
-
                 local cfg = consul.config.read()
                 local commands = consul.console.commands
+
+                log:debug("Setting up console commands")
+
+                -- if already setup, skip
+                if commands._is_setup then
+                    log:debug("Already setup")
+                    return
+                end
 
                 for k, v in pairs(commands.exact) do
                     if v.setup then
@@ -643,6 +651,7 @@ consul = {
                         v.setup(cfg)
                     end
                 end
+                commands._is_setup = true
             end,
 
             -- these should include extra space if they take params
