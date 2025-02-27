@@ -34,6 +34,8 @@ RPFM_SCHEMA_DIR   := $(DEPS_DIR)/rpfm_schema
 RPFM_CLI_DIR      := $(DEPS_DIR)/rpfm_cli
 ETWNG_DIR         := $(DEPS_DIR)/etwng
 RUBY_DIR          := $(DEPS_DIR)/ruby
+LDOC_DIR 		  := $(DEPS_DIR)/ldoc
+MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 # Binaries and paths
 RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
@@ -41,6 +43,7 @@ RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli
 XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
 RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_rom2.ron
 RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game rome_2
+LUA_FOR_LDOC_PATH := "C:\Program Files (x86)\Lua\5.1\lua.exe"
 
 # rpfm_cli details
 RPFM_CLI_VERSION       := v4.3.14
@@ -60,6 +63,10 @@ SEVENZIP_BIN          := $(SEVENZIP_DIR)/7za.exe
 # ETWNG repository details
 ETWNG_REPO     = https://github.com/taw/etwng.git
 ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
+
+# ldoc details
+LDOC_REPO     = "https://github.com/lunarmodules/ldoc.git"
+LDOC_REVISION = "f91ed4b76bec011a2e76cfe1283877686af8377e"
 
 # Installation directories
 INSTALL_ALONE_DIR := C:/Games/Total War - Rome 2
@@ -233,7 +240,8 @@ setup: \
 	setup-rpfm_schema \
 	setup-etwng \
 	setup-7zip \
-	setup-ruby
+	setup-ruby \
+	setup-ldoc
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(ETWNG_DIR)
 	@mkdir -p $(RPFM_CLI_DIR)
@@ -301,6 +309,22 @@ setup-ruby: setup-7zip
 		rm $(RUBY_DIR)/ruby.7z && \
 		echo "Ruby version $(RUBY_VERSION) has been downloaded and extracted."; \
 	fi
+
+# Rule for setting up ldoc
+setup-ldoc:
+	@if [ ! -f "$(LDOC_DIR)/ldoc/doc.lua" ]; then \
+		echo "ldoc not found, cloning..." && \
+		mkdir -p $(LDOC_DIR) && \
+		git clone --depth 1 $(LDOC_REPO) $(LDOC_DIR) && \
+		cd $(LDOC_DIR) && \
+		git checkout -q $(LDOC_REVISION) && \
+		echo "Checked out to specific revision."; \
+	fi
+
+# Rule for generating documentation
+generate-docs: setup-ldoc
+	@echo "Generating documentation..."
+	$(LUA_FOR_LDOC_PATH) $(LDOC_DIR)/ldoc/doc.lua $(MAKE_DIR)src/consul
 
 # Install Steam and alone
 install: \
