@@ -228,6 +228,8 @@ consul = {
         consul_exterminare_script = "consul_exterminare_script",
         consul_transfersettlement_entry = "consul_transfersettlement_entry",
         consul_transfersettlement_script = "consul_transfersettlement_script",
+        consul_adrebellos_entry = "consul_adrebellos_entry",
+        consul_adrebellos_script = "consul_adrebellos_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1210,6 +1212,11 @@ consul.console.write(
                 log:debug("Clicked on consul_transfersettlement")
                 scripts._on_click(scripts.transfer_settlement, ui.find(ui.consul_transfersettlement_script))
             end
+
+            if context.string == ui.consul_adrebellos_entry then
+                log:debug("Clicked on consul_forcerebellion")
+                scripts._on_click(scripts.force_rebellion, ui.find(ui.consul_adrebellos_script))
+            end
         end,
 
         exterminare = {
@@ -1366,6 +1373,39 @@ consul.console.write(
             end
         },
 
+        force_rebellion = {
+
+            get_logger = function()
+                return consul.new_log('consul_scripts:force_rebellion')
+            end,
+
+            setup = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.force_rebellion.get_logger()
+                log:debug("Setting up...")
+                scripts.event_handlers['SettlementSelected']['forcerebellion'] = nil
+            end,
+
+            start = function()
+                local log = consul.consul_scripts.force_rebellion.get_logger()
+                log:debug("Starting...")
+
+                local scripts = consul.consul_scripts
+                scripts.event_handlers['SettlementSelected']['forcerebellion'] = function(context)
+                    log:debug("SettlementSelected")
+                    local region = context:garrison_residence():region():name()
+                    consul.game.force_rebellion(region, 4, "", 0, 0, true)
+                    log:debug("Forced rebellion in: " .. region)
+                end
+            end,
+
+            stop = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.force_rebellion.get_logger()
+                log:debug("Stopping...")
+                scripts.event_handlers['SettlementSelected']['forcerebellion'] = nil
+            end,
+        },
     },
 
     -- consul._game is shorten
@@ -1420,6 +1460,28 @@ consul.console.write(
             return factions
         end,
 
+        -- transfers a region to a faction
+        force_rebellion = function(region, units, unit_list, x, y, supress_message)
+            if not region then
+                return "region is nil"
+            end
+            if not units then
+                return "units is nil"
+            end
+            if not unit_list then
+                return "unit_list is nil"
+            end
+            if not x then
+                return "x is nil"
+            end
+            if not y then
+                return "y is nil"
+            end
+            if supress_message == nil then
+                return "supress_message is nil"
+            end
+            return consul._game():force_rebellion_in_region(region, units, unit_list, x, y, supress_message)
+        end
     },
 
     -- scripts to be run from 'consul' listview
