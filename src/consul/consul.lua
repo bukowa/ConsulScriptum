@@ -1137,7 +1137,7 @@ consul.console.write(
 
         -- dispatches an event
         event_dispatcher = function(event_name)
-            log = consul.new_log('consul_scripts:event_dispatcher')
+            local log = consul.new_log('consul_scripts:event_dispatcher')
 
             return function(context)
                 local eh = consul.consul_scripts.event_handlers[event_name]
