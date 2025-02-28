@@ -1410,9 +1410,38 @@ consul.console.write(
 
     -- consul._game is shorten
     _game = function()
+        -- !!
+        -- I do not try to import the `EpisodicScripting` module
+        -- from my observation this can cause dragons to appear
+        -- we can safely assume that the game will do that for us
+        -- overall trying to import any module is not a good idea
+        -- do not mess with other scripts / people / mods
+
+        -- if we have the game interface, return it
+        -- works fine in grand campaign and cig
         if scripting and scripting.game_interface then
             return scripting.game_interface
         end
+
+        -- this is still ok
+        consul.log:debug("Could not find scripting.game_interface, trying to locate...")
+
+        -- this can happen in campaigns other than grand campaign and cig
+        -- try locating scripting in preloaded modules
+        local scripting = package.loaded['lua_scripts.EpisodicScripting']
+        if scripting and scripting.game_interface then
+            return scripting.game_interface
+        end
+
+        -- this can also happen in some campaigns
+        -- the lowercase version can be problematic in other cases...
+        -- it may not contain the game_interface at all :D
+        local scripting = package.loaded['lua_scripts.episodicscripting']
+        if scripting and scripting.game_interface then
+            return scripting.game_interface
+        end
+
+        consul.log:error("Could not find scripting.game_interface, consul will not work properly")
         return nil
     end,
 
