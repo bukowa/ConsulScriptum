@@ -177,7 +177,6 @@ consul = {
             log:debug("Creating default config file: " .. config.path)
             local cfg = config.new()
             config.write(cfg)
-
             return cfg
         end,
 
@@ -825,6 +824,53 @@ consul = {
                     end,
                     exec = false,
                     returns = true,
+                },
+                ['/debug'] = {
+                    _is_running = false,
+
+                    help = function()
+                        return 'Prints debug information about the game.'
+                    end,
+
+                    func = function()
+                        local command = consul.console.commands.exact['/debug']
+                        local pprinter = consul.pprinter
+                        local console = consul.console
+                        local pretty = consul.pretty
+
+                        -- if already running, stop
+                        if command._is_running then
+                            command._is_running = false
+                            return
+                        end
+
+                        -- wrap common actions
+                        local wrap = function(f)
+                            return function(context)
+
+                                -- skip if not running
+                                if not command._is_running then
+                                    return
+                                end
+
+                                -- run the function
+                                console.clear()
+                                f(context)
+                            end
+                        end
+
+                        table.insert(events.SettlementSelected, wrap(function(context)
+                            console.write(pretty(pprinter.garrison_script_interface(context:garrison_residence())))
+                        end))
+
+                        table.insert(events.CharacterSelected, wrap(function(context)
+                            console.write(pretty(pprinter.character_script_interface(context:character())))
+                        end))
+
+                        command._is_running = true
+                    end,
+                    exec = false,
+                    returns = false,
                 }
             },
         },
@@ -1512,6 +1558,177 @@ consul.console.write(
             return consul._game():force_rebellion_in_region(region, units, unit_list, x, y, supress_message)
         end
     },
+
+    pprinter = {
+        _is_null = function(_any)
+            return string.sub(tostring(_any), 1, 21) == "NULL_SCRIPT_INTERFACE"
+        end,
+
+        garrison_script_interface = function(_garrison)
+            consul.log:debug("garrison_script_interface")
+            if consul.pprinter._is_null(_garrison) then
+                return {}
+            end
+            return {
+                ['army'] = _garrison:army(),
+                ['buildings'] = _garrison:buildings(),
+                ['faction'] = _garrison:faction(),
+                ['has_army'] = _garrison:has_army(),
+                ['has_navy'] = _garrison:has_navy(),
+                ['is_settlement'] = _garrison:is_settlement(),
+                ['is_slot'] = _garrison:is_slot(),
+                ['is_under_siege'] = _garrison:is_under_siege(),
+                ['model'] = _garrison:model(),
+                ['navy'] = _garrison:navy(),
+                ['region'] = _garrison:region(),
+                ['settlement_interface'] = _garrison:settlement_interface(),
+                ['slot_interface'] = _garrison:slot_interface(),
+                ['unit_count'] = _garrison:unit_count(),
+            }
+        end,
+
+        unit_script_interface = function(_unit, _index)
+            consul.log:debug("unit_script_interface")
+            if consul.pprinter._is_null(_unit) then
+                return {}
+            end
+            if not _index then
+                _index = 0
+            end
+            return {
+                --["faction"] = "function: 571787B0",
+                --["force_commander"] = "function: 571786B0",
+                --["has_force_commander"] = "function: 571785B0",
+                --["has_unit_commander"] = "function: 57178550",
+                --["is_land_unit"] = "function: 57178590",
+                --["is_naval_unit"] = "function: 571785D0",
+                --["military_force"] = "function: 57178690",
+                --["model"] = "function: 57178670",
+                --["new"] = "function: 57145580",
+                --["unit_commander"] = "function: 571786F0",
+                ['index'] = _index,
+                ['unit_key'] = _unit:unit_key(),
+                ['unit_category'] = _unit:unit_category(),
+                ['unit_class'] = _unit:unit_class(),
+                --['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
+            }
+        end,
+
+        unit_list_script_interface = function(_unitlist)
+            consul.log:debug("unit_list_script_interface")
+            if consul.pprinter._is_null(_unitlist) then
+                return {}
+            end
+
+            local units = {}
+            for i = 0, _unitlist:num_items() - 1 do
+                table.insert(units, consul.pprinter.unit_script_interface(_unitlist:item_at(i), i))
+            end
+            return units
+        end,
+
+        military_force_script_interface = function(_force)
+            consul.log:debug("military_force_script_interface")
+            if consul.pprinter._is_null(_force) then
+                return {}
+            end
+            return {
+                --["character_list"] = "function: 57178390",
+                --["contains_mercenaries"] = "function: 571783B0",
+                --["faction"] = "function: 571783D0",
+                --["garrison_residence"] = "function: 57178410",
+                --["general_character"] = "function: 57178330",
+                --["has_garrison_residence"] = "function: 57178370",
+                --["has_general"] = "function: 571782B0",
+                --["is_army"] = "function: 571782F0",
+                --["is_navy"] = "function: 57178310",
+                --["model"] = "function: 57178350",
+                --["upkeep"] = "function: 57178450",
+                ['unit_list'] = consul.pprinter.unit_list_script_interface(_force:unit_list())
+            }
+        end,
+
+        character_script_interface = function(_char)
+            consul.log:debug("character_script_interface")
+            if consul.pprinter._is_null(_char) then
+                return {}
+            end
+            return {
+                ['action_points_per_turn'] = _char:action_points_per_turn(),
+                ['action_points_remaining_percent'] = _char:action_points_remaining_percent(),
+                ['age'] = _char:age(),
+                ['battles_fought'] = _char:battles_fought(),
+                ['battles_won'] = _char:battles_won(),
+                ['body_guard_casulties'] = 'will crash game in campaign',
+                ['character_type'] = _char:character_type(),
+                ['cqi'] = _char:cqi(),
+                ['defensive_ambush_battles_fought'] = _char:defensive_ambush_battles_fought(),
+                ['defensive_ambush_battles_won'] = _char:defensive_ambush_battles_won(),
+                ['defensive_battles_fought'] = _char:defensive_battles_fought(),
+                ['defensive_battles_won'] = _char:defensive_battles_won(),
+                ['defensive_naval_battles_fought'] = _char:defensive_naval_battles_fought(),
+                ['defensive_naval_battles_won'] = _char:defensive_naval_battles_won(),
+                ['defensive_sieges_fought'] = _char:defensive_sieges_fought(),
+                ['defensive_sieges_won'] = _char:defensive_sieges_won(),
+                ['display_position_x'] = _char:display_position_x(),
+                ['display_position_y'] = _char:display_position_y(),
+                ['faction'] = _char:faction(),
+                ['forename'] = _char:forename(),
+                ['fought_in_battle'] = _char:fought_in_battle(),
+                ['garrison_residence'] = consul.pprinter.garrison_script_interface(_char:garrison_residence()),
+                ['get_forename'] = _char:get_forename(),
+                ['get_political_party_id'] = _char:get_political_party_id(),
+                ['get_surname'] = _char:get_surname(),
+                ['has_ancillary'] = _char:has_ancillary(),
+                ['has_garrison_residence'] = _char:has_garrison_residence(),
+                ['has_military_force'] = _char:has_military_force(),
+                ['has_recruited_mercenaries'] = _char:has_recruited_mercenaries(),
+                ['has_region'] = _char:has_region(),
+                ['has_skill'] = _char:has_skill(),
+                ['has_spouse'] = _char:has_spouse(),
+                ['has_trait'] = _char:has_trait(),
+                ['in_port'] = _char:in_port(),
+                ['in_settlement'] = _char:in_settlement(),
+                ['is_ambushing'] = _char:is_ambushing(),
+                ['is_besieging'] = _char:is_besieging(),
+                ['is_blockading'] = _char:is_blockading(),
+                ['is_carrying_troops'] = 'will crash agent in campaign',
+                ['is_deployed'] = _char:is_deployed(),
+                ['is_embedded_in_military_force'] = _char:is_embedded_in_military_force(),
+                ['is_faction_leader'] = _char:is_faction_leader(),
+                ['is_hidden'] = _char:is_hidden(),
+                ['is_male'] = _char:is_male(),
+                ['is_polititian'] = _char:is_polititian(),
+                ['logical_position_x'] = _char:logical_position_x(),
+                ['logical_position_y'] = _char:logical_position_y(),
+                ['military_force'] = consul.pprinter.military_force_script_interface(_char:military_force()),
+                ['model'] = _char:model(),
+                ['number_of_traits'] = _char:number_of_traits(),
+                ['offensive_ambush_battles_fought'] = _char:offensive_ambush_battles_fought(),
+                ['offensive_ambush_battles_won'] = _char:offensive_ambush_battles_won(),
+                ['offensive_battles_fought'] = _char:offensive_battles_fought(),
+                ['offensive_battles_won'] = _char:offensive_battles_won(),
+                ['offensive_naval_battles_fought'] = _char:offensive_naval_battles_fought(),
+                ['offensive_naval_battles_won'] = _char:offensive_naval_battles_won(),
+                ['offensive_sieges_fought'] = _char:offensive_sieges_fought(),
+                ['offensive_sieges_won'] = _char:offensive_sieges_won(),
+                ['percentage_of_own_alliance_killed'] = _char:percentage_of_own_alliance_killed(),
+                ['performed_action_this_turn'] = _char:performed_action_this_turn(),
+                ['rank'] = _char:rank(),
+                ['region'] = _char:region(),
+                ['routed_in_battle'] = 'will crash game in campaign',
+                ['spouse'] = _char:spouse(),
+                ['surname'] = _char:surname(),
+                ['trait_level'] = _char:trait_level(),
+                ['trait_points'] = _char:trait_points(),
+                ['turns_at_sea'] = _char:turns_at_sea(),
+                ['turns_in_enemy_regions'] = _char:turns_in_enemy_regions(),
+                ['turns_in_own_regions'] = _char:turns_in_own_regions(),
+                ['turns_without_battle_in_home_lands'] = _char:turns_without_battle_in_home_lands(),
+                ['won_battle'] = _char:won_battle(),
+            }
+        end
+    }
 
     -- scripts to be run from 'consul' listview
     --scripts = {
