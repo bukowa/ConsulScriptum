@@ -177,7 +177,6 @@ consul = {
             log:debug("Creating default config file: " .. config.path)
             local cfg = config.new()
             config.write(cfg)
-
             return cfg
         end,
 
@@ -1167,6 +1166,8 @@ consul.console.write(
             -- call all scripts setup
             scripts.exterminare.setup()
             scripts.transfer_settlement.setup()
+            scripts.force_rebellion.setup()
+
             log:debug("Finished setting up scripts")
 
             -- setup the event handlers
