@@ -1508,6 +1508,7 @@ consul.console.write(
                 local log = scripts.force_make_war.get_logger()
                 log:debug("Setting up...")
                 scripts.event_handlers['SettlementSelected']['forcemakewar'] = nil
+                scripts.event_handlers['CharacterSelected']['forcemakewar'] = nil
                 scripts.force_make_war._faction1 = nil
                 scripts.force_make_war._faction2 = nil
             end,
@@ -1519,6 +1520,17 @@ consul.console.write(
                 local scripts = consul.consul_scripts
                 local script = scripts.force_make_war
 
+                local make_war = function()
+                    if script._faction1 and script._faction2 then
+                        log:debug("Forcing war between: " .. script._faction1 .. " and " .. script._faction2)
+
+                        consul._game():force_declare_war(script._faction1, script._faction2)
+                        script._faction1 = nil
+                        script._faction2 = nil
+                        log:debug("Forced war.")
+                    end
+                end
+
                 scripts.event_handlers['SettlementSelected']['forcemakewar'] = function(context)
                     log:debug("SettlementSelected")
 
@@ -1529,13 +1541,20 @@ consul.console.write(
                         script._faction2 = faction
                     end
 
-                    if script._faction1 and script._faction2 then
-                        log:debug("Forcing war between: " .. script._faction1 .. " and " .. script._faction2)
+                    make_war()
+                end
 
-                        consul._game():force_declare_war(script._faction1, script._faction2)
-                        script._faction1 = nil
-                        script._faction2 = nil
+                scripts.event_handlers['CharacterSelected']['forcemakewar'] = function(context)
+                    log:debug("CharacterSelected")
+
+                    local faction = context:character():faction():name()
+                    if not script._faction1 then
+                        script._faction1 = faction
+                    else
+                        script._faction2 = faction
                     end
+
+                    make_war()
                 end
             end,
 
