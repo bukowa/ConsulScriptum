@@ -340,6 +340,13 @@ install-alone: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
+# Install with DEI
+install-dei: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "_divide_et_impera_release_12_Part1.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "_divide_et_impera_release_12_Part2.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
+
 # Function to install the mod package to a specified directory
 install-to-dir = \
 	@if [ ! -f "$1/$(MOD_PACKAGE)" ] || ! cmp -s "$<" "$1/$(MOD_PACKAGE)"; then \
@@ -370,6 +377,13 @@ run-alone: \
 run-standalone: kill-rome2
 	@$(disable_outdated_mods_popup)
 	@echo '' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+
+# Launch the alone with DEI
+run-alone-dei: \
+	kill-rome2 \
+	install-dei
+	@$(disable_outdated_mods_popup)
 	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
 # Launch the Steam version of Rome2 using its Steam app ID
