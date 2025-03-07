@@ -16485,7 +16485,7 @@
                                                                 <no /><!-- uientry flag 11 -->
                                                                 <no /><!-- uientry flag 12 -->
                                                                 <yes />
-                                                                <unicode>When activated, first click on a settlement to select the first faction, then click on another settlement to select the second faction to make peace.</unicode><!-- tooltip text -->
+                                                                <unicode>When activated, first click on a settlement/character to select the first faction, then click on another settlement/character to select the second faction to make peace.</unicode><!-- tooltip text -->
                                                                 <unicode></unicode><!-- tooltip id -->
                                                                 <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
                                                                 <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
