@@ -41,6 +41,7 @@ MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
 RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli
 XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
+UI2XML_BIN        := $(ETWNG_DIR)/ui/bin/ui2xml
 RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_rom2.ron
 RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game rome_2
 LUA_FOR_LDOC_PATH := "C:\Program Files (x86)\Lua\5.1\lua.exe"
@@ -394,10 +395,23 @@ run-steam: \
 	@powershell -Command start steam://rungameid/214950
 
 
+# short aliases for the run targets
 alone: run-alone
 
 # Its strongly suggested to run steam in offline mode due to various bugs/
 steam: run-steam
+
+# Commands used to insert new Consul entry into the xml ui files
+# We need to use XML2UI_BIN to convert the xml files to ui files and then back to xml files
+# and then delete them
+insert-consul-entry:
+	python ./scripts/insert_consul_entry.py $(ARGS)
+	$(XML2UI_BIN) ./src/ui/frontend\ ui/sp_frame.xml ./src/ui/frontend\ ui/sp_frame
+	$(XML2UI_BIN) ./src/ui/common\ ui/menu_bar.xml ./src/ui/common\ ui/menu_bar
+	$(UI2XML_BIN) ./src/ui/frontend\ ui/sp_frame ./src/ui/frontend\ ui/sp_frame.xml
+	$(UI2XML_BIN) ./src/ui/common\ ui/menu_bar ./src/ui/common\ ui/menu_bar.xml
+	rm ./src/ui/frontend\ ui/sp_frame
+	rm ./src/ui/common\ ui/menu_bar
 
 # Declare phony targets to prevent conflicts with file names
 .PHONY: setup \
