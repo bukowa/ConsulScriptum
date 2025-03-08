@@ -890,6 +890,80 @@ consul = {
                         return 'Prints debug information about characters,settlements,etc.'
                     end,
 
+                    -- when you mouse over a unit after selecting a character
+                    -- the game uses a callback, so each unit you mouse over
+                    -- is just a 'LandUnit i' component string - we need to parse it
+                    -- and then map to the actual unit index to the character unit list
+
+                    _debug_character_unit_list = {
+                        -- the unit list of the selected character
+                        unit_list = nil,
+                        OnCharacterSelected = function(context)
+                            local command = consul.console.commands.exact['/debug']
+                            if not command._is_running then
+                                return
+                            end
+                            -- clear the unit list
+                            command._debug_character_unit_list.unit_list = nil
+
+                            -- character was selected, grab the unit list
+                            local unit_list = context:character():military_force():unit_list()
+
+                            local units = {}
+                            for i = 0, unit_list:num_items() - 1 do
+                                local unit = unit_list:item_at(i)
+                                -- build it here, so nothing breaks later
+                                units['LandUnit ' .. tostring(i)] = {
+                                    ['unit_key'] = unit:unit_key(),
+                                    ['unit_category'] = unit:unit_category(),
+                                    ['unit_class'] = unit:unit_class(),
+                                }
+                            end
+
+                            -- bind the unit list
+                            command._debug_character_unit_list.unit_list = units
+                        end,
+                        ComponentMouseOn = function(context)
+                            local command = consul.console.commands.exact['/debug']
+                            if not command._is_running then
+                                return
+                            end
+
+                            -- make sure mouseover was on a unit
+                            if string.sub(context.string, 1, 9) == "LandUnit " then
+                                local unit = command._debug_character_unit_list.unit_list[context.string]
+                                if unit then
+                                    -- todo remove
+                                    consul.log:info(consul.pretty(debug.getmetatable(unit)))
+                                    consul.console.clear()
+                                    consul.console.write(consul.pretty(unit))
+                                end
+                                return
+                            end
+
+                            -- Check if string ends with '_recruitable'
+                            if context.string:match('_recruitable$') then
+                                consul.log:info(consul.pretty(debug.getmetatable(context)))
+                                consul.console.clear()
+                                consul.console.write(consul.pretty({
+                                    ['unit_key'] = context.string:sub(1, -#'_recruitable' - 1)
+                                }))
+                                return
+                            end
+
+                            -- Check if string ends with '_mercenary'
+                            if context.string:match('_mercenary$') then
+                                consul.log:info(consul.pretty(debug.getmetatable(context)))
+                                consul.console.clear()
+                                consul.console.write(consul.pretty({
+                                    ['unit_key'] = context.string:sub(1, -#'_mercenary' - 1)
+                                }))
+                                return
+                            end
+
+                        end,
+                    },
+
                     func = function()
                         local command = consul.console.commands.exact['/debug']
                         local pprinter = consul.pprinter
@@ -953,6 +1027,10 @@ consul = {
                                 console.write(pretty(pprinter.faction_script_interface(faction)))
                             end
                         end))
+
+                        -- _debug_character_unit_list
+                        table.insert(events.CharacterSelected, command._debug_character_unit_list.OnCharacterSelected)
+                        table.insert(events.ComponentMouseOn, command._debug_character_unit_list.ComponentMouseOn)
 
                         -- mark as running
                         command._is_running = true
@@ -1842,9 +1920,6 @@ consul.console.write(
             if consul.pprinter._is_null(_unit) then
                 return {}
             end
-            if not _index then
-                _index = 0
-            end
             return {
                 --["faction"] = "function: 571787B0",
                 --["force_commander"] = "function: 571786B0",
@@ -1856,7 +1931,6 @@ consul.console.write(
                 --["model"] = "function: 57178670",
                 --["new"] = "function: 57145580",
                 --["unit_commander"] = "function: 571786F0",
-                ['index'] = _index,
                 ['unit_key'] = _unit:unit_key(),
                 ['unit_category'] = _unit:unit_category(),
                 ['unit_class'] = _unit:unit_class(),
@@ -1872,7 +1946,7 @@ consul.console.write(
 
             local units = {}
             for i = 0, _unitlist:num_items() - 1 do
-                table.insert(units, consul.pprinter.unit_script_interface(_unitlist:item_at(i), i))
+                table.insert(units, consul.pprinter.unit_script_interface(_unitlist:item_at(i)))
             end
             return units
         end,
