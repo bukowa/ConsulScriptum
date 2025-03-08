@@ -933,8 +933,6 @@ consul = {
                             if string.sub(context.string, 1, 9) == "LandUnit " then
                                 local unit = command._debug_character_unit_list.unit_list[context.string]
                                 if unit then
-                                    -- todo remove
-                                    consul.log:info(consul.pretty(debug.getmetatable(unit)))
                                     consul.console.clear()
                                     consul.console.write(consul.pretty(unit))
                                 end
