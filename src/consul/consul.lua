@@ -829,11 +829,65 @@ consul = {
                     exec = false,
                     returns = true,
                 },
+                ['/debug_onclick'] = {
+                    _is_running = false,
+
+                    help = function()
+                        return "Prints debug information of the clicked component."
+                    end,
+
+                    func = function()
+                        local command = consul.console.commands.exact['/debug_onclick']
+                        local console = consul.console
+
+                        if command._is_running then
+                            command._is_running = false
+                            return
+                        end
+
+                        table.insert(events.ComponentLClickUp, function(context)
+                            if command._is_running then
+                                console.clear()
+                                console.write(consul.pretty(debug.getmetatable(context)))
+                            end
+                        end)
+
+                        command._is_running = true
+                    end,
+                    exec = false,
+                    returns = true,
+                },
+                ['/debug_mouseover'] = {
+                    _is_running = false,
+                    help = function()
+                        return "Prints debug information of the mouseover component."
+                    end,
+                    func = function()
+                        local command = consul.console.commands.exact['/debug_mouseover']
+                        local console = consul.console
+
+                        if command._is_running then
+                            command._is_running = false
+                            return
+                        end
+
+                        table.insert(events.ComponentMouseOn, function(context)
+                            if command._is_running then
+                                console.clear()
+                                console.write(consul.pretty(debug.getmetatable(context)))
+                            end
+                        end)
+
+                        command._is_running = true
+                    end,
+                    exec = false,
+                    returns = true,
+                },
                 ['/debug'] = {
                     _is_running = false,
 
                     help = function()
-                        return 'Prints debug information about the game.'
+                        return 'Prints debug information about characters,settlements,etc.'
                     end,
 
                     func = function()
