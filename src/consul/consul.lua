@@ -1052,6 +1052,42 @@ consul = {
                     exec = false,
                     returns = false,
                 },
+                ['/cli_help'] = {
+                    help = function()
+                        return "Prints info about the CliExecute functions in the base game."
+                    end,
+                    func = function()
+                        return [[
+This is some information about the CliExecute functions in the base game.
+
+-- CliExecute('dump_render_stats <filename>') - Dumps render stats to a file in AppData dir.
+
+-- CliExecute('terrain_write_html_around_camera') - Writes the terrain html around the camera in campaign map in AppData dir.
+
+-- CliExecute('terrain_write_html') - Writes the terrain html in battle map (partial data in the campaign map) in AppData dir.
+
+-- CliExecute('report_rigid_models') - Reports rigid models into a file in AppData dir.
+
+-- CliExecute('compile_all_shaders') - Compiles all shaders.
+
+-- CliExecute('frame_rate_test_fps <fps>') - Runs the game engine at different fps values (slower/faster game). Lower values means faster.
+
+-- CliExecute('docudemon') - Runs the docudemon tool saving the documentation for game code in the Game folder.
+
+-- CliExecute('toggle_terrain_vtex') - Toggles the terrain vtex.
+
+-- CliExecute('force_rigid_lod <int>') - Forces rigid LOD , try values from -1 to 3 and up.
+
+-- CliExecute('add_unit_experience') - When in battle, triggers the add unit experience animation on selected unit.
+
+-- CliExecute('add_unit_effect_icon <index>') - When in battle, triggers the add unit effect icon animation on selected unit.
+
+-- CliExecute('set_battle_size <int>') - Sets the battle size to the specified value.
+]]
+                    end,
+                    exec = false,
+                    returns = true,
+                }
             },
         },
 
@@ -1868,6 +1904,11 @@ consul.console.write(
             -- /r consul._game():force_make_vassal('rom_rome', 'rom_etruscan')
         },
     },
+
+    -- wrapper for the CliExecute function
+    _cliExecute = function(...)
+        return CliExecute(...)
+    end,
 
     -- consul._game is shorten
     _game = function()
