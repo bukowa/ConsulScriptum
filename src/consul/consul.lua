@@ -1591,7 +1591,9 @@ consul.console.write(
                 scripts.event_handlers['CharacterSelected']['transfersettlement'] = function(context)
                     log:debug('CharacterSelected')
                     -- if you select a character, its always the target of the transfer
-                    script._faction = context:character():faction():name()
+                    if not script._faction then
+                        script._faction = context:character():faction():name()
+                    end
                     script._transfer()
                 end
             end,
