@@ -1519,6 +1519,11 @@ consul.console.write(
                 local script = consul.consul_scripts.transfer_settlement
                 local log = script.get_logger()
 
+                -- transfer only if ready
+                if not script._region or not script._faction then
+                    return
+                end
+
                 log:debug("Transferring: " .. script._region .. " to " .. script._faction)
                 consul._game():transfer_region_to_faction(script._region, script._faction)
 
@@ -1540,9 +1545,7 @@ consul.console.write(
                     else
                         script._faction = context:garrison_residence():faction():name()
                     end
-                    if script._region and script._faction then
-                        script._transfer()
-                    end
+                    script._transfer()
                 end
 
                 scripts.event_handlers['ComponentLClickUp']['transfersettlement'] = function(context)
@@ -1574,10 +1577,14 @@ consul.console.write(
                             script._faction = consul.game.region(region):owning_faction():name()
                         end
 
-                        if script._region and script._faction then
-                            script._transfer()
-                        end
+                        script._transfer()
                     end
+                end
+                scripts.event_handlers['CharacterSelected']['transfersettlement'] = function(context)
+                    log:debug('CharacterSelected')
+                    -- if you select a character, its always the target of the transfer
+                    script._faction = context:character():faction():name()
+                    script._transfer()
                 end
             end,
 
