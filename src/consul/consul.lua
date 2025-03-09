@@ -1037,7 +1037,21 @@ consul = {
                     end,
                     exec = false,
                     returns = false,
-                }
+                },
+                ['/show_shroud'] = {
+                    _is_showing = false,
+
+                    help = function()
+                        return "Shows/Hides the shroud on the map."
+                    end,
+                    func = function()
+                        local command = consul.console.commands.exact['/show_shroud']
+                        consul._game():show_shroud(command._is_showing)
+                        command._is_showing = not command._is_showing
+                    end,
+                    exec = false,
+                    returns = false,
+                },
             },
         },
 
