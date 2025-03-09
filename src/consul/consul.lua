@@ -233,6 +233,8 @@ consul = {
         consul_force_make_peace_script = "consul_force_make_peace_script",
         consul_force_make_war_entry = "consul_force_make_war_entry",
         consul_force_make_war_script = "consul_force_make_war_script",
+        consul_force_make_vassal_entry = "consul_force_make_vassal_entry",
+        consul_force_make_vassal_script = "consul_force_make_vassal_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1380,6 +1382,7 @@ consul.console.write(
             scripts.force_rebellion.setup()
             scripts.force_make_peace.setup()
             scripts.force_make_war.setup()
+            scripts.force_make_vassal.setup()
 
             log:debug("Finished setting up scripts")
 
@@ -1440,6 +1443,11 @@ consul.console.write(
             if context.string == ui.consul_force_make_war_entry then
                 log:debug("Clicked on consul_force_make_war")
                 scripts._on_click(scripts.force_make_war, ui.find(ui.consul_force_make_war_script))
+            end
+
+            if context.string == ui.consul_force_make_vassal_entry then
+                log:debug("Clicked on consul_force_make_vassal")
+                scripts._on_click(scripts.force_make_vassal, ui.find(ui.consul_force_make_vassal_script))
             end
         end,
 
@@ -1775,8 +1783,74 @@ consul.console.write(
             stop = function()
                 return consul.consul_scripts.force_make_war.setup()
             end,
-        }
+        },
 
+        force_make_vassal = {
+
+            _faction1 = nil,
+            _faction2 = nil,
+
+            get_logger = function()
+                return consul.new_log('consul_scripts:force_make_vassal')
+            end,
+
+            setup = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.force_make_vassal.get_logger()
+                log:debug("Setting up...")
+                scripts.event_handlers['SettlementSelected']['forcemakevassal'] = nil
+                scripts.event_handlers['CharacterSelected']['forcemakevassal'] = nil
+                scripts.force_make_vassal._faction1 = nil
+                scripts.force_make_vassal._faction2 = nil
+            end,
+
+            start = function()
+                local scripts = consul.consul_scripts
+                local script = scripts.force_make_vassal
+                local log = script.get_logger()
+                log:debug("Starting...")
+
+                -- just do it
+                local make_vassal = function()
+                    if script._faction1 and script._faction2 then
+                        log:debug("Forcing vassal between: " .. script._faction1 .. " and " .. script._faction2)
+                        consul._game():force_make_vassal(script._faction2, script._faction1)
+                        script._faction1 = nil
+                        script._faction2 = nil
+                    end
+                end
+
+                scripts.event_handlers['SettlementSelected']['forcemakevassal'] = function(context)
+                    log:debug("SettlementSelected")
+
+                    local faction = context:garrison_residence():faction():name()
+                    if not script._faction1 then
+                        script._faction1 = faction
+                    else
+                        script._faction2 = faction
+                    end
+                    make_vassal()
+                end
+
+                scripts.event_handlers['CharacterSelected']['forcemakevassal'] = function(context)
+                    log:debug("CharacterSelected")
+
+                    local faction = context:character():faction():name()
+                    if not script._faction1 then
+                        script._faction1 = faction
+                    else
+                        script._faction2 = faction
+                    end
+                    make_vassal()
+                end
+
+            end,
+            stop = function()
+                return consul.consul_scripts.force_make_vassal.setup()
+            end,
+
+            -- /r consul._game():force_make_vassal('rom_rome', 'rom_etruscan')
+        },
     },
 
     -- consul._game is shorten
