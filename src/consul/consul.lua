@@ -1087,6 +1087,23 @@ This is some information about the CliExecute functions in the base game.
                     end,
                     exec = false,
                     returns = true,
+                },
+                ['/start_trace'] = {
+                    _is_running = false,
+                    help = function()
+                        return "Starts/stops the lua trace log. Saves into consul.log file."
+                    end,
+                    func = function()
+                        local command = consul.console.commands.exact['/start_trace']
+                        command._is_running = not command._is_running
+                        if command._is_running then
+                            consul.log:start_trace('clr')
+                        else
+                            consul.log:stop_trace()
+                        end
+                    end,
+                    exec = false,
+                    returns = false,
                 }
             },
         },

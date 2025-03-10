@@ -189,7 +189,8 @@ function Logger:start_trace(mask, write_log_entry, callback)
         )
 
         if write_log_entry then
-            self:trace(message)
+            --self:trace(message)
+            self:_write_to_file(message)
         end
         if callback then
             self:pcall(callback, event, info)
