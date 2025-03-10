@@ -2038,7 +2038,6 @@ consul.console.write(
         end,
 
         garrison_script_interface = function(_garrison)
-            consul.log:debug("garrison_script_interface")
             if consul.pprinter._is_null(_garrison) then
                 return {}
             end
@@ -2069,7 +2068,6 @@ consul.console.write(
         end,
 
         unit_script_interface = function(_unit, _index)
-            consul.log:debug("unit_script_interface")
             if consul.pprinter._is_null(_unit) then
                 return {}
             end
@@ -2092,7 +2090,6 @@ consul.console.write(
         end,
 
         unit_list_script_interface = function(_unitlist)
-            consul.log:debug("unit_list_script_interface")
             if consul.pprinter._is_null(_unitlist) then
                 return {}
             end
@@ -2105,7 +2102,6 @@ consul.console.write(
         end,
 
         military_force_script_interface = function(_force)
-            consul.log:debug("military_force_script_interface")
             if consul.pprinter._is_null(_force) then
                 return {}
             end
@@ -2126,7 +2122,6 @@ consul.console.write(
         end,
 
         character_script_interface = function(_char)
-            consul.log:debug("character_script_interface")
             if consul.pprinter._is_null(_char) then
                 return {}
             end
@@ -2207,7 +2202,6 @@ consul.console.write(
         end,
 
         faction_script_interface = function(_fac)
-            consul.log:debug("faction_script_interface")
             if consul.pprinter._is_null(_fac) then
                 return {}
             end
@@ -2243,7 +2237,13 @@ consul.console.write(
                 ["politics"] = _fac:politics(),
                 ["politics_party_add_loyalty_modifier"] = _fac:politics_party_add_loyalty_modifier(),
                 ["region_list"] = _fac:region_list(),
-                ["research_queue_idle"] = _fac:research_queue_idle(),
+                ["research_queue_idle"] = (function()
+                    -- wont work for rebels
+                    if _fac:name() == "rebels" then
+                        return "will crash game in campaign"
+                    end
+                    return _fac:research_queue_idle()
+                end)(),
                 ["sea_trade_route_raided"] = _fac:sea_trade_route_raided(),
                 ["started_war_this_turn"] = _fac:started_war_this_turn(),
                 ["state_religion"] = _fac:state_religion(),
@@ -2252,14 +2252,26 @@ consul.console.write(
                 ["tax_level"] = _fac:tax_level(),
                 ["total_food"] = _fac:total_food(),
                 ["trade_resource_exists"] = _fac:trade_resource_exists(),
-                ["trade_route_limit_reached"] = _fac:trade_route_limit_reached(),
+                ["trade_route_limit_reached"] =   (function()
+                    -- wont work for rebels
+                    if _fac:name() == "rebels" then
+                        return "will crash game in campaign"
+                    end
+                    return _fac:trade_route_limit_reached()
+                end)(),
                 ["trade_ship_not_in_trade_node"] = _fac:trade_ship_not_in_trade_node(),
                 ["trade_value"] = _fac:trade_value(),
                 ["trade_value_percent"] = _fac:trade_value_percent(),
                 ["treasury"] = _fac:treasury(),
                 ["treasury_percent"] = _fac:treasury_percent(),
                 ["treaty_details"] = _fac:treaty_details(),
-                ["unused_international_trade_route"] = _fac:unused_international_trade_route(),
+                ["unused_international_trade_route"] = (function()
+                    -- wont work for rebels
+                    if _fac:name() == "rebels" then
+                        return "will crash game in campaign"
+                    end
+                    return _fac:unused_international_trade_route()
+                end),
                 ["upkeep_expenditure_percent"] = _fac:upkeep_expenditure_percent(),
             }
         end,
