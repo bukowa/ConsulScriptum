@@ -2290,8 +2290,37 @@ consul.console.write(
                 ["faction"] = _settl:faction(),
                 ["has_castle_slot"] = _settl:has_castle_slot(),
                 ["has_commander"] = _settl:has_commander(),
-                ["region"] = _settl:region(),
+                ["region"] = consul.pprinter.region_script_interface(_settl:region()),
                 ["slot_list"] = _settl:slot_list()
+            }
+        end,
+
+        region_script_interface = function(_region)
+            if consul.pprinter._is_null(_region) then
+                return {}
+            end
+            return {
+                ["adjacent_region_list"] = _region:adjacent_region_list(),
+                ["building_exists"] = _region:building_exists(),
+                ["building_superchain_exists"] = _region:building_superchain_exists(),
+                ["garrison_residence"] = _region:garrison_residence(),
+                ["last_building_constructed_key"] = _region:last_building_constructed_key(),
+                ["majority_religion"] = _region:majority_religion(),
+                ["name"] = _region:name(),
+                ["num_buildings"] = _region:num_buildings(),
+                ["owning_faction"] = _region:owning_faction(),
+                ["province_name"] = _region:province_name(),
+                ["public_order"] = _region:public_order(),
+                ["region_wealth"] = _region:region_wealth(),
+                ["region_wealth_change_percent"] = _region:region_wealth_change_percent(),
+                ["resource_exists"] = _region:resource_exists(),
+                ["sanitation"] = _region:sanitation(),
+                ["settlement"] = _region:settlement(),
+                ["slot_list"] = _region:slot_list(),
+                ["slot_type_exists"] = _region:slot_type_exists(),
+                ["squalor"] = _region:squalor(),
+                ["tax_income"] = _region:tax_income(),
+                ["town_wealth_growth"] = _region:town_wealth_growth()
             }
         end
     }
