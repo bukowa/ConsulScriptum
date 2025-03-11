@@ -2061,7 +2061,7 @@ consul.console.write(
                 ['model'] = _garrison:model(),
                 ['navy'] = _garrison:navy(),
                 ['region'] = _garrison:region(),
-                ['settlement_interface'] = _garrison:settlement_interface(),
+                ['settlement_interface'] = consul.pprinter.settlement_script_interface(_garrison:settlement_interface()),
                 ['slot_interface'] = _garrison:slot_interface(),
                 ['unit_count'] = _garrison:unit_count(),
             }
@@ -2252,7 +2252,7 @@ consul.console.write(
                 ["tax_level"] = _fac:tax_level(),
                 ["total_food"] = _fac:total_food(),
                 ["trade_resource_exists"] = _fac:trade_resource_exists(),
-                ["trade_route_limit_reached"] =   (function()
+                ["trade_route_limit_reached"] = (function()
                     -- wont work for rebels
                     if _fac:name() == "rebels" then
                         return "will crash game in campaign"
@@ -2275,6 +2275,25 @@ consul.console.write(
                 ["upkeep_expenditure_percent"] = _fac:upkeep_expenditure_percent(),
             }
         end,
+
+        settlement_script_interface = function(_settl)
+            if consul.pprinter._is_null(_settl) then
+                return {}
+            end
+            return {
+                ["castle_slot"] = _settl:castle_slot(),
+                ["commander"] = _settl:commander(),
+                ["display_position_x"] = _settl:display_position_x(),
+                ["display_position_y"] = _settl:display_position_y(),
+                ["logical_position_x"] = _settl:logical_position_x(),
+                ["logical_position_y"] = _settl:logical_position_y(),
+                ["faction"] = _settl:faction(),
+                ["has_castle_slot"] = _settl:has_castle_slot(),
+                ["has_commander"] = _settl:has_commander(),
+                ["region"] = _settl:region(),
+                ["slot_list"] = _settl:slot_list()
+            }
+        end
     }
 
     -- scripts to be run from 'consul' listview
