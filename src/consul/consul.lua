@@ -2033,6 +2033,8 @@ consul.console.write(
     },
 
     pprinter = {
+        _wont_print = "CONSUL_WONT_PRINT",
+
         _is_null = function(_any)
             return string.sub(tostring(_any), 1, 21) == "NULL_SCRIPT_INTERFACE"
         end,
@@ -2290,12 +2292,16 @@ consul.console.write(
                 ["faction"] = _settl:faction(),
                 ["has_castle_slot"] = _settl:has_castle_slot(),
                 ["has_commander"] = _settl:has_commander(),
-                ["region"] = consul.pprinter.region_script_interface(_settl:region()),
-                ["slot_list"] = _settl:slot_list()
+                ["region"] = consul.pprinter.region_script_interface(_settl:region(), {
+                    -- do not print slot list
+                    -- it is printed in `slot_list_interface` below
+                    _print__slot_list = false,
+                }),
+                ["slot_list"] = consul.pprinter.slot_list_interface(_settl:slot_list())
             }
         end,
 
-        region_script_interface = function(_region)
+        region_script_interface = function(_region, _opts)
             if consul.pprinter._is_null(_region) then
                 return {}
             end
@@ -2316,11 +2322,64 @@ consul.console.write(
                 ["resource_exists"] = _region:resource_exists(),
                 ["sanitation"] = _region:sanitation(),
                 ["settlement"] = _region:settlement(),
-                ["slot_list"] = _region:slot_list(),
+                ["slot_list"] = (function()
+                    if (_opts and _opts._print__slot_list) then
+                        return consul.pprinter.slot_list_interface(_region:slot_list())
+                    end
+                    return consul.pprinter._wont_print
+                end)(),
                 ["slot_type_exists"] = _region:slot_type_exists(),
                 ["squalor"] = _region:squalor(),
                 ["tax_income"] = _region:tax_income(),
                 ["town_wealth_growth"] = _region:town_wealth_growth()
+            }
+        end,
+
+        building_script_interface = function(_build)
+            if consul.pprinter._is_null(_build) then
+                return {}
+            end
+            return {
+                ["chain"] = _build:chain(),
+                ["faction"] = _build:faction(),
+                ["name"] = _build:name(),
+                ["region"] = _build:region(),
+                ["slot"] = _build:slot(),
+                ["superchain"] = _build:superchain()
+            }
+        end,
+
+        slot_script_interface = function(_slot)
+            if consul.pprinter._is_null(_slot) then
+                return {}
+            end
+            return {
+                ["name"] = _slot:name(),
+                ["building"] = consul.pprinter.building_script_interface(_slot:building()),
+                ["faction"] = _slot:faction(),
+                ["has_building"] = _slot:has_building(),
+                ["region"] = _slot:region(),
+                ["type"] = _slot:type()
+            }
+        end,
+
+        slot_list_interface = function(_slotlist)
+            if consul.pprinter._is_null(_slotlist) then
+                return {}
+            end
+
+            local slots = {}
+
+            for i = 0, _slotlist:num_items() - 1 do
+                slots[tostring(i)] = consul.pprinter.slot_script_interface(_slotlist:item_at(i))
+            end
+
+            return {
+                ['buliding_type_exists'] = _slotlist:buliding_type_exists(),
+                ['is_empty'] = _slotlist:is_empty(),
+                ['num_items'] = _slotlist:num_items(),
+                ['slot_type_exists'] = _slotlist:slot_type_exists(),
+                ['_consul_slots'] = slots
             }
         end
     }
