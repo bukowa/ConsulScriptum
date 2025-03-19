@@ -1,6 +1,6 @@
 consul = {
 
-    VERSION = "0.1.9",
+    VERSION = "0.1.13",
     URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
@@ -1039,18 +1039,35 @@ consul = {
                     returns = false,
                 },
                 ['/show_shroud'] = {
-                    _is_showing = false,
+                    _flag = false,
 
                     help = function()
                         return "Shows/Hides the shroud on the map."
                     end,
                     func = function()
                         local command = consul.console.commands.exact['/show_shroud']
-                        consul._game():show_shroud(command._is_showing)
-                        command._is_showing = not command._is_showing
+                        consul._game():show_shroud(command._flag)
+                        command._flag = not command._flag
                     end,
                     exec = false,
                     returns = false,
+                    setup = function()
+                        -- shroud turns to true when FactionTurnEnds
+                        -- meaning we have to trigger it again, for the user to
+                        -- heave a pleasant experience
+                        table.insert(events.FactionTurnEnd, function(context)
+                            local command = consul.console.commands.exact['/show_shroud']
+
+                            -- function is not turned on
+                            if command._flag == false then return end
+
+                            -- just do it once
+                            if not context:faction():is_human() then return end
+
+                            -- disable shroud
+                            consul._game():show_shroud(false)
+                        end)
+                    end,
                 },
                 ['/cli_help'] = {
                     help = function()
