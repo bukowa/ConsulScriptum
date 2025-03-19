@@ -1059,10 +1059,14 @@ consul = {
                             local command = consul.console.commands.exact['/show_shroud']
 
                             -- function is not turned on
-                            if command._flag == false then return end
+                            if command._flag == false then
+                                return
+                            end
 
                             -- just do it once
-                            if not context:faction():is_human() then return end
+                            if not context:faction():is_human() then
+                                return
+                            end
 
                             -- disable shroud
                             consul._game():show_shroud(false)
@@ -2125,17 +2129,17 @@ consul.console.write(
                 return {}
             end
             return {
-                --["character_list"] = "function: 57178390",
-                --["contains_mercenaries"] = "function: 571783B0",
-                --["faction"] = "function: 571783D0",
-                --["garrison_residence"] = "function: 57178410",
-                --["general_character"] = "function: 57178330",
-                --["has_garrison_residence"] = "function: 57178370",
-                --["has_general"] = "function: 571782B0",
-                --["is_army"] = "function: 571782F0",
-                --["is_navy"] = "function: 57178310",
+                ["character_list"] = consul.pprinter._wont_print,
+                ["faction"] = consul.pprinter._wont_print,
+                ["garrison_residence"] = consul.pprinter._wont_print,
+                ["general_character"] = consul.pprinter._wont_print,
+                ["contains_mercenaries"] = _force:contains_mercenaries(),
+                ["has_garrison_residence"] = _force:has_garrison_residence(),
+                ["has_general"] = _force:has_general(),
+                ["is_army"] = _force:is_army(),
+                ["is_navy"] = _force:upkeep(),
                 --["model"] = "function: 57178350",
-                --["upkeep"] = "function: 57178450",
+                ["upkeep"] = _force:upkeep(),
                 ['unit_list'] = consul.pprinter.unit_list_script_interface(_force:unit_list())
             }
         end,
