@@ -2563,3 +2563,5 @@ consul.console.write(
     --    --
     --}
 }
+
+return consul
