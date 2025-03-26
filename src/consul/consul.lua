@@ -108,6 +108,8 @@ consul = {
 
     battle = {
         script_identifier = 'consul_battle',
+        script_path = 'consul/consul_battle.lua',
+        battle_path = '',
 
         setup = function()
             local log = consul.new_log('battle:setup')
@@ -139,8 +141,8 @@ consul = {
                     1000000, -- radius around position
                     false, -- will campaign be dumped
                     "", -- loading override
-                    "consul/consul_battle.lua", -- script override
-                    "", -- entire battle override
+                    consul.battle.script_path, -- script override
+                    consul.battle.battle_path, -- entire battle override
                     0   -- human alliance when battle override
             );
         end
