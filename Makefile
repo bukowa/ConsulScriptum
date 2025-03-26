@@ -84,8 +84,8 @@ UI_TARGETS := \
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/consul/consul_logging.lua \
-	$(BUILD_DIR)/consul/consul.lua
-
+	$(BUILD_DIR)/consul/consul.lua \
+	$(BUILD_DIR)/consul/consul_battle.lua
 
 IMAGE_TARGETS :=
 #	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png
@@ -173,6 +173,11 @@ $(BUILD_DIR)/consul/consul_toggle.lua: \
 
 $(BUILD_DIR)/consul/consul.lua: \
 	src/consul/consul.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_battle.lua: \
+	src/consul/consul_battle.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
@@ -339,6 +344,7 @@ install-steam: $(MOD_PACKAGE)
 # Install the built .pack file only if different for standalone
 install-alone: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'game_startup_mode campaign_load "consulscriptum.save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Install with DEI

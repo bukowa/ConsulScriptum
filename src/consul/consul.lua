@@ -1,6 +1,6 @@
 consul = {
 
-    VERSION = "0.1.14",
+    VERSION = "0.2.0",
     URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
@@ -8,6 +8,11 @@ consul = {
     -- game requires a char before /t
     -- it also makes /t very long, so just use spaces
     tab = string.char(1) .. '   ',
+
+    -- a flag indicating if the script is running in battle
+    -- this is used for various battle-script related handling
+    is_in_battle_script = false,
+    bm = nil,
 
     -- setup consul
     setup = function()
@@ -22,6 +27,7 @@ consul = {
         -- access to 'EpisodicScripting' may be required
         -- load later to avoid any issues with the game
         table.insert(events.UICreated, consul.consul_scripts.setup)
+        table.insert(events.UICreated, consul.battle.setup)
         table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
         table.insert(events.UICreated, consul.scriptum.setup)
         table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
@@ -100,6 +106,46 @@ consul = {
 
     },
 
+    battle = {
+        script_identifier = 'consul_battle',
+
+        setup = function()
+            local log = consul.new_log('battle:setup')
+            log:debug('Setting up battle stuff')
+
+            local cfg = consul.config.read()
+            if cfg.battle.use_in_battle then
+                log:debug('Using consul in battle')
+                consul.battle.init()
+            else
+                log:debug('Not using consul in battle')
+                consul.battle.deinit()
+            end
+        end,
+
+        deinit = function()
+            consul._game():remove_custom_battlefield(consul.battle.script_identifier)
+        end,
+
+        init = function()
+            local log = consul.new_log('battle:init')
+            log:debug('Initializing battle stuff')
+
+            consul.battle.deinit()
+            consul._game():add_custom_battlefield(
+                    consul.battle.script_identifier, -- string identifier
+                    0, -- x co-ord
+                    0, -- y co-ord
+                    1000000, -- radius around position
+                    false, -- will campaign be dumped
+                    "", -- loading override
+                    "consul/consul_battle.lua", -- script override
+                    "", -- entire battle override
+                    0   -- human alliance when battle override
+            );
+        end
+    },
+
     config = {
         path = "consul.config",
 
@@ -119,6 +165,9 @@ consul = {
                 console = {
                     autoclear = false,
                     autoclear_after = 1,
+                },
+                battle = {
+                    use_in_battle = false,
                 }
             }
         end,
@@ -137,6 +186,9 @@ consul = {
                     and type(_config.console) == "table"
                     and type(_config.console.autoclear) == "boolean"
                     and type(_config.console.autoclear_after) == "number"
+
+                    and type(_config.battle) == "table"
+                    and type(_config.battle.use_in_battle) == "boolean"
         end,
 
 
@@ -1125,6 +1177,26 @@ This is some information about the CliExecute functions in the base game.
                     end,
                     exec = false,
                     returns = false,
+                },
+                ['/use_in_battle'] = {
+                    help = function()
+                        return "Toggles use of Consul in campaign battles."
+                    end,
+                    func = function()
+                        local r
+                        consul.config.process(function(cfg)
+                            cfg.battle.use_in_battle = not cfg.battle.use_in_battle
+                            if cfg.battle.use_in_battle then
+                                consul.battle.init()
+                            else
+                                consul.battle.deinit()
+                            end
+                            r = cfg.battle.use_in_battle
+                        end)
+                        return tostring(r)
+                    end,
+                    exec = false,
+                    returns = true,
                 }
             },
         },
@@ -1219,16 +1291,24 @@ This is some information about the CliExecute functions in the base game.
             local console = consul.console
 
             if context.string == ui.console_send then
-                log:debug("Sending command from console")
-                console.execute(console.read())
+                log:debug("Clicked on: console_send")
 
+                if (consul.is_in_battle_script) then
+                    log:debug("In battle script, registering singleshot timer")
+                    function __consul_single_shot_timer()
+                        consul.console.execute(console.read())
+                    end
+                    consul.bm:register_singleshot_timer('__consul_single_shot_timer', 0)
+                else
+                    log:debug("Normal script, executing immediately")
+                    console.execute(console.read())
+                end
                 -- put the cursor back to the input field
                 -- WARNING this will break the history handling
                 --ui.find(ui.console_input):SimulateClick()
                 return
             end
         end,
-
     },
 
     -- scripts to be run from the 'scriptum' view
@@ -1399,9 +1479,16 @@ consul.console.write(
             local log = consul.new_log('scriptum:OnComponentLClickUp')
             local ui = consul.ui
 
+            -- check if we clicked on the scriptum entry
             if string.sub(context.string, 1, 14) == ui.scriptum_entry then
                 log:debug("Clicked on scriptum entry: " .. context.string)
+            else
+                -- fail fast
+                return
+            end
 
+            -- wrap the command so it can executed from inside battle
+            local _execute_scriptum_entry = function()
                 local script = consul.scriptum.ui_scripts_map[context.string]
 
                 if script then
@@ -1411,7 +1498,6 @@ consul.console.write(
                     local success, err = pcall(dofile, script)
                     if not success then
                         log:error("Error executing script: " .. script .. " " .. err)
-                        -- write to console
                         consul.console.write("error: " .. script .. " " .. err)
                     else
                         log:debug("Executed script: " .. script)
@@ -1420,6 +1506,17 @@ consul.console.write(
                 end
             end
 
+            -- handle click in battle
+            if consul.is_in_battle_script then
+                log:debug("In battle script, registering singleshot timer")
+                function __consul_single_shot_timer()
+                    _execute_scriptum_entry()
+                end
+                consul.bm:register_singleshot_timer('__consul_single_shot_timer', 0)
+            else
+                log:debug("Normal script, executing immediately")
+                _execute_scriptum_entry()
+            end
         end,
     },
 
