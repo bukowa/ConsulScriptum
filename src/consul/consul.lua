@@ -2236,7 +2236,7 @@ consul.console.write(
                 ["has_garrison_residence"] = _force:has_garrison_residence(),
                 ["has_general"] = _force:has_general(),
                 ["is_army"] = _force:is_army(),
-                ["is_navy"] = _force:upkeep(),
+                ["is_navy"] = _force:is_navy(),
                 --["model"] = "function: 57178350",
                 ["upkeep"] = _force:upkeep(),
                 ['unit_list'] = consul.pprinter.unit_list_script_interface(_force:unit_list())
