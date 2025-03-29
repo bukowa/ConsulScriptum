@@ -205,7 +205,7 @@ function Logger:stop_trace()
 end
 
 -- Log events based on a filter function, with always-filtered events
-function Logger:log_events(events, filter_func)
+function Logger:log_events(_events, filter_func)
 
     -- Define events to always filter out
     local always_filtered = {
@@ -215,18 +215,17 @@ function Logger:log_events(events, filter_func)
     }
 
     -- Load scripting module
-    local scripting = self:require('lua_scripts.EpisodicScripting')
+    events = self:require('lua_scripts.events')
 
     -- Loop through all events and apply the filter
-    for event, _ in pairs(events) do
+    for event, _ in pairs(_events) do
 
         -- Skip always filtered events
         if not always_filtered[event] and filter_func(event) then
 
             -- Attempt to register the event callback with error handling
             local success, err = pcall(function()
-                scripting.AddEventCallBack(event, function(context)
-
+                table.insert(events[event], function(context)
                     -- build a better looking context table
                     local context_log = {
                         _event = event,
@@ -245,7 +244,7 @@ function Logger:log_events(events, filter_func)
                     end
 
                     -- log the event
-                    consul.log:_write_to_file(consul.pretty(context_log));
+                    self:_write_to_file(consul.pretty(context_log));
                 end)
             end)
 
