@@ -267,14 +267,27 @@ function Logger:log_events_all()
     end)
 end
 
--- Log all events excluding Component events
-function Logger:log_normal_events()
+-- Log all events excluding
+-- Component events, TimeTrigger events, and ShortcutTriggered events
+function Logger:log_game_events()
     -- Import all events
     local all_events = self:require('lua_scripts.events')
 
     -- Create a filter function that excludes Component events
     local function filter_func(event)
-        return not string.match(event, "Component")  -- Only log events not containing "Component"
+        -- Skip events containing "Component"
+        if string.match(event, "Component") then
+            return false
+        end
+        -- skip TimeTrigger
+        if string.match(event, "TimeTrigger") then
+            return false
+        end
+        -- skip ShortcutTriggered
+        if event == "ShortcutTriggered" then
+            return false
+        end
+        return true
     end
 
     -- Log events with the custom filter
