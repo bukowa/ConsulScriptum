@@ -225,16 +225,33 @@ function Logger:log_events(events, filter_func)
 
             -- Attempt to register the event callback with error handling
             local success, err = pcall(function()
-                scripting.AddEventCallBack(event, function()
-                    self:info("Event fired: " .. event)
+                scripting.AddEventCallBack(event, function(context)
+
+                    -- build a better looking context table
+                    local context_log = {
+                        _event = event,
+                    }
+
+                    -- grab original
+                    local context_metatable = debug.getmetatable(context)
+
+                    -- add each key inside __index as key
+                    for k, v in pairs(context_metatable.__index) do
+                        context_log[k] = v
+                    end
+
+                    if context_log.string == "" then
+                        context_log.string = nil
+                    end
+
+                    -- log the event
+                    consul.log:_write_to_file(consul.pretty(context_log));
                 end)
             end)
 
             -- If callback registration fails, log the error
             if not success then
                 self:error("Failed to register logging for event: " .. event .. " Error: " .. err)
-            else
-                self:internal("Successfully registered logging for event: " .. event)  -- Log again when the event is fired
             end
         end
     end
@@ -248,6 +265,20 @@ function Logger:log_events_all()
     self:log_events(all_events, function(e)
         return true
     end)
+end
+
+-- Log all events excluding Component events
+function Logger:log_normal_events()
+    -- Import all events
+    local all_events = self:require('lua_scripts.events')
+
+    -- Create a filter function that excludes Component events
+    local function filter_func(event)
+        return not string.match(event, "Component")  -- Only log events not containing "Component"
+    end
+
+    -- Log events with the custom filter
+    self:log_events(all_events, filter_func)
 end
 
 -- Log all events excluding specified events
