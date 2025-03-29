@@ -245,7 +245,7 @@ function Logger:log_events(events, filter_func)
                     end
 
                     -- log the event
-                    consul.log:_write_to_file(consul.pretty(context_log));
+                    self:_write_to_file(consul.pretty(context_log));
                 end)
             end)
 
