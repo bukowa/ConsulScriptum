@@ -316,6 +316,6 @@ end
 
 -- Module return
 return {
-    new = Logger.new,
-    levels = levels -- Expose logging levels for external use
+    Logger = Logger,
+    levels = levels,
 }

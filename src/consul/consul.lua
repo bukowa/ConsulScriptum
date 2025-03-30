@@ -34,11 +34,12 @@ consul = {
     end,
 
     -- logging
-    log = require 'consul_logging'.new(),
+
+    log = require('consul_logging').Logger.new();
 
     -- shortcut to create a new logger
     new_log = function(name)
-        return require 'consul_logging'.new(name)
+        return require('consul_logging').Logger.new(name);
     end,
 
     -- contrib
