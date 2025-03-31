@@ -20,20 +20,27 @@ local levels = {
 local Logger = {}
 Logger.__index = Logger
 
+-- Export all levels
+Logger.levels = levels
+
 -- Constructor for creating a new logger instance
 function Logger.new(name, log_level, log_file_path)
     local self = setmetatable({}, Logger)
 
-    self.name = name or "main"  -- Default to "Unnamed Logger" if no name is provided
+    -- Assign name
+    self.name = name or "main"
+
+    -- Assign log file path
     self.log_file_path = log_file_path or default_log_file_path
-    self.log_level = levels[log_level] or levels.TRACE -- Default to INFO if an invalid level is provided
+
+    -- Ensure `set_level` is called correctly
+    self:set_level(log_level or levels.INFO)
 
     -- Internal Libraries
     self._require_func = require
-    --self.lib_pl__pretty = self:require('script._lib.penlight.pretty')
+
     return self
 end
-
 
 function Logger:pretty_table(table)
     self:raw(self.lib_pl__pretty.write(table))
@@ -71,10 +78,12 @@ end
 -- Generic log function
 function Logger:log(level, text)
     text = tostring(text or "")
-    level = tostring(level or "INFO")
+
+    -- Convert level to a numeric value
+    local level_num = levels[level] or tonumber(level) or levels.INFO
 
     -- Skip logging if the logger is disabled or the level is below the current threshold
-    if self.log_level == levels.DISABLED or levels[level] < self.log_level then
+    if self.log_level == levels.DISABLED or level_num < self.log_level then
         return
     end
 
@@ -149,11 +158,12 @@ end
 
 -- Set the logging level dynamically
 function Logger:set_level(level)
-    if levels[level] then
-        self.log_level = levels[level]
+    if type(level) == "string" then
+        level = levels[level]
     else
-        error("Invalid log level: " .. tostring(level))
+        level = tonumber(level)
     end
+    self.log_level = level
 end
 
 -- todo: do not log if source is in this file <<

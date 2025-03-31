@@ -39,7 +39,7 @@ consul = {
 
     -- shortcut to create a new logger
     new_log = function(name)
-        return require('consul_logging').Logger.new(name);
+        return require('consul_logging').Logger.new(name, consul.log.log_level);
     end,
 
     -- contrib
