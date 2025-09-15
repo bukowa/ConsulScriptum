@@ -14,6 +14,12 @@ consul = {
     is_in_battle_script = false,
     bm = nil,
 
+    -- attribute holding stuff selected by debug
+    debug = {
+        character = null,
+        settlement = null,
+    };
+
     -- setup consul
     setup = function()
         table.insert(events.UICreated, consul.console.commands.setup)
@@ -1054,10 +1060,13 @@ consul = {
 
                         table.insert(events.SettlementSelected, wrap({ clean = true }, function(context)
                             console.write(pretty(pprinter.garrison_script_interface(context:garrison_residence())))
+                            consul.debug.settlement = context:garrison_residence()
                         end))
 
                         table.insert(events.CharacterSelected, wrap({ clean = true }, function(context)
                             console.write(pretty(pprinter.character_script_interface(context:character())))
+                            consul.debug.character = context:character()
+
                         end))
 
                         table.insert(events.ComponentLClickUp, wrap({ clean = false }, function(context)
