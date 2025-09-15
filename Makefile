@@ -46,6 +46,11 @@ RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_rom2.ron
 RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game rome_2
 LUA_FOR_LDOC_PATH := "C:\Program Files (x86)\Lua\5.1\lua.exe"
 
+# Gems
+PATH := $(RUBY_DIR)/bin:$(PATH)
+GEM_HOME := $(RUBY_DIR)/lib/ruby/gems/3.4.0
+GEM_PATH := $(GEM_HOME)
+
 # rpfm_cli details
 RPFM_CLI_VERSION       := v4.3.14
 RPFM_CLI_BASE_URL      := https://github.com/Frodo45127/rpfm/releases/download
@@ -247,6 +252,7 @@ setup: \
 	setup-etwng \
 	setup-7zip \
 	setup-ruby \
+	setup_gems \
 	setup-ldoc
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(ETWNG_DIR)
@@ -288,6 +294,11 @@ setup-etwng: setup-ruby
 		git checkout -q $(ETWNG_REVISION) && \
 		echo "Checked out to specific revision."; \
 	fi
+
+# Rule for setting up Ruby Gems
+.PHONY: setup_gems
+install_gems:
+	"$(RUBY_DIR)/bin/gem" install nokogiri --install-dir "$(GEM_HOME)"
 
 # Rule for setting up 7-Zip
 setup-7zip:
