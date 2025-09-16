@@ -16,7 +16,16 @@ consul = {
 
     -- attribute holding stuff selected by debug
     debug = {
+        -- character selected in debug mode
         character = null,
+        -- return a cqi for lookups
+        character_cqi = function()
+            return 'character_cqi:' .. consul.debug.character:cqi() end,
+        -- hide the character
+        character_hide = function(queue)
+            queue = (queue == nil) and true or queue
+            return consul._game():hide_character(consul.debug.character_cqi(), queue)
+        end,
         settlement = null,
     };
 
