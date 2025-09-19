@@ -17,7 +17,7 @@ consul = {
     -- attribute holding stuff selected by debug
     debug = {
         -- character selected in debug mode
-        character = null,
+        character = nil,
         -- return a cqi for lookups
         character_cqi = function()
             return 'character_cqi:' .. consul.debug.character:cqi() end,
@@ -34,8 +34,8 @@ consul = {
         --    consul.log:info("")
         --    return consul._game():unhide_character(cqi, x, y, queue)
         --end,
-        settlement = null,
-        faction = null,
+        settlement = nil,
+        faction = nil,
     };
 
     -- setup consul
