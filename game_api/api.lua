@@ -196,6 +196,7 @@ function unit:current_special_ability() end
 ---If set to false, and the unit has not yet entered the battlefield,
 ---the unit will not be able to deploy until called again with true.
 ---Has no effect if the unit is not part of a reinforcement army.
+--- NOT WORKING?!
 ---@param can_deploy boolean Whether the unit can deploy
 function unit:deploy_reinforcement(can_deploy) end
 function unit:has_ships() end
@@ -270,7 +271,11 @@ function unit_controller:decrement_formation_width() end
 function unit_controller:defend_building() end
 function unit_controller:defend_building_q() end
 function unit_controller:fire_at_will() end
-function unit_controller:goto_location() end
+---Orders the units in this unit_controller to move to a supplied location.
+---No facing or width is specified.
+---@param position battle_vector The target position to move to
+---@param move_fast boolean|nil Optional. If true, units move fast. Default is false.
+function unit_controller:goto_location(position, move_fast) end
 function unit_controller:goto_location_angle_width() end
 function unit_controller:goto_location_angle_width_q() end
 function unit_controller:goto_location_q() end
