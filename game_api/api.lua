@@ -136,12 +136,37 @@ function alliances:item(index) end
 local alliance = {}
 
 function alliance:new() end
+---@return battle.armies
 function alliance:armies() end
 function alliance:create_ai_unit_planner() end
 function alliance:force_ai_plan_type_attack() end
 function alliance:force_ai_plan_type_defend() end
 function alliance:force_snap_ai_to_hint_lines() end
 
+---@class battle.armies
+local armies = {}
+
+function armies:new() end
+function armies:count() end
+
+---@return battle.army
+function armies:item(index) end
+
+---@class battle.army
+local army = {}
+
+function army:new() end
+function army:army_handicap() end
+function army:change_faction() end
+function army:create_unit_controller() end
+function army:enable_army_destruction_morale_effect() end
+function army:get_reinforcement_ships() end
+function army:get_reinforcement_units() end
+function army:is_commander_alive() end
+function army:is_commander_invincible() end
+function army:quit_battle() end
+function army:ships() end
+function army:units() end
 
 ---------------------------------
 -- GLOBAL VARIABLE DEFINITIONS --
