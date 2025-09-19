@@ -162,6 +162,7 @@ function army:change_faction() end
 function army:create_unit_controller() end
 function army:enable_army_destruction_morale_effect() end
 function army:get_reinforcement_ships() end
+---@return battle.units
 function army:get_reinforcement_units() end
 function army:is_commander_alive() end
 function army:is_commander_invincible() end
@@ -174,6 +175,7 @@ function army:units() end
 local units = {}
 
 function units:new() end
+---@return int
 function units:count() end
 function units:kill_commander() end
 function units:mountable_artillery_item() end
@@ -189,7 +191,13 @@ function unit:ammo_left() end
 function unit:bearing() end
 function unit:can_perform_special_ability() end
 function unit:current_special_ability() end
-function unit:deploy_reinforcement() end
+
+---Prevents or allows the unit to deploy as a reinforcement.
+---If set to false, and the unit has not yet entered the battlefield,
+---the unit will not be able to deploy until called again with true.
+---Has no effect if the unit is not part of a reinforcement army.
+---@param can_deploy boolean Whether the unit can deploy
+function unit:deploy_reinforcement(can_deploy) end
 function unit:has_ships() end
 function unit:initial_number_of_men() end
 function unit:is_artillery() end
@@ -217,6 +225,7 @@ function unit:number_of_men_alive() end
 function unit:ordered_position() end
 function unit:ordered_width() end
 function unit:play_anim_for_captain() end
+---@return battle_vector
 function unit:position() end
 function unit:position_of_officer() end
 function unit:set_current_ammo_unary() end
@@ -235,7 +244,8 @@ local unit_controller = {}
 function unit_controller:new() end
 function unit_controller:add_all_units() end
 function unit_controller:add_group() end
-function unit_controller:add_units() end
+---@param ... battle.unit  # one or more units
+function unit_controller:add_units(...) end
 function unit_controller:attack_building() end
 function unit_controller:attack_building_q() end
 function unit_controller:attack_line() end
@@ -294,12 +304,31 @@ function unit_controller:start_taunting() end
 function unit_controller:step_backward() end
 function unit_controller:step_forward() end
 function unit_controller:take_control() end
-function unit_controller:teleport_to_location() end
+---Instructs the script_unit to teleport to a location.
+---@param position battle_vector Position to teleport to
+---@param bearing number Bearing to face at the target position in degrees
+---@param width number Width in meters of the formation at the target position
+function unit_controller:teleport_to_location(position, bearing, width) end
 function unit_controller:trigger_sound_vo() end
 function unit_controller:update_card_existance_on_HUD() end
 function unit_controller:withdraw() end
 function unit_controller:withdraw_q() end
 
+---@class battle_vector
+local battle_vector = {}
+
+function battle_vector:new() end
+function battle_vector:distance() end
+function battle_vector:distance_xz() end
+function battle_vector:get_x() end
+function battle_vector:get_y() end
+function battle_vector:get_z() end
+function battle_vector:length() end
+function battle_vector:length_xz() end
+function battle_vector:set() end
+function battle_vector:set_x() end
+function battle_vector:set_y() end
+function battle_vector:set_z() end
 
 ---------------------------------
 -- GLOBAL VARIABLE DEFINITIONS --
