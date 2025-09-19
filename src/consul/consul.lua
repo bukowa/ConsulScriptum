@@ -26,7 +26,16 @@ consul = {
             queue = (queue == nil) and true or queue
             return consul._game():hide_character(consul.debug.character_cqi(), queue)
         end,
+        --character_unhide = function(queue, x, y, cqi)
+        --    queue = (queue == nil) and true or queue
+        --    x   = x   or consul.debug.character:logical_position_x()
+        --    y   = y   or consul.debug.character:logical_position_y()
+        --    cqi = cqi or consul.debug.character_cqi()
+        --    consul.log:info("")
+        --    return consul._game():unhide_character(cqi, x, y, queue)
+        --end,
         settlement = null,
+        faction = null,
     };
 
     -- setup consul
@@ -1070,12 +1079,13 @@ consul = {
                         table.insert(events.SettlementSelected, wrap({ clean = true }, function(context)
                             console.write(pretty(pprinter.garrison_script_interface(context:garrison_residence())))
                             consul.debug.settlement = context:garrison_residence()
+                            consul.debug.faction = context:garrison_residence():faction()
                         end))
 
                         table.insert(events.CharacterSelected, wrap({ clean = true }, function(context)
                             console.write(pretty(pprinter.character_script_interface(context:character())))
                             consul.debug.character = context:character()
-
+                            consul.debug.faction = context:character():faction()
                         end))
 
                         table.insert(events.ComponentLClickUp, wrap({ clean = false }, function(context)
@@ -1088,6 +1098,7 @@ consul = {
                                 for part in string.gmatch(context.string, "[^:]+") do
                                     table.insert(parts, part)
                                 end
+
                                 -- we need 3 parts
                                 if #parts ~= 3 then
                                     return
@@ -1096,6 +1107,7 @@ consul = {
                                 -- grab the region name
                                 local region = parts[2]
                                 local faction = consul.game.region(region):owning_faction()
+                                consul.debug.faction = faction
                                 --
                                 console.write(pretty(pprinter.faction_script_interface(faction)))
                             end
