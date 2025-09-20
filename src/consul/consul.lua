@@ -314,6 +314,8 @@ consul = {
         consul_force_make_war_script = "consul_force_make_war_script",
         consul_force_make_vassal_entry = "consul_force_make_vassal_entry",
         consul_force_make_vassal_script = "consul_force_make_vassal_script",
+        consul_force_exchange_garrison_entry = "consul_force_exchange_garrison_entry",
+        consul_force_exchange_garrison_script = "consul_force_exchange_garrison_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1601,6 +1603,7 @@ consul.console.write(
             scripts.force_make_peace.setup()
             scripts.force_make_war.setup()
             scripts.force_make_vassal.setup()
+            scripts.force_exchange_garrison.setup()
 
             log:debug("Finished setting up scripts")
 
@@ -1666,6 +1669,11 @@ consul.console.write(
             if context.string == ui.consul_force_make_vassal_entry then
                 log:debug("Clicked on consul_force_make_vassal")
                 scripts._on_click(scripts.force_make_vassal, ui.find(ui.consul_force_make_vassal_script))
+            end
+
+            if context.string == ui.consul_force_exchange_garrison_entry then
+                log:debug("Clicked on consul_force_exchange_garrison")
+                scripts._on_click(scripts.force_exchange_garrison, ui.find(ui.consul_force_exchange_garrison_script))
             end
         end,
 
@@ -2070,6 +2078,122 @@ consul.console.write(
             end,
 
             -- /r consul._game():force_make_vassal('rom_rome', 'rom_etruscan')
+        },
+
+        force_exchange_garrison = {
+
+            _character = nil,
+            _settlement = nil,
+
+            -- function to exchange garrison
+            _exchange = function(char_from, char_to)
+                consul._game():seek_exchange(
+                    'character_cqi:'..char_from:cqi(),
+                    'character_cqi:'..char_to:cqi(),
+                    true,
+                    false
+                )
+            end,
+            _get_colonel_for_garrison = function(garrison, is_army, is_navy)
+                if (not is_army) and (not is_navy) then return end
+
+                local characters = garrison:faction():character_list()
+                local characters_count = garrison:faction():character_list():num_items()
+                local settlement_name = garrison:settlement_interface():region():name()
+
+                for i = 0, characters_count-1 do
+                    local char = characters:item_at(i)
+                    if
+                        ---@diagnostic disable-next-line: unnecessary-if
+                        char:character_type("colonel") and
+                        char:garrison_residence():settlement_interface():region():name() == settlement_name and
+                        (
+                            (is_army and char:military_force():is_army()) or
+                            (is_navy and char:military_force():is_navy())
+                        )
+                    then
+                        return char
+                    end
+                end
+                return nil
+            end,
+
+            get_logger = function()
+                return consul.new_log('consul_scripts:force_exchange_garrison')
+            end,
+
+            setup = function()
+                local scripts = consul.consul_scripts
+                local script = scripts.force_exchange_garrison
+                local log = script.get_logger()
+                log:debug("Setting up...")
+                script._character = nil
+                script._settlement = nil
+                scripts.event_handlers['CharacterSelected']['forceexchangegarrison'] = nil
+                scripts.event_handlers['SettlementSelected']['forceexchangegarrison'] = nil
+            end,
+
+            start = function()
+                local scripts = consul.consul_scripts
+                local script = scripts.force_exchange_garrison
+                local log = script.get_logger()
+                log:debug("Starting...")
+
+                scripts.event_handlers['CharacterSelected']['forceexchangegarrison'] = function(context)
+                    log:debug("CharacterSelected")
+                    if not context:character():faction():is_human() then return end
+                    script._character = context:character()
+                end
+
+                scripts.event_handlers['SettlementSelected']['forceexchangegarrison'] = function(context)
+                    log:debug("SettlementSelected")
+
+                    if script._character == nil and script._settlement == nil then
+                        log:debug("No character selected, transfering settlements?")
+                        script._settlement = context:garrison_residence()
+                        return
+                    end
+
+                    -- transfer between settlements
+                    -- TODO THIS IS TRICKY DOES NOT WORK
+                    -- I ONCE MANAGED TO DO THAT SO IDK
+                    if script._settlement ~= nil then
+                        log:debug("Exchanging garrison between settlements...")
+                        colonel1 = script._get_colonel_for_garrison(
+                            script._settlement,
+                            true,
+                            false
+                        )
+                        if colonel1 == nil then return end
+                        colonel2 = script._get_colonel_for_garrison(
+                            context:garrison_residence(),
+                            true,
+                            false
+                        )
+                        if colonel2 == nil then return end
+                        log:debug("Exchanging garrison between 2 colonels...")
+                        script._exchange(colonel1, colonel2)
+                        return
+                    end
+
+                    -- transfer to character
+                    if script._character ~= nil and script._character:has_military_force() == true then
+                        log:debug("Exchanging garrison with character...")
+                        colonel = script._get_colonel_for_garrison(
+                            context:garrison_residence(),
+                            script._character:military_force():is_army(),
+                            script._character:military_force():is_navy()
+                        )
+                        if colonel == nil then return end
+                        log:debug("Exchanging garrison between character and colonel...")
+                        script._exchange(colonel, script._character)
+                        return
+                    end
+                end
+                end,
+                stop = function()
+                    return consul.consul_scripts.force_exchange_garrison.setup()
+                end,
         },
     },
 
