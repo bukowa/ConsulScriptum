@@ -316,6 +316,8 @@ consul = {
         consul_force_make_vassal_script = "consul_force_make_vassal_script",
         consul_force_exchange_garrison_entry = "consul_force_exchange_garrison_entry",
         consul_force_exchange_garrison_script = "consul_force_exchange_garrison_script",
+        consul_replenish_action_points_entry = "consul_replenish_action_points_entry",
+        consul_replenish_action_points_script = "consul_replenish_action_points_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1604,6 +1606,7 @@ consul.console.write(
             scripts.force_make_war.setup()
             scripts.force_make_vassal.setup()
             scripts.force_exchange_garrison.setup()
+            scripts.replenish_action_point.setup()
 
             log:debug("Finished setting up scripts")
 
@@ -1674,6 +1677,11 @@ consul.console.write(
             if context.string == ui.consul_force_exchange_garrison_entry then
                 log:debug("Clicked on consul_force_exchange_garrison")
                 scripts._on_click(scripts.force_exchange_garrison, ui.find(ui.consul_force_exchange_garrison_script))
+            end
+
+            if context.string == ui.consul_replenish_action_points_entry then
+                log:debug("Clicked on consul_replenish_action_point")
+                scripts._on_click(scripts.replenish_action_point, ui.find(ui.consul_replenish_action_points_script))
             end
         end,
 
@@ -2194,6 +2202,39 @@ consul.console.write(
                 stop = function()
                     return consul.consul_scripts.force_exchange_garrison.setup()
                 end,
+        },
+        replenish_action_point = {
+
+            get_logger = function()
+                return consul.new_log('consul_scripts:replenish_action_point')
+            end,
+
+            setup = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.replenish_action_point.get_logger()
+                log:debug("Setting up...")
+                scripts.event_handlers['CharacterSelected']['replenishactionpoint'] = nil
+            end,
+
+            start = function()
+                local log = consul.consul_scripts.replenish_action_point.get_logger()
+                local scripts = consul.consul_scripts
+                log:debug("Starting...")
+
+                scripts.event_handlers['CharacterSelected']['replenishactionpoint'] = function(context)
+                    log:debug("CharacterSelected")
+                    local char = context:character()
+                    log:debug("Replenished action points for character: " .. char:get_forename())
+                    consul._game():replenish_action_points('character_cqi:' .. char:cqi())
+                end
+            end,
+
+            stop = function()
+                local scripts = consul.consul_scripts
+                local log = scripts.replenish_action_point.get_logger()
+                log:debug("Stopping...")
+                scripts.event_handlers['CharacterSelected']['replenishactionpoint'] = nil
+            end,
         },
     },
 
