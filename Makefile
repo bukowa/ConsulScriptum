@@ -421,8 +421,13 @@ steam: run-steam
 # Commands used to insert new Consul entry into the xml ui files
 # We need to use XML2UI_BIN to convert the xml files to ui files and then back to xml files
 # and then delete them
+#make insert-consul-entry \
+#  ARG1='consul_force_exchange_garrison' \
+#  ARG2='To mobilize a garrison for field duty, first select your general'\''s army. Then, designate the settlement with which to exchange forces. Important: Your general must be outside of a settlement for this function to work correctly.' \
+#  ARG3='Custodes Vocati'
+
 insert-consul-entry:
-	python ./scripts/insert_consul_entry.py $(ARGS)
+	py ./scripts/insert_consul_entry.py $(ARG1) "$(ARG2)" "$(ARG3)"
 	$(XML2UI_BIN) ./src/ui/frontend\ ui/sp_frame.xml ./src/ui/frontend\ ui/sp_frame
 	$(XML2UI_BIN) ./src/ui/common\ ui/menu_bar.xml ./src/ui/common\ ui/menu_bar
 	$(UI2XML_BIN) ./src/ui/frontend\ ui/sp_frame ./src/ui/frontend\ ui/sp_frame.xml
