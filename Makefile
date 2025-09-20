@@ -365,6 +365,9 @@ install-dei: $(MOD_PACKAGE)
 	@echo 'mod "_divide_et_impera_release_12_Part2.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
+copy_alone: $(MOD_PACKAGE)
+	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
+
 # Function to install the mod package to a specified directory
 install-to-dir = \
 	@if [ ! -f "$1/$(MOD_PACKAGE)" ] || ! cmp -s "$<" "$1/$(MOD_PACKAGE)"; then \
