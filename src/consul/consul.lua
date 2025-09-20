@@ -2103,24 +2103,33 @@ consul.console.write(
                 )
             end,
             _get_colonel_for_garrison = function(garrison, is_army, is_navy)
-                if (not is_army) and (not is_navy) then return end
+                if (not is_army) and (not is_navy) then
+                    return
+                end
 
                 local characters = garrison:faction():character_list()
                 local characters_count = garrison:faction():character_list():num_items()
                 local settlement_name = garrison:settlement_interface():region():name()
 
-                for i = 0, characters_count-1 do
+                for i = 0, characters_count - 1 do
                     local char = characters:item_at(i)
-                    if
+
+                    local ok, result = pcall(function()
+                        if
                         ---@diagnostic disable-next-line: unnecessary-if
                         char:character_type("colonel") and
-                        char:garrison_residence():settlement_interface():region():name() == settlement_name and
-                        (
-                            (is_army and char:military_force():is_army()) or
-                            (is_navy and char:military_force():is_navy())
-                        )
-                    then
-                        return char
+                                char:garrison_residence():settlement_interface():region():name() == settlement_name and
+                                (
+                                        (is_army and char:military_force():is_army()) or
+                                                (is_navy and char:military_force():is_navy())
+                                )
+                        then
+                            return char
+                        end
+                    end)
+
+                    if ok and result ~= nil then
+                        return result
                     end
                 end
                 return nil
@@ -2167,13 +2176,13 @@ consul.console.write(
                     -- I ONCE MANAGED TO DO THAT SO IDK
                     if script._settlement ~= nil then
                         log:debug("Exchanging garrison between settlements...")
-                        colonel1 = script._get_colonel_for_garrison(
+                        local colonel1 = script._get_colonel_for_garrison(
                             script._settlement,
                             true,
                             false
                         )
                         if colonel1 == nil then return end
-                        colonel2 = script._get_colonel_for_garrison(
+                        local colonel2 = script._get_colonel_for_garrison(
                             context:garrison_residence(),
                             true,
                             false
@@ -2187,7 +2196,7 @@ consul.console.write(
                     -- transfer to character
                     if script._character ~= nil and script._character:has_military_force() == true then
                         log:debug("Exchanging garrison with character...")
-                        colonel = script._get_colonel_for_garrison(
+                        local colonel = script._get_colonel_for_garrison(
                             context:garrison_residence(),
                             script._character:military_force():is_army(),
                             script._character:military_force():is_navy()
