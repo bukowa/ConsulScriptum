@@ -747,7 +747,9 @@ function GAME:force_add_trait() end
 function GAME:force_agent_action_success_for_human() end
 function GAME:force_assassination_success_for_human() end
 function GAME:force_change_cai_faction_personality() end
-function GAME:force_character_force_into_stance() end
+---@param char_cqi string Character CQI
+---@param stance string Stance to force ex. MILITARY_FORCE_ACTIVE_STANCE_TYPE_DEFAULT
+function GAME:force_character_force_into_stance(char_cqi, stance) end
 function GAME:force_declare_war() end
 function GAME:force_diplomacy() end
 function GAME:force_garrison_infiltration_success_for_human() end
