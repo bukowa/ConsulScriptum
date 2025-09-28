@@ -779,7 +779,11 @@ function GAME:make_son_come_of_age() end
 ---@return MODEL_SCRIPT_INTERFACE
 function GAME:model() end
 function GAME:modify_next_autoresolve_battle() end
-function GAME:move_to() end
+---@param char_cqi string Character CQI
+---@param x number X coordinate to move to
+---@param y number Y coordinate to move to
+---@param cmd_queue boolean Use the command queue
+function GAME:move_to(char_cqi, x, y, cmd_queue) end
 function GAME:new() end
 function GAME:optional_extras_for_episodics() end
 function GAME:override_ui() end
