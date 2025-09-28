@@ -2253,6 +2253,7 @@ consul.console.write(
     end,
 
     -- consul._game is shorten
+    ---@type GAME
     _game = function()
         -- !!
         -- I do not try to import the `EpisodicScripting` module
