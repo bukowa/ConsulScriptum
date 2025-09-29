@@ -23,3 +23,10 @@ function displayToLogical(display_x, display_y)
 
     return logical_x, logical_y
 end
+
+consul.console.clear()
+local aX, aY = debug.getfenv(debug.getregistry()[2])["CampaignUI"]:GetCameraPosition()
+local marker_name = "mymarker"
+consul._game():remove_marker(marker_name)
+consul._game():add_marker(marker_name, "tutorial_marker", aX, aY, 2)
+consul.console.write(consul.pretty({displayToLogical(aX, aY)}))
