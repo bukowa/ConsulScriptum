@@ -39,6 +39,12 @@ function Logger.new(name, log_level, log_file_path)
     -- Internal Libraries
     self._require_func = require
 
+    -- Are we already logging all events?
+    self._is_logging_all_events = false
+
+    -- Are we logging game events?
+    self._is_logging_game_events = false
+
     return self
 end
 
@@ -224,18 +230,22 @@ function Logger:log_events(events, filter_func)
         ["_NAME"] = true,
     }
 
-    -- Load scripting module
-    local scripting = self:require('lua_scripts.EpisodicScripting')
-
     -- Loop through all events and apply the filter
-    for event, _ in pairs(events) do
+    for _, event in ipairs(events) do
 
         -- Skip always filtered events
         if not always_filtered[event] and filter_func(event) then
 
             -- Attempt to register the event callback with error handling
             local success, err = pcall(function()
-                scripting.AddEventCallBack(event, function(context)
+
+                local game_events = require "data.lua_scripts.events"
+
+                if game_events[event] == nil then
+                    game_events[event] = {}
+                end
+
+                table.insert(game_events[event], function(context)
 
                     -- build a better looking context table
                     local context_log = {
@@ -267,12 +277,24 @@ function Logger:log_events(events, filter_func)
     end
 end
 
+function Logger:get_all_events()
+    self:require('consul.consul_game_events')
+    return consul.utils.merge_and_deduplicate(
+            consul_game_events,
+            consul_game_events_decompiled_only
+    )
+end
+
 -- Log all events
 function Logger:log_events_all()
-    -- Import all events
-    local all_events = self:require('lua_scripts.events')
-    -- Log events
-    self:log_events(all_events, function(e)
+
+    -- Check if already logging all events
+    if self._is_logging_all_events then
+        self:warn("Already logging all events, skipping...")
+        return
+    end
+
+    self:log_events(self:get_all_events(), function()
         return true
     end)
 end
@@ -280,8 +302,12 @@ end
 -- Log all events excluding
 -- Component events, TimeTrigger events, and ShortcutTriggered events
 function Logger:log_game_events()
-    -- Import all events
-    local all_events = self:require('lua_scripts.events')
+
+    -- Check if already logging all events
+    if self._is_logging_game_events then
+        self:warn("Already logging game events, skipping...")
+        return
+    end
 
     -- Create a filter function that excludes Component events
     local function filter_func(event)
@@ -301,7 +327,7 @@ function Logger:log_game_events()
     end
 
     -- Log events with the custom filter
-    self:log_events(all_events, filter_func)
+    self:log_events(self:get_all_events(), filter_func)
 end
 
 -- Log all events excluding specified events

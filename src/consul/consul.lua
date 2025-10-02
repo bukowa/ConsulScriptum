@@ -132,6 +132,33 @@ consul = {
 
     },
 
+    utils = {
+        -- merges multiple tables and removes duplicates
+        merge_and_deduplicate = function(...)
+            local seen = {}
+            local unique_items = {}
+            local arg_tables = { ... }
+
+            for _, input_table in ipairs(arg_tables) do
+                -- Ensure the input is actually a table
+                if type(input_table) == "table" then
+                    for _, item in ipairs(input_table) do
+                        -- We only handle strings here, as per your original request's data type
+                        if type(item) == "string" and not seen[item] then
+                            table.insert(unique_items, item)
+                            seen[item] = true
+                        end
+                    end
+                end
+            end
+
+            -- Optionally sort the final list for consistent output
+            table.sort(unique_items)
+
+            return unique_items
+        end
+    },
+
     battle = {
         script_identifier = 'consul_battle',
         script_path = 'consul/consul_battle.lua',
@@ -806,6 +833,22 @@ consul = {
                         consul.console.commands.settings.autoclear_after = cfg.console.autoclear_after
                     end
                 },
+                ['/log_game_event '] = {
+                    help = function()
+                        return "Logs event Example: /log_game_event CharacterCreated"
+                    end,
+                    func = function(_cmd)
+                        local event = string.sub(_cmd, 17)
+                        if event == "" then
+                            return "No event specified"
+                        end
+                        consul.log:log_events({ event }, function()
+                            return true
+                        end)
+                    end,
+                    exec = false,
+                    returns = true,
+                }
             },
             exact = {
                 ['/help'] = {
@@ -1235,7 +1278,25 @@ This is some information about the CliExecute functions in the base game.
                     end,
                     exec = false,
                     returns = true,
-                }
+                },
+                ['/log_events_all'] = {
+                    help = function()
+                        return "Log all game events to the consul.log file"
+                    end,
+                    func = function()
+                        consul.log:info("Logging all game events")
+                        consul.log:log_events_all()
+                    end,
+                },
+                ['/log_events_game'] = {
+                    help = function()
+                        return "Log game events (excluding component and time trigger)"
+                    end,
+                    func = function()
+                        consul.log:info("Logging game events")
+                        consul.log:log_game_events()
+                    end,
+                },
             },
         },
 

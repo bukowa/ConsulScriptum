@@ -90,7 +90,8 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/consul/consul_logging.lua \
 	$(BUILD_DIR)/consul/consul.lua \
-	$(BUILD_DIR)/consul/consul_battle.lua
+	$(BUILD_DIR)/consul/consul_battle.lua \
+	$(BUILD_DIR)/consul/consul_game_events.lua
 
 IMAGE_TARGETS :=
 #	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png
@@ -168,6 +169,11 @@ $(BUILD_DIR)/consul/consul_logging.lua: \
 
 $(BUILD_DIR)/consul/consul_config.lua: \
 	src/consul/consul_config.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_game_events.lua: \
+	src/consul/consul_game_events.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
@@ -367,6 +373,9 @@ install-dei: $(MOD_PACKAGE)
 
 copy_alone: $(MOD_PACKAGE)
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
+
+copy_steam: $(MOD_PACKAGE)
+	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 # Function to install the mod package to a specified directory
 install-to-dir = \
