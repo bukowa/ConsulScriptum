@@ -768,7 +768,7 @@ consul = {
                     exec = true,
                     returns = true,
                 },
-                ['/p2'] = {
+                ['/p2 '] = {
                     help = function()
                         return "Pretty-prints a Lua value using 'inspect'. "
                                 .. "Example: /p2 _G"
