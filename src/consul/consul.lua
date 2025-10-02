@@ -1,6 +1,6 @@
 consul = {
 
-    VERSION = "0.2.4",
+    VERSION = "0.3.0",
     URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
