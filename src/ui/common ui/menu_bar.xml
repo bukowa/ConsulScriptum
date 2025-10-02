@@ -14794,7 +14794,7 @@
                             <i>30</i><!-- priority? -->
                             <funcs count="0">
                             </funcs>
-                            <children count="8">
+                            <children count="11">
                               <uientry>
                                 <u>509498336</u><!-- ID (e0 53 5e 1e) -->
                                 <s>consul_adrebellos_entry</s><!-- title -->
@@ -18139,6 +18139,563 @@
                               </uientry>
                               <uientry>
                                 <u>509498336</u><!-- ID (e0 53 5e 1e) -->
+                                <s>consul_incrementum_regio_entry</s><!-- title -->
+                                <s></s><!-- title2 -->
+                                <i>0</i><!-- x offset -->
+                                <i>0</i><!-- y offset -->
+                                <no /><!-- uientry flag 1 -->
+                                <no /><!-- uientry flag 2 -->
+                                <byte>0</byte><!-- uientry flag 3 -->
+                                <no /><!-- uientry flag 4 -->
+                                <no /><!-- uientry flag 5 -->
+                                <no /><!-- uientry flag 6 -->
+                                <no /><!-- uientry flag 7 -->
+                                <yes /><!-- uientry flag 8 -->
+                                <no /><!-- uientry flag 9 -->
+                                <no /><!-- uientry flag 10 -->
+                                <no /><!-- uientry flag 11 -->
+                                <no /><!-- uientry flag 12 -->
+                                <yes />
+                                <unicode>To unlock a province potential for future expansion, select this command and then click on a settlement. This represents a strategic state investment in land surveying and administrative reform, permanently granting the region +1 Growth Point. This point is required to open up new building slots, allowing for greater development.</unicode><!-- tooltip text -->
+                                <unicode></unicode><!-- tooltip id -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
+                                <no />
+                                <i>509499392</i><!-- default state id -->
+                                <images count="1">
+                                  <image>
+                                    <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                    <s>ui/skins/default/1x1_transparent_white.png</s><!-- path -->
+                                    <i>1</i><!-- x size -->
+                                    <i>1</i><!-- y size -->
+                                    <no />
+                                  </image>
+                                </images>
+                                <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
+                                <i>0</i>
+                                <states count="4">
+                                  <state>
+                                    <u>509499392</u><!-- ID (00 58 5e 1e) -->
+                                    <s>unselected</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="0">
+                                    </image_uses>
+                                    <i>17</i>
+                                    <i>17</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>0</i><!-- type -->
+                                        <u>509500640</u><!-- ID (e0 5c 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509499904</u><!-- ID (00 5a 5e 1e) -->
+                                    <s>selected</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>36</i>
+                                    <i>143</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>0</i><!-- type -->
+                                        <u>509501376</u><!-- ID (c0 5f 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509500640</u><!-- ID (e0 5c 5e 1e) -->
+                                    <s>roll</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>128</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>61</i>
+                                    <i>67</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>1</i><!-- type -->
+                                        <u>509499392</u><!-- ID (00 58 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509501376</u><!-- ID (c0 5f 5e 1e) -->
+                                    <s>selected_roll</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>77</i>
+                                    <i>201</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>1</i><!-- type -->
+                                        <u>509499904</u><!-- ID (00 5a 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                </states>
+                                <properties count="0">
+                                </properties>
+                                <i>50</i><!-- priority? -->
+                                <funcs count="0">
+                                </funcs>
+                                <children count="1">
+                                  <uientry>
+                                    <u>509502112</u><!-- ID (a0 62 5e 1e) -->
+                                    <s>consul_incrementum_regio_script</s><!-- title -->
+                                    <s></s><!-- title2 -->
+                                    <i>6</i><!-- x offset -->
+                                    <i>0</i><!-- y offset -->
+                                    <no /><!-- uientry flag 1 -->
+                                    <yes /><!-- uientry flag 2 -->
+                                    <byte>1</byte><!-- uientry flag 3 -->
+                                    <no /><!-- uientry flag 4 -->
+                                    <no /><!-- uientry flag 5 -->
+                                    <no /><!-- uientry flag 6 -->
+                                    <no /><!-- uientry flag 7 -->
+                                    <yes /><!-- uientry flag 8 -->
+                                    <no /><!-- uientry flag 9 -->
+                                    <no /><!-- uientry flag 10 -->
+                                    <no /><!-- uientry flag 11 -->
+                                    <no /><!-- uientry flag 12 -->
+                                    <yes />
+                                    <unicode></unicode><!-- tooltip text -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
+                                    <no />
+                                    <i>0</i><!-- default state id -->
+                                    <images count="0">
+                                    </images>
+                                    <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
+                                    <i>0</i>
+                                    <states count="2">
+                                      <state>
+                                        <u>509502976</u><!-- ID (00 66 5e 1e) -->
+                                        <s>default</s><!-- title - NewState -->
+                                        <i>137</i><!-- x size -->
+                                        <i>22</i><!-- y size -->
+                                        <unicode>Incrementum</unicode><!-- state text -->
+                                        <unicode></unicode><!-- tooltip -->
+                                        <i>2</i><!-- text xsize? -->
+                                        <i>4</i><!-- text ysize? -->
+                                        <i>0</i><!-- text xalign? -->
+                                        <i>2</i><!-- text yalign? -->
+                                        <yes /><!-- text behavior? -->
+                                        <unicode></unicode><!-- text label? -->
+                                        <no /><!-- state stuff 3? -->
+                                        <yes /><!-- state stuff 4? -->
+                                        <unicode></unicode><!-- localization id -->
+                                        <unicode></unicode><!-- tooltip id -->
+                                        <s>la_gioconda</s><!-- font -->
+                                        <i>12</i><!-- font size? line height? -->
+                                        <i>7</i><!-- font leading? -->
+                                        <i>0</i><!-- font tracking? -->
+                                        <color>
+                                          <byte>215</byte><!-- B -->
+                                          <byte>248</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <s>fe_text</s><!-- font category / twui -->
+                                        <i>0</i><!-- left ? -->
+                                        <i>0</i><!-- right ? -->
+                                        <i>0</i><!-- top ? -->
+                                        <i>0</i><!-- bottom ? -->
+                                        <i>0</i>
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <s>normal_t0</s><!-- shader name -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <s>normal_t0</s><!-- text shader name -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <image_uses count="0">
+                                        </image_uses>
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_states count="0">
+                                        </mouse_states>
+                                      </state>
+                                      <state>
+                                        <u>509503520</u><!-- ID (20 68 5e 1e) -->
+                                        <s>active</s><!-- title - NewState -->
+                                        <i>137</i><!-- x size -->
+                                        <i>22</i><!-- y size -->
+                                        <unicode>Incrementum</unicode><!-- state text -->
+                                        <unicode></unicode><!-- tooltip -->
+                                        <i>2</i><!-- text xsize? -->
+                                        <i>4</i><!-- text ysize? -->
+                                        <i>0</i><!-- text xalign? -->
+                                        <i>2</i><!-- text yalign? -->
+                                        <yes /><!-- text behavior? -->
+                                        <unicode></unicode><!-- text label? -->
+                                        <no /><!-- state stuff 3? -->
+                                        <yes /><!-- state stuff 4? -->
+                                        <unicode></unicode><!-- localization id -->
+                                        <unicode></unicode><!-- tooltip id -->
+                                        <s>la_gioconda</s><!-- font -->
+                                        <i>12</i><!-- font size? line height? -->
+                                        <i>7</i><!-- font leading? -->
+                                        <i>0</i><!-- font tracking? -->
+                                        <color>
+                                          <byte>29</byte><!-- B -->
+                                          <byte>137</byte><!-- G -->
+                                          <byte>74</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <s>ingame_text_green</s><!-- font category / twui -->
+                                        <i>0</i><!-- left ? -->
+                                        <i>0</i><!-- right ? -->
+                                        <i>0</i><!-- top ? -->
+                                        <i>0</i><!-- bottom ? -->
+                                        <i>0</i>
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <s>normal_t0</s><!-- shader name -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <s>normal_t0</s><!-- text shader name -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <image_uses count="0">
+                                        </image_uses>
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_states count="0">
+                                        </mouse_states>
+                                      </state>
+                                    </states>
+                                    <properties count="1">
+                                      <property>
+                                        <s>disable_text_shrink</s><!-- key -->
+                                        <s></s><!-- value -->
+                                      </property>
+                                    </properties>
+                                    <i>50</i><!-- priority? -->
+                                    <funcs count="0">
+                                    </funcs>
+                                    <children count="0">
+                                    </children>
+                                    <additional_data type="none"/>
+                                    <s></s><!-- end of uientry 1? -->
+                                    <s></s><!-- end of uientry 2? -->
+                                    <no /><!-- has some extra data (section skipped) -->
+                                    <no /><!-- has model (controls presence of model below) -->
+                                    <no /><!-- end of uientry flag 5B? -->
+                                    <no /><!-- end of uientry flag 6B? -->
+                                  </uientry>
+                                </children>
+                                <additional_data type="none"/>
+                                <s>grp_gw_generic_drop_down_list</s><!-- end of uientry 1? -->
+                                <s></s><!-- end of uientry 2? -->
+                                <no /><!-- has some extra data (section skipped) -->
+                                <no /><!-- has model (controls presence of model below) -->
+                                <no /><!-- end of uientry flag 5B? -->
+                                <no /><!-- end of uientry flag 6B? -->
+                              </uientry>
+                              <uientry>
+                                <u>509498336</u><!-- ID (e0 53 5e 1e) -->
                                 <s>consul_force_make_peace_entry</s><!-- title -->
                                 <s></s><!-- title2 -->
                                 <i>0</i><!-- x offset -->
@@ -18696,6 +19253,563 @@
                               </uientry>
                               <uientry>
                                 <u>509498336</u><!-- ID (e0 53 5e 1e) -->
+                                <s>consul_sedatio_provinciae_entry</s><!-- title -->
+                                <s></s><!-- title2 -->
+                                <i>0</i><!-- x offset -->
+                                <i>0</i><!-- y offset -->
+                                <no /><!-- uientry flag 1 -->
+                                <no /><!-- uientry flag 2 -->
+                                <byte>0</byte><!-- uientry flag 3 -->
+                                <no /><!-- uientry flag 4 -->
+                                <no /><!-- uientry flag 5 -->
+                                <no /><!-- uientry flag 6 -->
+                                <no /><!-- uientry flag 7 -->
+                                <yes /><!-- uientry flag 8 -->
+                                <no /><!-- uientry flag 9 -->
+                                <no /><!-- uientry flag 10 -->
+                                <no /><!-- uientry flag 11 -->
+                                <no /><!-- uientry flag 12 -->
+                                <yes />
+                                <unicode>To calm unrest and bolster loyalty, select this command and then click on a settlement. This will temporarily appease the populace, providing a significant (+10) boost to public order across the entire province. Use it to stabilize newly conquered or rebellious lands.</unicode><!-- tooltip text -->
+                                <unicode></unicode><!-- tooltip id -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
+                                <no />
+                                <i>509499392</i><!-- default state id -->
+                                <images count="1">
+                                  <image>
+                                    <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                    <s>ui/skins/default/1x1_transparent_white.png</s><!-- path -->
+                                    <i>1</i><!-- x size -->
+                                    <i>1</i><!-- y size -->
+                                    <no />
+                                  </image>
+                                </images>
+                                <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
+                                <i>0</i>
+                                <states count="4">
+                                  <state>
+                                    <u>509499392</u><!-- ID (00 58 5e 1e) -->
+                                    <s>unselected</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="0">
+                                    </image_uses>
+                                    <i>17</i>
+                                    <i>17</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>0</i><!-- type -->
+                                        <u>509500640</u><!-- ID (e0 5c 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509499904</u><!-- ID (00 5a 5e 1e) -->
+                                    <s>selected</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>36</i>
+                                    <i>143</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>0</i><!-- type -->
+                                        <u>509501376</u><!-- ID (c0 5f 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509500640</u><!-- ID (e0 5c 5e 1e) -->
+                                    <s>roll</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>128</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>61</i>
+                                    <i>67</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>1</i><!-- type -->
+                                        <u>509499392</u><!-- ID (00 58 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509501376</u><!-- ID (c0 5f 5e 1e) -->
+                                    <s>selected_roll</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>77</i>
+                                    <i>201</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>1</i><!-- type -->
+                                        <u>509499904</u><!-- ID (00 5a 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                </states>
+                                <properties count="0">
+                                </properties>
+                                <i>50</i><!-- priority? -->
+                                <funcs count="0">
+                                </funcs>
+                                <children count="1">
+                                  <uientry>
+                                    <u>509502112</u><!-- ID (a0 62 5e 1e) -->
+                                    <s>consul_sedatio_provinciae_script</s><!-- title -->
+                                    <s></s><!-- title2 -->
+                                    <i>6</i><!-- x offset -->
+                                    <i>0</i><!-- y offset -->
+                                    <no /><!-- uientry flag 1 -->
+                                    <yes /><!-- uientry flag 2 -->
+                                    <byte>1</byte><!-- uientry flag 3 -->
+                                    <no /><!-- uientry flag 4 -->
+                                    <no /><!-- uientry flag 5 -->
+                                    <no /><!-- uientry flag 6 -->
+                                    <no /><!-- uientry flag 7 -->
+                                    <yes /><!-- uientry flag 8 -->
+                                    <no /><!-- uientry flag 9 -->
+                                    <no /><!-- uientry flag 10 -->
+                                    <no /><!-- uientry flag 11 -->
+                                    <no /><!-- uientry flag 12 -->
+                                    <yes />
+                                    <unicode></unicode><!-- tooltip text -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
+                                    <no />
+                                    <i>0</i><!-- default state id -->
+                                    <images count="0">
+                                    </images>
+                                    <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
+                                    <i>0</i>
+                                    <states count="2">
+                                      <state>
+                                        <u>509502976</u><!-- ID (00 66 5e 1e) -->
+                                        <s>default</s><!-- title - NewState -->
+                                        <i>137</i><!-- x size -->
+                                        <i>22</i><!-- y size -->
+                                        <unicode>Sedatio</unicode><!-- state text -->
+                                        <unicode></unicode><!-- tooltip -->
+                                        <i>2</i><!-- text xsize? -->
+                                        <i>4</i><!-- text ysize? -->
+                                        <i>0</i><!-- text xalign? -->
+                                        <i>2</i><!-- text yalign? -->
+                                        <yes /><!-- text behavior? -->
+                                        <unicode></unicode><!-- text label? -->
+                                        <no /><!-- state stuff 3? -->
+                                        <yes /><!-- state stuff 4? -->
+                                        <unicode></unicode><!-- localization id -->
+                                        <unicode></unicode><!-- tooltip id -->
+                                        <s>la_gioconda</s><!-- font -->
+                                        <i>12</i><!-- font size? line height? -->
+                                        <i>7</i><!-- font leading? -->
+                                        <i>0</i><!-- font tracking? -->
+                                        <color>
+                                          <byte>215</byte><!-- B -->
+                                          <byte>248</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <s>fe_text</s><!-- font category / twui -->
+                                        <i>0</i><!-- left ? -->
+                                        <i>0</i><!-- right ? -->
+                                        <i>0</i><!-- top ? -->
+                                        <i>0</i><!-- bottom ? -->
+                                        <i>0</i>
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <s>normal_t0</s><!-- shader name -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <s>normal_t0</s><!-- text shader name -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <image_uses count="0">
+                                        </image_uses>
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_states count="0">
+                                        </mouse_states>
+                                      </state>
+                                      <state>
+                                        <u>509503520</u><!-- ID (20 68 5e 1e) -->
+                                        <s>active</s><!-- title - NewState -->
+                                        <i>137</i><!-- x size -->
+                                        <i>22</i><!-- y size -->
+                                        <unicode>Sedatio</unicode><!-- state text -->
+                                        <unicode></unicode><!-- tooltip -->
+                                        <i>2</i><!-- text xsize? -->
+                                        <i>4</i><!-- text ysize? -->
+                                        <i>0</i><!-- text xalign? -->
+                                        <i>2</i><!-- text yalign? -->
+                                        <yes /><!-- text behavior? -->
+                                        <unicode></unicode><!-- text label? -->
+                                        <no /><!-- state stuff 3? -->
+                                        <yes /><!-- state stuff 4? -->
+                                        <unicode></unicode><!-- localization id -->
+                                        <unicode></unicode><!-- tooltip id -->
+                                        <s>la_gioconda</s><!-- font -->
+                                        <i>12</i><!-- font size? line height? -->
+                                        <i>7</i><!-- font leading? -->
+                                        <i>0</i><!-- font tracking? -->
+                                        <color>
+                                          <byte>29</byte><!-- B -->
+                                          <byte>137</byte><!-- G -->
+                                          <byte>74</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <s>ingame_text_green</s><!-- font category / twui -->
+                                        <i>0</i><!-- left ? -->
+                                        <i>0</i><!-- right ? -->
+                                        <i>0</i><!-- top ? -->
+                                        <i>0</i><!-- bottom ? -->
+                                        <i>0</i>
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <s>normal_t0</s><!-- shader name -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <s>normal_t0</s><!-- text shader name -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <image_uses count="0">
+                                        </image_uses>
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_states count="0">
+                                        </mouse_states>
+                                      </state>
+                                    </states>
+                                    <properties count="1">
+                                      <property>
+                                        <s>disable_text_shrink</s><!-- key -->
+                                        <s></s><!-- value -->
+                                      </property>
+                                    </properties>
+                                    <i>50</i><!-- priority? -->
+                                    <funcs count="0">
+                                    </funcs>
+                                    <children count="0">
+                                    </children>
+                                    <additional_data type="none"/>
+                                    <s></s><!-- end of uientry 1? -->
+                                    <s></s><!-- end of uientry 2? -->
+                                    <no /><!-- has some extra data (section skipped) -->
+                                    <no /><!-- has model (controls presence of model below) -->
+                                    <no /><!-- end of uientry flag 5B? -->
+                                    <no /><!-- end of uientry flag 6B? -->
+                                  </uientry>
+                                </children>
+                                <additional_data type="none"/>
+                                <s>grp_gw_generic_drop_down_list</s><!-- end of uientry 1? -->
+                                <s></s><!-- end of uientry 2? -->
+                                <no /><!-- has some extra data (section skipped) -->
+                                <no /><!-- has model (controls presence of model below) -->
+                                <no /><!-- end of uientry flag 5B? -->
+                                <no /><!-- end of uientry flag 6B? -->
+                              </uientry>
+                              <uientry>
+                                <u>509498336</u><!-- ID (e0 53 5e 1e) -->
                                 <s>consul_force_make_vassal_entry</s><!-- title -->
                                 <s></s><!-- title2 -->
                                 <i>0</i><!-- x offset -->
@@ -19174,6 +20288,563 @@
                                         <i>137</i><!-- x size -->
                                         <i>22</i><!-- y size -->
                                         <unicode>Subiugatio</unicode><!-- state text -->
+                                        <unicode></unicode><!-- tooltip -->
+                                        <i>2</i><!-- text xsize? -->
+                                        <i>4</i><!-- text ysize? -->
+                                        <i>0</i><!-- text xalign? -->
+                                        <i>2</i><!-- text yalign? -->
+                                        <yes /><!-- text behavior? -->
+                                        <unicode></unicode><!-- text label? -->
+                                        <no /><!-- state stuff 3? -->
+                                        <yes /><!-- state stuff 4? -->
+                                        <unicode></unicode><!-- localization id -->
+                                        <unicode></unicode><!-- tooltip id -->
+                                        <s>la_gioconda</s><!-- font -->
+                                        <i>12</i><!-- font size? line height? -->
+                                        <i>7</i><!-- font leading? -->
+                                        <i>0</i><!-- font tracking? -->
+                                        <color>
+                                          <byte>29</byte><!-- B -->
+                                          <byte>137</byte><!-- G -->
+                                          <byte>74</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <s>ingame_text_green</s><!-- font category / twui -->
+                                        <i>0</i><!-- left ? -->
+                                        <i>0</i><!-- right ? -->
+                                        <i>0</i><!-- top ? -->
+                                        <i>0</i><!-- bottom ? -->
+                                        <i>0</i>
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <s>normal_t0</s><!-- shader name -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <s>normal_t0</s><!-- text shader name -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <image_uses count="0">
+                                        </image_uses>
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_states count="0">
+                                        </mouse_states>
+                                      </state>
+                                    </states>
+                                    <properties count="1">
+                                      <property>
+                                        <s>disable_text_shrink</s><!-- key -->
+                                        <s></s><!-- value -->
+                                      </property>
+                                    </properties>
+                                    <i>50</i><!-- priority? -->
+                                    <funcs count="0">
+                                    </funcs>
+                                    <children count="0">
+                                    </children>
+                                    <additional_data type="none"/>
+                                    <s></s><!-- end of uientry 1? -->
+                                    <s></s><!-- end of uientry 2? -->
+                                    <no /><!-- has some extra data (section skipped) -->
+                                    <no /><!-- has model (controls presence of model below) -->
+                                    <no /><!-- end of uientry flag 5B? -->
+                                    <no /><!-- end of uientry flag 6B? -->
+                                  </uientry>
+                                </children>
+                                <additional_data type="none"/>
+                                <s>grp_gw_generic_drop_down_list</s><!-- end of uientry 1? -->
+                                <s></s><!-- end of uientry 2? -->
+                                <no /><!-- has some extra data (section skipped) -->
+                                <no /><!-- has model (controls presence of model below) -->
+                                <no /><!-- end of uientry flag 5B? -->
+                                <no /><!-- end of uientry flag 6B? -->
+                              </uientry>
+                              <uientry>
+                                <u>509498336</u><!-- ID (e0 53 5e 1e) -->
+                                <s>consul_vexatio_provinciae_entry</s><!-- title -->
+                                <s></s><!-- title2 -->
+                                <i>0</i><!-- x offset -->
+                                <i>0</i><!-- y offset -->
+                                <no /><!-- uientry flag 1 -->
+                                <no /><!-- uientry flag 2 -->
+                                <byte>0</byte><!-- uientry flag 3 -->
+                                <no /><!-- uientry flag 4 -->
+                                <no /><!-- uientry flag 5 -->
+                                <no /><!-- uientry flag 6 -->
+                                <no /><!-- uientry flag 7 -->
+                                <yes /><!-- uientry flag 8 -->
+                                <no /><!-- uientry flag 9 -->
+                                <no /><!-- uientry flag 10 -->
+                                <no /><!-- uientry flag 11 -->
+                                <no /><!-- uientry flag 12 -->
+                                <yes />
+                                <unicode>To make an example of a province or suppress dissent, select this command and then click on a settlement. This will enact a policy of official harassment, such as punitive levies or forced quartering of troops, inflicting a severe (-10) penalty to public order.</unicode><!-- tooltip text -->
+                                <unicode></unicode><!-- tooltip id -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
+                                <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
+                                <no />
+                                <i>509499392</i><!-- default state id -->
+                                <images count="1">
+                                  <image>
+                                    <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                    <s>ui/skins/default/1x1_transparent_white.png</s><!-- path -->
+                                    <i>1</i><!-- x size -->
+                                    <i>1</i><!-- y size -->
+                                    <no />
+                                  </image>
+                                </images>
+                                <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
+                                <i>0</i>
+                                <states count="4">
+                                  <state>
+                                    <u>509499392</u><!-- ID (00 58 5e 1e) -->
+                                    <s>unselected</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="0">
+                                    </image_uses>
+                                    <i>17</i>
+                                    <i>17</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>0</i><!-- type -->
+                                        <u>509500640</u><!-- ID (e0 5c 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509499904</u><!-- ID (00 5a 5e 1e) -->
+                                    <s>selected</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>36</i>
+                                    <i>143</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>0</i><!-- type -->
+                                        <u>509501376</u><!-- ID (c0 5f 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509500640</u><!-- ID (e0 5c 5e 1e) -->
+                                    <s>roll</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>128</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>61</i>
+                                    <i>67</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>1</i><!-- type -->
+                                        <u>509499392</u><!-- ID (00 58 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                  <state>
+                                    <u>509501376</u><!-- ID (c0 5f 5e 1e) -->
+                                    <s>selected_roll</s><!-- title - NewState -->
+                                    <i>167</i><!-- x size -->
+                                    <i>22</i><!-- y size -->
+                                    <unicode></unicode><!-- state text -->
+                                    <unicode></unicode><!-- tooltip -->
+                                    <i>2</i><!-- text xsize? -->
+                                    <i>0</i><!-- text ysize? -->
+                                    <i>0</i><!-- text xalign? -->
+                                    <i>1</i><!-- text yalign? -->
+                                    <yes /><!-- text behavior? -->
+                                    <unicode></unicode><!-- text label? -->
+                                    <no /><!-- state stuff 3? -->
+                                    <no /><!-- state stuff 4? -->
+                                    <unicode></unicode><!-- localization id -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <s>georgia_italic</s><!-- font -->
+                                    <i>10</i><!-- font size? line height? -->
+                                    <i>2</i><!-- font leading? -->
+                                    <i>1</i><!-- font tracking? -->
+                                    <color>
+                                      <byte>221</byte><!-- B -->
+                                      <byte>218</byte><!-- G -->
+                                      <byte>250</byte><!-- R -->
+                                      <byte>255</byte><!-- A -->
+                                    </color>
+                                    <s>Default Font Category</s><!-- font category / twui -->
+                                    <i>0</i><!-- left ? -->
+                                    <i>0</i><!-- right ? -->
+                                    <i>0</i><!-- top ? -->
+                                    <i>0</i><!-- bottom ? -->
+                                    <i>0</i>
+                                    <yes />
+                                    <no />
+                                    <no />
+                                    <no />
+                                    <s>normal_t0</s><!-- shader name -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <flt>0.0</flt><!-- shader vars -->
+                                    <s>normal_t0</s><!-- text shader name -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <flt>0.0</flt><!-- text shader vars -->
+                                    <image_uses count="1">
+                                      <image_use>
+                                        <u>509499200</u><!-- ID (40 57 5e 1e) -->
+                                        <u>0</u><!-- x offset -->
+                                        <u>0</u><!-- y offset -->
+                                        <u>167</u><!-- x size -->
+                                        <u>22</u><!-- y size -->
+                                        <!-- color -->
+                                        <color>
+                                          <byte>0</byte><!-- B -->
+                                          <byte>215</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <no /><!-- tiled? -->
+                                        <no /><!-- flipped x? -->
+                                        <no /><!-- flipped y? -->
+                                        <i>0</i><!-- dock position (0-9)? -->
+                                        <i>0</i><!-- dock offset x? -->
+                                        <i>0</i><!-- dock offset y? -->
+                                        <yes /><!-- stretch x? -->
+                                        <yes /><!-- stretch y? -->
+                                        <flt>0.0</flt><!-- 0.0 degrees --><!-- rotation angle -->
+                                        <flt>0.0</flt><!-- rotation pivot x? -->
+                                        <flt>0.0</flt><!-- rotation pivot y? -->
+                                        <s></s><!-- shader name -->
+                                        <flt>0.0</flt><!-- rotation axis x? -->
+                                        <flt>0.0</flt><!-- rotation axis y? -->
+                                        <flt>0.0</flt><!-- rotation axis z? -->
+                                        <i>0</i><!-- always zero -->
+                                        <flt>0.0</flt><!-- margin top-bottom? -->
+                                        <flt>0.0</flt><!-- margin left-right? -->
+                                      </image_use>
+                                    </image_uses>
+                                    <i>77</i>
+                                    <i>201</i>
+                                    <mouse_states count="1">
+                                      <mouse_state>
+                                        <i>1</i><!-- type -->
+                                        <u>509499904</u><!-- ID (00 5a 5e 1e) -->
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_state_data count="0">
+                                        </mouse_state_data>
+                                      </mouse_state>
+                                    </mouse_states>
+                                  </state>
+                                </states>
+                                <properties count="0">
+                                </properties>
+                                <i>50</i><!-- priority? -->
+                                <funcs count="0">
+                                </funcs>
+                                <children count="1">
+                                  <uientry>
+                                    <u>509502112</u><!-- ID (a0 62 5e 1e) -->
+                                    <s>consul_vexatio_provinciae_script</s><!-- title -->
+                                    <s></s><!-- title2 -->
+                                    <i>6</i><!-- x offset -->
+                                    <i>0</i><!-- y offset -->
+                                    <no /><!-- uientry flag 1 -->
+                                    <yes /><!-- uientry flag 2 -->
+                                    <byte>1</byte><!-- uientry flag 3 -->
+                                    <no /><!-- uientry flag 4 -->
+                                    <no /><!-- uientry flag 5 -->
+                                    <no /><!-- uientry flag 6 -->
+                                    <no /><!-- uientry flag 7 -->
+                                    <yes /><!-- uientry flag 8 -->
+                                    <no /><!-- uientry flag 9 -->
+                                    <no /><!-- uientry flag 10 -->
+                                    <no /><!-- uientry flag 11 -->
+                                    <no /><!-- uientry flag 12 -->
+                                    <yes />
+                                    <unicode></unicode><!-- tooltip text -->
+                                    <unicode></unicode><!-- tooltip id -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking? -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking x? -->
+                                    <i>0</i><!-- 00:00:00:00 --><!-- docking y? -->
+                                    <no />
+                                    <i>0</i><!-- default state id -->
+                                    <images count="0">
+                                    </images>
+                                    <i>0</i><!-- 00:00:00:00 --><!-- mask image? -->
+                                    <i>0</i>
+                                    <states count="2">
+                                      <state>
+                                        <u>509502976</u><!-- ID (00 66 5e 1e) -->
+                                        <s>default</s><!-- title - NewState -->
+                                        <i>137</i><!-- x size -->
+                                        <i>22</i><!-- y size -->
+                                        <unicode>Vexatio</unicode><!-- state text -->
+                                        <unicode></unicode><!-- tooltip -->
+                                        <i>2</i><!-- text xsize? -->
+                                        <i>4</i><!-- text ysize? -->
+                                        <i>0</i><!-- text xalign? -->
+                                        <i>2</i><!-- text yalign? -->
+                                        <yes /><!-- text behavior? -->
+                                        <unicode></unicode><!-- text label? -->
+                                        <no /><!-- state stuff 3? -->
+                                        <yes /><!-- state stuff 4? -->
+                                        <unicode></unicode><!-- localization id -->
+                                        <unicode></unicode><!-- tooltip id -->
+                                        <s>la_gioconda</s><!-- font -->
+                                        <i>12</i><!-- font size? line height? -->
+                                        <i>7</i><!-- font leading? -->
+                                        <i>0</i><!-- font tracking? -->
+                                        <color>
+                                          <byte>215</byte><!-- B -->
+                                          <byte>248</byte><!-- G -->
+                                          <byte>255</byte><!-- R -->
+                                          <byte>255</byte><!-- A -->
+                                        </color>
+                                        <s>fe_text</s><!-- font category / twui -->
+                                        <i>0</i><!-- left ? -->
+                                        <i>0</i><!-- right ? -->
+                                        <i>0</i><!-- top ? -->
+                                        <i>0</i><!-- bottom ? -->
+                                        <i>0</i>
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <no />
+                                        <s>normal_t0</s><!-- shader name -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <flt>0.0</flt><!-- shader vars -->
+                                        <s>normal_t0</s><!-- text shader name -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <flt>0.0</flt><!-- text shader vars -->
+                                        <image_uses count="0">
+                                        </image_uses>
+                                        <i>0</i>
+                                        <i>0</i>
+                                        <mouse_states count="0">
+                                        </mouse_states>
+                                      </state>
+                                      <state>
+                                        <u>509503520</u><!-- ID (20 68 5e 1e) -->
+                                        <s>active</s><!-- title - NewState -->
+                                        <i>137</i><!-- x size -->
+                                        <i>22</i><!-- y size -->
+                                        <unicode>Vexatio</unicode><!-- state text -->
                                         <unicode></unicode><!-- tooltip -->
                                         <i>2</i><!-- text xsize? -->
                                         <i>4</i><!-- text ysize? -->

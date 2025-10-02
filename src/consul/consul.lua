@@ -346,6 +346,12 @@ consul = {
         consul_force_exchange_garrison_script = "consul_force_exchange_garrison_script",
         consul_replenish_action_points_entry = "consul_replenish_action_points_entry",
         consul_replenish_action_points_script = "consul_replenish_action_points_script",
+        consul_vexatio_provinciae_entry = "consul_vexatio_provinciae_entry",
+        consul_vexatio_provinciae_script = "consul_vexatio_provinciae_script",
+        consul_sedatio_provinciae_entry = "consul_sedatio_provinciae_entry",
+        consul_sedatio_provinciae_script = "consul_sedatio_provinciae_script",
+        consul_incrementum_regio_entry = "consul_incrementum_regio_entry",
+        consul_incrementum_regio_script = "consul_incrementum_regio_script",
 
         -- keep internals private
         _UIRoot = nil,
@@ -1619,6 +1625,119 @@ consul.console.write(
         end,
     },
 
+    -- new version that should be more flexible with better patterns and less code
+    consul_scripts_v2 = {
+
+        -- initialize all scripts
+        initialize = function()
+            local scripts = consul.consul_scripts_v2
+            scripts.instances["vexatio_provinciae"] = scripts.create_change_public_order_by_func(-10)
+            scripts.instances["sedatio_provinciae"] = scripts.create_change_public_order_by_func(10)
+            scripts.instances["incrementum_regio"] = scripts.create_increase_growth_points_func(1)
+        end,
+
+        instances = {
+            vexatio_provinciae = nil,
+            sedatio_provinciae = nil,
+            incrementum_regio = nil,
+        },
+
+        __wrap_func_with_log = function(func, log, text)
+            return function()
+                log:debug(text)
+                func()
+            end
+        end,
+
+        __wrap_setup = function(setup, log)
+            return function()
+                log:debug("Setting up...")
+                setup()
+            end
+        end,
+
+        __wrap_start = function(start, log)
+            return function()
+                log:debug("Starting...")
+                start()
+            end
+        end,
+
+        __wrap_stop = function(stop, log)
+            return function()
+                log:debug("Stopping...")
+                stop()
+            end
+        end,
+
+        __get_logger = function(name)
+            return consul.new_log('consul_scripts:' .. name)
+        end,
+
+        create_change_public_order_by_func = function(number)
+            local scripts2 = consul.consul_scripts_v2
+            local scripts = consul.consul_scripts
+
+            local log = scripts2.__get_logger('change_public_order_by_' .. tostring(number))
+            local event = 'change_public_order_by_' .. tostring(number)
+
+            local setup = function()
+                scripts.event_handlers['SettlementSelected'][event] = nil
+            end
+
+            local start = function()
+                scripts.event_handlers['SettlementSelected'][event] = function(context)
+                    log:debug("SettlementSelected")
+                    local region = context:garrison_residence():region():name()
+                    log:debug("Increasing public order in: " .. region)
+                    consul._game():set_public_order_of_province_for_region(region, context:garrison_residence():region():public_order() + number)
+                end
+            end
+
+            local stop = function()
+                scripts.event_handlers['SettlementSelected'][event] = nil
+            end
+
+            return {
+                setup = scripts2.__wrap_setup(setup, log),
+                start = scripts2.__wrap_start(start, log),
+                stop = scripts2.__wrap_stop(stop, log),
+            }
+
+        end,
+        create_increase_growth_points_func = function(number)
+            local scripts2 = consul.consul_scripts_v2
+            local scripts = consul.consul_scripts
+
+            local log = scripts2.__get_logger('increase_growth_points_by_' .. tostring(number))
+            local event = 'increase_growth_points_by_' .. tostring(number)
+
+            local setup = function()
+                scripts.event_handlers['SettlementSelected'][event] = nil
+            end
+
+            local start = function()
+                scripts.event_handlers['SettlementSelected'][event] = function(context)
+                    log:debug("SettlementSelected")
+                    local region = context:garrison_residence():region():name()
+                    log:debug("Increasing growth points in: " .. region)
+                    consul._game():add_development_points_to_region(region, number)
+                end
+            end
+
+            local stop = function()
+                scripts.event_handlers['SettlementSelected'][event] = nil
+            end
+
+            return {
+                setup = scripts2.__wrap_setup(setup, log),
+                start = scripts2.__wrap_start(start, log),
+                stop = scripts2.__wrap_stop(stop, log),
+            }
+
+        end,
+    },
+
     -- consul scripts window
     consul_scripts = {
 
@@ -1652,6 +1771,8 @@ consul.console.write(
         -- setup the script, should be called once
         setup = function()
             local log, scripts = consul.new_log('consul_scripts:setup'), consul.consul_scripts
+            local scripts2 = consul.consul_scripts_v2
+
             log:debug("Setting up scripts")
 
             -- skip if already set up
@@ -1660,6 +1781,7 @@ consul.console.write(
                 return
             end
 
+            scripts2.initialize()
             -- call all scripts setup
             scripts.exterminare.setup()
             scripts.transfer_settlement.setup()
@@ -1669,6 +1791,9 @@ consul.console.write(
             scripts.force_make_vassal.setup()
             scripts.force_exchange_garrison.setup()
             scripts.replenish_action_point.setup()
+            scripts2.instances.vexatio_provinciae.setup()
+            scripts2.instances.sedatio_provinciae.setup()
+            scripts2.instances.incrementum_regio.setup()
 
             log:debug("Finished setting up scripts")
 
@@ -1703,6 +1828,7 @@ consul.console.write(
         OnComponentLClickUp = function(context)
             local log = consul.new_log('consul_scripts:OnComponentLClickUp')
             local scripts = consul.consul_scripts
+            local scripts2 = consul.consul_scripts_v2
             local ui = consul.ui
 
             if context.string == ui.consul_exterminare_entry then
@@ -1745,6 +1871,22 @@ consul.console.write(
                 log:debug("Clicked on consul_replenish_action_point")
                 scripts._on_click(scripts.replenish_action_point, ui.find(ui.consul_replenish_action_points_script))
             end
+
+            if context.string == ui.consul_vexatio_provinciae_entry then
+                log:debug("Clicked on consul_vexatio_provinciae")
+                scripts._on_click(scripts2.instances.vexatio_provinciae, ui.find(ui.consul_vexatio_provinciae_script))
+            end
+
+            if context.string == ui.consul_sedatio_provinciae_entry then
+                log:debug("Clicked on consul_sedatio_provinciae")
+                scripts._on_click(scripts2.instances.sedatio_provinciae, ui.find(ui.consul_sedatio_provinciae_script))
+            end
+
+            if context.string == ui.consul_incrementum_regio_entry then
+                log:debug("Clicked on consul_incrementum_regio")
+                scripts._on_click(scripts2.instances.incrementum_regio, ui.find(ui.consul_incrementum_regio_script))
+            end
+
         end,
 
         exterminare = {
