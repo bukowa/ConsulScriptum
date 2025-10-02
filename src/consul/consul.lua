@@ -20,7 +20,8 @@ consul = {
         character = nil,
         -- return a cqi for lookups
         character_cqi = function()
-            return 'character_cqi:' .. consul.debug.character:cqi() end,
+            return 'character_cqi:' .. consul.debug.character:cqi()
+        end,
         -- hide the character
         character_hide = function(queue)
             queue = (queue == nil) and true or queue
@@ -2096,10 +2097,10 @@ consul.console.write(
             -- function to exchange garrison
             _exchange = function(char_from, char_to)
                 consul._game():seek_exchange(
-                    'character_cqi:'..char_from:cqi(),
-                    'character_cqi:'..char_to:cqi(),
-                    true,
-                    false
+                        'character_cqi:' .. char_from:cqi(),
+                        'character_cqi:' .. char_to:cqi(),
+                        true,
+                        false
                 )
             end,
             _get_colonel_for_garrison = function(garrison, is_army, is_navy)
@@ -2158,7 +2159,9 @@ consul.console.write(
 
                 scripts.event_handlers['CharacterSelected']['forceexchangegarrison'] = function(context)
                     log:debug("CharacterSelected")
-                    if not context:character():faction():is_human() then return end
+                    if not context:character():faction():is_human() then
+                        return
+                    end
                     script._character = context:character()
                 end
 
@@ -2177,17 +2180,21 @@ consul.console.write(
                     if script._settlement ~= nil then
                         log:debug("Exchanging garrison between settlements...")
                         local colonel1 = script._get_colonel_for_garrison(
-                            script._settlement,
-                            true,
-                            false
+                                script._settlement,
+                                true,
+                                false
                         )
-                        if colonel1 == nil then return end
+                        if colonel1 == nil then
+                            return
+                        end
                         local colonel2 = script._get_colonel_for_garrison(
-                            context:garrison_residence(),
-                            true,
-                            false
+                                context:garrison_residence(),
+                                true,
+                                false
                         )
-                        if colonel2 == nil then return end
+                        if colonel2 == nil then
+                            return
+                        end
                         log:debug("Exchanging garrison between 2 colonels...")
                         script._exchange(colonel1, colonel2)
                         return
@@ -2197,20 +2204,22 @@ consul.console.write(
                     if script._character ~= nil and script._character:has_military_force() == true then
                         log:debug("Exchanging garrison with character...")
                         local colonel = script._get_colonel_for_garrison(
-                            context:garrison_residence(),
-                            script._character:military_force():is_army(),
-                            script._character:military_force():is_navy()
+                                context:garrison_residence(),
+                                script._character:military_force():is_army(),
+                                script._character:military_force():is_navy()
                         )
-                        if colonel == nil then return end
+                        if colonel == nil then
+                            return
+                        end
                         log:debug("Exchanging garrison between character and colonel...")
                         script._exchange(colonel, script._character)
                         return
                     end
                 end
-                end,
-                stop = function()
-                    return consul.consul_scripts.force_exchange_garrison.setup()
-                end,
+            end,
+            stop = function()
+                return consul.consul_scripts.force_exchange_garrison.setup()
+            end,
         },
         replenish_action_point = {
 
