@@ -59,7 +59,6 @@ consul = {
     end,
 
     -- logging
-
     log = require('consul_logging').Logger.new();
 
     -- shortcut to create a new logger
@@ -75,6 +74,10 @@ consul = {
     pretty_inspect = function(_obj)
         return consul.inspect(_obj, { newline = '\n' })
     end,
+
+    -- table with base game events and decompiled game events
+    -- decompiled events are these only found in game source but not in game pack files
+    _events = require('consul_game_events'),
 
     -- compatibility patches for other mods
     compat = {

@@ -295,3 +295,8 @@ consul_game_events_decompiled_only = {
     "FactionLeaderIssuesEdict",
     "ForceAdoptsStance"
 }
+
+return {
+    base = consul_game_events,
+    decompiled = consul_game_events_decompiled_only
+}

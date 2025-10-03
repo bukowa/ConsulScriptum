@@ -277,10 +277,9 @@ function Logger:log_events(_events, filter_func)
 end
 
 function Logger:get_all_events()
-    self:require('consul.consul_game_events')
     return consul.utils.merge_and_deduplicate(
-            consul_game_events,
-            consul_game_events_decompiled_only
+            consul._events.base,
+            consul._events.decompiled
     )
 end
 
