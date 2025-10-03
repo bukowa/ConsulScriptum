@@ -221,7 +221,7 @@ function Logger:stop_trace()
 end
 
 -- Log events based on a filter function, with always-filtered events
-function Logger:log_events(events, filter_func)
+function Logger:log_events(_events, filter_func)
 
     -- Define events to always filter out
     local always_filtered = {
@@ -231,7 +231,7 @@ function Logger:log_events(events, filter_func)
     }
 
     -- Loop through all events and apply the filter
-    for _, event in ipairs(events) do
+    for _, event in ipairs(_events) do
 
         -- Skip always filtered events
         if not always_filtered[event] and filter_func(event) then
@@ -239,13 +239,11 @@ function Logger:log_events(events, filter_func)
             -- Attempt to register the event callback with error handling
             local success, err = pcall(function()
 
-                local game_events = require "data.lua_scripts.events"
-
-                if game_events[event] == nil then
-                    game_events[event] = {}
+                if events[event] == nil then
+                    events[event] = {}
                 end
 
-                table.insert(game_events[event], function(context)
+                table.insert(events[event], function(context)
 
                     -- build a better looking context table
                     local context_log = {
@@ -267,6 +265,7 @@ function Logger:log_events(events, filter_func)
                     -- log the event
                     self:_write_to_file(consul.pretty(context_log));
                 end)
+
             end)
 
             -- If callback registration fails, log the error
@@ -333,7 +332,7 @@ end
 -- Log all events excluding specified events
 function Logger:log_events_all_excluding(excluded_events_list)
     -- Import all events
-    local all_events = self:require('lua_scripts.events')
+    local all_events = self:require('data.lua_scripts.events')
 
     -- Convert list to a lookup table for quick filtering
     local excluded_events = {}
