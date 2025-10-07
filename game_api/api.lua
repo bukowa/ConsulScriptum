@@ -123,6 +123,170 @@ function battle_manager:unregister_unit_selection_handler() end
 function battle_manager:vo_finished() end
 function battle_manager:weather() end
 
+---@class battle.ai_unit_controller
+local ai_unit_controller = {}
+
+function ai_unit_controller:new() end
+function ai_unit_controller:add_units() end
+function ai_unit_controller:attack_unit() end
+function ai_unit_controller:clear_objective() end
+function ai_unit_controller:defend_position() end
+function ai_unit_controller:move_to_position() end
+function ai_unit_controller:remove_units() end
+
+---@class battle.assault_equipment
+local assault_equipment = {}
+
+function assault_equipment:new() end
+function assault_equipment:vehicle_count() end
+---@class battle.building
+local building = {}
+
+function building:new() end
+function building:alliance_owner_id() end
+function building:capacity() end
+function building:central_position() end
+function building:change_immune_to_catching_fire() end
+function building:change_immune_to_fire_damage() end
+function building:change_is_destructible() end
+function building:change_on_fire() end
+function building:currently_garrisoned() end
+function building:destroy() end
+function building:health() end
+function building:hide() end
+function building:is_garrisoned() end
+function building:name() end
+function building:position() end
+function building:show() end
+
+---@class battle.buildings
+local buildings = {}
+
+function buildings:new() end
+function buildings:count() end
+function buildings:garrisonable_count() end
+function buildings:garrisonable_item() end
+function buildings:item() end
+
+---@class battle.camera
+local camera = {}
+
+function camera:new() end
+function camera:change_depth_of_field() end
+function camera:change_height_range() end
+function camera:disable_anchor_to_army() end
+function camera:disable_functionality() end
+function camera:disable_shake() end
+function camera:enable_anchor_to_army() end
+function camera:enable_functionality() end
+function camera:enable_shake() end
+function camera:fade() end
+function camera:look_at() end
+function camera:move_to() end
+function camera:position() end
+function camera:target() end
+
+---@class battle.commandevent
+local commandevent = {}
+
+function commandevent:new() end
+function commandevent:get_bool1() end
+function commandevent:get_building() end
+function commandevent:get_name() end
+function commandevent:get_position() end
+function commandevent:get_ship() end
+function commandevent:get_string1() end
+function commandevent:get_unit() end
+
+---@class battle.debug_drawing
+local debug_drawing = {}
+
+function debug_drawing:new() end
+function debug_drawing:draw_circle_on_terrain() end
+function debug_drawing:draw_line_on_terrain() end
+function debug_drawing:draw_peg_on_terrain() end
+function debug_drawing:draw_white_circle_on_terrain() end
+function debug_drawing:draw_white_line_on_terrain() end
+function debug_drawing:draw_white_peg_on_terrain() end
+
+---@class battle.ship
+local ship = {}
+
+function ship:new() end
+function ship:bearing() end
+function ship:deploy_reinforcement() end
+function ship:hull_damage() end
+function ship:is_routing() end
+function ship:is_surrendered() end
+function ship:name() end
+function ship:number_of_men_alive() end
+function ship:position() end
+function ship:sail_damage() end
+function ship:ship_in_range() end
+function ship:type() end
+
+---@class battle.ships
+local ships = {}
+
+function ships:new() end
+function ships:count() end
+function ships:item() end
+
+---@class battle.subtitles
+local subtitles = {}
+
+function subtitles:new() end
+function subtitles:begin() end
+function subtitles:change_if_borders_drawn() end
+function subtitles:change_if_top_border_drawn() end
+function subtitles:clear() end
+function subtitles:end_subtitles() end
+function subtitles:push_back_subtitle() end
+function subtitles:push_back_subtitle_entry() end
+function subtitles:read_subtitles_file() end
+function subtitles:set_alignment() end
+function subtitles:set_text() end
+
+---@class battle.vehicle
+local vehicle = {}
+
+function vehicle:new() end
+function vehicle:position() end
+
+---@class battle.weather
+local weather = {}
+
+function weather:new() end
+function weather:add_dust() end
+function weather:add_rain() end
+function weather:add_snow() end
+function weather:change_lighting() end
+function weather:clear_weather() end
+function weather:enable_random_lightning() end
+function weather:trigger_lightning_sheet() end
+function weather:trigger_lightning_strike() end
+
+---@class battle_colour
+local battle_colour = {}
+
+function battle_colour:new() end
+
+---@class battle_location
+local battle_location = {}
+
+function battle_location:new() end
+function battle_location:get_position() end
+function battle_location:set_position() end
+
+---@class battle_sound_effect
+local battle_sound_effect = {}
+
+function battle_sound_effect:new() end
+function battle_sound_effect:is_playing() end
+function battle_sound_effect:load() end
+function battle_sound_effect:play3D() end
+function battle_sound_effect:stop() end
+function assault_equipment:vehicle_item() end
 
 ---@class battle.alliances
 local alliances = {}
@@ -1664,3 +1828,398 @@ function conditions.is_advice_audio_playing() end
 bm = nil
 
 
+---@class zone_controller
+local zone_controller = {}
+
+function zone_controller:new() end
+function zone_controller:activate() end
+function zone_controller:add_sunit() end
+function zone_controller:add_sunits() end
+function zone_controller:add_zone() end
+function zone_controller:all_units_routing() end
+function zone_controller:assess() end
+function zone_controller:check_sunits_health() end
+function zone_controller:deactivate() end
+function zone_controller:find_reinforcement() end
+function zone_controller:get_enemy_alliance() end
+function zone_controller:move_sunit() end
+function zone_controller:reassign_sunits() end
+function zone_controller:remove_sunit() end
+function zone_controller:set_activation_callback() end
+function zone_controller:set_debug() end
+function zone_controller:set_routing_callback() end
+function zone_controller:sort_zone_list() end
+function zone_controller:start() end
+function zone_controller:stop() end
+function zone_controller:sunits_have_taken_damage() end
+function zone_controller:units_in_area() end
+function zone_controller:update_unit_monitor() end
+function zone_controller:watch_for_activate() end
+function zone_controller:watch_for_deactivate() end
+function zone_controller:watch_units_routing() end
+
+---@class zone_manager
+local zone_manager = {}
+
+function zone_manager:new() end
+function zone_manager:assess_threat() end
+function zone_manager:assess_threat_by_units() end
+function zone_manager:assess_threat_to_line() end
+function zone_manager:get_centre_pos() end
+function zone_manager:get_occupier() end
+function zone_manager:get_occupier_start_hp() end
+function zone_manager:get_threat() end
+function zone_manager:is_occupied() end
+function zone_manager:is_preferred() end
+function zone_manager:is_usable() end
+function zone_manager:set_occupier() end
+function zone_manager:set_points() end
+function zone_manager:set_preferred() end
+function zone_manager:set_usable() end
+
+---@class HudManager
+local HudManager = {}
+function HudManager:Dimensions() end
+function HudManager:MoveRelativeToHUD() end
+function HudManager:RegisterHud() end
+
+---@class PanelManager
+local PanelManager = {}
+function PanelManager:ClearCachedComponent() end
+function PanelManager:CloseAllPanels() end
+function PanelManager:ClosePanel() end
+function PanelManager:IsPanelOpen() end
+function PanelManager:OpenPanel() end
+function PanelManager:OpenPanels() end
+function PanelManager:Reset() end
+
+---@class effect
+local effect = {}
+function effect:OpenBrowser() end
+function effect:add_agent_experience() end
+function effect:add_military_force_experience() end
+function effect:adjust_treasury() end
+function effect:advance_contextual_advice_thread() end
+function effect:advance_scripted_advice_thread() end
+function effect:advance_scripted_advice_thread_located() end
+function effect:advice() end
+function effect:ancillary() end
+function effect:historical_character() end
+function effect:historical_event() end
+function effect:remove_ancillary() end
+function effect:remove_trait() end
+function effect:rewind_scripted_advice() end
+function effect:suspend_contextual_advice() end
+function effect:trait() end
+
+---@class cinematic_script
+local cinematic_script = {}
+function cinematic_script:cindy_playback() end
+function cinematic_script:cindy_playback_no_camera() end
+function cinematic_script:new() end
+function cinematic_script:stop_cindy_playback() end
+function cinematic_script:stop_cindy_playback_no_camera() end
+
+---@class convex_area
+local convex_area = {}
+function convex_area:count() end
+function convex_area:is_in_area() end
+function convex_area:item() end
+function convex_area:new() end
+function convex_area:number_in_area() end
+function convex_area:process_points() end
+function convex_area:standing_is_in_area() end
+function convex_area:standing_number_in_area() end
+function convex_area:validate_points() end
+
+---@class cutscene
+local cutscene = {}
+function cutscene:action() end
+function cutscene:enable_debug_timestamps() end
+function cutscene:enable_ui_on_end() end
+function cutscene:finish() end
+function cutscene:is_active() end
+function cutscene:is_any_cutscene_running() end
+function cutscene:is_playing_sound() end
+function cutscene:new() end
+function cutscene:output_debug_timestamp() end
+function cutscene:play_sound() end
+function cutscene:process_next_action() end
+function cutscene:release() end
+function cutscene:restore_camera_and_release() end
+function cutscene:set_close_advisor_on_end() end
+function cutscene:set_debug() end
+function cutscene:set_do_not_end() end
+function cutscene:set_intro_pan_time() end
+function cutscene:set_music() end
+function cutscene:set_music_resume_auto_playback() end
+function cutscene:set_post_cutscene_fade_time() end
+function cutscene:set_relative_mode() end
+function cutscene:set_restore_cam() end
+function cutscene:set_restore_cam_time() end
+function cutscene:set_should_release_players_army() end
+function cutscene:set_show_cinematic_bars() end
+function cutscene:set_skip_camera() end
+function cutscene:set_skippable() end
+function cutscene:set_wait_for_advisor_on_end() end
+function cutscene:set_wait_for_vo_on_end() end
+function cutscene:skip() end
+function cutscene:start() end
+function cutscene:subtitles() end
+function cutscene:suppress_unit_voices() end
+function cutscene:wait_for_advisor() end
+function cutscene:wait_for_vo() end
+
+---@class decision_point
+local decision_point = {}
+function decision_point:add_escape_route() end
+function decision_point:get_detect_obj() end
+function decision_point:get_detection_radius() end
+function decision_point:get_next_route() end
+function decision_point:is_caution_point() end
+function decision_point:is_detect_area() end
+function decision_point:is_exit_point() end
+function decision_point:new() end
+function decision_point:set_caution_point() end
+function decision_point:set_debug() end
+function decision_point:set_detection_radius() end
+function decision_point:set_exit_point() end
+
+---@class escape_manager
+local escape_manager = {}
+function escape_manager:decision_point_reached() end
+function escape_manager:new() end
+function escape_manager:next_route() end
+function escape_manager:set_caution_callback() end
+function escape_manager:set_debug() end
+function escape_manager:set_escape_callback() end
+function escape_manager:set_walk_to_waypoint() end
+function escape_manager:start() end
+function escape_manager:sunit_routing() end
+
+---@class escape_route
+local escape_route = {}
+function escape_route:add_route() end
+function escape_route:calculate_threat() end
+function escape_route:get_end_point() end
+function escape_route:get_route_points() end
+function escape_route:new() end
+function escape_route:set_debug() end
+
+---@class event_handler
+local event_handler = {}
+function event_handler:add_listener() end
+function event_handler:attach_to_event() end
+function event_handler:clean_listeners() end
+function event_handler:event_callback() end
+function event_handler:list_events() end
+function event_handler:new() end
+function event_handler:remove_listener() end
+
+---@class firestorm_manager
+local firestorm_manager = {}
+function firestorm_manager:accelerate_burning() end
+function firestorm_manager:add_armies() end
+function firestorm_manager:add_convex_area() end
+function firestorm_manager:building_is_in_area() end
+function firestorm_manager:contains_building() end
+function firestorm_manager:damage_unit() end
+function firestorm_manager:extinguish_fire() end
+function firestorm_manager:get_building_record() end
+function firestorm_manager:heavily_damage_unit() end
+function firestorm_manager:ignite_building() end
+function firestorm_manager:inc_hurt_count() end
+function firestorm_manager:make_fireproof() end
+function firestorm_manager:new() end
+function firestorm_manager:pre_ignite_building() end
+function firestorm_manager:process_hurtareas() end
+function firestorm_manager:retard_burning() end
+function firestorm_manager:set_accelerator_modifier() end
+function firestorm_manager:set_burn_notification() end
+function firestorm_manager:set_burn_notification_alliance() end
+function firestorm_manager:set_deathzone() end
+function firestorm_manager:set_debug() end
+function firestorm_manager:set_hurt_radius() end
+function firestorm_manager:set_max_flammable_dist() end
+function firestorm_manager:set_max_flammable_time() end
+function firestorm_manager:set_min_flammable_time() end
+function firestorm_manager:set_notification() end
+function firestorm_manager:set_retardation_modifier() end
+function firestorm_manager:spread_fire() end
+function firestorm_manager:start() end
+function firestorm_manager:watch_fire() end
+
+---@class generated_army
+local generated_army = {}
+function generated_army:attack() end
+function generated_army:attack_on_message() end
+function generated_army:build_sunits() end
+function generated_army:defend() end
+function generated_army:defend_on_message() end
+function generated_army:get_allied_and_enemy_forces() end
+function generated_army:get_casualty_rate() end
+function generated_army:get_rout_proportion() end
+function generated_army:message_on_casualties() end
+function generated_army:message_on_proximity_to_enemy() end
+function generated_army:message_on_rout_proportion() end
+function generated_army:message_on_seen_by_enemy() end
+function generated_army:new() end
+function generated_army:release() end
+function generated_army:release_control_of_all_sunits() end
+function generated_army:release_on_message() end
+function generated_army:take_control_of_all_sunits() end
+
+---@class generated_battle
+local generated_battle = {}
+function generated_battle:advice_on_message() end
+function generated_battle:build_armies() end
+function generated_battle:get_allied_force() end
+function generated_battle:get_army() end
+function generated_battle:get_enemy_force() end
+function generated_battle:has_battle_started() end
+function generated_battle:message_on_time_offset() end
+function generated_battle:new() end
+function generated_battle:start_battle() end
+function generated_battle:start_deployment() end
+
+---@class hiding_place
+local hiding_place = {}
+function hiding_place:add_position() end
+function hiding_place:add_trigger_area() end
+function hiding_place:get_trigger_radius() end
+function hiding_place:is_taken() end
+function hiding_place:new() end
+function hiding_place:set_taken() end
+function hiding_place:set_taken_callback() end
+function hiding_place:set_trigger_radius() end
+function hiding_place:taken_by() end
+
+---@class hurt_area
+local hurt_area = {}
+function hurt_area:new() end
+function hurt_area:process() end
+function hurt_area:set_damage_per_tick() end
+function hurt_area:set_debug() end
+function hurt_area:start() end
+function hurt_area:stop() end
+
+---@class iterator
+local iterator = {}
+function iterator:get_next() end
+function iterator:new() end
+function iterator:reset() end
+
+---@class patrol_manager
+local patrol_manager = {}
+function patrol_manager:add_waypoint() end
+function patrol_manager:arrived_at_waypoint() end
+function patrol_manager:cache_current_unit_pos() end
+function patrol_manager:complete() end
+function patrol_manager:get_angle_to_pos() end
+function patrol_manager:handle_unit_routing() end
+function patrol_manager:intercept() end
+function patrol_manager:is_enemy_in_range() end
+function patrol_manager:is_in_range_of_patrol_path_segment() end
+function patrol_manager:loop() end
+function patrol_manager:move_to_current_waypoint() end
+function patrol_manager:move_to_next_waypoint() end
+function patrol_manager:new() end
+function patrol_manager:restart() end
+function patrol_manager:resume_patrol() end
+function patrol_manager:set_abandon_callback() end
+function patrol_manager:set_completion_callback() end
+function patrol_manager:set_debug() end
+function patrol_manager:set_debug_all() end
+function patrol_manager:set_force_run() end
+function patrol_manager:set_intercept_callback() end
+function patrol_manager:set_intercept_time() end
+function patrol_manager:set_naval() end
+function patrol_manager:set_rout_callback() end
+function patrol_manager:set_stop_on_intercept() end
+function patrol_manager:set_stop_on_rout() end
+function patrol_manager:set_walk_speed() end
+function patrol_manager:set_waypoint_threshold() end
+function patrol_manager:set_width() end
+function patrol_manager:start() end
+function patrol_manager:stop() end
+function patrol_manager:stop_running_processes() end
+function patrol_manager:watch_for_unit_routing() end
+
+---@class script_ai_planner
+local script_ai_planner = {}
+function script_ai_planner:add_sunits() end
+function script_ai_planner:any_controlled_sunit_standing() end
+function script_ai_planner:attack_closest_unit() end
+function script_ai_planner:attack_force() end
+function script_ai_planner:attack_unit() end
+function script_ai_planner:defend_force() end
+function script_ai_planner:defend_position() end
+function script_ai_planner:defend_position_action() end
+function script_ai_planner:defend_position_of_sunit() end
+function script_ai_planner:defend_position_of_sunit_complete() end
+function script_ai_planner:get_centre_point() end
+function script_ai_planner:merge_into() end
+function script_ai_planner:move_to_position() end
+function script_ai_planner:move_to_position_action() end
+function script_ai_planner:move_to_position_of_sunit() end
+function script_ai_planner:move_to_position_of_sunit_complete() end
+function script_ai_planner:new() end
+function script_ai_planner:patrol() end
+function script_ai_planner:remove_sunits() end
+function script_ai_planner:set_debug() end
+function script_ai_planner:set_debug_all() end
+function script_ai_planner:set_perform_patrol_prox_test() end
+function script_ai_planner:set_should_reorder() end
+function script_ai_planner:track_towards_merge_target() end
+
+---@class script_messager
+local script_messager = {}
+function script_messager:add_listener() end
+function script_messager:dump() end
+function script_messager:new() end
+function script_messager:set_debug() end
+function script_messager:trigger_message() end
+
+---@class script_unit
+local script_unit = {}
+function script_unit:goto_start_location() end
+function script_unit:move_to_position_offset() end
+function script_unit:new() end
+function script_unit:set_current_patrol() end
+function script_unit:stop_current_patrol() end
+function script_unit:teleport_to_cached_location() end
+function script_unit:teleport_to_start_location() end
+function script_unit:teleport_to_start_location_offset() end
+
+---@class teleport_squad
+local teleport_squad = {}
+function teleport_squad:add_hiding_places() end
+function teleport_squad:add_sunits() end
+function teleport_squad:are_sunits_routing() end
+function teleport_squad:attack() end
+function teleport_squad:do_teleport() end
+function teleport_squad:force_teleport() end
+function teleport_squad:get_planner() end
+function teleport_squad:is_enemy_in_trigger_areas() end
+function teleport_squad:is_visible_to_enemy() end
+function teleport_squad:new() end
+function teleport_squad:set_attack_callback() end
+function teleport_squad:set_should_attack() end
+function teleport_squad:setup_planner() end
+function teleport_squad:start_watches_for_hiding_place() end
+function teleport_squad:stop_watches() end
+function teleport_squad:teleport() end
+
+---@class waypoint
+local waypoint = {}
+function waypoint:new() end
+
+---@class out
+local out = {}
+function out.design() end
+function out.dylan() end
+function out.kostas() end
+function out.scott_b() end
+function out.shane() end
+function out.ting() end
+function out.tom() end
