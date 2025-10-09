@@ -1637,12 +1637,38 @@ consul.console.write(
             scripts.instances["vexatio_provinciae"] = scripts.create_change_public_order_by_func(-10)
             scripts.instances["sedatio_provinciae"] = scripts.create_change_public_order_by_func(10)
             scripts.instances["incrementum_regio"] = scripts.create_increase_growth_points_func(1)
+
+            -- two faction scripts
+            scripts.instances["force_make_peace"] = scripts.create_two_faction_script(
+                "force_make_peace",
+                function(faction1, faction2)
+                    consul._game():force_make_peace(faction1, faction2)
+                end,
+                "Forcing peace between"
+            )
+            scripts.instances["force_make_war"] = scripts.create_two_faction_script(
+                "force_make_war",
+                function(faction1, faction2)
+                    consul._game():force_declare_war(faction1, faction2)
+                end,
+                "Forcing war between"
+            )
+            scripts.instances["force_make_vassal"] = scripts.create_two_faction_script(
+                "force_make_vassal",
+                function(faction1, faction2)
+                    consul._game():force_make_vassal(faction2, faction1)
+                end,
+                "Forcing vassal"
+            )
         end,
 
         instances = {
             vexatio_provinciae = nil,
             sedatio_provinciae = nil,
             incrementum_regio = nil,
+            force_make_peace = nil,
+            force_make_war = nil,
+            force_make_vassal = nil,
         },
 
         __wrap_func_with_log = function(func, log, text)
@@ -1739,6 +1765,69 @@ consul.console.write(
             }
 
         end,
+
+        create_two_faction_script = function(name, action_func, log_text)
+            local scripts2 = consul.consul_scripts_v2
+            local scripts = consul.consul_scripts
+            local log = scripts2.__get_logger(name)
+
+            local faction1 = nil
+            local faction2 = nil
+
+            local reset_factions = function()
+                faction1 = nil
+                faction2 = nil
+            end
+
+            local perform_action = function()
+                if faction1 and faction2 then
+                    log:debug(log_text .. ": " .. faction1 .. " and " .. faction2)
+                    action_func(faction1, faction2)
+                    reset_factions()
+                    log:debug("Action performed and factions reset.")
+                end
+            end
+
+            local setup = function()
+                scripts.event_handlers['SettlementSelected'][name] = nil
+                scripts.event_handlers['CharacterSelected'][name] = nil
+                reset_factions()
+            end
+
+            local start = function()
+                local handler = function(context)
+                    local faction_name
+                    if context.character then
+                        faction_name = context:character():faction():name()
+                    elseif context.garrison_residence then
+                        faction_name = context:garrison_residence():faction():name()
+                    end
+
+                    if faction_name then
+                        if not faction1 then
+                            faction1 = faction_name
+                        else
+                            faction2 = faction_name
+                        end
+                        perform_action()
+                    end
+                end
+
+                scripts.event_handlers['SettlementSelected'][name] = handler
+                scripts.event_handlers['CharacterSelected'][name] = handler
+            end
+
+            local stop = function()
+                setup()
+            end
+
+            return {
+                setup = scripts2.__wrap_setup(setup, log),
+                start = scripts2.__wrap_start(start, log),
+                stop = scripts2.__wrap_stop(stop, log),
+            }
+        end,
+
     },
 
     -- consul scripts window
@@ -1789,9 +1878,6 @@ consul.console.write(
             scripts.exterminare.setup()
             scripts.transfer_settlement.setup()
             scripts.force_rebellion.setup()
-            scripts.force_make_peace.setup()
-            scripts.force_make_war.setup()
-            scripts.force_make_vassal.setup()
             scripts.force_exchange_garrison.setup()
             scripts.replenish_action_point.setup()
             scripts2.instances.vexatio_provinciae.setup()
@@ -1834,62 +1920,69 @@ consul.console.write(
             local scripts2 = consul.consul_scripts_v2
             local ui = consul.ui
 
-            if context.string == ui.consul_exterminare_entry then
-                log:debug("Clicked on consul_exterminare")
-                scripts._on_click(scripts.exterminare, ui.find(ui.consul_exterminare_script))
-                return
-            end
+            local click_map = {
+                [ui.consul_exterminare_entry] = {
+                    script = scripts.exterminare,
+                    component = ui.consul_exterminare_script,
+                    log_msg = "Clicked on consul_exterminare"
+                },
+                [ui.consul_transfersettlement_entry] = {
+                    script = scripts.transfer_settlement,
+                    component = ui.consul_transfersettlement_script,
+                    log_msg = "Clicked on consul_transfersettlement"
+                },
+                [ui.consul_adrebellos_entry] = {
+                    script = scripts.force_rebellion,
+                    component = ui.consul_adrebellos_script,
+                    log_msg = "Clicked on consul_forcerebellion"
+                },
+                [ui.consul_force_make_peace_entry] = {
+                    script = scripts2.instances.force_make_peace,
+                    component = ui.consul_force_make_peace_script,
+                    log_msg = "Clicked on consul_force_make_peace"
+                },
+                [ui.consul_force_make_war_entry] = {
+                    script = scripts2.instances.force_make_war,
+                    component = ui.consul_force_make_war_script,
+                    log_msg = "Clicked on consul_force_make_war"
+                },
+                [ui.consul_force_make_vassal_entry] = {
+                    script = scripts2.instances.force_make_vassal,
+                    component = ui.consul_force_make_vassal_script,
+                    log_msg = "Clicked on consul_force_make_vassal"
+                },
+                [ui.consul_force_exchange_garrison_entry] = {
+                    script = scripts.force_exchange_garrison,
+                    component = ui.consul_force_exchange_garrison_script,
+                    log_msg = "Clicked on consul_force_exchange_garrison"
+                },
+                [ui.consul_replenish_action_points_entry] = {
+                    script = scripts.replenish_action_point,
+                    component = ui.consul_replenish_action_points_script,
+                    log_msg = "Clicked on consul_replenish_action_point"
+                },
+                [ui.consul_vexatio_provinciae_entry] = {
+                    script = scripts2.instances.vexatio_provinciae,
+                    component = ui.consul_vexatio_provinciae_script,
+                    log_msg = "Clicked on consul_vexatio_provinciae"
+                },
+                [ui.consul_sedatio_provinciae_entry] = {
+                    script = scripts2.instances.sedatio_provinciae,
+                    component = ui.consul_sedatio_provinciae_script,
+                    log_msg = "Clicked on consul_sedatio_provinciae"
+                },
+                [ui.consul_incrementum_regio_entry] = {
+                    script = scripts2.instances.incrementum_regio,
+                    component = ui.consul_incrementum_regio_script,
+                    log_msg = "Clicked on consul_incrementum_regio"
+                },
+            }
 
-            if context.string == ui.consul_transfersettlement_entry then
-                log:debug("Clicked on consul_transfersettlement")
-                scripts._on_click(scripts.transfer_settlement, ui.find(ui.consul_transfersettlement_script))
+            local clicked_script = click_map[context.string]
+            if clicked_script then
+                log:debug(clicked_script.log_msg)
+                scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
             end
-
-            if context.string == ui.consul_adrebellos_entry then
-                log:debug("Clicked on consul_forcerebellion")
-                scripts._on_click(scripts.force_rebellion, ui.find(ui.consul_adrebellos_script))
-            end
-
-            if context.string == ui.consul_force_make_peace_entry then
-                log:debug("Clicked on consul_force_make_peace")
-                scripts._on_click(scripts.force_make_peace, ui.find(ui.consul_force_make_peace_script))
-            end
-
-            if context.string == ui.consul_force_make_war_entry then
-                log:debug("Clicked on consul_force_make_war")
-                scripts._on_click(scripts.force_make_war, ui.find(ui.consul_force_make_war_script))
-            end
-
-            if context.string == ui.consul_force_make_vassal_entry then
-                log:debug("Clicked on consul_force_make_vassal")
-                scripts._on_click(scripts.force_make_vassal, ui.find(ui.consul_force_make_vassal_script))
-            end
-
-            if context.string == ui.consul_force_exchange_garrison_entry then
-                log:debug("Clicked on consul_force_exchange_garrison")
-                scripts._on_click(scripts.force_exchange_garrison, ui.find(ui.consul_force_exchange_garrison_script))
-            end
-
-            if context.string == ui.consul_replenish_action_points_entry then
-                log:debug("Clicked on consul_replenish_action_point")
-                scripts._on_click(scripts.replenish_action_point, ui.find(ui.consul_replenish_action_points_script))
-            end
-
-            if context.string == ui.consul_vexatio_provinciae_entry then
-                log:debug("Clicked on consul_vexatio_provinciae")
-                scripts._on_click(scripts2.instances.vexatio_provinciae, ui.find(ui.consul_vexatio_provinciae_script))
-            end
-
-            if context.string == ui.consul_sedatio_provinciae_entry then
-                log:debug("Clicked on consul_sedatio_provinciae")
-                scripts._on_click(scripts2.instances.sedatio_provinciae, ui.find(ui.consul_sedatio_provinciae_script))
-            end
-
-            if context.string == ui.consul_incrementum_regio_entry then
-                log:debug("Clicked on consul_incrementum_regio")
-                scripts._on_click(scripts2.instances.incrementum_regio, ui.find(ui.consul_incrementum_regio_script))
-            end
-
         end,
 
         exterminare = {
@@ -2087,212 +2180,6 @@ consul.console.write(
                 log:debug("Stopping...")
                 scripts.event_handlers['SettlementSelected']['forcerebellion'] = nil
             end,
-        },
-
-        force_make_peace = {
-
-            _faction1 = nil,
-            _faction2 = nil,
-
-            get_logger = function()
-                return consul.new_log('consul_scripts:force_make_peace')
-            end,
-
-            setup = function()
-                local scripts = consul.consul_scripts
-                local log = scripts.force_make_peace.get_logger()
-                log:debug("Setting up...")
-                scripts.event_handlers['SettlementSelected']['forcemakepeace'] = nil
-                scripts.event_handlers['CharacterSelected']['forcemakepeace'] = nil
-                scripts.force_make_peace._faction1 = nil
-                scripts.force_make_peace._faction2 = nil
-            end,
-
-            start = function()
-                local log = consul.consul_scripts.force_make_peace.get_logger()
-                log:debug("Starting...")
-
-                local scripts = consul.consul_scripts
-                local script = scripts.force_make_peace
-
-                local make_peace = function()
-                    if script._faction1 and script._faction2 then
-                        log:debug("Forcing peace between: " .. script._faction1 .. " and " .. script._faction2)
-                        consul._game():force_make_peace(script._faction1, script._faction2)
-                        script._faction1 = nil
-                        script._faction2 = nil
-                        log:debug("Forced peace.")
-                    end
-                end
-
-                scripts.event_handlers['SettlementSelected']['forcemakepeace'] = function(context)
-                    log:debug("SettlementSelected")
-
-                    local faction = context:garrison_residence():faction():name()
-                    if not script._faction1 then
-                        script._faction1 = faction
-                    else
-                        script._faction2 = faction
-                    end
-
-                    make_peace()
-                end
-
-                scripts.event_handlers['CharacterSelected']['forcemakepeace'] = function(context)
-                    log:debug("CharacterSelected")
-
-                    local faction = context:character():faction():name()
-                    if not script._faction1 then
-                        script._faction1 = faction
-                    else
-                        script._faction2 = faction
-                    end
-
-                    make_peace()
-                end
-
-            end,
-
-            stop = function()
-                return consul.consul_scripts.force_make_peace.setup()
-            end,
-
-        },
-
-        force_make_war = {
-
-            _faction1 = nil,
-            _faction2 = nil,
-
-            get_logger = function()
-                return consul.new_log('consul_scripts:force_make_war')
-            end,
-
-            setup = function()
-                local scripts = consul.consul_scripts
-                local log = scripts.force_make_war.get_logger()
-                log:debug("Setting up...")
-                scripts.event_handlers['SettlementSelected']['forcemakewar'] = nil
-                scripts.event_handlers['CharacterSelected']['forcemakewar'] = nil
-                scripts.force_make_war._faction1 = nil
-                scripts.force_make_war._faction2 = nil
-            end,
-
-            start = function()
-                local log = consul.consul_scripts.force_make_war.get_logger()
-                log:debug("Starting...")
-
-                local scripts = consul.consul_scripts
-                local script = scripts.force_make_war
-
-                local make_war = function()
-                    if script._faction1 and script._faction2 then
-                        log:debug("Forcing war between: " .. script._faction1 .. " and " .. script._faction2)
-
-                        consul._game():force_declare_war(script._faction1, script._faction2)
-                        script._faction1 = nil
-                        script._faction2 = nil
-                        log:debug("Forced war.")
-                    end
-                end
-
-                scripts.event_handlers['SettlementSelected']['forcemakewar'] = function(context)
-                    log:debug("SettlementSelected")
-
-                    local faction = context:garrison_residence():faction():name()
-                    if not script._faction1 then
-                        script._faction1 = faction
-                    else
-                        script._faction2 = faction
-                    end
-
-                    make_war()
-                end
-
-                scripts.event_handlers['CharacterSelected']['forcemakewar'] = function(context)
-                    log:debug("CharacterSelected")
-
-                    local faction = context:character():faction():name()
-                    if not script._faction1 then
-                        script._faction1 = faction
-                    else
-                        script._faction2 = faction
-                    end
-
-                    make_war()
-                end
-            end,
-
-            stop = function()
-                return consul.consul_scripts.force_make_war.setup()
-            end,
-        },
-
-        force_make_vassal = {
-
-            _faction1 = nil,
-            _faction2 = nil,
-
-            get_logger = function()
-                return consul.new_log('consul_scripts:force_make_vassal')
-            end,
-
-            setup = function()
-                local scripts = consul.consul_scripts
-                local log = scripts.force_make_vassal.get_logger()
-                log:debug("Setting up...")
-                scripts.event_handlers['SettlementSelected']['forcemakevassal'] = nil
-                scripts.event_handlers['CharacterSelected']['forcemakevassal'] = nil
-                scripts.force_make_vassal._faction1 = nil
-                scripts.force_make_vassal._faction2 = nil
-            end,
-
-            start = function()
-                local scripts = consul.consul_scripts
-                local script = scripts.force_make_vassal
-                local log = script.get_logger()
-                log:debug("Starting...")
-
-                -- just do it
-                local make_vassal = function()
-                    if script._faction1 and script._faction2 then
-                        log:debug("Forcing vassal between: " .. script._faction1 .. " and " .. script._faction2)
-                        consul._game():force_make_vassal(script._faction2, script._faction1)
-                        script._faction1 = nil
-                        script._faction2 = nil
-                    end
-                end
-
-                scripts.event_handlers['SettlementSelected']['forcemakevassal'] = function(context)
-                    log:debug("SettlementSelected")
-
-                    local faction = context:garrison_residence():faction():name()
-                    if not script._faction1 then
-                        script._faction1 = faction
-                    else
-                        script._faction2 = faction
-                    end
-                    make_vassal()
-                end
-
-                scripts.event_handlers['CharacterSelected']['forcemakevassal'] = function(context)
-                    log:debug("CharacterSelected")
-
-                    local faction = context:character():faction():name()
-                    if not script._faction1 then
-                        script._faction1 = faction
-                    else
-                        script._faction2 = faction
-                    end
-                    make_vassal()
-                end
-
-            end,
-            stop = function()
-                return consul.consul_scripts.force_make_vassal.setup()
-            end,
-
-            -- /r consul._game():force_make_vassal('rom_rome', 'rom_etruscan')
         },
 
         force_exchange_garrison = {
