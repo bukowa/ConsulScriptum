@@ -1,21 +1,27 @@
+
+
+function get_events()
+	if _G.events then
+		return _G.events;
+	else
+		local events = require "data.lua_scripts.events";
+		_G.events = events;
+		return events;
+	end;
+end;
+
 --[[
 Import all the lua scripts
 --]]
 
+
 local triggers = require "data.lua_scripts.export_triggers"
 local ancillaries  = require "data.lua_scripts.export_ancillaries"
 local historic_characters = require "data.lua_scripts.export_historic_characters"
-local missions = require "data.lua_scripts.export_missions"
 local encyclopedia = require "data.lua_scripts.export_encyclopedia"
 local experience = require "data.lua_scripts.export_experience"
-local political = require "data.lua_scripts.export_political_triggers"
 
-events = triggers.events
---[[
-print(events, #events)
-
-for n,v in ipairs(events.historical_events) do print(n, v) end
---]]
+events = get_events();
 
 -- Ensure logging to a file if something goes wrong
 local __write = function(line)
