@@ -42,8 +42,8 @@ RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
 RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli
 XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
 UI2XML_BIN        := $(ETWNG_DIR)/ui/bin/ui2xml
-RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_rom2.ron
-RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game rome_2
+RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_att.ron
+RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game attila
 LUA_FOR_LDOC_PATH := "C:\Program Files (x86)\Lua\5.1\lua.exe"
 
 # Gems
@@ -75,9 +75,9 @@ LDOC_REPO     = "https://github.com/lunarmodules/ldoc.git"
 LDOC_REVISION = "f91ed4b76bec011a2e76cfe1283877686af8377e"
 
 # Installation directories
-INSTALL_ALONE_DIR := C:/Games/Total War - Rome 2
+INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
 INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
-INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
+INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
 
 # ============================================================
 # Start Source Files
@@ -365,7 +365,7 @@ install-steam: $(MOD_PACKAGE)
 # Install the built .pack file only if different for standalone
 install-alone: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
-	@echo 'game_startup_mode campaign_load "consulscriptum.save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Install with DEI
@@ -390,11 +390,7 @@ install-to-dir = \
 
 # Attempt to find and terminate the Rome 2 process by its name.
 kill-rome2:
-	@pid=$$(tasklist | grep Rome2.exe | head -n 1 | awk '{print $$2}') && \
-	if [ -n "$$pid" ]; then \
-		cmd //C "taskkill /F /PID $$pid" && \
-		while tasklist | grep -q $$pid; do sleep 1; done; \
-	fi
+	-powershell -Command "Stop-Process -Name 'Attila' -Force -ErrorAction SilentlyContinue"
 
 define disable_outdated_mods_popup
 	powershell -Command Start-Process ./scripts/disable_outdated_mods_popup.bat
@@ -404,8 +400,7 @@ endef
 run-alone: \
 	kill-rome2 \
 	install-alone
-	@$(disable_outdated_mods_popup)
-	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+	@powershell -WindowStyle Hidden -Command "Start-Process 'Attila.exe' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
 # Launch the standalone without mods
 run-standalone: kill-rome2
@@ -418,7 +413,7 @@ run-alone-dei: \
 	kill-rome2 \
 	install-dei
 	@$(disable_outdated_mods_popup)
-	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"' &&
 
 # Launch the Steam version of Rome2 using its Steam app ID
 run-steam: \
