@@ -258,7 +258,7 @@ setup: \
 	setup-etwng \
 	setup-7zip \
 	setup-ruby \
-	setup_gems \
+	setup-gems \
 	setup-ldoc
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(ETWNG_DIR)
@@ -295,16 +295,20 @@ setup-etwng: setup-ruby
 	@if [ ! -f $(XML2UI_BIN) ]; then \
 		echo "etwng not found, cloning..." && \
 		mkdir -p $(ETWNG_DIR) && \
-		git clone --depth 1 $(ETWNG_REPO) $(ETWNG_DIR) && \
+		git clone $(ETWNG_REPO) $(ETWNG_DIR) && \
 		cd $(ETWNG_DIR) && \
 		git checkout -q $(ETWNG_REVISION) && \
 		echo "Checked out to specific revision."; \
 	fi
 
 # Rule for setting up Ruby Gems
-.PHONY: setup_gems
-install_gems:
-	"$(RUBY_DIR)/bin/gem" install nokogiri --install-dir "$(GEM_HOME)"
+setup-gems: setup-ruby
+	@if ! "$(RUBY_DIR)/bin/gem" list -i nokogiri > /dev/null 2>&1; then \
+		echo "nokogiri not found, installing..."; \
+		"$(RUBY_DIR)/bin/gem" install nokogiri --install-dir "$(GEM_HOME)"; \
+	else \
+		echo "nokogiri is already installed."; \
+	fi
 
 # Rule for setting up 7-Zip
 setup-7zip:
@@ -338,7 +342,7 @@ setup-ldoc:
 	@if [ ! -f "$(LDOC_DIR)/ldoc/doc.lua" ]; then \
 		echo "ldoc not found, cloning..." && \
 		mkdir -p $(LDOC_DIR) && \
-		git clone --depth 1 $(LDOC_REPO) $(LDOC_DIR) && \
+		git clone $(LDOC_REPO) $(LDOC_DIR) && \
 		cd $(LDOC_DIR) && \
 		git checkout -q $(LDOC_REVISION) && \
 		echo "Checked out to specific revision."; \
@@ -453,6 +457,7 @@ insert-consul-entry:
 			setup-rpfm_cli \
 			setup-rpfm_schema \
 			setup-ruby \
+			setup-gems \
 			setup-etwng \
 		install \
 			install-steam \
