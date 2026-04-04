@@ -4,6 +4,12 @@ consul = {
     URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
+    BUILD = "Attila",
+
+    BUILD_TYPES = {
+        Rome2 = "Rome2",
+        Attila = "Attila",
+    },
 
     -- game requires a char before /t
     -- it also makes /t very long, so just use spaces
@@ -45,6 +51,11 @@ consul = {
         table.insert(events.UICreated, consul.ui.OnUICreated)
         table.insert(events.UICreated, consul.compat.setup)
         table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
+        if consul.BUILD == consul.BUILD_TYPES.Attila then
+            table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
+            table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
+            table.insert(events.UICreated, consul.ui.attila.OnUICreated)
+        end
         table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
         table.insert(events.UICreated, consul.history.OnUICreated)
         table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
@@ -305,6 +316,8 @@ consul = {
     ui = {
         -- contains all the components
         root = "consul",
+        -- path to the consul template for Attila
+        template_attila = "ui/common ui/consul",
         -- contains the consul listview
         consul = "room_list",
         -- contains the scriptum listview
@@ -434,11 +447,11 @@ consul = {
         -- event handler to be set in the main script
         OnUICreated = function(context)
             local log = consul.new_log('ui:OnUICreated')
-            log:debug("UI created")
+            log:debug("UI created start")
 
             local ui = consul.ui
 
-            -- if UIComponent is nil grab it from package.loaded
+            -- if UIComponent is nil grab it registry
             if not UIComponent then
                 log:warn('UIComponent is nil; trying to grab it from lua registry')
 
@@ -474,8 +487,45 @@ consul = {
                 return
             end
 
-            ui._UIRoot:CreateComponent('consul', "ui/common ui/consul");
+            log:debug("OnUICreated end")
         end,
+
+        attila = {
+
+            xx = 0,
+            yy = 0,
+            should_move = false,
+
+            OnUICreated = function(context)
+                local ui = consul.ui
+                ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+                ui.MoveRootToCenter()
+            end,
+
+            OnComponentMoved = function(context)
+                if context.string ~= consul.ui.root then return end
+                local ui, attila = consul.ui, consul.ui.attila
+                if consul._game() ~= nil then
+                    consul._game():add_time_trigger('consul_move_trigger', 0)
+                end
+                local c = ui.find(consul.ui.root)
+                attila.xx, attila.yy = c:Position()
+                attila.should_move = true
+                c:SetVisible(false)
+            end,
+
+            TimeTrigger = function(context)
+                local ui, attila = consul.ui, consul.ui.attila
+                local c = ui.find(ui.root)
+                local x, y = c:Position()
+                local xx, yy = attila.xx, attila.yy
+                if (x ~= xx or y ~= yy) and attila.should_move == true then
+                    c:MoveTo(xx, yy)
+                    c:SetVisible(true)
+                    attila.should_move = false
+                end
+                end,
+        },
 
         -- event handler to be set in the main script
         -- handles any click event for the consul
