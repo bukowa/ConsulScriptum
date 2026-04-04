@@ -83,8 +83,8 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # Start Source Files
 # ============================================================
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/consul
-#	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
+	$(BUILD_DIR)/ui/common\ ui/consul \
+	$(BUILD_DIR)/ui/frontend\ ui/layout
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
@@ -154,8 +154,8 @@ $(BUILD_DIR)/ui/common\ ui/menu_bar: \
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
-$(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
-	src/ui/frontend\ ui/sp_frame.xml
+$(BUILD_DIR)/ui/frontend\ ui/layout: \
+	src/ui/frontend\ ui/layout.xml
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
