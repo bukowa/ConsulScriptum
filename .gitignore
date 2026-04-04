@@ -9,3 +9,4 @@ consul.log
 src/consul.log
 src/consul_scriptum_persistence
 NUL
+UIComponent

@@ -304,7 +304,7 @@ consul = {
 
     ui = {
         -- contains all the components
-        root = "consul_scriptum",
+        root = "consul",
         -- contains the consul listview
         consul = "room_list",
         -- contains the scriptum listview
