@@ -474,6 +474,7 @@ consul = {
                 return
             end
 
+            ui._UIRoot:CreateComponent('consul', "ui/common ui/consul");
         end,
 
         -- event handler to be set in the main script

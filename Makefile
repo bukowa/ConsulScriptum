@@ -83,8 +83,8 @@ INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assem
 # Start Source Files
 # ============================================================
 UI_TARGETS := \
-	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
-	$(BUILD_DIR)/ui/common\ ui/menu_bar
+	$(BUILD_DIR)/ui/common\ ui/consul
+#	$(BUILD_DIR)/ui/frontend\ ui/sp_frame \
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
@@ -93,8 +93,9 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_battle.lua \
 	$(BUILD_DIR)/consul/consul_game_events.lua
 
-IMAGE_TARGETS :=
-#	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png
+IMAGE_TARGETS := \
+	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
+	$(BUILD_DIR)/ui/skins/default/arrow_out.png
 
 CONTRIB_TARGETS := \
 	$(BUILD_DIR)/consul/inspect/inspect.lua \
@@ -118,6 +119,17 @@ define create_dir
 	@mkdir -p $(dir $@)
 endef
 
+$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png: \
+	src/ui/skins/default/consul_v_slider_end.png
+	$(create_dir)
+	@cp "$<" "$@"
+
+
+$(BUILD_DIR)/ui/skins/default/arrow_out.png: \
+	src/ui/skins/default/arrow_out.png
+	$(create_dir)
+	@cp "$<" "$@"
+
 $(BUILD_DIR)/pl: src/pl $(wildcard $(BUILD_DIR)/pl/*.lua)
 	@mkdir -p "$@"
 	@cp -r src/pl/* $@
@@ -129,6 +141,11 @@ $(BUILD_DIR)/ui/common\ ui/multiplayer_chat: \
 
 $(BUILD_DIR)/ui/common\ ui/options_mods: \
 	src/ui/common\ ui/options_mods.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/common\ ui/consul: \
+	src/ui/common\ ui/consul.xml
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
@@ -366,6 +383,7 @@ install-steam: $(MOD_PACKAGE)
 install-alone: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'game_startup_mode campaign_load "1.save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Install with DEI
@@ -390,7 +408,8 @@ install-to-dir = \
 
 # Attempt to find and terminate the Rome 2 process by its name.
 kill-rome2:
-	-powershell -Command "Stop-Process -Name 'Attila' -Force -ErrorAction SilentlyContinue"
+	-powershell -Command "Stop-Process -Name 'Attila' -Force -ErrorAction SilentlyContinue; \
+	while (Get-Process -Name 'Attila' -ErrorAction SilentlyContinue) { Start-Sleep -Milliseconds 200 }"
 
 define disable_outdated_mods_popup
 	powershell -Command Start-Process ./scripts/disable_outdated_mods_popup.bat
