@@ -2,6 +2,11 @@
 MOD_PACKAGE = consulscriptum.pack
 MOD_VERSION = 0.1.0
 
+# Game selection (Rome2 or Attila)
+GAME ?= Attila
+# Development mode (1 to enable)
+DEV ?= 0
+
 # ============================================================
 # Instructions for Executing This Makefile on Windows
 # ============================================================
@@ -37,13 +42,35 @@ RUBY_DIR          := $(DEPS_DIR)/ruby
 LDOC_DIR 		  := $(DEPS_DIR)/ldoc
 MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
+# Game-specific settings
+ifeq ($(GAME),Rome2)
+    RPFM_GAME_ID := rome_2
+    RPFM_SCHEMA_FILE := schema_rom2.ron
+    INSTALL_ALONE_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
+    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
+    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
+    GAME_EXE := Rome2.exe
+    STEAM_APP_ID := 214950
+    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_rome2.lua
+else
+    # Default is Attila
+    RPFM_GAME_ID := attila
+    RPFM_SCHEMA_FILE := schema_att.ron
+    INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
+    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Attila
+    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
+    GAME_EXE := Attila.exe
+    STEAM_APP_ID := 325610
+    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_attila.lua
+endif
+
 # Binaries and paths
 RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
 RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli
 XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
 UI2XML_BIN        := $(ETWNG_DIR)/ui/bin/ui2xml
-RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/schema_att.ron
-RPFM_CLI_ROME2_CMD := $(realpath $(RPFM_CLI_BIN)) --game attila
+RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/$(RPFM_SCHEMA_FILE)
+RPFM_CLI_CMD      := $(realpath $(RPFM_CLI_BIN)) --game $(RPFM_GAME_ID)
 LUA_FOR_LDOC_PATH := "C:\Program Files (x86)\Lua\5.1\lua.exe"
 
 # Gems
@@ -74,17 +101,20 @@ ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 LDOC_REPO     = "https://github.com/lunarmodules/ldoc.git"
 LDOC_REVISION = "f91ed4b76bec011a2e76cfe1283877686af8377e"
 
-# Installation directories
-INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
-INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
-INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
-
 # ============================================================
 # Start Source Files
 # ============================================================
-UI_TARGETS := \
-	$(BUILD_DIR)/ui/common\ ui/consul \
-	$(BUILD_DIR)/ui/frontend\ ui/layout
+UI_TARGETS :=
+ifeq ($(GAME),Attila)
+UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul
+ifeq ($(DEV),1)
+UI_TARGETS += $(BUILD_DIR)/ui/frontend\ ui/layout
+endif
+endif
+ifeq ($(GAME),Rome2)
+UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/menu_bar \
+			  $(BUILD_DIR)/ui/frontend\ ui/sp_frame
+endif
 
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
@@ -110,8 +140,8 @@ CONTRIB_TARGETS := \
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
 	@{ \
-	  ${RPFM_CLI_ROME2_CMD} pack create --pack-path=$@ && \
-	  ${RPFM_CLI_ROME2_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
+	  ${RPFM_CLI_CMD} pack create --pack-path=$@ && \
+	  ${RPFM_CLI_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
 	  echo "Pack file built successfully." ; \
 	} || { rm $@; exit 1; }
 
@@ -154,6 +184,11 @@ $(BUILD_DIR)/ui/common\ ui/menu_bar: \
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
+$(BUILD_DIR)/ui/frontend\ ui/sp_frame: \
+	src/ui/frontend\ ui/sp_frame.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
 $(BUILD_DIR)/ui/frontend\ ui/layout: \
 	src/ui/frontend\ ui/layout.xml
 	$(create_dir)
@@ -165,7 +200,7 @@ $(BUILD_DIR)/ui/common\ ui/encyclopedia_unit_info_template: \
 	$(XML2UI_BIN) "$<" "$@"
 
 $(BUILD_DIR)/lua_scripts/all_scripted.lua: \
-	src/lua_scripts/all_scripted.lua
+	$(ALL_SCRIPTED_SRC)
 	$(create_dir)
 	@cp "$<" "$@"
 
@@ -202,7 +237,7 @@ $(BUILD_DIR)/consul/consul_toggle.lua: \
 $(BUILD_DIR)/consul/consul.lua: \
 	src/consul/consul.lua
 	$(create_dir)
-	@cp "$<" "$@"
+	@sed 's/consul_build = ".*"/consul_build = "$(GAME)"/' "$<" > "$@"
 
 $(BUILD_DIR)/consul/consul_battle.lua: \
 	src/consul/consul_battle.lua
@@ -302,8 +337,8 @@ setup-rpfm_schema: setup-rpfm_cli
 		echo "rpfm schema not found, updating..." && \
 		mkdir -p "$(RPFM_SCHEMA_DIR)" && \
 		echo "changing directory to $(RPFM_SCHEMA_DIR) to update schema..." && \
-		echo "$(RPFM_CLI_ROME2_CMD) schemas update --schema-path ./" && \
-		( cd "$(RPFM_SCHEMA_DIR)" && $(RPFM_CLI_ROME2_CMD) schemas update --schema-path ./ ) && \
+		echo "$(RPFM_CLI_CMD) schemas update --schema-path ./" && \
+		( cd "$(RPFM_SCHEMA_DIR)" && $(RPFM_CLI_CMD) schemas update --schema-path ./ ) && \
 		echo "Schema update complete."; \
 	fi
 
@@ -383,7 +418,7 @@ install-steam: $(MOD_PACKAGE)
 install-alone: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
-	@echo 'game_startup_mode campaign_load "1.save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@#echo 'game_startup_mode campaign_load "1.save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Install with DEI
@@ -406,40 +441,40 @@ install-to-dir = \
 		echo "Mod package installed successfully to $1"; \
 	fi
 
-# Attempt to find and terminate the Rome 2 process by its name.
-kill-rome2:
-	-powershell -Command "Stop-Process -Name 'Attila' -Force -ErrorAction SilentlyContinue; \
-	while (Get-Process -Name 'Attila' -ErrorAction SilentlyContinue) { Start-Sleep -Milliseconds 200 }"
+# Attempt to find and terminate the game process by its name.
+kill-game:
+	-powershell -Command "Stop-Process -Name '$(GAME_EXE:.exe=)' -Force -ErrorAction SilentlyContinue; \
+	while (Get-Process -Name '$(GAME_EXE:.exe=)' -ErrorAction SilentlyContinue) { Start-Sleep -Milliseconds 200 }"
 
 define disable_outdated_mods_popup
 	powershell -Command Start-Process ./scripts/disable_outdated_mods_popup.bat
 endef
 
-# Launch the standalone version of Rome2.exe with the specified working directory
+# Launch the standalone version of the game with the specified working directory
 run-alone: \
-	kill-rome2 \
+	kill-game \
 	install-alone
-	@powershell -WindowStyle Hidden -Command "Start-Process 'Attila.exe' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
+	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
 # Launch the standalone without mods
-run-standalone: kill-rome2
+run-standalone: kill-game
 	@$(disable_outdated_mods_popup)
 	@echo '' > $(INSTALL_USER_SCRIPT)/user.script.txt
-	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+	@powershell -Command Start-Process "$(GAME_EXE)" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
 # Launch the alone with DEI
 run-alone-dei: \
-	kill-rome2 \
+	kill-game \
 	install-dei
 	@$(disable_outdated_mods_popup)
-	@powershell -Command Start-Process "Rome2.exe" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"' &&
+	@powershell -Command Start-Process "$(GAME_EXE)" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
 
-# Launch the Steam version of Rome2 using its Steam app ID
+# Launch the Steam version of the game using its Steam app ID
 run-steam: \
-	kill-rome2 \
+	kill-game \
 	install-steam
 	@$(disable_outdated_mods_popup)
-	@powershell -Command start steam://rungameid/214950
+	@powershell -Command start steam://rungameid/$(STEAM_APP_ID)
 
 
 # short aliases for the run targets
@@ -476,7 +511,7 @@ insert-consul-entry:
 		install \
 			install-steam \
 			install-alone \
-		kill-rome \
+		kill-game \
 		run-alone \
 		run-steam \
 		steam \

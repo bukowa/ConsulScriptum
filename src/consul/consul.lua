@@ -1,15 +1,11 @@
+consul_build = "Attila"  -- or "Rome2"
+
 consul = {
 
     VERSION = "0.5.0",
     URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
-    BUILD = "Attila",
-
-    BUILD_TYPES = {
-        Rome2 = "Rome2",
-        Attila = "Attila",
-    },
 
     -- game requires a char before /t
     -- it also makes /t very long, so just use spaces
@@ -51,7 +47,7 @@ consul = {
         table.insert(events.UICreated, consul.ui.OnUICreated)
         table.insert(events.UICreated, consul.compat.setup)
         table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
-        if consul.BUILD == consul.BUILD_TYPES.Attila then
+        if consul_build == "Attila" then
             table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
             table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
             table.insert(events.UICreated, consul.ui.attila.OnUICreated)
@@ -315,7 +311,10 @@ consul = {
 
     ui = {
         -- contains all the components
-        root = "consul",
+        root = (function()
+            if consul_build == "Attila" then return "consul" end
+            return "consul_scriptum"
+        end)(),
         -- path to the consul template for Attila
         template_attila = "ui/common ui/consul",
         -- contains the consul listview
