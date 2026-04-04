@@ -440,13 +440,17 @@ consul = {
 
             -- if UIComponent is nil grab it from package.loaded
             if not UIComponent then
-                log:warn('UIComponent is nil; trying to grab it from other modules')
+                log:warn('UIComponent is nil; trying to grab it from lua registry')
 
-                -- when in campaign
-                if package.loaded ~= nil then
-                    if package.loaded.CoreUtils ~= nil then
-                        log:debug("Finding UIComponent in CoreUtils")
-                        UIComponent = package.loaded.CoreUtils.UIComponent
+                for k, v in pairs(debug.getregistry()) do
+                    local status, env = pcall(debug.getfenv, v)
+
+                    if status and type(env) == "table" then
+                        if env.UIComponent ~= nil then
+                            log:info("Found UIComponent in environment of registry index: " .. tostring(k))
+                            UIComponent = env.UIComponent
+                            break
+                        end
                     end
                 end
             end
