@@ -499,7 +499,11 @@ consul = {
             OnUICreated = function(context)
                 local ui = consul.ui
                 ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
-                ui.MoveRootToCenter()
+                ui.MoveToConfigPosition()
+                --ui.find(ui.consul):TriggerAnimation('move_up')
+                ui.find(ui.scriptum):TriggerAnimation('move_up')
+                ui.find(ui.consul_minimize):SimulateLClick()
+                ui.find(ui.scriptum_minimize):SimulateLClick()
             end,
 
             OnComponentMoved = function(context)
@@ -528,6 +532,30 @@ consul = {
         },
 
         -- event handler to be set in the main script
+        -- moves the consul root to the position saved in config
+        -- if position is 0,0 it moves to center
+        MoveToConfigPosition = function()
+            local ui = consul.ui
+            local cfg = consul.config.read()
+            local x = cfg.ui.position.x
+            local y = cfg.ui.position.y
+            local c = ui.find(ui.root)
+            if x == 0 and y == 0 then
+                -- move to center
+                local screen_x = ui._UIRoot:Width()
+                local screen_y = ui._UIRoot:Height()
+                local w = 700
+                local h = 500
+                local cx = (screen_x / 2) - (w / 2)
+                local cy = (screen_y / 2) - (h / 2)
+                c:MoveTo(cx + w, cy)
+            else
+                c:MoveTo(x, y)
+            end
+            return c
+        end,
+
+        -- event handler to be set in the main script
         -- handles any click event for the consul
         OnComponentLClickUp = function(context)
 
@@ -540,19 +568,7 @@ consul = {
                 log:debug("Toggled visibility of: consul root")
 
                 -- find the root component
-                local r = ui.find(ui.root)
-
-                -- read position from config
-                local cfg = consul.config.read()
-                local x = cfg.ui.position.x
-                local y = cfg.ui.position.y
-
-                -- if they are 0 then move to center
-                if x == 0 and y == 0 then
-                    ui.MoveRootToCenter()
-                else
-                    r:MoveTo(x, y)
-                end
+                local r = ui.MoveToConfigPosition()
 
                 -- toggle visibility
                 r:SetVisible(not r:Visible())
