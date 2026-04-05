@@ -2,7 +2,7 @@ consul_build = "Attila"  -- or "Rome2"
 
 consul = {
 
-    VERSION = "0.6.0",
+    VERSION = "0.6.1",
     URL = "http://github.com/bukowa/ConsulScriptum",
     AUTHOR = "Mateusz Kurowski",
     CONTACT = "gitbukowa@gmail.com",
@@ -63,10 +63,80 @@ consul = {
         table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
         table.insert(events.UICreated, consul.scriptum.setup)
         table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
+        table.insert(events.UICreated, consul.changelog.OnUICreated)
     end,
 
     -- logging
     log = require('consul_logging').Logger.new();
+
+    -- changelog
+    changelog = {
+        _data = nil,
+        _loaded = false,
+        load = function()
+            local ok, result = pcall(require, 'consul_changelog')
+            if ok and type(result) == "table" then
+                consul.changelog._data = result
+            end
+            consul.changelog._loaded = true
+        end,
+        format_all = function()
+            if not consul.changelog._loaded then consul.changelog.load() end
+            if not consul.changelog._data then return "Changelog not found." end
+            local data = consul.changelog._data
+            local raw_log = data.header or ""
+            local versions = {}
+            for k, _ in pairs(data.notes or {}) do
+                table.insert(versions, k)
+            end
+            table.sort(versions, function(a, b) return a > b end)
+            
+            local sep = ""
+            for _, v in ipairs(versions) do
+                local note = data.notes[v]
+                local note_text = ""
+                
+                if type(note) == "table" then
+                    if note.common and note.common ~= "" then
+                        note_text = note.common
+                    end
+                    if note[consul_build] and note[consul_build] ~= "" then
+                        if note_text ~= "" then note_text = note_text .. "\n\n" end
+                        note_text = note_text .. "--- " .. consul_build .. " Specific ---\n" .. note[consul_build]
+                    end
+                else
+                    note_text = tostring(note)
+                end
+                
+                if note_text ~= "" then
+                    raw_log = raw_log .. sep .. "Version " .. v .. "\n" .. note_text
+                    sep = "\n\n----------------------------------------\n\n"
+                end
+            end
+            
+            -- Strip carriage returns which break UI layout engines
+            return string.gsub(raw_log, "\r", "")
+        end,
+        OnUICreated = function(context)
+            local log = consul.new_log('changelog:OnUICreated')
+            local cfg = consul.config.read()
+            if cfg.console.last_read_changelog ~= consul.VERSION then
+                log:debug("New changelog available, printing to console")
+                local text = consul.changelog.format_all()
+                -- bypass history, directly write to UI
+                local ui = consul.ui
+                local c = ui.find(ui.console_output_text_1)
+                if c then
+                    local current = c:GetStateText()
+                    if current == "" then
+                        c:SetStateText(text)
+                    else
+                        c:SetStateText(current .. '\n' .. text)
+                    end
+                end
+            end
+        end
+    },
 
     -- shortcut to create a new logger
     new_log = function(name)
@@ -230,6 +300,7 @@ consul = {
                 console = {
                     autoclear = false,
                     autoclear_after = 1,
+                    last_read_changelog = "0.0.0",
                 },
                 battle = {
                     use_in_battle = false,
@@ -251,6 +322,7 @@ consul = {
                     and type(_config.console) == "table"
                     and type(_config.console.autoclear) == "boolean"
                     and type(_config.console.autoclear_after) == "number"
+                    and type(_config.console.last_read_changelog) == "string"
 
                     and type(_config.battle) == "table"
                     and type(_config.battle.use_in_battle) == "boolean"
@@ -281,6 +353,9 @@ consul = {
 
                 local ok, cfg = serpent.load(f_content)
                 if ok then
+                    if cfg.console and type(cfg.console.last_read_changelog) ~= "string" then
+                        cfg.console.last_read_changelog = "0.0.0"
+                    end
                     if config.validate(cfg) then
                         return cfg
                     else
@@ -1016,6 +1091,30 @@ consul = {
                     setup = function(cfg)
                         consul.console.commands.settings.autoclear = cfg.console.autoclear
                     end
+                },
+                ['/changelog'] = {
+                    help = function()
+                        return "Prints the changelog."
+                    end,
+                    func = function()
+                        return consul.changelog.format_all()
+                    end,
+                    exec = false,
+                    returns = true,
+                },
+                ['/changelog_read'] = {
+                    help = function()
+                        return "Marks current changelog as read."
+                    end,
+                    func = function()
+                        local cfg = consul.config.read()
+                        cfg.console.last_read_changelog = consul.VERSION
+                        consul.config.write(cfg)
+                        consul.console.clear()
+                        return "Changelog marked as read for version " .. consul.VERSION .. ". Type /changelog to view it again."
+                    end,
+                    exec = false,
+                    returns = true,
                 },
                 ['/faction_list'] = {
                     help = function()
