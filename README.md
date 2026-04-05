@@ -43,3 +43,6 @@ Few simple scripts are already included:
 - Cannot paste long commands - but you can type them...?! 🤷 (I have no idea how to handle this and this is very annoying. Current workaround: use scripting files via **Scriptum**, as they load dynamically.)
 - **Scriptum** accepts only **10 custom scripts** for now (I can't find a way to dynamically create components - if anyone needs more, just let me know).
 - Doesn't work in battle (I can't find a way to access UIComponent in battle - it’s probably restricted on purpose by CA).
+
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bukowa/ConsulScriptum)
