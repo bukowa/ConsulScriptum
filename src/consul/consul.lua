@@ -1,3 +1,5 @@
+consul_build = "Attila"  -- or "Rome2"
+
 consul = {
 
     VERSION = "0.5.0",
@@ -45,6 +47,11 @@ consul = {
         table.insert(events.UICreated, consul.ui.OnUICreated)
         table.insert(events.UICreated, consul.compat.setup)
         table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
+        if consul_build == "Attila" then
+            table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
+            table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
+            table.insert(events.UICreated, consul.ui.attila.OnUICreated)
+        end
         table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
         table.insert(events.UICreated, consul.history.OnUICreated)
         table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
@@ -304,7 +311,12 @@ consul = {
 
     ui = {
         -- contains all the components
-        root = "consul_scriptum",
+        root = (function()
+            if consul_build == "Attila" then return "consul" end
+            return "consul_scriptum"
+        end)(),
+        -- path to the consul template for Attila
+        template_attila = "ui/common ui/consul",
         -- contains the consul listview
         consul = "room_list",
         -- contains the scriptum listview
@@ -434,19 +446,23 @@ consul = {
         -- event handler to be set in the main script
         OnUICreated = function(context)
             local log = consul.new_log('ui:OnUICreated')
-            log:debug("UI created")
+            log:debug("UI created start")
 
             local ui = consul.ui
 
-            -- if UIComponent is nil grab it from package.loaded
+            -- if UIComponent is nil grab it registry
             if not UIComponent then
-                log:warn('UIComponent is nil; trying to grab it from other modules')
+                log:warn('UIComponent is nil; trying to grab it from lua registry')
 
-                -- when in campaign
-                if package.loaded ~= nil then
-                    if package.loaded.CoreUtils ~= nil then
-                        log:debug("Finding UIComponent in CoreUtils")
-                        UIComponent = package.loaded.CoreUtils.UIComponent
+                for k, v in pairs(debug.getregistry()) do
+                    local status, env = pcall(debug.getfenv, v)
+
+                    if status and type(env) == "table" then
+                        if env.UIComponent ~= nil then
+                            log:info("Found UIComponent in environment of registry index: " .. tostring(k))
+                            UIComponent = env.UIComponent
+                            break
+                        end
                     end
                 end
             end
@@ -470,6 +486,72 @@ consul = {
                 return
             end
 
+            log:debug("OnUICreated end")
+        end,
+
+        attila = {
+
+            xx = 0,
+            yy = 0,
+            should_move = false,
+
+            OnUICreated = function(context)
+                local ui = consul.ui
+                ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+                ui.MoveToConfigPosition()
+                --ui.find(ui.consul):TriggerAnimation('move_up')
+                ui.find(ui.scriptum):TriggerAnimation('move_up')
+                ui.find(ui.consul_minimize):SimulateLClick()
+                ui.find(ui.scriptum_minimize):SimulateLClick()
+            end,
+
+            OnComponentMoved = function(context)
+                if context.string ~= consul.ui.root then return end
+                local ui, attila = consul.ui, consul.ui.attila
+                if consul._game() ~= nil then
+                    consul._game():add_time_trigger('consul_move_trigger', 0)
+                end
+                local c = ui.find(consul.ui.root)
+                attila.xx, attila.yy = c:Position()
+                attila.should_move = true
+                c:SetVisible(false)
+            end,
+
+            TimeTrigger = function(context)
+                local ui, attila = consul.ui, consul.ui.attila
+                local c = ui.find(ui.root)
+                local x, y = c:Position()
+                local xx, yy = attila.xx, attila.yy
+                if (x ~= xx or y ~= yy) and attila.should_move == true then
+                    c:MoveTo(xx, yy)
+                    c:SetVisible(true)
+                    attila.should_move = false
+                end
+                end,
+        },
+
+        -- event handler to be set in the main script
+        -- moves the consul root to the position saved in config
+        -- if position is 0,0 it moves to center
+        MoveToConfigPosition = function()
+            local ui = consul.ui
+            local cfg = consul.config.read()
+            local x = cfg.ui.position.x
+            local y = cfg.ui.position.y
+            local c = ui.find(ui.root)
+            if x == 0 and y == 0 then
+                -- move to center
+                local screen_x = ui._UIRoot:Width()
+                local screen_y = ui._UIRoot:Height()
+                local w = 700
+                local h = 500
+                local cx = (screen_x / 2) - (w / 2)
+                local cy = (screen_y / 2) - (h / 2)
+                c:MoveTo(cx + w, cy)
+            else
+                c:MoveTo(x, y)
+            end
+            return c
         end,
 
         -- event handler to be set in the main script
@@ -485,19 +567,7 @@ consul = {
                 log:debug("Toggled visibility of: consul root")
 
                 -- find the root component
-                local r = ui.find(ui.root)
-
-                -- read position from config
-                local cfg = consul.config.read()
-                local x = cfg.ui.position.x
-                local y = cfg.ui.position.y
-
-                -- if they are 0 then move to center
-                if x == 0 and y == 0 then
-                    ui.MoveRootToCenter()
-                else
-                    r:MoveTo(x, y)
-                end
+                local r = ui.MoveToConfigPosition()
 
                 -- toggle visibility
                 r:SetVisible(not r:Visible())
