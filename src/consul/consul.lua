@@ -71,17 +71,8 @@ consul = {
 
     -- changelog
     changelog = {
-        _data = nil,
-        _loaded = false,
-        load = function()
-            local ok, result = pcall(require, 'consul_changelog')
-            if ok and type(result) == "table" then
-                consul.changelog._data = result
-            end
-            consul.changelog._loaded = true
-        end,
+        _data = require('consul_changelog'),
         format_all = function()
-            if not consul.changelog._loaded then consul.changelog.load() end
             if not consul.changelog._data then return "Changelog not found." end
             local data = consul.changelog._data
             local raw_log = data.header or ""
