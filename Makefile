@@ -121,6 +121,7 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_logging.lua \
 	$(BUILD_DIR)/consul/consul.lua \
 	$(BUILD_DIR)/consul/consul_battle.lua \
+	$(BUILD_DIR)/consul/consul_changelog.lua \
 	$(BUILD_DIR)/consul/consul_game_events.lua
 
 IMAGE_TARGETS := \
@@ -226,6 +227,11 @@ $(BUILD_DIR)/consul/consul_config.lua: \
 
 $(BUILD_DIR)/consul/consul_game_events.lua: \
 	src/consul/consul_game_events.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_changelog.lua: \
+	src/consul/consul_changelog.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
