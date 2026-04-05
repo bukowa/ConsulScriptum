@@ -67,7 +67,7 @@ consul = {
     end,
 
     -- logging
-    log = require('consul_logging').Logger.new();
+    log = require('consul_logging').Logger.new('consul', -1),
 
     -- changelog
     changelog = {
@@ -166,6 +166,20 @@ consul = {
             end
         end,
 
+        is_dei = function()
+            if consul_build ~= "Rome2" then return false end
+
+            -- this file has only tables, it should be safe to require
+            local dei_script = 'script._lib.manpower.units'
+
+            -- Attempt to require the script and check if DEI is loaded
+            local ok, _ = pcall(require, dei_script)
+            if not ok then
+                return false
+            end
+            return true
+        end,
+
         patches = {
             -- DEI removes the Prologue button in main menu
             -- it is done by modifying the sp_frame ui file which we override
@@ -173,15 +187,7 @@ consul = {
             dei = function()
                 local log = consul.new_log('compat:dei')
 
-                -- this file has only tables, it should be safe to require
-                local dei_script = 'script._lib.manpower.units'
-
-                -- Attempt to require the script and check if DEI is loaded
-                local ok, _ = pcall(require, dei_script)
-                if not ok then
-                    log:debug("DEI not detected, skipping patch")
-                    return false
-                end
+                if not consul.compat.patches.is_dei() then return end
 
                 -- If DEI is loaded, apply the patch
                 log:debug("DEI detected, applying compatibility patch")
@@ -889,6 +895,81 @@ consul = {
             },
 
             _is_setup = false,
+            
+            -- Tracks dynamically injected commands per-module to prevent cross-module ghosting on reload
+            _module_keys = {},
+            
+            -- Generic loader to dynamically merge ANY correctly formatted command module into the consul framework.
+            load_module = function(module_name)
+                local cmds = consul.console.commands
+                local cfg = consul.config.read()
+                local log = consul.new_log('console:commands:load_module')
+                
+                -- Initialize tracking array for this specific module
+                if not cmds._module_keys[module_name] then
+                    cmds._module_keys[module_name] = { exact = {}, starts_with = {} }
+                end
+                
+                -- Strip previously loaded custom commands from THIS module to prevent ghosting
+                for _, k in ipairs(cmds._module_keys[module_name].exact) do
+                    cmds.exact[k] = nil
+                end
+                for _, k in ipairs(cmds._module_keys[module_name].starts_with) do
+                    cmds.starts_with[k] = nil
+                end
+                cmds._module_keys[module_name] = { exact = {}, starts_with = {} }
+                
+                local ok, res
+                package.loaded[module_name] = nil
+                ok, res = pcall(require, module_name)
+                
+                if ok and type(res) == "table" then
+                    if type(res.exact) == "table" then
+                        for k, v in pairs(res.exact) do
+                            cmds.exact[k] = v
+                            table.insert(cmds._module_keys[module_name].exact, k)
+                            if v.setup then pcall(v.setup, cfg) end
+                        end
+                    end
+                    if type(res.starts_with) == "table" then
+                        for k, v in pairs(res.starts_with) do
+                            cmds.starts_with[k] = v
+                            table.insert(cmds._module_keys[module_name].starts_with, k)
+                            if v.setup then pcall(v.setup, cfg) end
+                        end
+                    end
+                    log:debug("Module '" .. module_name .. "' successfully loaded.")
+                    return true, "Module loaded."
+                else
+                    log:debug("Module '" .. module_name .. "' not available: " .. tostring(res))
+                    return false, tostring(res)
+                end
+            end,
+            
+            load_custom = function()
+                local cmds = consul.console.commands
+                local log = consul.new_log('console:commands:load_custom')
+                log:debug("Start...")
+
+                local ok_vfs, _ = cmds.load_module('consul_commands')
+                if ok_vfs then
+                    log:debug("consul_commands loaded successfully.")
+                end
+
+                local ok_root, _ = cmds.load_module('consul_custom_commands')
+                if ok_root  then
+                    log:debug("consul_custom_commands loaded successfully.")
+                end
+
+                if consul.compat.is_dei() then
+                    local ok_dei, _ = cmds.load_module('consul_commands_dei')
+                    if ok_dei then
+                        log:debug("DEI-specific commands loaded successfully.")
+                    end
+                end
+
+                return "Custom commands merged and loaded successfully."
+            end,
 
             -- setups the commands
             setup = function()
@@ -914,6 +995,14 @@ consul = {
                         v.setup(cfg)
                     end
                 end
+                
+                local ok, err = pcall(commands.load_custom)
+                if not ok then
+                    log:error("Error loading custom commands: " .. tostring(err))
+                else
+                    log:debug("Custom commands loaded successfully.")
+                end
+
                 commands._is_setup = true
             end,
 
@@ -996,6 +1085,16 @@ consul = {
                 }
             },
             exact = {
+                ['/reload_custom_commands'] = {
+                    help = function()
+                        return "Reloads the external custom commands dynamically from disk."
+                    end,
+                    func = function()
+                        return consul.console.commands.load_custom()
+                    end,
+                    exec = false,
+                    returns = true,
+                },
                 ['/help'] = {
                     help = function()
                         return "Show help message."

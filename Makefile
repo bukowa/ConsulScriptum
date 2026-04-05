@@ -122,7 +122,9 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul.lua \
 	$(BUILD_DIR)/consul/consul_battle.lua \
 	$(BUILD_DIR)/consul/consul_changelog.lua \
-	$(BUILD_DIR)/consul/consul_game_events.lua
+	$(BUILD_DIR)/consul/consul_game_events.lua \
+	$(BUILD_DIR)/consul/consul_commands.lua \
+	$(BUILD_DIR)/consul/consul_commands_dei.lua
 
 IMAGE_TARGETS := \
 	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
@@ -244,6 +246,16 @@ $(BUILD_DIR)/consul/consul.lua: \
 	src/consul/consul.lua
 	$(create_dir)
 	@sed 's/consul_build = ".*"/consul_build = "$(GAME)"/' "$<" > "$@"
+
+$(BUILD_DIR)/consul/consul_commands.lua: \
+	src/consul/consul_commands.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_commands_dei.lua: \
+	src/consul/consul_commands_dei.lua
+	$(create_dir)
+	@cp "$<" "$@"
 
 $(BUILD_DIR)/consul/consul_battle.lua: \
 	src/consul/consul_battle.lua
@@ -473,7 +485,7 @@ run-alone-dei: \
 	kill-game \
 	install-dei
 	@$(disable_outdated_mods_popup)
-	@powershell -Command Start-Process "$(GAME_EXE)" -WorkingDirectory '"$(INSTALL_ALONE_DIR)"'
+	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
 # Launch the Steam version of the game using its Steam app ID
 run-steam: \
