@@ -904,7 +904,11 @@ consul = {
                 local cmds = consul.console.commands
                 local cfg = consul.config.read()
                 local log = consul.new_log('console:commands:load_module')
-                
+
+                if not string.find(package.path, ";consul/?.lua") then
+                    package.path = package.path .. ";consul/?.lua"
+                end
+
                 -- Initialize tracking array for this specific module
                 if not cmds._module_keys[module_name] then
                     cmds._module_keys[module_name] = { exact = {}, starts_with = {} }
@@ -1087,7 +1091,7 @@ consul = {
             exact = {
                 ['/reload_custom_commands'] = {
                     help = function()
-                        return "Reloads the external custom commands dynamically from disk."
+                        return "Reload commands from consul_custom_commands.lua"
                     end,
                     func = function()
                         return consul.console.commands.load_custom()
