@@ -187,7 +187,7 @@ consul = {
             dei = function()
                 local log = consul.new_log('compat:dei')
 
-                if not consul.compat.patches.is_dei() then return end
+                if not consul.compat.is_dei() then return end
 
                 -- If DEI is loaded, apply the patch
                 log:debug("DEI detected, applying compatibility patch")
