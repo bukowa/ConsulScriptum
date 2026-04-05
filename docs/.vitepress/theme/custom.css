@@ -1,0 +1,603 @@
+/* ============================================================
+   ConsulScriptum — VitePress Custom Theme
+   Total War Aesthetic: Dark Crimson, Muted Gold, Parchment
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Colour Tokens ─────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --cs-crimson:       #8B1A1A;
+  --cs-crimson-light: #B22222;
+  --cs-crimson-glow:  rgba(139, 26, 26, 0.35);
+  --cs-gold:          #C9A84C;
+  --cs-gold-light:    #E5C97E;
+  --cs-gold-muted:    #8B7340;
+
+  /* Surfaces */
+  --cs-bg-deep:       #0D0B08;
+  --cs-bg-base:       #130F0A;
+  --cs-bg-raised:     #1C1610;
+  --cs-bg-card:       #231B12;
+  --cs-bg-overlay:    rgba(19, 15, 10, 0.92);
+
+  /* Text */
+  --cs-text-primary:  #E8D5B0;
+  --cs-text-muted:    #9A8668;
+  --cs-text-faint:    #5C4E38;
+
+  /* Borders */
+  --cs-border:        rgba(201, 168, 76, 0.2);
+  --cs-border-strong: rgba(201, 168, 76, 0.45);
+
+  /* Code */
+  --vp-code-font-size: 0.68rem;
+  --vp-code-line-height: 1.6;
+
+  /* Typography */
+  --vp-font-family-base: 'Crimson Text', Georgia, serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* VitePress colour overrides (light mode, but we target dark) */
+  --vp-c-brand-1:        var(--cs-gold);
+  --vp-c-brand-2:        var(--cs-gold-light);
+  --vp-c-brand-3:        var(--cs-gold-muted);
+  --vp-c-brand-soft:     rgba(201, 168, 76, 0.15);
+  --vp-c-bg:             var(--cs-bg-base);
+  --vp-c-bg-soft:        var(--cs-bg-raised);
+  --vp-c-bg-alt:         var(--cs-bg-card);
+  --vp-c-border:         var(--cs-border);
+  --vp-c-divider:        var(--cs-border);
+  --vp-c-text-1:         var(--cs-text-primary);
+  --vp-c-text-2:         var(--cs-text-muted);
+  --vp-c-text-3:         var(--cs-text-faint);
+
+  /* Nav */
+  --vp-nav-bg-color:     var(--cs-bg-overlay);
+  --vp-c-bg-navbar:      var(--cs-bg-overlay);
+
+  /* Sidebar */
+  --vp-sidebar-bg-color: var(--cs-bg-raised);
+
+  /* Code blocks */
+  --vp-code-block-bg:    #0A0806;
+  --vp-code-color:       #C9A84C;
+  --vp-code-line-highlight-color: rgba(139, 26, 26, 0.18);
+
+  /* Home hero */
+  --vp-home-hero-name-color:          var(--cs-gold);
+  --vp-home-hero-name-background:     linear-gradient(135deg, var(--cs-gold-light) 0%, var(--cs-crimson-light) 100%);
+  --vp-home-hero-image-background-image: radial-gradient(circle at 50% 50%, rgba(139,26,26,0.35) 0%, transparent 70%);
+  --vp-home-hero-image-filter:        blur(40px);
+
+  /* Buttons */
+  --vp-button-brand-bg:         var(--cs-crimson);
+  --vp-button-brand-hover-bg:   var(--cs-crimson-light);
+  --vp-button-brand-border:     var(--cs-crimson-light);
+  --vp-button-brand-text:       var(--cs-gold-light);
+  --vp-button-alt-bg:           var(--cs-bg-card);
+  --vp-button-alt-hover-bg:     var(--cs-bg-raised);
+  --vp-button-alt-border:       var(--cs-border-strong);
+  --vp-button-alt-text:         var(--cs-text-primary);
+}
+
+/* ── Force dark theme ─────────────────────────────────────── */
+html {
+  color-scheme: dark;
+}
+
+/* ── Global typography ────────────────────────────────────── */
+body {
+  background-color: var(--cs-bg-deep);
+  color: var(--cs-text-primary);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', 'Times New Roman', serif !important;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--cs-gold-light);
+}
+
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.6rem; border-bottom: 1px solid var(--cs-border-strong); padding-bottom: 0.35em; }
+h3 { font-size: 1.25rem; color: var(--cs-gold); }
+
+/* ── Navigation ───────────────────────────────────────────── */
+.VPNav {
+  background: var(--cs-bg-overlay) !important;
+  border-bottom: 1px solid var(--cs-border) !important;
+  backdrop-filter: blur(12px);
+}
+
+.VPNavBar .title {
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.1rem !important;
+  color: var(--cs-gold-light) !important;
+  letter-spacing: 0.06em;
+}
+
+.VPNavBarTitle .logo {
+  filter: drop-shadow(0 0 6px var(--cs-crimson-glow));
+}
+
+.VPNavBarMenuLink,
+.VPNavBarMenuLink.active {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.VPNavBarMenuLink:hover,
+.VPNavBarMenuLink.active {
+  color: var(--cs-gold-light) !important;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.VPSidebar {
+  background: var(--cs-bg-raised) !important;
+  border-right: 1px solid var(--cs-border) !important;
+}
+
+.VPSidebarItem .text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--cs-text-muted);
+}
+
+.VPSidebarItem.is-active > .item .text,
+.VPSidebarItem.is-link.is-active > .item > .link .text {
+  color: var(--cs-gold-light) !important;
+  font-weight: 600;
+}
+
+.VPSidebarItem:hover > .item .text {
+  color: var(--cs-gold) !important;
+}
+
+.VPSidebarGroup .title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cs-crimson-light) !important;
+  font-weight: 700;
+}
+
+/* ── Content area ─────────────────────────────────────────── */
+.VPContent {
+  background: var(--cs-bg-base);
+}
+
+.VPDoc .container {
+  max-width: 860px;
+}
+
+/* ── Decorative HR ────────────────────────────────────────── */
+.vp-doc hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cs-gold-muted), transparent);
+  margin: 2.5rem 0;
+}
+
+/* ── Custom containers ────────────────────────────────────── */
+.custom-block {
+  border-radius: 4px;
+  border-left: 3px solid;
+}
+
+.custom-block.tip {
+  border-color: var(--cs-gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.custom-block.warning {
+  border-color: #c97c2e;
+  background: rgba(201, 124, 46, 0.08);
+}
+
+.custom-block.danger {
+  border-color: var(--cs-crimson-light);
+  background: rgba(178, 34, 34, 0.1);
+}
+
+.custom-block.info {
+  border-color: #4a7fa5;
+  background: rgba(74, 127, 165, 0.08);
+}
+
+/* ── Code blocks ──────────────────────────────────────────── */
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--cs-border);
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+.vp-doc [class*='language-'] > button.copy {
+  color: var(--cs-text-muted);
+}
+
+code {
+  font-family: var(--vp-font-family-mono) !important;
+  font-size: 0.68em !important;
+  background: rgba(201, 168, 76, 0.08) !important;
+  border: 1px solid var(--cs-border) !important;
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+  color: var(--cs-gold-light) !important;
+}
+
+pre code {
+  background: transparent !important;
+  border: none !important;
+  padding: 0;
+  color: inherit !important;
+  font-size: 1em !important; /* relative to pre, controlled below */
+}
+
+.vp-doc div[class*='language-'],
+.vp-doc div[class*='language-'] pre,
+.vp-doc div[class*='language-'] code {
+  font-size: 0.68rem !important;
+}
+
+/* ── Tables ───────────────────────────────────────────────── */
+.vp-doc table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.vp-doc th {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--cs-bg-card);
+  color: var(--cs-gold);
+  border-bottom: 2px solid var(--cs-border-strong);
+  padding: 0.75rem 1rem;
+}
+
+.vp-doc td {
+  border-bottom: 1px solid var(--cs-border);
+  padding: 0.6rem 1rem;
+  color: var(--cs-text-primary);
+}
+
+.vp-doc tr:hover td {
+  background: rgba(201, 168, 76, 0.04);
+}
+
+/* ── Links ────────────────────────────────────────────────── */
+.vp-doc a {
+  color: var(--cs-gold);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.vp-doc a:hover {
+  color: var(--cs-gold-light);
+  border-bottom-color: var(--cs-gold-muted);
+}
+
+/* ── Hero section ─────────────────────────────────────────── */
+.VPHero .name {
+  font-family: 'Cinzel', serif !important;
+  font-size: clamp(2rem, 5vw, 3.5rem) !important;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--cs-gold-light) 0%, var(--cs-crimson-light) 60%, var(--cs-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 12px var(--cs-crimson-glow));
+}
+
+.VPHero .tagline {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--cs-text-muted) !important;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.VPHero .text {
+  font-family: 'Cinzel', serif !important;
+  color: var(--cs-text-primary) !important;
+  font-size: 1.3rem !important;
+}
+
+.VPHero .image-container {
+  filter: drop-shadow(0 0 40px var(--cs-crimson-glow));
+}
+
+/* ── Feature cards ────────────────────────────────────────── */
+.VPFeature {
+  background: var(--cs-bg-card) !important;
+  border: 1px solid var(--cs-border) !important;
+  border-radius: 6px !important;
+  transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s !important;
+}
+
+.VPFeature:hover {
+  border-color: var(--cs-border-strong) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(139, 26, 26, 0.2) !important;
+}
+
+.VPFeature .title {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.95rem !important;
+  color: var(--cs-gold-light) !important;
+  letter-spacing: 0.04em;
+}
+
+.VPFeature .details {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 1rem !important;
+  color: var(--cs-text-muted) !important;
+}
+
+/* ── Badge ────────────────────────────────────────────────── */
+.VPBadge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.VPFooter {
+  background: var(--cs-bg-deep) !important;
+  border-top: 1px solid var(--cs-border) !important;
+}
+
+.VPFooter .message,
+.VPFooter .copyright {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.95rem;
+  color: var(--cs-text-faint) !important;
+}
+
+/* ── Page outline (aside) ─────────────────────────────────── */
+.VPDocAside .outline-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cs-crimson-light) !important;
+}
+
+.VPDocOutlineItem a {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.95rem;
+}
+
+.VPDocOutlineItem a:hover {
+  color: var(--cs-gold) !important;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--cs-bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--cs-gold-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cs-gold); }
+
+/* ── Subtle texture overlay on body ──────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(139,26,26,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.04) 0%, transparent 50%);
+  z-index: 0;
+}
+
+/* ── Animated underline for nav links ─────────────────────── */
+.VPNavBarMenuLink::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: var(--cs-gold);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+  transform-origin: left;
+}
+
+.VPNavBarMenuLink:hover::after,
+.VPNavBarMenuLink.active::after {
+  transform: scaleX(1);
+}
+
+/* ── Search box ───────────────────────────────────────────── */
+.VPNavBarSearch .DocSearch-Button {
+  background: var(--cs-bg-card) !important;
+  border: 1px solid var(--cs-border) !important;
+  color: var(--cs-text-muted) !important;
+}
+
+.VPNavBarSearch .DocSearch-Button:hover {
+  border-color: var(--cs-border-strong) !important;
+}
+
+/* ── Local search modal ───────────────────────────────────── */
+.VPLocalSearchBox {
+  background: var(--cs-bg-card) !important;
+  border: 1px solid var(--cs-border-strong) !important;
+}
+
+/* ── Tabs (vitepress-plugin-tabs) ─────────────────────────── */
+.vp-tabs {
+  margin: 1.5rem 0;
+}
+
+.vp-tabs-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--cs-border-strong);
+  margin-bottom: 0;
+}
+
+.vp-tabs-nav-tab {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.4rem;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  color: var(--cs-text-muted) !important;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  position: relative;
+  bottom: -1px;
+}
+
+.vp-tabs-nav-tab:hover {
+  color: var(--cs-gold) !important;
+  background: rgba(201, 168, 76, 0.05);
+}
+
+.vp-tabs-nav-tab.active,
+.vp-tabs-nav-tab[aria-selected="true"] {
+  color: var(--cs-gold-light) !important;
+  background: var(--cs-bg-raised);
+  border-color: var(--cs-border-strong);
+  border-bottom-color: var(--cs-bg-raised);
+}
+
+.vp-tabs-content {
+  border: 1px solid var(--cs-border-strong);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  background: var(--cs-bg-raised);
+  padding: 1.4rem 1.6rem;
+}
+
+/* media inside a tab — full width, rounded */
+.vp-tabs-content video,
+.vp-tabs-content img,
+.vp-doc video {
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vp-tabs-content video:hover,
+.vp-doc video:hover {
+  transform: scale(1.005);
+  box-shadow: 0 4px 20px rgba(139, 26, 26, 0.4);
+}
+
+/* ── Video Expand Overlay ────────────────────────────────── */
+.hero-demo-display,
+.vp-tabs-content,
+.vp-doc {
+  position: relative;
+}
+
+/* Base styles for the expand hint icon */
+.video-expand-hint {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 64px;
+  height: 64px;
+  background: rgba(13, 11, 8, 0.85);
+  border: 1px solid var(--cs-gold);
+  color: var(--cs-gold-light);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* Let clicks pass through to the video */
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.7);
+}
+
+/* Ensure SVG is centered */
+.video-expand-hint svg {
+  display: block;
+  margin: auto;
+}
+
+.hero-demo-display:hover .video-expand-hint,
+.vp-tabs-content:hover .video-expand-hint,
+.video-trigger-wrapper:hover .video-expand-hint {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--cs-gold-muted);
+  border-color: var(--cs-gold-light);
+  background: rgba(201, 168, 76, 0.15);
+}
+
+/* Fallback for videos outside of containers (pure markdown) */
+.vp-doc video {
+  position: relative;
+}
+
+/* Documentation-specific override for the expand hint */
+.video-trigger-wrapper .video-expand-hint {
+  bottom: 28px;
+  right: 18px;
+  width: 54px;
+  height: 54px;
+}
+
+.video-trigger-wrapper .video-expand-hint svg {
+  width: 28px;
+  height: 28px;
+}
+/* Ensure modal video is not clickable/hoverable as a trigger */
+.video-modal-content video {
+  cursor: default !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+/* ── Compact Reference Utility ────────────────────────────── */
+.compact-reference h4 {
+  margin-top: 1rem !important;
+  margin-bottom: 0.15rem !important;
+  font-size: 0.95rem !important;
+  color: var(--cs-gold-light);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.compact-reference p {
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.95rem;
+  color: var(--cs-text-muted);
+}
+
+.compact-reference ul {
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+  padding-left: 1.2rem;
+}
+
+.compact-reference li {
+  margin-bottom: 0.1rem !important;
+  font-size: 0.9rem;
+}
