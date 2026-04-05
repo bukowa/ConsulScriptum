@@ -27,18 +27,21 @@ return {
         -- the Total War engine's background event system instead of just returning text.
         -- 
         -- 1. We use a local boolean (_is_logging_settlements) to track the state.
-        -- 2. During setup(), we inject a listener into the 'SettlementSelected' event.
-        -- 3. The actual '/ex_settlement_log' command simply flips the boolean!
+        -- 2. During setup(), we safely inject a listener into 'events.SettlementSelected'.
+        -- 3. We use a global flag (__ex_settlement_log_hooked) so that /reload_custom_commands doesn't duplicate hooks!
+        -- 4. The actual '/ex_settlement_log' command simply flips the boolean!
         ['/ex_settlement_log'] = {
             setup = function(cfg)
-                -- Register the event listener using our exact command string as the unique key
-                consul.consul_scripts.event_handlers['SettlementSelected']['/ex_settlement_log'] = function(context)
-                    if _is_logging_settlements then
-                        local region = context:garrison_residence():region():name()
-                        consul.console.write("Settlement Selected: " .. region)
-                    end
+                if not __ex_settlement_log_hooked then
+                    table.insert(events.SettlementSelected, function(context)
+                        if _is_logging_settlements then
+                            local region = context:garrison_residence():region():name()
+                            consul.console.write("Settlement Selected: " .. region)
+                        end
+                    end)
+                    __ex_settlement_log_hooked = true
+                    consul.log:debug("/ex_settlement_log event hook initialized!")
                 end
-                consul.log:debug("/ex_settlement_log event hook initialized!")
             end,
             help = function()
                 return "[Example] Toggle player-selected settlement log."
