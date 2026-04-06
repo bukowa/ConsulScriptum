@@ -37,9 +37,7 @@ Use **Scriptum** for anything longer than a few lines. See [Running longer scrip
 
 ## Battle mode
 
-**Rome II** — the console does not show in battle by default because the battle interface is not loaded. There is a workaround: the mod registers a custom battlefield override using `game_interface:add_custom_battlefield`, which causes the Rome II battle UI to load and makes the console accessible. Enable it by running `/use_in_battle` in a campaign session, then start a battle. This is experimental.
-
-**Attila** — battle mode is not supported yet. Whether Attila's battle interface can be made available without the Rome II override trick is still to be researched.
+<!-- @include: ./parts/battle-mode.md -->
 
 ---
 

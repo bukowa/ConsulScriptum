@@ -194,8 +194,8 @@ h3 { font-size: 1.25rem; color: var(--cs-gold); }
 }
 
 .custom-block.tip {
-  border-color: var(--cs-gold);
-  background: rgba(201, 168, 76, 0.08);
+  border-color: #42b983; /* Green */
+  background: rgba(66, 185, 131, 0.08);
 }
 
 .custom-block.warning {

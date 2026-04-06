@@ -1,18 +1,16 @@
 # Getting Started
 
-ConsulScriptum adds an in-game scripting console for Total War. It lets you run Lua code and predefined commands without editing pack files or restarting the game.
+<!-- @include: ./parts/status-table.md -->
 
-**Currently supported games:**
+See [Detailed Compatibility](./compatibility) for stability notes and engine differences.
 
-| Game | Status |
-|------|--------|
-| Total War: Rome II | ✅ Supported |
-| Total War: Attila | ✅ Supported |
-| Other Total War titles | ❌ Not supported — porting is possible but not yet investigated |
+## Step 1: Installation
 
-See [Limitations](./limitations) for the full list.
+<!-- @include: ./parts/installation-links.md -->
 
-## Step 1: Accessing the Interface
+---
+
+## Step 2: Accessing the Interface
 
 The interface consists of three main panels: **Console**, **Consul**, and **Scriptum**. You can switch between them using the tabs at the top of the ConsulScriptum window.
 
@@ -30,7 +28,7 @@ Click the **ConsulScriptum toggle button** in the campaign UI top bar. The windo
 
 :::
 
-## Step 2: Using Consul (One-Click Actions)
+## Step 3: Using Consul (One-Click Actions)
 
 <!-- @include: ./parts/consul-usage.md -->
 
@@ -52,7 +50,13 @@ Not sure what a script does? **Hover your mouse over any script name** in the li
 
 See the [Consul Scripts Reference](./consul-scripts) for a full list of available actions and descriptions.
 
-## Step 3: The Console (Commands & Lua)
+## Step 4: The Console (Commands & Lua)
+
+::: warning Console Quick Tips
+- **No Enter Key**: You must click the **Send** button to submit commands.
+- **No UI Copy**: You cannot copy text directly from the console output. Use the `consul.output` file in your game folder instead.
+- **No Autocomplete**: Tab completion and keyboard history (↑/↓) are not supported. Use the on-screen arrow buttons for history.
+:::
 
 Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts.
 
@@ -74,7 +78,7 @@ consul.console.clear()             -- Clears the console output
 
 :::
 
-## Step 4: Scriptum (File-Based Scripts)
+## Step 5: Scriptum (File-Based Scripts)
 
 Because the console input field is limited to short text, use the **Scriptum** tab for long or complex scripts. This module reads `.lua` files directly from your game folder.
 
@@ -101,5 +105,6 @@ See the [Scriptum guide](./scriptum) for more details.
 
 - [Limitations](./limitations) — read this before reporting bugs
 - [The Console](./console) — full command and Lua reference
+- [Battle Mode](./battle) — how to use the console in Rome II battles
 - [Scriptum](./scriptum) — advanced file-based scripting
 - [Custom Commands](../reference/custom-commands) — adding your own `/commands`
