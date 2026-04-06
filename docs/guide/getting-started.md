@@ -30,7 +30,7 @@ Click the **ConsulScriptum toggle button** in the campaign UI top bar. The windo
 
 :::
 
-## Step 2: One-Click Actions (Consul)
+## Step 2: Using Consul (One-Click Actions)
 
 <!-- @include: ./parts/consul-usage.md -->
 
@@ -52,7 +52,7 @@ Not sure what a script does? **Hover your mouse over any script name** in the li
 
 See the [Consul Scripts Reference](./consul-scripts) for a full list of available actions and descriptions.
 
-## Step 3: The Console
+## Step 3: The Console (Commands & Lua)
 
 Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts.
 
@@ -74,7 +74,7 @@ consul.console.clear()             -- Clears the console output
 
 :::
 
-## Step 4: Using Scriptum (Advanced)
+## Step 4: Scriptum (File-Based Scripts)
 
 Because the console input field is limited to short text, use the **Scriptum** tab for long or complex scripts. This module reads `.lua` files directly from your game folder.
 
@@ -89,15 +89,8 @@ The recommended way to work with Scriptum is to run the game in **Windowed Mode*
 The files are read "live" — you can edit your `.lua` file, save it, and then click the button in the Scriptum tab to execute the updated code immediately without restarting the game.
 
 :::tabs
-
-== Attila
-<!-- Replace with your recording: docs/public/videos/attila-scriptum.webm -->
-> 📹 *Recording coming soon.*
-
-== Rome II
-<!-- Replace with your recording: docs/public/videos/rome2-scriptum.webm -->
-> 📹 *Recording coming soon — will show editing the file and clicking the button in the Scriptum tab.*
-
+== Attila & Rome II
+<video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Both" autoplay loop muted playsinline></video>
 :::
 
 See the [Scriptum guide](./scriptum) for more details.

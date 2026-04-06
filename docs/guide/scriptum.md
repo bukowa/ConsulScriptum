@@ -17,7 +17,7 @@ C:/my_scripts/debug.lua
 
 Each listed file appears as a button in the panel. Clicking it executes that file immediately. The file is re-read from disk each time you click, so you can edit it and run the updated version without restarting.
 
-`consul.scriptum` is created automatically on first run, pre-populated with `scriptum.lua` (the example script). To add your own scripts, open `consul.scriptum` in a text editor and add their paths. Changes to `consul.scriptum` take effect the next time you open the ConsulScriptum window.
+`consul.scriptum` is created automatically on first run, pre-populated with `scriptum.lua` (the example script). To add your own scripts, open `consul.scriptum` in a text editor and add their paths. Changes to `consul.scriptum` take effect the next time you click anywhere on the ConsulScriptum window or reopen it.
 
 ---
 
@@ -32,6 +32,8 @@ Each listed file appears as a button in the panel. Clicking it executes that fil
 ## Suggested Workflow
 
 The recommended way to use Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code, Notepad++, or Sublime Text) open next to it. 
+
+<video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
 
 ::: tip No Restart Required
 The Scriptum files are read "live". You can edit your `.lua` file, save it (Ctrl+S), and then click the button in the Scriptum tab to execute the updated code immediately. This creates a powerful development loop: write code, click to test, and iterate without even needing to Alt-Tab.
