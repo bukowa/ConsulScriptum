@@ -634,6 +634,12 @@ consul = {
             local ui = consul.ui
             local log = consul.new_log('ui:OnComponentLClickUp')
 
+            -- reload scriptum when any component containing consul is clicked
+            -- this ensures scripts are fresh even if the reopen logic doesn't trigger
+            if string.find(context.string, "consul") then
+                consul.scriptum.setup()
+            end
+
             -- top menu toggle button
             if context.string == ui.button_toggle then
                 log:debug("Toggled visibility of: consul root")
