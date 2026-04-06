@@ -633,6 +633,7 @@ consul = {
             -- shorthand
             local ui = consul.ui
             local log = consul.new_log('ui:OnComponentLClickUp')
+            log:trace("Clicked on: " .. context.string)
 
             -- reload scriptum when any component containing consul is clicked
             -- this ensures scripts are fresh even if the reopen logic doesn't trigger
