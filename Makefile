@@ -436,7 +436,9 @@ install-steam: $(MOD_PACKAGE)
 install-alone: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
-	@#echo 'game_startup_mode campaign_load "1.save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 # Install with DEI
@@ -444,6 +446,9 @@ install-dei: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'mod "_divide_et_impera_release_12_Part1.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'mod "_divide_et_impera_release_12_Part2.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
 copy_alone: $(MOD_PACKAGE)
