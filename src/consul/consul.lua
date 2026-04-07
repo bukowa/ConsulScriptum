@@ -39,6 +39,34 @@ consul = {
         --end,
         settlement = nil,
         faction = nil,
+        -- logs every environment in the registry
+        logregistry = function()
+            local log = consul.new_log('debug:logregistry')
+            local count = 0
+
+            for k, v in pairs(debug.getregistry()) do
+                count = count + 1
+                local status, env = pcall(debug.getfenv, v)
+                if status and type(env) == "table" then
+                    log:info("printing registry number " .. tostring(count))
+
+                    local env_copy = {}
+                    for key, val in pairs(env) do
+                        if key == "consul" then
+                            env_copy[key] = "removed"
+                        elseif key == "consul_game_events" then
+                            env_copy[key] = "removed"
+                        elseif key == "consul_game_events_decompiled_only" then
+                            env_copy[key] = "removed"
+                        else
+                            env_copy[key] = val
+                        end
+                    end
+
+                    log:info(consul.pretty(env_copy))
+                end
+            end
+        end,
     };
 
     -- setup consul
