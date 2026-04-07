@@ -30,7 +30,7 @@ The files are read "live" — you can edit your `.lua` file, save it, and then c
 
 The recommended way to work with Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code or Notepad++) open next to it. 
 
-<video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
+<video src="/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
 
 ::: tip No Restart Required
 The Scriptum files are read "live". You can edit your `.lua` file, save it (Ctrl+S), and then click the button in the Scriptum tab to execute the updated code immediately. This creates a powerful development loop: write code, click to test, and iterate without even needing to Alt-Tab.

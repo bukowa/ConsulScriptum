@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { computed, watch, onUnmounted } from 'vue'
-import { nextVideo, prevVideo } from '../index.mts'
+import { nextModal, prevModal } from '../index.mts'
 
 const props = defineProps<{
   state: {
-    playlist: any[],
-    currentIndex: number,
+    heroIndex: number,
+    modalPlaylist: any[],
+    modalIndex: number,
     isModalOpen: boolean,
-    activeVideoSrc: string | null,
     isCarouselMode: boolean
   }
 }>()
 
 const emit = defineEmits(['close'])
 
-const currentVideo = computed(() => {
-  return props.state.playlist[props.state.currentIndex] || { src: '', title: '', game: '' }
+const currentMedia = computed(() => {
+  return props.state.modalPlaylist[props.state.modalIndex] || { src: '', title: '', game: '', type: 'video' }
 })
 
 const closeOnEsc = (e: KeyboardEvent) => {
@@ -50,31 +50,37 @@ onUnmounted(() => {
           
           <div class="video-modal-content">
             <video 
-              v-if="currentVideo.src"
-              :key="currentVideo.src"
-              :src="currentVideo.src" 
+              v-if="currentMedia.src && currentMedia.type === 'video'"
+              :key="currentMedia.src"
+              :src="currentMedia.src" 
               controls 
               autoplay 
               loop
               class="video-modal-player"
             ></video>
-
-            <!-- Navigation Arrows (Only in Carousel Mode) -->
-            <template v-if="state.isCarouselMode">
-              <button class="modal-nav prev" @click.stop="prevVideo" aria-label="Previous Video">
-                <span class="arrow">‹</span>
-              </button>
-              <button class="modal-nav next" @click.stop="nextVideo" aria-label="Next Video">
-                <span class="arrow">›</span>
-              </button>
-
-              <!-- Sync Info Badge -->
-              <div class="modal-video-info" v-if="currentVideo.game || currentVideo.title">
-                <span class="modal-game-tag" v-if="currentVideo.game">{{ currentVideo.game }}</span>
-                <span class="modal-video-title" v-if="currentVideo.title">{{ currentVideo.title }}</span>
-              </div>
-            </template>
+            <img 
+              v-else-if="currentMedia.src && currentMedia.type === 'image'"
+              :key="currentMedia.src"
+              :src="currentMedia.src"
+              class="video-modal-player image-preview"
+            />
           </div>
+
+          <!-- Navigation Arrows (Only in Carousel Mode) -->
+          <template v-if="state.isCarouselMode">
+            <button class="modal-nav prev" @click.stop="prevModal" :aria-label="`Previous ${currentMedia.type}`">
+              <span class="arrow">‹</span>
+            </button>
+            <button class="modal-nav next" @click.stop="nextModal" :aria-label="`Next ${currentMedia.type}`">
+              <span class="arrow">›</span>
+            </button>
+
+            <!-- Sync Info Badge -->
+            <div class="modal-video-info" v-if="currentMedia.game || currentMedia.title">
+              <span class="modal-game-tag" v-if="currentMedia.game">{{ currentMedia.game }}</span>
+              <span class="modal-video-title" v-if="currentMedia.title">{{ currentMedia.title }}</span>
+            </div>
+          </template>
         </div>
       </div>
     </Transition>
@@ -97,9 +103,6 @@ onUnmounted(() => {
 
 .video-modal-container {
   position: relative;
-  width: 100%;
-  max-width: 1200px;
-  max-height: 90vh;
   display: flex;
   flex-direction: column;
   background: var(--cs-bg-deep);
@@ -107,6 +110,10 @@ onUnmounted(() => {
   border-radius: 8px;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px var(--cs-crimson-glow);
   cursor: default;
+  max-width: 90vw;
+  max-height: 90vh;
+  width: fit-content;
+  min-width: 320px;
 }
 
 .video-modal-close {
@@ -145,15 +152,22 @@ onUnmounted(() => {
   object-fit: contain;
 }
 
+.image-preview {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
 /* Modal Navigation */
 .modal-nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 60px;
-  height: 60px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(201, 168, 76, 0.2);
+  width: 54px;
+  height: 54px;
+  background: rgba(13, 11, 8, 0.8);
+  border: 1.5px solid var(--cs-gold);
   color: var(--cs-gold);
   border-radius: 50%;
   display: flex;
@@ -161,8 +175,9 @@ onUnmounted(() => {
   justify-content: center;
   cursor: pointer;
   z-index: 100;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
 .modal-nav:hover {
@@ -173,8 +188,8 @@ onUnmounted(() => {
   transform: translateY(-50%) scale(1.1);
 }
 
-.modal-nav.prev { left: 40px; }
-.modal-nav.next { right: 40px; }
+.modal-nav.prev { left: -74px; }
+.modal-nav.next { right: -74px; }
 
 .modal-nav .arrow {
   font-size: 3.5rem;

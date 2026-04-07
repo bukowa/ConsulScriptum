@@ -4,57 +4,79 @@ import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import type { App } from 'vue'
 import { h, reactive } from 'vue'
 import HeroDemo from './components/HeroDemo.vue'
-import VideoModal from './components/VideoModal.vue'
+import MediaModal from './components/MediaModal.vue'
 
 // Home page playlist for the hero section
-const HOME_PLAYLIST = [
-  { 
-    title: "Attila: Accessing the Interface", 
-    game: "Attila", 
-    src: '/ConsulScriptum/videos/attila_accessconsole.mp4'
+export const HOME_PLAYLIST = [
+  {
+    title: "Attila: Accessing the Interface",
+    game: "Attila",
+    src: '/videos/attila_accessconsole.mp4',
+    type: 'video'
   },
-  { 
-    title: "Attila: Interacting with Consul", 
-    game: "Attila", 
-    src: '/ConsulScriptum/videos/attila_index.mp4'
+  {
+    title: "Attila: Interacting with Consul",
+    game: "Attila",
+    src: '/videos/attila_index.mp4',
+    type: 'video'
   },
-  { 
-    title: "Attila: Interactive Mode", 
-    game: "Attila", 
-    src: '/ConsulScriptum/videos/attila_console.mp4'
+  {
+    title: "Attila: Interactive Mode",
+    game: "Attila",
+    src: '/videos/attila_console.mp4',
+    type: 'video'
   },
-  { 
-    title: "Rome II: Accessing the Interface", 
-    game: "Rome II", 
-    src: '/ConsulScriptum/videos/rome2_accessconsole.mp4'
+  {
+    title: "Rome II: Accessing the Interface",
+    game: "Rome II",
+    src: '/videos/rome2_accessconsole.mp4',
+    type: 'video'
   },
-  { 
-    title: "Rome II: Interacting with Consul", 
-    game: "Rome II", 
-    src: '/ConsulScriptum/videos/rome2_index.mp4'
+  {
+    title: "Rome II: Interacting with Consul",
+    game: "Rome II",
+    src: '/videos/rome2_index.mp4',
+    type: 'video'
   },
-  { 
-    title: "Rome II: Interactive Mode", 
-    game: "Rome II", 
-    src: '/ConsulScriptum/videos/rome2_console.mp4'
+  {
+    title: "Rome II: Interactive Mode",
+    game: "Rome II",
+    src: '/videos/rome2_console.mp4',
+    type: 'video'
   }
 ]
 
 // Synchronized state for Carousel and Modal
 export const state = reactive({
-  playlist: HOME_PLAYLIST,
-  currentIndex: 0,
+  heroIndex: 0,
+  modalPlaylist: HOME_PLAYLIST,
+  modalIndex: 0,
   isModalOpen: false,
-  activeVideoSrc: null as string | null,
   isCarouselMode: true
 })
 
-export const nextVideo = () => {
-  state.currentIndex = (state.currentIndex + 1) % state.playlist.length
+export const nextHero = () => {
+  state.heroIndex = (state.heroIndex + 1) % HOME_PLAYLIST.length
 }
 
-export const prevVideo = () => {
-  state.currentIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length
+export const prevHero = () => {
+  state.heroIndex = (state.heroIndex - 1 + HOME_PLAYLIST.length) % HOME_PLAYLIST.length
+}
+
+export const nextModal = () => {
+  state.modalIndex = (state.modalIndex + 1) % state.modalPlaylist.length
+  // If viewing hero videos in modal, keep the background hero in sync
+  if (state.modalPlaylist === HOME_PLAYLIST) {
+    state.heroIndex = state.modalIndex
+  }
+}
+
+export const prevModal = () => {
+  state.modalIndex = (state.modalIndex - 1 + state.modalPlaylist.length) % state.modalPlaylist.length
+  // If viewing hero videos in modal, keep the background hero in sync
+  if (state.modalPlaylist === HOME_PLAYLIST) {
+    state.heroIndex = state.modalIndex
+  }
 }
 
 export default {
@@ -62,7 +84,7 @@ export default {
   Layout() {
     return h(DefaultTheme.Layout, null, {
       'home-hero-image': () => h(HeroDemo),
-      'layout-bottom': () => h(VideoModal, {
+      'layout-bottom': () => h(MediaModal, {
         state: state,
         onClose: () => { state.isModalOpen = false }
       })
@@ -70,76 +92,96 @@ export default {
   },
   enhanceApp({ app }: { app: App }) {
     enhanceAppWithTabs(app)
-    
+
     if (typeof window !== 'undefined') {
-      // Global click handler for videos
+      // Global click handler for media (videos and images)
       document.addEventListener('click', (e) => {
         const target = e.target as HTMLElement
         const video = target.closest('video')
-        
-        if (video && !video.closest('.video-modal-content')) {
-          const videoSrc = new URL(video.src, window.location.origin).pathname
-          const heroContainer = video.closest('.hero-demo-container')
-          const tabContainer = video.closest('.plugin-tabs')
-          const docContainer = video.closest('.vp-doc')
-          
+        const img = target.closest('.vp-doc img, .vp-tabs-content img, .cs-ui-magnifier img') as HTMLImageElement
+
+        if ((video && !video.closest('.video-modal-content')) || img) {
+          const mediaElement = video || img
+          const isVideo = !!video
+          const mediaSrc = isVideo
+            ? new URL((mediaElement as HTMLVideoElement).src, window.location.origin).pathname
+            : new URL((mediaElement as HTMLImageElement).src, window.location.origin).pathname
+
+          const heroContainer = mediaElement.closest('.hero-demo-container')
+          const tabContainer = mediaElement.closest('.plugin-tabs')
+          const docContainer = mediaElement.closest('.vp-doc')
+          const magnifierContainer = mediaElement.closest('.cs-ui-magnifier')
+
           let newPlaylist: any[] = []
-          if (heroContainer) {
+
+          if (heroContainer && isVideo) {
             newPlaylist = HOME_PLAYLIST
+            state.modalIndex = state.heroIndex // Start modal at the same index as hero
           } else {
-            const contextContainer = tabContainer || docContainer
+            // Find related media in the same context
+            const contextContainer = magnifierContainer || tabContainer || docContainer
             if (contextContainer) {
-              const videosInContext = Array.from(contextContainer.querySelectorAll('video'))
-                .filter(v => !v.closest('.video-modal-content'))
-              
-              newPlaylist = videosInContext.map(v => ({
-                src: new URL((v as HTMLVideoElement).src, window.location.origin).pathname,
-                title: (v as HTMLElement).dataset.title || '',
-                game: (v as HTMLElement).dataset.game || ''
+              const selector = isVideo ? 'video' : 'img'
+              const mediaInContext = Array.from(contextContainer.querySelectorAll(selector))
+                .filter(m => !m.closest('.video-modal-content'))
+
+              newPlaylist = mediaInContext.map(m => ({
+                src: new URL((m as any).src, window.location.origin).pathname,
+                title: (m as HTMLElement).dataset.title || (m as HTMLImageElement).alt || '',
+                game: (m as HTMLElement).dataset.game || '',
+                type: isVideo ? 'video' : 'image'
               }))
             }
           }
 
           if (newPlaylist.length > 0) {
-            const index = newPlaylist.findIndex(v => v.src === videoSrc)
-            state.playlist = newPlaylist
-            state.currentIndex = index !== -1 ? index : 0
+            const index = newPlaylist.findIndex(m => m.src === mediaSrc)
+            state.modalPlaylist = newPlaylist
+            state.modalIndex = index !== -1 ? index : 0
             state.isCarouselMode = newPlaylist.length > 1
           } else {
-            state.playlist = [{ src: videoSrc, title: (video as HTMLElement).dataset.title || '', game: (video as HTMLElement).dataset.game || '' }]
-            state.currentIndex = 0
+            state.modalPlaylist = [{
+              src: mediaSrc,
+              title: (mediaElement as HTMLElement).dataset.title || (mediaElement as HTMLImageElement).alt || '',
+              game: (mediaElement as HTMLElement).dataset.game || '',
+              type: isVideo ? 'video' : 'image'
+            }]
+            state.modalIndex = 0
             state.isCarouselMode = false
           }
           state.isModalOpen = true
         }
       })
 
-      // Inject expand hints for markdown videos that don't have them
+      // Inject expand hints for markdown media that don't have them
       const injectHints = () => {
-        const videos = document.querySelectorAll('.vp-doc video, .vp-tabs-content video')
-        videos.forEach(video => {
-          if (video.closest('.video-modal-content')) return
-          if (video.parentElement?.querySelector('.video-expand-hint')) return
-          
+        const media = document.querySelectorAll('.vp-doc video, .vp-tabs-content video, .vp-doc img:not(.logo), .vp-tabs-content img, .cs-ui-magnifier img')
+        media.forEach(el => {
+          if (el.closest('.video-modal-content')) return
+          if (el.parentElement?.classList.contains('video-trigger-wrapper')) return
+
+          // Skip small icons or specific UI elements if needed
+          if (el instanceof HTMLImageElement && (el.width < 50 || el.height < 50)) return
+
           const wrapper = document.createElement('div')
           wrapper.className = 'video-trigger-wrapper'
           wrapper.style.position = 'relative'
-          wrapper.style.display = 'inline-block'
-          wrapper.style.width = '100%'
+          wrapper.style.display = el.tagName === 'IMG' ? 'inline-block' : 'block'
+          wrapper.style.width = el.tagName === 'IMG' ? 'auto' : '100%'
 
           const hint = document.createElement('div')
           hint.className = 'video-expand-hint'
           hint.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>`
-          
-          video.parentNode?.insertBefore(wrapper, video)
-          wrapper.appendChild(video)
+
+          el.parentNode?.insertBefore(wrapper, el)
+          wrapper.appendChild(el)
           wrapper.appendChild(hint)
         })
       }
 
       // Run on initial load
       setTimeout(injectHints, 500)
-      
+
       // Re-run on navigation (VitePress is an SPA)
       const observer = new MutationObserver(() => {
         injectHints()

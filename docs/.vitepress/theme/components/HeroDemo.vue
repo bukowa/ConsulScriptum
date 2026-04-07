@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { state, nextVideo as next, prevVideo as prev } from '../index.mts'
+import { state, nextHero as next, prevHero as prev, HOME_PLAYLIST } from '../index.mts'
 
-const demoVideos = state.playlist
+const demoVideos = HOME_PLAYLIST
 
-const currentVideo = computed(() => demoVideos[state.currentIndex])
+const currentVideo = computed(() => demoVideos[state.heroIndex])
 
 // Determine active game based on current video
 const activeGame = computed(() => currentVideo.value.game)
 
 const setIndex = (index: number) => {
-  state.currentIndex = index
+  state.heroIndex = index
 }
 
 const jumpToGame = (gameName: string) => {
   const index = demoVideos.findIndex(v => v.game === gameName)
-  if (index !== -1) state.currentIndex = index
+  if (index !== -1) state.heroIndex = index
 }
 </script>
 
@@ -76,7 +76,7 @@ const jumpToGame = (gameName: string) => {
             v-for="(_, index) in demoVideos" 
             :key="index"
             class="dot"
-            :class="{ active: index === currentIndex }"
+            :class="{ active: index === state.heroIndex }"
             @click.stop="setIndex(index)"
             :aria-label="`Go to slide ${index + 1}`"
           ></button>

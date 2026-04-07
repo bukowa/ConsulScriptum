@@ -4,7 +4,7 @@ import re
 
 def generate_consul_docs():
     xml_path = os.path.join('src', 'ui', 'common ui', 'consul.xml')
-    md_path = os.path.join('docs', 'guide', 'consul-scripts.md')
+    md_path = os.path.join('docs', 'guide', 'parts', 'generated-consul-scripts.md')
 
     if not os.path.exists(xml_path):
         print(f"Error: {xml_path} not found.")
@@ -63,39 +63,8 @@ def generate_consul_docs():
             print("Warning: No scripts found matching the criteria.")
             return
 
-        # Generate Markdown
-        md_content = [
-            "# Consul Scripts Reference",
-            "",
-            "<!-- @include: ./parts/consul-usage.md -->",
-            "",
-            "## Video Demonstrations",
-            "",
-            "Below are examples of these scripts in action.",
-            "",
-            "::: tabs",
-            "== Rome II",
-            "In this demonstration, we use the **Exterminare** script to remove a character from the campaign map.",
-            "",
-            "<video controls width=\"100%\">",
-            "  <source src=\"/videos/rome2_index.mp4\" type=\"video/mp4\">",
-            "</video>",
-            "",
-            "== Attila",
-            "Here we demonstrate the **Adice Provinciam** script by transferring a settlement between factions.",
-            "",
-            "<video controls width=\"100%\">",
-            "  <source src=\"/videos/attila_index.mp4\" type=\"video/mp4\">",
-            "</video>",
-            ":::",
-            "",
-            "---",
-            "",
-            "## Available Scripts",
-            "",
-            "<div class=\"compact-reference\">",
-            ""
-        ]
+        # Generate Markdown (List only)
+        md_content = []
 
         # Short summaries mapping to clarify what each script does in plain English
         SHORT_SUMMARIES = {
@@ -122,15 +91,9 @@ def generate_consul_docs():
             md_content.append(f"#### {name} — {short}\n")
             md_content.append(f"**ID**: `{script['tech_id']}`  ")
             md_content.append(f"{script['tooltip']}\n")
-            
-        md_content.append("</div>")
-        md_content.append("")
-        md_content.append("---")
-        md_content.append("")
-        md_content.append("## Usage Notes")
-        md_content.append("- **Hover** over any script name in the game UI to see these descriptions.")
-        md_content.append("- **Highlighting**: When a script is active or has been triggered, the entry will highlight in green.")
-        md_content.append("- **Toggle**: Click the highlighted entry again to deactivate it.")
+
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(md_path), exist_ok=True)
 
         with open(md_path, 'w', encoding='utf-8') as f:
             f.write("\n".join(md_content))

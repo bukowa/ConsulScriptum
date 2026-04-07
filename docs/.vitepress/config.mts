@@ -10,7 +10,7 @@ export default defineConfig({
 
   title: 'ConsulScriptum',
   description: 'An in-game Lua console and script runner for Total War: Rome II and Attila.',
-  base: '/ConsulScriptum/',
+  base: '/',
 
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
@@ -41,26 +41,27 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Guide',
+        text: 'Start',
         items: [
           { text: 'Getting Started', link: '/guide/getting-started' },
-        ]
-      },
-      {
-        items: [
           { text: 'Installation', link: '/guide/installation' },
           { text: 'Compatibility', link: '/guide/compatibility' },
           { text: 'Limitations', link: '/guide/limitations' },
-          { text: 'Consul', link: '/guide/consul-scripts' },
-          { text: 'Console', link: '/guide/console' },
-          { text: 'Scriptum', link: '/guide/scriptum' },
-          { text: 'Local Files', link: '/guide/files' },
-          { text: 'Battle Mode', link: '/guide/battle' },
         ]
       },
       {
-        text: 'Docs',
+        text: 'Manual',
         items: [
+          { text: 'Consul', link: '/guide/consul-manual' },
+          { text: 'Console', link: '/guide/console' },
+          { text: 'Scriptum', link: '/guide/scriptum' },
+        ]
+      },
+      {
+        text: 'Advanced',
+        items: [
+          { text: 'Local Files', link: '/guide/files' },
+          { text: 'Battle Mode', link: '/guide/battle' },
           { text: 'Built-in Commands', link: '/reference/commands' },
           { text: 'Custom Commands', link: '/reference/custom-commands' },
           { text: 'Internal API', link: '/reference/internal-api' },

@@ -8,7 +8,7 @@ SOURCE_FILES = [
     ('src/consul/consul_commands_dei.lua', 'DeI-Specific Commands'),
 ]
 
-OUTPUT_FILE = 'docs/reference/commands.md'
+OUTPUT_FILE = 'docs/reference/parts/generated-commands.md'
 
 def parse_commands(content):
     commands = []
@@ -53,13 +53,7 @@ def parse_commands(content):
     return commands
 
 def main():
-    all_content = [
-        "# Built-in Commands Reference\n\n",
-        "ConsulScriptum comes with a variety of built-in slash-commands for debugging and campaign manipulation. You can run these by typing them directly into the **Console** tab.\n\n",
-        "::: tip\n",
-        "Type `/help` in the game console to see this list in-game.\n",
-        ":::\n\n"
-    ]
+    all_content = []
     
     found_any = False
     
@@ -76,7 +70,6 @@ def main():
         if commands:
             found_any = True
             all_content.append(f"## {category}\n\n")
-            all_content.append("<div class=\"compact-reference\">\n\n")
             
             # Sort commands alphabetically
             commands.sort()
@@ -84,8 +77,6 @@ def main():
             for name, desc in commands:
                 all_content.append(f"#### `{name}`\n")
                 all_content.append(f"{desc}\n\n")
-
-            all_content.append("</div>\n\n")
             
     if not found_any:
         print("Error: No commands found in any source files.")

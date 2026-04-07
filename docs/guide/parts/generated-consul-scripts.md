@@ -1,29 +1,3 @@
-# Consul Scripts
-
-<!-- @include: ./parts/consul-usage.md -->
-
-## Video Demonstrations
-
-Below are examples of these scripts in action.
-
-::: tabs
-== Attila
-This video demonstrates the **Exterminare** script being used to efficiently remove two characters from the campaign map.
-
-<video src="/ConsulScriptum/videos/attila_index.mp4" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
-
-== Rome II
-In this demonstration, we showcase both the **Adice Provinciam** script for transferring settlements and the **Exterminare** script to remove a character from the campaign map.
-
-<video src="/ConsulScriptum/videos/rome2_index.mp4" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
-:::
-
----
-
-## Available Scripts
-
-<div class="compact-reference">
-
 #### Ad Rebellos — Spawns rebellion
 
 **ID**: `consul_adrebellos_entry`  
@@ -78,22 +52,3 @@ When activated, click on the character/settlement you want to subjugate, then cl
 
 **ID**: `consul_vexatio_provinciae_entry`  
 To make an example of a province or suppress dissent, select this command and then click on a settlement. This will enact a policy of official harassment, such as punitive levies or forced quartering of troops, inflicting a severe (-10) penalty to public order.
-
-</div>
-
----
-
-## Usage Notes
-- **Highlighting**: When a script is active or has been triggered, the entry will highlight in green.
-- **Toggle**: Click the highlighted entry again to deactivate it.
-
-<div class="cs-ui-magnifier">
-  <div class="cs-magnifier-label">Tooltip Preview</div>
-  <div class="cs-magnifier-images">
-    <img src="/media/consul_custodes.png" alt="Tooltip Preview 1" />
-    <img src="/media/consul_custodes.png" alt="Tooltip Preview 2" />
-  </div>
-  <div class="cs-magnifier-hint">
-    Hover your mouse over any script in the list to reveal its full usage instructions.
-  </div>
-</div>

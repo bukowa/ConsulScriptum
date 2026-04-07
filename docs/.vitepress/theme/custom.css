@@ -210,9 +210,8 @@ h3 {
 }
 
 .custom-block.tip {
-  border-color: #42b983;
-  /* Green */
-  background: rgba(66, 185, 131, 0.08);
+  border-color: var(--cs-gold);
+  background: rgba(201, 168, 76, 0.08);
 }
 
 .custom-block.warning {
@@ -522,19 +521,23 @@ body::before {
 /* media inside a tab — full width, rounded */
 .vp-tabs-content video,
 .vp-tabs-content img,
-.vp-doc video {
+.vp-doc video,
+.vp-doc img:not(.logo),
+.cs-ui-magnifier img {
   width: 100%;
   border-radius: 4px;
   display: block;
   margin-bottom: 1rem;
-  cursor: pointer;
+  cursor: zoom-in;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .vp-tabs-content video:hover,
-.vp-doc video:hover {
+.vp-doc video:hover,
+.vp-doc img:not(.logo):hover,
+.cs-ui-magnifier img:hover {
   transform: scale(1.005);
-  box-shadow: 0 4px 20px rgba(139, 26, 26, 0.4);
+  box-shadow: 0 4px 24px rgba(139, 26, 26, 0.5);
 }
 
 /* ── Video Expand Overlay ────────────────────────────────── */
@@ -588,17 +591,36 @@ body::before {
   position: relative;
 }
 
-/* Documentation-specific override for the expand hint */
+/* Documentation-specific override for the expand hint (images stay small as requested) */
 .video-trigger-wrapper .video-expand-hint {
-  bottom: 28px;
-  right: 18px;
-  width: 54px;
-  height: 54px;
+  bottom: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  opacity: 0.4;
+  border-radius: 2px;
 }
 
 .video-trigger-wrapper .video-expand-hint svg {
-  width: 28px;
-  height: 28px;
+  width: 16px;
+  height: 16px;
+  stroke-width: 3;
+}
+
+/* Much larger buttons for videos to improve discoverability */
+.video-trigger-wrapper video+.video-expand-hint {
+  width: 52px;
+  height: 52px;
+  bottom: 12px;
+  right: 12px;
+  opacity: 0.7;
+  border-radius: 4px;
+}
+
+.video-trigger-wrapper video+.video-expand-hint svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.5;
 }
 
 /* Ensure modal video is not clickable/hoverable as a trigger */
@@ -729,15 +751,16 @@ body::before {
 
 /* ── UI Preview Magnifier ──────────────────────────────────── */
 .cs-ui-magnifier {
-  max-width: 480px; /* Slightly wider to accommodate two images */
+  max-width: 480px;
+  /* Slightly wider to accommodate two images */
   margin: 1.5rem auto;
   padding: 12px;
   background: var(--cs-bg-base);
   border: 1px solid var(--cs-border-strong);
   border-radius: 4px;
   position: relative;
-  box-shadow: 
-    0 4px 20px rgba(0,0,0,0.6),
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.6),
     inset 0 0 15px rgba(139, 26, 26, 0.1);
   display: flex;
   flex-direction: column;
@@ -754,12 +777,21 @@ body::before {
 
 .cs-ui-magnifier img {
   flex: 0 1 auto;
-  max-width: 200px; /* Smaller images as requested */
+  max-width: 200px;
+  /* Smaller images as requested */
   height: auto;
   border-radius: 2px;
   border: 1px solid rgba(201, 168, 76, 0.2);
   display: block;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cs-ui-magnifier img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  border-color: var(--cs-gold);
 }
 
 .cs-magnifier-label {
