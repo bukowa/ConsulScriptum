@@ -11,7 +11,7 @@
 | **Script Runner (Scriptum)** | ✅ Full | ✅ Full |
 | **Lua Console** | ✅ Full | ✅ Full |
 | **Commands** | ✅ Full | ⚠️ Partial |
-| **Battle Mode** | ✅ Experimental | ❌ Unsupported |
+| **Battle Mode** | ✅ Experimental | ✅ Experimental |
 | **Stability Level** | Stable | Experimental |
 
 
@@ -34,4 +34,4 @@ Currently in an experimental/early access phase. While core features (Consul Scr
 
 - **Status**: Experimental
 - **Commands**: **Partial Support**. Many built-in slash commands from Rome II have been ported, but certain Attila-specific engine calls are still being investigated.
-- **Battle Mode**: **Unsupported Yet**. Research is ongoing into whether the Rome II workaround can be adapted for Attila.
+- **Battle Mode**: **Experimental**. The Rome II workaround has been successfully adapted for Attila. Run `/use_in_battle` in a campaign session to enable.

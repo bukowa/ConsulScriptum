@@ -1,4 +1,4 @@
-# Consul Scripts Reference
+# Consul Scripts
 
 <!-- @include: ./parts/consul-usage.md -->
 

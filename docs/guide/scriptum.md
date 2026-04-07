@@ -6,24 +6,9 @@ This is the recommended way to run anything longer than a line or two, since the
 
 ---
 
-## How it works
-
-The Scriptum panel reads a file called `consul.scriptum` in the game root folder. That file lists the paths of scripts to show — one path per line:
-
-```
-scriptum.lua
-C:/my_scripts/debug.lua
-```
-
-Each listed file appears as a button in the panel. Clicking it executes that file immediately. The file is re-read from disk each time you click, so you can edit it and run the updated version without restarting.
-
-`consul.scriptum` is created automatically on first run, pre-populated with `scriptum.lua` (the example script). To add your own scripts, open `consul.scriptum` in a text editor and add their paths. Changes to `consul.scriptum` take effect the next time you click anywhere on the ConsulScriptum window or reopen it.
-
----
-
 ## Quick Start
 1. **List your scripts**: Open `consul.scriptum` in your game folder.
-2. **Add a path**: Type the path to a `.lua` file (e.g., `myscript.lua`) and save.
+2. **Add a path**: Type the path to a `.lua` file (e.g., `myscript.lua` or `scripts/myscript.lua`) and save.
 3. **Write Lua**: Create that `.lua` file and write your code.
 4. **Execute**: Open the **Scriptum** tab in-game and click the new button.
 
@@ -43,9 +28,28 @@ The maximum is currently 10 entries. Rome II cannot create UI components dynamic
 
 ---
 
+## How it works
+
+The Scriptum panel reads a file called `consul.scriptum` in the game root folder. That file lists the paths of scripts to show — one path per line:
+
+```
+scriptum.lua
+scripts/myscript.lua
+```
+
+Each listed file appears as a button in the panel. Scriptum is a simple wrapper for file execution — when you click a button, the system literally runs:
+```lua
+pcall(dofile, "path/to/your/script.lua")
+```
+Because it uses `dofile`, the game engine re-reads the file from disk every time you click, which is why "live editing" works. There's no magical reloading mechanism; it's just standard Lua doing what it does best.
+
+`consul.scriptum` is created automatically on first run, pre-populated with `scriptum.lua` (the example script). To add your own scripts, open `consul.scriptum` in a text editor and add their paths. Changes to `consul.scriptum` take effect the next time you click anywhere on the ConsulScriptum window or reopen it.
+
+---
+
 ## Where to put files
 
-Your scripts can be anywhere that the game process can read — the simplest place is the game root folder alongside `consul.scriptum`. You can also use absolute paths in `consul.scriptum` to reference scripts elsewhere on disk.
+Your scripts must be located within the game's root directory (or a subdirectory) — the simplest place is the game root folder alongside `consul.scriptum`.
 
 Game root locations:
 - Rome II: `...\Total War Rome II\`
@@ -69,20 +73,6 @@ for i = 0, fl:num_items() - 1 do
         return
     end
 end
-```
-
-```lua
--- scriptum_2.lua
--- Write game state to a file (since you can't copy from the console)
-local f = io.open("debug_output.txt", "w")
-local world = consul._game():model():world()
-local fl = world:faction_list()
-for i = 0, fl:num_items() - 1 do
-    local fac = fl:item_at(i)
-    f:write(fac:name() .. "\n")
-end
-f:close()
-consul.console.write("Written to debug_output.txt")
 ```
 
 ---

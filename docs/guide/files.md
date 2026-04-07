@@ -78,7 +78,7 @@ A plain text file listing the paths of scripts shown in the Scriptum panel — o
 
 ```
 scriptum.lua
-C:/my_scripts/campaign_debug.lua
+scripts/campaign_debug.lua
 ```
 
 Edit this file to add or remove scripts from the Scriptum panel. Changes take effect the next time you open the ConsulScriptum window (no game restart needed).

@@ -1,12 +1,10 @@
 # Getting Started
 
-<!-- @include: ./parts/status-table.md -->
-
-See [Detailed Compatibility](./compatibility) for stability notes and engine differences.
-
 ## Step 1: Installation
 
 <!-- @include: ./parts/installation-links.md -->
+
+See [Detailed Compatibility](./compatibility) for engine differences and stability notes.
 
 ---
 
@@ -30,25 +28,31 @@ Click the **ConsulScriptum toggle button** in the campaign UI top bar. The windo
 
 ## Step 3: Using Consul (One-Click Actions)
 
-<!-- @include: ./parts/consul-usage.md -->
-
-For example, in the video below, you can see **Exterminare** used to kill a character and **Adice Provinciam** used to instantly transfer a settlement on the campaign map.
+Most actions follow a simple **Point and Click** logic: activate a script, then select one or two targets (like a character or settlement) on the map to trigger the effect.
 
 :::tabs
 
 == Attila
 <video src="/ConsulScriptum/videos/attila_index.mp4" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
+**Exterminare** script to kill a character on the campaign map.
+
 == Rome II
 <video src="/ConsulScriptum/videos/rome2_index.mp4" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
+
+**Adice Provinciam** script to transfer a settlement between factions.
 
 :::
 
 ::: tip Hover for details
-Not sure what a script does? **Hover your mouse over any script name** in the list to see a detailed description and usage instructions.
+**Hover your mouse over any script name** in the list to see detailed usage instructions.
+
+<div align="center">
+  <img src="/media/consul_custodes.png" alt="Hover for details" />
+</div>
 :::
 
-See the [Consul Scripts Reference](./consul-scripts) for a full list of available actions and descriptions.
+See more details and reference about [Consul Scripts](./consul-scripts).
 
 ## Step 4: The Console (Commands & Lua)
 

@@ -14,18 +14,21 @@ You cannot press Enter to send — you must click the **Send** button every time
 
 ---
 
-## Sending input
+## How Input is Processed
 
-Type in the input field, then click **Send**. There is no keyboard shortcut to send — see [Limitations](./limitations).
+Type in the input field and click **Send**.<br>
+The console differentiates between two types of input:
 
-Commands starting with `/` are matched against the command registry. Everything else is treated as Lua and executed with `load()`.
+### 1. Slash Commands
+
+Any input starting with a `/` is matched against the [Command Registry](../reference/commands).<br>
+For example, `/help` will list all built-in commands.
 
 ---
 
-## Lua mode
+### 2. Lua Mode
 
-Anything that doesn't start with `/` runs as Lua in the game's scripting environment. The full game scripting API is available—you can use the console to register listeners, trigger events, or interact with any internal game model on the fly.
-
+Anything that does **not** start with `/` is treated as raw Lua and executed directly in the game's scripting environment. The full game scripting API is available—you can use the console to register listeners, trigger events, or interact with any internal game model on the fly.
 
 ```lua
 -- Write to the console output
@@ -39,6 +42,35 @@ consul.console.write("Factions: " .. world:faction_list():num_items())
 ::: tip Modder & Script Authors
 The functions shown above are part of the core ConsulScriptum API. You can use these identical calls in your own external `.lua` scripts. For a full list of accessible functions, see the [Internal API Reference](../reference/internal-api).
 :::
+
+::: tip Run scripts from Pack Files
+You can use the console to execute **any** script—not just files in your game folder, but also those hidden inside the game's `.pack` files. 
+
+This is perfect for reloading internal game scripts or running one-off files:
+```lua
+dofile("lua_scripts/all_scripted.lua")
+```
+If the script fails, the console will print the error message directly to the output.
+:::
+
+---
+
+## How it works
+
+The console is not "magic". When you send raw Lua, the system performs a standard Lua execution flow:
+
+1. Your input is parsed into a function via `loadstring(cmd)`.
+2. That function is then executed within a `pcall(f)` to catch errors.
+
+```lua
+-- Behind the scenes:
+local f, err = loadstring(your_input)
+if not err then
+    pcall(f)
+end
+```
+
+This means you are interacting directly with the game's Lua environment just as you would with any other script.
 
 ---
 

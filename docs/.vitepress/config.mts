@@ -43,15 +43,19 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
+          { text: 'Getting Started', link: '/guide/getting-started' },
+        ]
+      },
+      {
+        items: [
           { text: 'Installation', link: '/guide/installation' },
           { text: 'Compatibility', link: '/guide/compatibility' },
-          { text: 'Getting Started', link: '/guide/getting-started' },
           { text: 'Limitations', link: '/guide/limitations' },
-          { text: 'The Console', link: '/guide/console' },
-          { text: 'Consul Scripts', link: '/guide/consul-scripts' },
+          { text: 'Consul', link: '/guide/consul-scripts' },
+          { text: 'Console', link: '/guide/console' },
           { text: 'Scriptum', link: '/guide/scriptum' },
-          { text: 'Battle Mode', link: '/guide/battle' },
           { text: 'Local Files', link: '/guide/files' },
+          { text: 'Battle Mode', link: '/guide/battle' },
         ]
       },
       {
