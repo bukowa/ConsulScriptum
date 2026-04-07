@@ -4,6 +4,17 @@ Scriptum is a panel of buttons, each mapped to a `.lua` file in the game root fo
 
 This is the recommended way to run anything longer than a line or two, since the console input field cannot handle long strings.
 
+### How to use:
+1. **Define your scripts**: Open `consul.scriptum` in your game root folder and add the paths to your `.lua` files (one per line).
+2. **Write your code**: Create the corresponding `.lua` files and write your script.
+3. **Run on click**: Inside the game, open the **Scriptum** tab. Your scripts will appear as buttons. Click one to execute it.
+
+### Suggested Workflow:
+The recommended way to work with Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code or Notepad++) open next to it. 
+
+The files are read "live" — you can edit your `.lua` file, save it, and then click the button in the Scriptum tab to execute the updated code immediately without restarting the game.
+
+
 ---
 
 ## Quick Start
@@ -14,18 +25,16 @@ This is the recommended way to run anything longer than a line or two, since the
 
 ---
 
+
 ## Suggested Workflow
 
-The recommended way to use Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code, Notepad++, or Sublime Text) open next to it. 
+The recommended way to work with Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code or Notepad++) open next to it. 
 
 <video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
 
 ::: tip No Restart Required
 The Scriptum files are read "live". You can edit your `.lua` file, save it (Ctrl+S), and then click the button in the Scriptum tab to execute the updated code immediately. This creates a powerful development loop: write code, click to test, and iterate without even needing to Alt-Tab.
 :::
-
-The maximum is currently 10 entries. Rome II cannot create UI components dynamically, so the slots are pre-built in the UI file. If you need more, open an issue — it's not a hard ceiling.
-
 ---
 
 ## How it works

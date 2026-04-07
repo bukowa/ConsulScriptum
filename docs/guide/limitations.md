@@ -6,32 +6,50 @@
 
 ## Console input
 
-**No Enter key.** You cannot press Enter to submit a command. You must click the Send button every time.
+The console input component is a basic game engine `edit_box`, which comes with several hardcoded restrictions that cannot be modified by scripts.
 
-**No arrow key history navigation.** The ↑ and ↓ arrow keys on the keyboard do nothing. Use the on-screen ↑↓ buttons to cycle through history.
+**No Enter key.** 
+The game does not capture the "Enter" key as a submission trigger for this UI component. You must click the **Send** button every time to execute your input.
 
-**No tab autocomplete.** Pressing Tab does nothing.
+**No arrow key history navigation.** 
+Keyboard events like the Up (↑) and Down (↓) arrow keys are not exposed to the modding API for this field. Use the on-screen **↑** and **↓** buttons next to the input to cycle through your command history.
 
-**Long commands break.** The game's input field silently truncates long strings. Pasting a long command will often produce an `unfinished string near '<eof>'` error or no output at all. No known fix for this in the console.
+**No tab autocomplete.** 
+Standard Lua or console-style autocompletion (pressing Tab) is not supported by the game's internal text fields.
 
-::: tip Use Scriptum for long scripts
-Use **Scriptum** for anything longer than a few lines. See [Running longer scripts](./getting-started#running-longer-scripts).
+**Input truncation (Character Limit).** 
+The game's input buffer silently truncates long strings, usually around 255 characters. If you paste a long script, the console may only receive the first few lines, leading to syntax errors like `unfinished string near '<eof>'`.
+
+::: tip Multi-line Scripts
+The console is best for one-liners. For anything longer or more complex, always use [Scriptum](./scriptum) to run files directly from your disk.
 :::
-
 
 ---
 
 ## Console output
 
-**You cannot copy text from the output.** Selecting or copying text from the output area with the mouse is not possible. All output is automatically written to `consul.output` in the game root folder — open that file in a text editor to read it.
+**You cannot copy text directly from the UI.** 
+The output area is a read-only text component. Selecting, highlighting, or copying text with the mouse within the game window is not possible.
 
-**The scroll slider does not reset.** The vertical scrollbar does not jump to the bottom when new output is added. You may need to scroll manually.
+**How to copy output:**
+All console activity is automatically mirrored to a file called `consul.output` in your game root folder. Open this file in a text editor (like Notepad++) to copy, search, or share your results.
+
+**The scroll slider does not auto-reset.** 
+When new text is added, the scrollbar may not automatically jump to the bottom. You may need to scroll manually to see the latest results. Clicking **Clear** can help keep the view manageable.
+
 
 ---
 
 ## Scriptum panel
 
-**10 scripts currently.** The Scriptum panel has 10 slots. This number was chosen because Rome II cannot create UI components dynamically, so the slots are pre-built in the UI file. Attila technically supports dynamic creation but it hasn't been implemented yet. If you need more than 10, open an issue — it's not a hard ceiling.
+**Slot Limit (10 Scripts).** 
+The panel is currently hard-capped at 10 script buttons. This is not a random number, but a technical compromise:
+- **Rome II**: The UI engine cannot create components on the fly. All 10 buttons are pre-built into the interface files.
+- **Attila**: While it technically supports dynamic lists, the 10-slot limit is maintained to keep the experience consistent across both games.
+
+::: tip Pro Tip: Master Scripts
+If you run out of slots, you can create a "Master Script" that uses `dofile()` to execute multiple other scripts in sequence, or use the console to run one-off files.
+:::
 
 ---
 

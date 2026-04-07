@@ -8,27 +8,27 @@
 /* ── Colour Tokens ─────────────────────────────────────────── */
 :root {
   /* Brand */
-  --cs-crimson:       #8B1A1A;
+  --cs-crimson: #8B1A1A;
   --cs-crimson-light: #B22222;
-  --cs-crimson-glow:  rgba(139, 26, 26, 0.35);
-  --cs-gold:          #C9A84C;
-  --cs-gold-light:    #E5C97E;
-  --cs-gold-muted:    #8B7340;
+  --cs-crimson-glow: rgba(139, 26, 26, 0.35);
+  --cs-gold: #C9A84C;
+  --cs-gold-light: #E5C97E;
+  --cs-gold-muted: #8B7340;
 
   /* Surfaces */
-  --cs-bg-deep:       #0D0B08;
-  --cs-bg-base:       #130F0A;
-  --cs-bg-raised:     #1C1610;
-  --cs-bg-card:       #231B12;
-  --cs-bg-overlay:    rgba(19, 15, 10, 0.92);
+  --cs-bg-deep: #0D0B08;
+  --cs-bg-base: #130F0A;
+  --cs-bg-raised: #1C1610;
+  --cs-bg-card: #231B12;
+  --cs-bg-overlay: rgba(19, 15, 10, 0.92);
 
   /* Text */
-  --cs-text-primary:  #E8D5B0;
-  --cs-text-muted:    #9A8668;
-  --cs-text-faint:    #5C4E38;
+  --cs-text-primary: #E8D5B0;
+  --cs-text-muted: #9A8668;
+  --cs-text-faint: #5C4E38;
 
   /* Borders */
-  --cs-border:        rgba(201, 168, 76, 0.2);
+  --cs-border: rgba(201, 168, 76, 0.2);
   --cs-border-strong: rgba(201, 168, 76, 0.45);
 
   /* Code */
@@ -40,46 +40,46 @@
   --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* VitePress colour overrides (light mode, but we target dark) */
-  --vp-c-brand-1:        var(--cs-gold);
-  --vp-c-brand-2:        var(--cs-gold-light);
-  --vp-c-brand-3:        var(--cs-gold-muted);
-  --vp-c-brand-soft:     rgba(201, 168, 76, 0.15);
-  --vp-c-bg:             var(--cs-bg-base);
-  --vp-c-bg-soft:        var(--cs-bg-raised);
-  --vp-c-bg-alt:         var(--cs-bg-card);
-  --vp-c-border:         var(--cs-border);
-  --vp-c-divider:        var(--cs-border);
-  --vp-c-text-1:         var(--cs-text-primary);
-  --vp-c-text-2:         var(--cs-text-muted);
-  --vp-c-text-3:         var(--cs-text-faint);
+  --vp-c-brand-1: var(--cs-gold);
+  --vp-c-brand-2: var(--cs-gold-light);
+  --vp-c-brand-3: var(--cs-gold-muted);
+  --vp-c-brand-soft: rgba(201, 168, 76, 0.15);
+  --vp-c-bg: var(--cs-bg-base);
+  --vp-c-bg-soft: var(--cs-bg-raised);
+  --vp-c-bg-alt: var(--cs-bg-card);
+  --vp-c-border: var(--cs-border);
+  --vp-c-divider: var(--cs-border);
+  --vp-c-text-1: var(--cs-text-primary);
+  --vp-c-text-2: var(--cs-text-muted);
+  --vp-c-text-3: var(--cs-text-faint);
 
   /* Nav */
-  --vp-nav-bg-color:     var(--cs-bg-overlay);
-  --vp-c-bg-navbar:      var(--cs-bg-overlay);
+  --vp-nav-bg-color: var(--cs-bg-overlay);
+  --vp-c-bg-navbar: var(--cs-bg-overlay);
 
   /* Sidebar */
   --vp-sidebar-bg-color: var(--cs-bg-raised);
 
   /* Code blocks */
-  --vp-code-block-bg:    #0A0806;
-  --vp-code-color:       #C9A84C;
+  --vp-code-block-bg: #0A0806;
+  --vp-code-color: #C9A84C;
   --vp-code-line-highlight-color: rgba(139, 26, 26, 0.18);
 
   /* Home hero */
-  --vp-home-hero-name-color:          var(--cs-gold);
-  --vp-home-hero-name-background:     linear-gradient(135deg, var(--cs-gold-light) 0%, var(--cs-crimson-light) 100%);
-  --vp-home-hero-image-background-image: radial-gradient(circle at 50% 50%, rgba(139,26,26,0.35) 0%, transparent 70%);
-  --vp-home-hero-image-filter:        blur(40px);
+  --vp-home-hero-name-color: var(--cs-gold);
+  --vp-home-hero-name-background: linear-gradient(135deg, var(--cs-gold-light) 0%, var(--cs-crimson-light) 100%);
+  --vp-home-hero-image-background-image: radial-gradient(circle at 50% 50%, rgba(139, 26, 26, 0.35) 0%, transparent 70%);
+  --vp-home-hero-image-filter: blur(40px);
 
   /* Buttons */
-  --vp-button-brand-bg:         var(--cs-crimson);
-  --vp-button-brand-hover-bg:   var(--cs-crimson-light);
-  --vp-button-brand-border:     var(--cs-crimson-light);
-  --vp-button-brand-text:       var(--cs-gold-light);
-  --vp-button-alt-bg:           var(--cs-bg-card);
-  --vp-button-alt-hover-bg:     var(--cs-bg-raised);
-  --vp-button-alt-border:       var(--cs-border-strong);
-  --vp-button-alt-text:         var(--cs-text-primary);
+  --vp-button-brand-bg: var(--cs-crimson);
+  --vp-button-brand-hover-bg: var(--cs-crimson-light);
+  --vp-button-brand-border: var(--cs-crimson-light);
+  --vp-button-brand-text: var(--cs-gold-light);
+  --vp-button-alt-bg: var(--cs-bg-card);
+  --vp-button-alt-hover-bg: var(--cs-bg-raised);
+  --vp-button-alt-border: var(--cs-border-strong);
+  --vp-button-alt-text: var(--cs-text-primary);
 }
 
 /* ── Force dark theme ─────────────────────────────────────── */
@@ -95,16 +95,32 @@ body {
   line-height: 1.75;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Cinzel', 'Times New Roman', serif !important;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--cs-gold-light);
 }
 
-h1 { font-size: 2.2rem; }
-h2 { font-size: 1.6rem; border-bottom: 1px solid var(--cs-border-strong); padding-bottom: 0.35em; }
-h3 { font-size: 1.25rem; color: var(--cs-gold); }
+h1 {
+  font-size: 2.2rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+  border-bottom: 1px solid var(--cs-border-strong);
+  padding-bottom: 0.35em;
+}
+
+h3 {
+  font-size: 1.25rem;
+  color: var(--cs-gold);
+}
 
 /* ── Navigation ───────────────────────────────────────────── */
 .VPNav {
@@ -151,13 +167,13 @@ h3 { font-size: 1.25rem; color: var(--cs-gold); }
   color: var(--cs-text-muted);
 }
 
-.VPSidebarItem.is-active > .item .text,
-.VPSidebarItem.is-link.is-active > .item > .link .text {
+.VPSidebarItem.is-active>.item .text,
+.VPSidebarItem.is-link.is-active>.item>.link .text {
   color: var(--cs-gold-light) !important;
   font-weight: 600;
 }
 
-.VPSidebarItem:hover > .item .text {
+.VPSidebarItem:hover>.item .text {
   color: var(--cs-gold) !important;
 }
 
@@ -194,7 +210,8 @@ h3 { font-size: 1.25rem; color: var(--cs-gold); }
 }
 
 .custom-block.tip {
-  border-color: #42b983; /* Green */
+  border-color: #42b983;
+  /* Green */
   background: rgba(66, 185, 131, 0.08);
 }
 
@@ -217,10 +234,10 @@ h3 { font-size: 1.25rem; color: var(--cs-gold); }
 .vp-doc div[class*='language-'] {
   border: 1px solid var(--cs-border);
   border-radius: 6px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
-.vp-doc [class*='language-'] > button.copy {
+.vp-doc [class*='language-']>button.copy {
   color: var(--cs-text-muted);
 }
 
@@ -239,7 +256,8 @@ pre code {
   border: none !important;
   padding: 0;
   color: inherit !important;
-  font-size: 1em !important; /* relative to pre, controlled below */
+  font-size: 1em !important;
+  /* relative to pre, controlled below */
 }
 
 .vp-doc div[class*='language-'],
@@ -388,10 +406,23 @@ pre code {
 }
 
 /* ── Scrollbar ────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--cs-bg-deep); }
-::-webkit-scrollbar-thumb { background: var(--cs-gold-muted); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--cs-gold); }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cs-bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cs-gold-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cs-gold);
+}
 
 /* ── Subtle texture overlay on body ──────────────────────── */
 body::before {
@@ -400,8 +431,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(139,26,26,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.04) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 0%, rgba(139, 26, 26, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(139, 26, 26, 0.04) 0%, transparent 50%);
   z-index: 0;
 }
 
@@ -529,10 +560,11 @@ body::before {
   justify-content: center;
   opacity: 0.6;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none; /* Let clicks pass through to the video */
+  pointer-events: none;
+  /* Let clicks pass through to the video */
   z-index: 10;
   backdrop-filter: blur(4px);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.7);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
 }
 
 /* Ensure SVG is centered */
@@ -568,12 +600,14 @@ body::before {
   width: 28px;
   height: 28px;
 }
+
 /* Ensure modal video is not clickable/hoverable as a trigger */
 .video-modal-content video {
   cursor: default !important;
   transform: none !important;
   box-shadow: none !important;
 }
+
 /* ── Compact Reference Utility ────────────────────────────── */
 .compact-reference h4 {
   margin-top: 1rem !important;
@@ -600,4 +634,154 @@ body::before {
 .compact-reference li {
   margin-bottom: 0.1rem !important;
   font-size: 0.9rem;
+}
+
+/* ── Step-Specific Reference Cards ────────────────────────── */
+.cs-step-footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.8rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--cs-border);
+}
+
+.cs-step-ref {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--cs-bg-card);
+  border: 1px solid var(--cs-border);
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cs-step-ref:hover {
+  border-color: var(--cs-gold-muted);
+  background: var(--cs-bg-raised);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(139, 26, 26, 0.2);
+}
+
+.cs-step-ref::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.04), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cs-step-ref:hover::after {
+  opacity: 1;
+}
+
+.cs-ref-icon {
+  font-size: 1.3rem;
+  min-width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139, 26, 26, 0.08);
+  border-radius: 5px;
+  border: 1px solid rgba(139, 26, 26, 0.15);
+  transition: transform 0.3s;
+}
+
+.cs-step-ref:hover .cs-ref-icon {
+  transform: scale(1.05);
+  background: rgba(139, 26, 26, 0.15);
+}
+
+.cs-ref-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.cs-ref-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cs-gold-light);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
+.cs-ref-desc {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.8rem;
+  color: var(--cs-text-muted);
+  line-height: 1.25;
+}
+
+.cs-step-ref:hover .cs-ref-label {
+  color: var(--cs-gold);
+}
+
+/* ── UI Preview Magnifier ──────────────────────────────────── */
+.cs-ui-magnifier {
+  max-width: 480px; /* Slightly wider to accommodate two images */
+  margin: 1.5rem auto;
+  padding: 12px;
+  background: var(--cs-bg-base);
+  border: 1px solid var(--cs-border-strong);
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.6),
+    inset 0 0 15px rgba(139, 26, 26, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cs-magnifier-images {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  width: 100%;
+}
+
+.cs-ui-magnifier img {
+  flex: 0 1 auto;
+  max-width: 200px; /* Smaller images as requested */
+  height: auto;
+  border-radius: 2px;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  display: block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.cs-magnifier-label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background: var(--cs-bg-card);
+  padding: 1px 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  color: var(--cs-gold-light);
+  border: 1px solid var(--cs-gold-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.cs-magnifier-hint {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--cs-text-muted);
+  line-height: 1.4;
+  padding: 0 0.5rem;
 }

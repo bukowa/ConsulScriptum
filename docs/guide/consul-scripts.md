@@ -87,6 +87,13 @@ To make an example of a province or suppress dissent, select this command and th
 - **Highlighting**: When a script is active or has been triggered, the entry will highlight in green.
 - **Toggle**: Click the highlighted entry again to deactivate it.
 
-::: tip Hover for details
-Not sure what a script does? **Hover your mouse over any script name** in the list to see a detailed description and usage instructions.
-:::
+<div class="cs-ui-magnifier">
+  <div class="cs-magnifier-label">Tooltip Preview</div>
+  <div class="cs-magnifier-images">
+    <img src="/media/consul_custodes.png" alt="Tooltip Preview 1" />
+    <img src="/media/consul_custodes.png" alt="Tooltip Preview 2" />
+  </div>
+  <div class="cs-magnifier-hint">
+    Hover your mouse over any script in the list to reveal its full usage instructions.
+  </div>
+</div>

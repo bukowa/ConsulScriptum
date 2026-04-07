@@ -4,7 +4,15 @@
 
 <!-- @include: ./parts/installation-links.md -->
 
-See [Detailed Compatibility](./compatibility) for engine differences and stability notes.
+<div class="cs-step-footer">
+  <a href="./compatibility" class="cs-step-ref">
+    <div class="cs-ref-icon">⚙️</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Compatibility Guide</div>
+      <div class="cs-ref-desc">Engine differences and stability notes</div>
+    </div>
+  </a>
+</div>
 
 ---
 
@@ -35,42 +43,24 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
 == Attila
 <video src="/ConsulScriptum/videos/attila_index.mp4" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
-**Exterminare** script to kill a character on the campaign map.
-
 == Rome II
 <video src="/ConsulScriptum/videos/rome2_index.mp4" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
 
-**Adice Provinciam** script to transfer a settlement between factions.
-
 :::
 
-::: tip Hover for details
-**Hover your mouse over any script name** in the list to see detailed usage instructions.
-
-<div align="center">
-  <img src="/media/consul_custodes.png" alt="Hover for details" />
+<div class="cs-step-footer">
+  <a href="./consul-scripts" class="cs-step-ref">
+    <div class="cs-ref-icon">📜</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Consul Reference</div>
+      <div class="cs-ref-desc">Complete library of one-click scripts</div>
+    </div>
+  </a>
 </div>
-:::
-
-See more details and reference about [Consul Scripts](./consul-scripts).
 
 ## Step 4: The Console (Commands & Lua)
 
-::: warning Console Quick Tips
-- **No Enter Key**: You must click the **Send** button to submit commands.
-- **No UI Copy**: You cannot copy text directly from the console output. Use the `consul.output` file in your game folder instead.
-- **No Autocomplete**: Tab completion and keyboard history (↑/↓) are not supported. Use the on-screen arrow buttons for history.
-:::
-
-Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts.
-
-1. **Commands**: Type `/help` to list all available slash-commands.
-2. **Raw Lua**: Interact directly with the game or manage the console view.
-
-```lua
-consul.console.write("Hello World") -- Prints text to the console
-consul.console.clear()             -- Clears the console output
-```
+Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts. Type /help to list all available slash-commands.
 
 :::tabs
 
@@ -82,33 +72,47 @@ consul.console.clear()             -- Clears the console output
 
 :::
 
+<div class="cs-step-footer">
+  <a href="./console" class="cs-step-ref">
+    <div class="cs-ref-icon">💻</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Console Guide</div>
+      <div class="cs-ref-desc">Slash commands and Lua API reference</div>
+    </div>
+  </a>
+  <a href="../reference/custom-commands" class="cs-step-ref">
+    <div class="cs-ref-icon">🛠️</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Custom Commands</div>
+      <div class="cs-ref-desc">How to add your own console /commands</div>
+    </div>
+  </a>
+</div>
+
 ## Step 5: Scriptum (File-Based Scripts)
 
 Because the console input field is limited to short text, use the **Scriptum** tab for long or complex scripts. This module reads `.lua` files directly from your game folder.
-
-### How to use:
-1. **Define your scripts**: Open `consul.scriptum` in your game root folder and add the paths to your `.lua` files (one per line).
-2. **Write your code**: Create the corresponding `.lua` files and write your script.
-3. **Run on click**: Inside the game, open the **Scriptum** tab. Your scripts will appear as buttons. Click one to execute it.
-
-### Suggested Workflow:
-The recommended way to work with Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code or Notepad++) open next to it. 
-
-The files are read "live" — you can edit your `.lua` file, save it, and then click the button in the Scriptum tab to execute the updated code immediately without restarting the game.
 
 :::tabs
 == Attila & Rome II
 <video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Both" autoplay loop muted playsinline></video>
 :::
 
-See the [Scriptum guide](./scriptum) for more details.
+<div class="cs-step-footer">
+  <a href="./scriptum" class="cs-step-ref">
+    <div class="cs-ref-icon">✍️</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Scriptum Guide</div>
+      <div class="cs-ref-desc">Advanced file-based scripting workflow</div>
+    </div>
+  </a>
+  <a href="./files" class="cs-step-ref">
+    <div class="cs-ref-icon">📂</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Consul Files</div>
+      <div class="cs-ref-desc">Learn about the outputs and logs that make scripting easier</div>
+    </div>
+  </a>
+</div>
 
----
 
-## Next steps
-
-- [Limitations](./limitations) — read this before reporting bugs
-- [The Console](./console) — full command and Lua reference
-- [Battle Mode](./battle) — how to use the console in Rome II battles
-- [Scriptum](./scriptum) — advanced file-based scripting
-- [Custom Commands](../reference/custom-commands) — adding your own `/commands`
