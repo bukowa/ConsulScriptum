@@ -8,7 +8,7 @@ Literally, *"Consul Scriptum"* translates to "written consul" or "the consul's w
 
 ## In reality, this is a scripting console for Total War: Rome II.
 
-![Consul Scriptum](./extras/consul-scriptum.png)
+![Consul Scriptum](.github/extras/consul-scriptum.png)
 
 ## The overall concept is split into three parts:
 
@@ -21,7 +21,7 @@ A window with a list of scripts that you can activate with a click. This provide
 ### Scriptum (Technical)
 This allows you to write your own scripts, place them in the game data folder, and execute them with a click. No need to restart the game—just reopen the Consul to load new scripts.
 
-![Consul Scripts](./extras/consul-scripts.png)
+![Consul Scripts](.github/extras/consul-scripts.png)
 
 ## Included Scripts
 Few simple scripts are already included:
