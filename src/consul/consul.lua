@@ -1,4 +1,4 @@
-consul_build = "Attila"  -- or "Rome2"
+consul_build = "Attila" -- or "Rome2"
 
 consul = {
 
@@ -67,7 +67,7 @@ consul = {
                 end
             end
         end,
-    };
+    },
 
     -- setup consul
     setup = function()
@@ -109,12 +109,12 @@ consul = {
                 table.insert(versions, k)
             end
             table.sort(versions, function(a, b) return a > b end)
-            
+
             local sep = ""
             for _, v in ipairs(versions) do
                 local note = data.notes[v]
                 local note_text = ""
-                
+
                 if type(note) == "table" then
                     if note.common and note.common ~= "" then
                         note_text = note.common
@@ -126,13 +126,13 @@ consul = {
                 else
                     note_text = tostring(note)
                 end
-                
+
                 if note_text ~= "" then
                     raw_log = raw_log .. sep .. "Version " .. v .. "\n" .. note_text
                     sep = "\n\n----------------------------------------\n\n"
                 end
             end
-            
+
             -- Strip carriage returns which break UI layout engines
             return string.gsub(raw_log, "\r", "")
         end,
@@ -268,6 +268,7 @@ consul = {
         script_identifier = 'consul_battle',
         script_path = 'consul/consul_battle.lua',
         battle_path = '',
+        debug = false,
 
         setup = function()
             local log = consul.new_log('battle:setup')
@@ -292,17 +293,33 @@ consul = {
             log:debug('Initializing battle stuff')
 
             consul.battle.deinit()
-            consul._game():add_custom_battlefield(
+            if consul_build == "Rome2" then
+                consul._game():add_custom_battlefield(
                     consul.battle.script_identifier, -- string identifier
-                    0, -- x co-ord
-                    0, -- y co-ord
-                    1000000, -- radius around position
-                    false, -- will campaign be dumped
-                    "", -- loading override
-                    consul.battle.script_path, -- script override
-                    consul.battle.battle_path, -- entire battle override
-                    0   -- human alliance when battle override
-            );
+                    0,                               -- x co-ord
+                    0,                               -- y co-ord
+                    1000000,                         -- radius around position
+                    false,                           -- will campaign be dumped
+                    "",                              -- loading override
+                    consul.battle.script_path,       -- script override
+                    consul.battle.battle_path,       -- entire battle override
+                    0                                -- human alliance when battle override
+                );
+            elseif consul_build == "Attila" then
+                consul._game():add_custom_battlefield(
+                    consul.battle.script_identifier, -- string identifier
+                    0,                               -- x co-ord
+                    0,                               -- y co-ord
+                    1000000,                         -- radius around position
+                    false,                           -- will campaign be dumped
+                    "",                              -- loading override
+                    consul.battle.script_path,       -- script override
+                    consul.battle.battle_path,       -- entire battle override
+                    0,                               -- human alliance when battle override,
+                    false,                           -- launch_battle_immediately
+                    false
+                );
+            end
         end
     },
 
@@ -335,22 +352,22 @@ consul = {
 
         validate = function(_config)
             return type(_config) == "table"
-                    and type(_config.ui) == "table"
-                    and type(_config.ui.position) == "table"
-                    and type(_config.ui.position.x) == "number"
-                    and type(_config.ui.position.y) == "number"
-                    and type(_config.ui.visibility) == "table"
-                    and type(_config.ui.visibility.root) == "number"
-                    and type(_config.ui.visibility.consul) == "number"
-                    and type(_config.ui.visibility.scriptum) == "number"
+                and type(_config.ui) == "table"
+                and type(_config.ui.position) == "table"
+                and type(_config.ui.position.x) == "number"
+                and type(_config.ui.position.y) == "number"
+                and type(_config.ui.visibility) == "table"
+                and type(_config.ui.visibility.root) == "number"
+                and type(_config.ui.visibility.consul) == "number"
+                and type(_config.ui.visibility.scriptum) == "number"
 
-                    and type(_config.console) == "table"
-                    and type(_config.console.autoclear) == "boolean"
-                    and type(_config.console.autoclear_after) == "number"
-                    and type(_config.console.last_read_changelog) == "string"
+                and type(_config.console) == "table"
+                and type(_config.console.autoclear) == "boolean"
+                and type(_config.console.autoclear_after) == "number"
+                and type(_config.console.last_read_changelog) == "string"
 
-                    and type(_config.battle) == "table"
-                    and type(_config.battle.use_in_battle) == "boolean"
+                and type(_config.battle) == "table"
+                and type(_config.battle.use_in_battle) == "boolean"
         end,
 
 
@@ -387,7 +404,7 @@ consul = {
                         log:error("Config file is invalid: " .. config.path)
                     end
                 else
-                    log:warn("Could not load config: " .. cfg)  -- Log the error message from serpent.load
+                    log:warn("Could not load config: " .. cfg) -- Log the error message from serpent.load
                 end
             end
 
@@ -469,9 +486,10 @@ consul = {
         consul_incrementum_regio_script = "consul_incrementum_regio_script",
 
         -- keep internals private
-        _UIRoot = nil,
-        _UIComponent = nil,
-        _UIContext = nil,
+        _UIRoot = nil,             -- UIComponent(context.component)
+        _UIComponent = nil,        -- UIComponent
+        _UIContext = nil,          -- context
+        _UIContextComponent = nil, -- context.component
 
         -- shortcut to find a UIComponent with some guards
         find = function(key)
@@ -527,7 +545,6 @@ consul = {
         -- so we just move it to the center of the screen
         -- lets calculate the proper position - resolution can vary
         MoveRootToCenter = function()
-
             -- shorthand
             local ui = consul.ui
 
@@ -549,8 +566,10 @@ consul = {
             log:debug("UI created start")
 
             local ui = consul.ui
+            ui._UIContext = context
+            ui._UIContextComponent = context.component
 
-            -- if UIComponent is nil grab it registry
+            -- if UIComponent is nil grab it from registry
             if not UIComponent then
                 log:warn('UIComponent is nil; trying to grab it from lua registry')
 
@@ -575,7 +594,6 @@ consul = {
             -- set the root and UIComponent
             ui._UIRoot = UIComponent(context.component)
             ui._UIComponent = UIComponent
-            ui._UIContext = context
 
             log:debug("OnUICreated end")
         end,
@@ -586,7 +604,7 @@ consul = {
             yy = 0,
             should_move = false,
 
-            OnUICreated = function(context)
+            OnUICreated = function()
                 local ui = consul.ui
                 ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
                 ui.MoveToConfigPosition()
@@ -599,8 +617,16 @@ consul = {
             OnComponentMoved = function(context)
                 if context.string ~= consul.ui.root then return end
                 local ui, attila = consul.ui, consul.ui.attila
+                -- in campaign
                 if consul._game() ~= nil then
                     consul._game():add_time_trigger('consul_move_trigger', 0)
+                    -- in battle
+                elseif consul_build == "Attila" and consul.is_in_battle_script then
+                    function __consul_attila_ui_battle_single_shot_timer()
+                        consul.ui.attila.TimeTrigger()
+                    end
+
+                    consul.bm:register_singleshot_timer('__consul_attila_ui_battle_single_shot_timer', 0)
                 end
                 local c = ui.find(consul.ui.root)
                 attila.xx, attila.yy = c:Position()
@@ -608,17 +634,18 @@ consul = {
                 c:SetVisible(false)
             end,
 
-            TimeTrigger = function(context)
+            TimeTrigger = function()
                 local ui, attila = consul.ui, consul.ui.attila
                 local c = ui.find(ui.root)
                 local x, y = c:Position()
                 local xx, yy = attila.xx, attila.yy
+                -- always set visible, the component may be moved without changing position
+                c:SetVisible(true)
                 if (x ~= xx or y ~= yy) and attila.should_move == true then
                     c:MoveTo(xx, yy)
-                    c:SetVisible(true)
                     attila.should_move = false
                 end
-                end,
+            end,
         },
 
         -- event handler to be set in the main script
@@ -648,7 +675,6 @@ consul = {
         -- event handler to be set in the main script
         -- handles any click event for the consul
         OnComponentLClickUp = function(context)
-
             -- shorthand
             local ui = consul.ui
             local log = consul.new_log('ui:OnComponentLClickUp')
@@ -699,7 +725,6 @@ consul = {
 
                 return
             end
-
         end,
 
         -- event handler to be set in the main script
@@ -707,7 +732,6 @@ consul = {
         -- we want to save position to config - user shouldn't
         -- have to move the consul every time he comes from a battle
         OnComponentMoved = function(context)
-
             -- shorthand
             local ui = consul.ui
             local log = consul.new_log('ui:OnComponentMoved')
@@ -730,7 +754,6 @@ consul = {
 
                 -- write the config
                 config.write(cfg)
-
             end
         end,
     },
@@ -765,7 +788,6 @@ consul = {
                     f:write(entry .. "\n")
                     f:close()
                 end
-
             end
             hst.index = #hst.entries + 1
             hst.current = ""
@@ -825,7 +847,6 @@ consul = {
 
         -- register event handler for handling the buttons that move the history
         OnComponentLClickUp = function(context)
-
             -- shorthand
             local ui = consul.ui
             local log = consul.new_log('history:OnComponentLClickUp')
@@ -854,7 +875,6 @@ consul = {
 
                 c:SetStateText(hst.current)
                 return
-
             elseif context.string == ui.history_down then
                 log:debug("Moving history down")
                 hst.down()
@@ -862,7 +882,6 @@ consul = {
                 c:SetStateText(hst.current)
                 return
             end
-
         end,
     },
 
@@ -886,7 +905,6 @@ consul = {
 
         -- writes a message to the console
         write = function(msg)
-
             -- raw dump to file
             local f = io.open(consul.console.output_path, "a")
             if f then
@@ -921,10 +939,10 @@ consul = {
             },
 
             _is_setup = false,
-            
+
             -- Tracks dynamically injected commands per-module to prevent cross-module ghosting on reload
             _module_keys = {},
-            
+
             -- Generic loader to dynamically merge ANY correctly formatted command module into the consul framework.
             load_module = function(module_name)
                 local cmds = consul.console.commands
@@ -939,7 +957,7 @@ consul = {
                 if not cmds._module_keys[module_name] then
                     cmds._module_keys[module_name] = { exact = {}, starts_with = {} }
                 end
-                
+
                 -- Strip previously loaded custom commands from THIS module to prevent ghosting
                 for _, k in ipairs(cmds._module_keys[module_name].exact) do
                     cmds.exact[k] = nil
@@ -948,11 +966,11 @@ consul = {
                     cmds.starts_with[k] = nil
                 end
                 cmds._module_keys[module_name] = { exact = {}, starts_with = {} }
-                
+
                 local ok, res
                 package.loaded[module_name] = nil
                 ok, res = pcall(require, module_name)
-                
+
                 if ok and type(res) == "table" then
                     if type(res.exact) == "table" then
                         for k, v in pairs(res.exact) do
@@ -975,7 +993,7 @@ consul = {
                     return false, tostring(res)
                 end
             end,
-            
+
             load_custom = function()
                 local cmds = consul.console.commands
                 local log = consul.new_log('console:commands:load_custom')
@@ -987,7 +1005,7 @@ consul = {
                 end
 
                 local ok_root, _ = cmds.load_module('consul_custom_commands')
-                if ok_root  then
+                if ok_root then
                     log:debug("consul_custom_commands loaded successfully.")
                 end
 
@@ -1025,7 +1043,7 @@ consul = {
                         v.setup(cfg)
                     end
                 end
-                
+
                 local ok, err = pcall(commands.load_custom)
                 if not ok then
                     log:error("Error loading custom commands: " .. tostring(err))
@@ -1041,7 +1059,7 @@ consul = {
                 ['/r '] = {
                     help = function()
                         return "Shorthand for 'return <Lua code>. "
-                                .. "Example: /r 2 + 2"
+                            .. "Example: /r 2 + 2"
                     end,
                     func = function(_cmd)
                         return 'return ' .. string.sub(_cmd, 4)
@@ -1052,7 +1070,7 @@ consul = {
                 ['/p '] = {
                     help = function()
                         return "Pretty-prints a Lua value using 'penlight'. "
-                                .. "Example: /p _G"
+                            .. "Example: /p _G"
                     end,
                     func = function(_cmd)
                         return 'return consul.pretty(' .. string.sub(_cmd, 4) .. ')'
@@ -1063,7 +1081,7 @@ consul = {
                 ['/p2 '] = {
                     help = function()
                         return "Pretty-prints a Lua value using 'inspect'. "
-                                .. "Example: /p2 _G"
+                            .. "Example: /p2 _G"
                     end,
                     func = function(_cmd)
                         return 'return consul.pretty_inspect(' .. string.sub(_cmd, 4) .. ')'
@@ -1076,7 +1094,6 @@ consul = {
                         return "Sets number of entries after which console will autoclear. "
                     end,
                     func = function(_cmd)
-
                         -- convert to number
                         local n = tonumber(string.sub(_cmd, 18))
                         if not n then
@@ -1130,7 +1147,6 @@ consul = {
                         return "Show help message."
                     end,
                     func = function(...)
-
                         -- using raw \t doesn't work as it requires a string
                         local tab = consul.tab
 
@@ -1157,7 +1173,7 @@ consul = {
                         local help = "Console commands:\n"
                         for _, k in pairs(keys) do
                             local v = consul.console.commands.exact[k]
-                                    or consul.console.commands.starts_with[k]
+                                or consul.console.commands.starts_with[k]
                             local padding = string.rep(' ', max - string.len(k) + 1)
                             help = help .. tab .. k .. padding .. " - " .. v.help() .. "\n"
                         end
@@ -1231,7 +1247,8 @@ consul = {
                         cfg.console.last_read_changelog = consul.VERSION
                         consul.config.write(cfg)
                         consul.console.clear()
-                        return "Changelog marked as read for version " .. consul.VERSION .. ". Type /changelog to view it again."
+                        return "Changelog marked as read for version " ..
+                            consul.VERSION .. ". Type /changelog to view it again."
                     end,
                     exec = false,
                     returns = true,
@@ -1371,7 +1388,7 @@ consul = {
                                 consul.log:info(consul.pretty(debug.getmetatable(context)))
                                 consul.console.clear()
                                 consul.console.write(consul.pretty({
-                                    ['unit_key'] = context.string:sub(1, -#'_recruitable' - 1)
+                                    ['unit_key'] = context.string:sub(1, - #'_recruitable' - 1)
                                 }))
                                 return
                             end
@@ -1381,11 +1398,10 @@ consul = {
                                 consul.log:info(consul.pretty(debug.getmetatable(context)))
                                 consul.console.clear()
                                 consul.console.write(consul.pretty({
-                                    ['unit_key'] = context.string:sub(1, -#'_mercenary' - 1)
+                                    ['unit_key'] = context.string:sub(1, - #'_mercenary' - 1)
                                 }))
                                 return
                             end
-
                         end,
                     },
 
@@ -1406,7 +1422,6 @@ consul = {
                         -- wrap common actions
                         local wrap = function(opts, f)
                             return function(context)
-
                                 -- skip if not running
                                 if not command._is_running then
                                     return
@@ -1600,7 +1615,6 @@ This is some information about the CliExecute functions in the base game.
 
         -- internal function to execute a command
         _execute = function(cmd)
-
             -- make function from string
             local f, err = loadstring(cmd)
             if err then
@@ -1627,7 +1641,6 @@ This is some information about the CliExecute functions in the base game.
 
         -- executes a command from the console
         execute = function(cmd)
-
             local console = consul.console
             local settings = console.commands.settings
 
@@ -1691,11 +1704,12 @@ This is some information about the CliExecute functions in the base game.
                 log:debug("Clicked on: console_send")
 
                 if (consul.is_in_battle_script) then
-                    log:debug("In battle script, registering singleshot timer")
-                    function __consul_single_shot_timer()
+                    log:debug("In battle script, registering __consul_console_single_shot_timer")
+                    function __consul_console_single_shot_timer()
                         consul.console.execute(console.read())
                     end
-                    consul.bm:register_singleshot_timer('__consul_single_shot_timer', 0)
+
+                    consul.bm:register_singleshot_timer('__consul_console_single_shot_timer', 0)
                 else
                     log:debug("Normal script, executing immediately")
                     console.execute(console.read())
@@ -1765,7 +1779,6 @@ consul.console.write(
             end
 
             if not f then
-
                 -- create consul.scriptum
                 f = io.open(path, "w")
                 if f then
@@ -1884,11 +1897,19 @@ consul.console.write(
                 return
             end
 
+            if consul.scriptum.ui_scripts_map[context.string] == nil then
+                log:error(context.string .. " not found")
+                return
+            end
+
+            local script_name = context.string
+
             -- wrap the command so it can executed from inside battle
             local _execute_scriptum_entry = function()
-                local script = consul.scriptum.ui_scripts_map[context.string]
+                log:debug("inside _execute_scriptum_entry")
+                local script = consul.scriptum.ui_scripts_map[script_name]
 
-                if script then
+                if script ~= nil then
                     log:debug("Executing script: " .. script)
 
                     -- WARNING loadfile breaks the game again...
@@ -1899,17 +1920,17 @@ consul.console.write(
                     else
                         log:debug("Executed script: " .. script)
                     end
-
                 end
             end
 
             -- handle click in battle
             if consul.is_in_battle_script then
-                log:debug("In battle script, registering singleshot timer")
-                function __consul_single_shot_timer()
+                log:debug("In battle script, registering __consul_scriptum_single_shot_timer")
+                function __consul_scriptum_single_shot_timer()
                     _execute_scriptum_entry()
                 end
-                consul.bm:register_singleshot_timer('__consul_single_shot_timer', 0)
+
+                consul.bm:register_singleshot_timer('__consul_scriptum_single_shot_timer', 0)
             else
                 log:debug("Normal script, executing immediately")
                 _execute_scriptum_entry()
@@ -2008,7 +2029,8 @@ consul.console.write(
                     log:debug("SettlementSelected")
                     local region = context:garrison_residence():region():name()
                     log:debug("Increasing public order in: " .. region)
-                    consul._game():set_public_order_of_province_for_region(region, context:garrison_residence():region():public_order() + number)
+                    consul._game():set_public_order_of_province_for_region(region,
+                        context:garrison_residence():region():public_order() + number)
                 end
             end
 
@@ -2021,7 +2043,6 @@ consul.console.write(
                 start = scripts2.__wrap_start(start, log),
                 stop = scripts2.__wrap_stop(stop, log),
             }
-
         end,
         create_increase_growth_points_func = function(number)
             local scripts2 = consul.consul_scripts_v2
@@ -2052,7 +2073,6 @@ consul.console.write(
                 start = scripts2.__wrap_start(start, log),
                 stop = scripts2.__wrap_stop(stop, log),
             }
-
         end,
 
         create_two_faction_script = function(name, action_func, log_text)
@@ -2304,7 +2324,7 @@ consul.console.write(
 
                     -- build the target
                     local target = "faction:" .. tostring(faction) .. "," ..
-                            "forename:" .. string.gsub(forename, "names_name_", "")
+                        "forename:" .. string.gsub(forename, "names_name_", "")
 
                     -- destroy
                     log:debug("Target: " .. target)
@@ -2479,10 +2499,10 @@ consul.console.write(
             -- function to exchange garrison
             _exchange = function(char_from, char_to)
                 consul._game():seek_exchange(
-                        'character_cqi:' .. char_from:cqi(),
-                        'character_cqi:' .. char_to:cqi(),
-                        true,
-                        false
+                    'character_cqi:' .. char_from:cqi(),
+                    'character_cqi:' .. char_to:cqi(),
+                    true,
+                    false
                 )
             end,
             _get_colonel_for_garrison = function(garrison, is_army, is_navy)
@@ -2500,12 +2520,12 @@ consul.console.write(
                     local ok, result = pcall(function()
                         if
                         ---@diagnostic disable-next-line: unnecessary-if
-                        char:character_type("colonel") and
-                                char:garrison_residence():settlement_interface():region():name() == settlement_name and
-                                (
-                                        (is_army and char:military_force():is_army()) or
-                                                (is_navy and char:military_force():is_navy())
-                                )
+                            char:character_type("colonel") and
+                            char:garrison_residence():settlement_interface():region():name() == settlement_name and
+                            (
+                                (is_army and char:military_force():is_army()) or
+                                (is_navy and char:military_force():is_navy())
+                            )
                         then
                             return char
                         end
@@ -2562,17 +2582,17 @@ consul.console.write(
                     if script._settlement ~= nil then
                         log:debug("Exchanging garrison between settlements...")
                         local colonel1 = script._get_colonel_for_garrison(
-                                script._settlement,
-                                true,
-                                false
+                            script._settlement,
+                            true,
+                            false
                         )
                         if colonel1 == nil then
                             return
                         end
                         local colonel2 = script._get_colonel_for_garrison(
-                                context:garrison_residence(),
-                                true,
-                                false
+                            context:garrison_residence(),
+                            true,
+                            false
                         )
                         if colonel2 == nil then
                             return
@@ -2586,9 +2606,9 @@ consul.console.write(
                     if script._character ~= nil and script._character:has_military_force() == true then
                         log:debug("Exchanging garrison with character...")
                         local colonel = script._get_colonel_for_garrison(
-                                context:garrison_residence(),
-                                script._character:military_force():is_army(),
-                                script._character:military_force():is_navy()
+                            context:garrison_residence(),
+                            script._character:military_force():is_army(),
+                            script._character:military_force():is_navy()
                         )
                         if colonel == nil then
                             return
