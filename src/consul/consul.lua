@@ -539,24 +539,15 @@ consul = {
                 end
             end
 
-            log:debug("UIComponent: " .. tostring(UIComponent))
+            if UIComponent == nil then
+                log:error("UIComponent is nil!")
+                return
+            end
 
             -- set the root and UIComponent
             ui._UIRoot = UIComponent(context.component)
             ui._UIComponent = UIComponent
             ui._UIContext = context
-
-            -- log errors
-            if not consul.ui._UIRoot then
-                log:error("Could not find the root component")
-                return
-            end
-
-            -- log errors
-            if not consul.ui._UIComponent then
-                log:error("Could not find the UIComponent")
-                return
-            end
 
             log:debug("OnUICreated end")
         end,
