@@ -71,6 +71,7 @@ export default defineConfig({
         items: [
           { text: 'Console Commands', link: '/reference/commands' },
           { text: 'Internal API', link: '/reference/internal-api' },
+          { text: 'Internal API (Generated)', link: '/reference/internal-api-generated' },
         ]
       },
       {

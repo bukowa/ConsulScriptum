@@ -40,6 +40,8 @@ RPFM_CLI_DIR      := $(DEPS_DIR)/rpfm_cli
 ETWNG_DIR         := $(DEPS_DIR)/etwng
 RUBY_DIR          := $(DEPS_DIR)/ruby
 LDOC_DIR 		  := $(DEPS_DIR)/ldoc
+LUA_DIR           := $(DEPS_DIR)/lua
+PENLIGHT_DIR      := $(DEPS_DIR)/penlight
 MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 # Game-specific settings
@@ -71,7 +73,7 @@ XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
 UI2XML_BIN        := $(ETWNG_DIR)/ui/bin/ui2xml
 RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/$(RPFM_SCHEMA_FILE)
 RPFM_CLI_CMD      := $(realpath $(RPFM_CLI_BIN)) --game $(RPFM_GAME_ID)
-LUA_FOR_LDOC_PATH := "C:\Program Files (x86)\Lua\5.1\lua.exe"
+LUA_FOR_LDOC_PATH := $(LUA_DIR)/lua5.1.exe
 
 # Gems
 PATH := $(RUBY_DIR)/bin:$(PATH)
@@ -99,7 +101,13 @@ ETWNG_REVISION = f87f7c9e21ff8f0ee7cdf466368db8a0aee19f23
 
 # ldoc details
 LDOC_REPO     = "https://github.com/lunarmodules/ldoc.git"
-LDOC_REVISION = "f91ed4b76bec011a2e76cfe1283877686af8377e"
+LDOC_REVISION = "b8b574c8a67019e26a423af1b8c141d306ab58b2"
+
+# Lua (for running ldoc)
+LUA_VERSION      := 5.1.5
+LUA_DOWNLOAD_URL := https://sourceforge.net/projects/luabinaries/files/$(LUA_VERSION)/Tools%20Executables/lua-$(LUA_VERSION)_Win64_bin.zip/download
+PENLIGHT_REPO    = https://github.com/lunarmodules/Penlight.git
+PENLIGHT_REVISION = 1c85dd5418ee9aef71b4dc527fedf6714c139a6b
 
 # ============================================================
 # Start Source Files
@@ -329,6 +337,8 @@ setup: \
 	setup-7zip \
 	setup-ruby \
 	setup-gems \
+	setup-lua \
+	setup-lua-libs \
 	setup-ldoc
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(ETWNG_DIR)
@@ -416,12 +426,62 @@ setup-ldoc:
 		cd $(LDOC_DIR) && \
 		git checkout -q $(LDOC_REVISION) && \
 		echo "Checked out to specific revision."; \
+	else \
+		cd $(LDOC_DIR) && \
+		git fetch --all --quiet && \
+		git checkout -q $(LDOC_REVISION) && \
+		echo "LDoc pinned to revision $(LDOC_REVISION)."; \
+	fi
+
+# Rule for setting up Lua for ldoc execution
+setup-lua:
+	@if [ ! -f "$(LUA_FOR_LDOC_PATH)" ]; then \
+		echo "lua not found, downloading..." && \
+		mkdir -p "$(LUA_DIR)" && \
+		curl -sL "$(LUA_DOWNLOAD_URL)" -o "$(LUA_DIR)/lua.zip" && \
+		echo "unzipping lua..." && \
+		powershell -Command "Expand-Archive -Path '$(LUA_DIR)/lua.zip' -DestinationPath '$(LUA_DIR)' -Force" && \
+		rm "$(LUA_DIR)/lua.zip" && \
+		echo "Lua $(LUA_VERSION) has been downloaded and extracted."; \
+	fi
+
+# Rule for setting up Lua libraries required by ldoc
+setup-lua-libs:
+	@if [ ! -f "$(PENLIGHT_DIR)/lua/pl/class.lua" ]; then \
+		echo "Penlight not found, cloning..." && \
+		mkdir -p "$(PENLIGHT_DIR)" && \
+		git clone $(PENLIGHT_REPO) "$(PENLIGHT_DIR)" && \
+		cd "$(PENLIGHT_DIR)" && \
+		git checkout -q $(PENLIGHT_REVISION) && \
+		echo "Penlight checked out to specific revision."; \
+	else \
+		cd "$(PENLIGHT_DIR)" && \
+		git fetch --all --quiet && \
+		git checkout -q $(PENLIGHT_REVISION) && \
+		echo "Penlight pinned to revision $(PENLIGHT_REVISION)."; \
 	fi
 
 # Rule for generating documentation
-generate-docs: setup-ldoc
+generate-docs: setup-lua setup-lua-libs setup-ldoc
 	@echo "Generating documentation..."
-	$(LUA_FOR_LDOC_PATH) $(LDOC_DIR)/ldoc/doc.lua $(MAKE_DIR)src/consul
+	@mkdir -p "$(MAKE_DIR)docs/reference"
+	LUA_PATH="$(MAKE_DIR)scripts/lua/?.lua;$(MAKE_DIR)scripts/lua/?/?.lua;$(MAKE_DIR)scripts/lua/?/?/?.lua;$(PENLIGHT_DIR)/lua/?.lua;$(PENLIGHT_DIR)/lua/?/init.lua;$(LDOC_DIR)/?.lua;$(LDOC_DIR)/?/init.lua;;" \
+	"$(LUA_FOR_LDOC_PATH)" "$(LDOC_DIR)/ldoc.lua" -c "$(MAKE_DIR)config.ld" "$(MAKE_DIR)src/consul/consul.lua"
+	@mkdir -p "$(MAKE_DIR)docs/reference"
+	@if [ -f "$(MAKE_DIR)consul.md" ]; then \
+		cp "$(MAKE_DIR)consul.md" "$(MAKE_DIR)docs/reference/internal-api-generated.md"; \
+		rm -f "$(MAKE_DIR)consul.md"; \
+		echo "Generated docs/reference/internal-api-generated.md from consul.md"; \
+	elif [ -f "$(MAKE_DIR)docs/reference/modules/consul.md" ]; then \
+		cp "$(MAKE_DIR)docs/reference/modules/consul.md" "$(MAKE_DIR)docs/reference/internal-api-generated.md"; \
+		echo "Generated docs/reference/internal-api-generated.md from modules/consul.md"; \
+	elif [ -f "$(MAKE_DIR)docs/reference/index.html" ]; then \
+		printf "# Internal API (Generated)\n\nLatest generated output is available in [LDoc HTML output](./index.html).\n" > "$(MAKE_DIR)docs/reference/internal-api-generated.md"; \
+		echo "Generated docs/reference/internal-api-generated.md from index.html fallback"; \
+	else \
+		echo "Expected LDoc output not found at consul.md, docs/reference/modules/consul.md or docs/reference/index.html"; \
+		exit 1; \
+	fi
 
 # Install Steam and alone
 install: \
@@ -536,6 +596,8 @@ endif
 			setup-rpfm_schema \
 			setup-ruby \
 			setup-gems \
+			setup-lua \
+			setup-lua-libs \
 			setup-etwng \
 		install \
 			install-steam \

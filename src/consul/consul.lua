@@ -1,3 +1,6 @@
+--- ConsulScriptum public API.
+-- @module consul
+
 consul_build = "Attila" -- or "Rome2"
 
 consul = {
@@ -890,7 +893,9 @@ consul = {
         -- dump the console output to a file
         output_path = "consul.output",
 
-        -- clears the console output
+        --- Clear all text currently shown in the Consul console output panel.
+        -- @function consul.console.clear
+        -- @usage consul.console.clear()
         clear = function()
             local ui = consul.ui
             ui.find(ui.console_output_text_1):SetStateText('')
@@ -903,7 +908,10 @@ consul = {
             return c:GetStateText()
         end,
 
-        -- writes a message to the console
+        --- Write a message to the Consul console output panel and append it to consul.output.
+        -- @function consul.console.write
+        -- @param msg string Message text to append.
+        -- @usage consul.console.write("hello from script")
         write = function(msg)
             -- raw dump to file
             local f = io.open(consul.console.output_path, "a")
@@ -2519,7 +2527,6 @@ consul.console.write(
 
                     local ok, result = pcall(function()
                         if
-                        ---@diagnostic disable-next-line: unnecessary-if
                             char:character_type("colonel") and
                             char:garrison_residence():settlement_interface():region():name() == settlement_name and
                             (
