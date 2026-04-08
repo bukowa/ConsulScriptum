@@ -61,7 +61,9 @@ export default defineConfig({
         text: 'Advanced',
         items: [
           { text: 'Local Files', link: '/guide/files' },
+          { text: 'Build', link: '/guide/build' },
           { text: 'Battle Mode', link: '/guide/battle' },
+          { text: 'Custom Consul Scripts', link: '/guide/consul-advanced' },
           { text: 'Built-in Commands', link: '/reference/commands' },
           { text: 'Custom Commands', link: '/reference/custom-commands' },
           { text: 'Internal API', link: '/reference/internal-api' },
