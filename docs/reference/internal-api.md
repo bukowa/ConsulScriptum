@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # Internal API
 
 The `consul` global table is the entire ConsulScriptum API. Everything described here is accessible from Scriptum files and custom commands.

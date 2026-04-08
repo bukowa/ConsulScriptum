@@ -13,8 +13,8 @@ consul = {
     -- it also makes /t very long, so just use spaces
     tab = string.char(1) .. '   ',
 
-    -- a flag indicating if the script is running in battle
-    -- this is used for various battle-script related handling
+    --- Boolean flag indicating if the script is running in battle.
+    --- @field consul.is_in_battle_script
     is_in_battle_script = false,
     bm = nil,
 
@@ -41,7 +41,15 @@ consul = {
         --end,
         settlement = nil,
         faction = nil,
-        -- logs every environment in the registry
+        --- A function that logs every environment in all of the game's Lua registries.
+        --- Uses consul.pretty to format the output into the consul.log file.
+        --- Very useful if you want to see what the game makes available to Lua.
+        --- @function debug.logregistry
+        --- @usage
+        --- -- check consul.log for the output
+        --- -- output may vary based on where the function is called
+        --- -- I used it extensively when debugging different issues with the scripts
+        --- consul.debug.logregistry()
         logregistry = function()
             local log = consul.new_log('debug:logregistry')
             local count = 0
@@ -164,31 +172,31 @@ consul = {
     end,
 
     --- Creates a new logger instance.<br>
-    -- Very useful shortcut with predefined log levels.
-    -- @function consul.new_logger
-    -- @tparam[opt] string file_path The path to the log file.
-    -- @tparam[opt] integer level The log level - 2 for info (default).
-    -- @tparam[opt] string name The name of the logger.
-    -- @treturn table A new Logger instance.
-    -- @usage
-    -- -- DISABLED = -2,
-    -- -- TRACE = -1,
-    -- -- INTERNAL = 0,
-    -- -- DEBUG = 1,
-    -- -- INFO = 2,
-    -- -- WARN = 3,
-    -- -- ERROR = 4,
-    -- -- CRITICAL = 5,
-    -- -- create default logger with level (INFO)
-    -- local log = consul.new_logger("myfile.txt")
-    -- -- or pass a custom logging level   (DEBUG)
-    -- local log = consul.new_logger("myfile.txt", 1)
-    -- -- log info message
-    -- log:info("hello")!
-    -- -- log debug message
-    -- log:debug("debug!")
-    -- -- log error message
-    -- log:error("error!")
+    --- Very useful shortcut with predefined log levels.
+    --- @function consul.new_logger
+    --- @tparam[opt] string file_path The path to the log file.
+    --- @tparam[opt] integer level The log level - 2 for info (default).
+    --- @tparam[opt] string name The name of the logger.
+    --- @treturn table A new Logger instance.
+    --- @usage
+    --- -- DISABLED = -2,
+    --- -- TRACE = -1,
+    --- -- INTERNAL = 0,
+    --- -- DEBUG = 1,
+    --- -- INFO = 2,
+    --- -- WARN = 3,
+    --- -- ERROR = 4,
+    --- -- CRITICAL = 5,
+    --- -- create default logger with level (INFO)
+    --- local log = consul.new_logger("myfile.txt")
+    --- -- or pass a custom logging level   (DEBUG)
+    --- local log = consul.new_logger("myfile.txt", 1)
+    --- -- log info message
+    --- log:info("hello")!
+    --- -- log debug message
+    --- log:debug("debug!")
+    --- -- log error message
+    --- log:error("error!")
     new_logger = function(file_path, level, name)
         -- We pass the arguments to the original Logger.new in the correct order
         return require('consul_logging').Logger.new(file_path, level, name)
@@ -197,8 +205,28 @@ consul = {
     -- contrib
     serpent = require 'serpent.serpent',
     inspect = require 'inspect.inspect',
+    --- A function that pretty-prints a Lua value using 'penlight'.
+    --- @function consul.pretty
+    --- @param _obj Any Lua value to pretty-print.
+    --- @return string The pretty-printed string.
+    --- @usage
+    --- -- pretty-print a table
+    --- local table = { a = 1, b = 2, c = 3 }
+    --- local pretty_table = consul.pretty(table)
+    --- -- extra print to the console
+    --- consul.console.write(pretty_table)
+    --- -- or into the log file
+    --- consul.log:info(pretty_table)
     pretty = require 'penlight.pretty'.write,
 
+    --- A function that pretty-prints a Lua value using 'inspect.lua'.
+    --- @function consul.pretty_inspect
+    --- @param _obj Any Lua value to pretty-print.
+    --- @return string The pretty-printed string.
+    --- @usage
+    --- -- pretty-print a table
+    --- local table = { a = 1, b = 2, c = 3 }
+    --- local pretty_table = consul.pretty_inspect(table)
     pretty_inspect = function(_obj)
         return consul.inspect(_obj, { newline = '\n' })
     end,
@@ -225,7 +253,10 @@ consul = {
                 end
             end
         end,
-
+        
+        --- A function returning a boolean indicating if the DEI mod is loaded.
+        --- @function compat.is_dei
+        --- @return boolean True if DEI is loaded, false otherwise.
         is_dei = function()
             if consul_build ~= "Rome2" then return false end
 
@@ -402,8 +433,14 @@ consul = {
                 and type(_config.battle.use_in_battle) == "boolean"
         end,
 
-
-        -- read and write in one go
+        --- A function that reads the config file and writes it back to the file.
+        --- @function config.process
+        --- @tparam[opt] function func A function that takes a config table as an argument.
+        --- @usage
+        --- consul.config.process(function(cfg)
+        ---     cfg.ui.position.x = 100
+        ---     cfg.ui.position.y = 100
+        --- end)
         process = function(func)
             local log = consul.new_log('config:process')
             log:debug("Processing config file: " .. consul.config.path)
@@ -412,6 +449,11 @@ consul = {
             consul.config.write(cfg)
         end,
 
+        --- A function that reads the config file and returns a table.
+        --- @function config.read
+        --- @return table The config table.
+        --- @usage
+        --- local cfg = consul.config.read()
         read = function()
             local log = consul.new_log('config:read')
             local serpent = consul.serpent
@@ -445,7 +487,12 @@ consul = {
             config.write(cfg)
             return cfg
         end,
-
+        
+        --- A function that writes the config table to the config file.
+        --- @function config.write
+        --- @tparam table cfg The config table to write.
+        --- @usage
+        --- consul.config.write(cfg)
         write = function(cfg)
             local log = consul.new_log('config:write')
             log:debug("Writing config file: " .. consul.config.path)
@@ -523,7 +570,14 @@ consul = {
         _UIContext = nil,          -- context
         _UIContextComponent = nil, -- context.component
 
-        -- shortcut to find a UIComponent with some guards
+        --- A shortcut function that finds a UIComponent by key.<br>
+        --- Contains some guards to make sure the function works as expected.
+        --- @function ui.find
+        --- @tparam string key The key of the UIComponent to find.
+        --- @return UIComponent The UIComponent found.
+        --- @usage
+        --- local c = consul.ui.find("consul_exterminare_entry")
+        --- consul.console.write(c:Visible())
         find = function(key)
             local log = consul.new_log('ui:find')
 
@@ -576,6 +630,11 @@ consul = {
         -- trying to make docking work in the ui files is a pain
         -- so we just move it to the center of the screen
         -- lets calculate the proper position - resolution can vary
+
+        --- A function that moves the consul root to the center of the screen.
+        --- @function ui.MoveRootToCenter
+        --- @usage
+        --- consul.ui.MoveRootToCenter()
         MoveRootToCenter = function()
             -- shorthand
             local ui = consul.ui
@@ -683,6 +742,12 @@ consul = {
         -- event handler to be set in the main script
         -- moves the consul root to the position saved in config
         -- if position is 0,0 it moves to center
+
+        --- A function that moves the consul root to the position saved in config.<br>
+        --- If position is 0,0 it moves to center.
+        --- @function ui.MoveToConfigPosition
+        --- @usage
+        --- consul.ui.MoveToConfigPosition()
         MoveToConfigPosition = function()
             local ui = consul.ui
             local cfg = consul.config.read()
@@ -922,14 +987,21 @@ consul = {
         output_path = "consul.output",
 
         --- Clear all text currently shown in the Consul console output panel.
-        -- @function console.clear
-        -- @usage consul.console.clear()
+        --- @function console.clear
+        --- @usage consul.console.clear()
         clear = function()
             local ui = consul.ui
             ui.find(ui.console_output_text_1):SetStateText('')
         end,
 
         -- reads the input from the console
+
+        --- A function that reads the input from the console.
+        --- @function console.read
+        --- @return string The input text.
+        --- @usage
+        --- local input = consul.console.read()
+        --- consul.console.write(input)
         read = function()
             local ui = consul.ui
             local c = ui.find(ui.console_input)
@@ -937,9 +1009,9 @@ consul = {
         end,
 
         --- Write a message to the Consul console output panel and append it to consul.output.
-        -- @function console.write
-        -- @param msg string Message text to append.
-        -- @usage consul.console.write("hello from script")
+        --- @function console.write
+        --- @tparam string msg Message text to append.
+        --- @usage consul.console.write("hello from script")
         write = function(msg)
             -- raw dump to file
             local f = io.open(consul.console.output_path, "a")
@@ -980,6 +1052,17 @@ consul = {
             _module_keys = {},
 
             -- Generic loader to dynamically merge ANY correctly formatted command module into the consul framework.
+
+            --- A function that loads a module into the console commands.
+            --- @function console.commands.load_module
+            --- @tparam string module_name The name of the module to load.
+            --- @return boolean True if the module was loaded successfully, false otherwise.
+            --- @return string The error message if the module was not loaded successfully.
+            --- @usage
+            --- local ok, err = consul.console.commands.load_module('consul_commands')
+            --- if not ok then
+            ---     consul.console.write(err)
+            --- end
             load_module = function(module_name)
                 local cmds = consul.console.commands
                 local cfg = consul.config.read()
@@ -1675,7 +1758,11 @@ This is some information about the CliExecute functions in the base game.
             return tostring(result)
         end,
 
-        -- executes a command from the console
+        --- A function that executes a command from the console.
+        --- @function console.execute
+        --- @tparam string cmd The command to execute.
+        --- @usage
+        --- consul.console.execute("2+2")
         execute = function(cmd)
             local console = consul.console
             local settings = console.commands.settings
@@ -2699,9 +2786,9 @@ consul.console.write(
     end,
 
     --- Return active game interface `scripting.game_interface` or `nil`.<br>
-    -- This may be unavailable in Frontend/Battle contexts.
-    -- @function consul._game
-    -- @usage consul._game():force_make_peace(faction1, faction2)
+    --- This may be unavailable in Frontend/Battle contexts.
+    --- @function consul._game
+    --- @usage consul._game():force_make_peace(faction1, faction2)
     _game = function()
         -- !!
         -- I do not try to import the `EpisodicScripting` module
@@ -2744,18 +2831,43 @@ consul.console.write(
 
     game = {
 
+        --- A function that returns the model of the game.
+        --- @function game.model
+        --- @return Model The model of the game.
+        --- @usage
+        --- local model = consul.game.model()
         model = function()
             return consul._game():model()
         end,
 
+        --- A function that returns the world of the game.
+        --- @function game.world
+        --- @return World The world of the game.
+        --- @usage
+        --- local world = consul.game.world()
         world = function()
             return consul._game():model():world()
         end,
 
+        --- A function that returns a region by key.
+        --- @function game.region
+        --- @tparam string key The key of the region to return.
+        --- @return Region The region found.
+        --- @usage
+        --- local region = consul.game.region("region_key")
+        --- consul.console.write(region:name())
+        --- @usage
+        --- local region = consul.game.region("region_key")
         region = function(key)
             return consul._game():model():world():region_manager():region_by_key(key)
         end,
 
+        --- A function that returns a list of all regions.
+        --- @function game.region_list
+        --- @return table The list of regions.
+        --- @usage
+        --- local regions = consul.game.region_list()
+        --- consul.console.write(regions[1])
         region_list = function()
             local region_list = consul._game():model():world():region_manager():region_list()
 
@@ -2767,6 +2879,13 @@ consul.console.write(
             return regions
         end,
 
+        --- A function that returns a faction by key.
+        --- @function game.faction
+        --- @tparam string key The key of the faction to return.
+        --- @return Faction The faction found.
+        --- @usage
+        --- local faction = consul.game.faction("faction_key")
+        --- consul.console.write(faction:name())
         faction = function(key)
             return consul._game():model():world():faction_by_key(key)
         end,
@@ -2782,7 +2901,6 @@ consul.console.write(
             return factions
         end,
 
-        -- transfers a region to a faction
         force_rebellion = function(region, units, unit_list, x, y, supress_message)
             if not region then
                 return "region is nil"

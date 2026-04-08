@@ -1,5 +1,6 @@
 .venv
 .idea
+.cursor
 consulscriptum.pack
 .deps
 build

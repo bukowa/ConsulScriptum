@@ -52,7 +52,6 @@ export default defineConfig({
       {
         text: 'Manual',
         items: [
-          { text: 'Build', link: '/guide/build' },
           { text: 'Consul', link: '/guide/consul-manual' },
           { text: 'Console', link: '/guide/console-manual' },
           { text: 'Scriptum', link: '/guide/scriptum-manual' },
@@ -77,7 +76,13 @@ export default defineConfig({
         text: 'Customization',
         items: [
           { text: 'Consul Scripts', link: '/guide/consul-advanced' },
-          { text: 'Custom Commands', link: '/reference/custom-commands' },
+          { text: 'Console Commands', link: '/reference/custom-commands' },
+        ]
+      },
+      {
+        text: 'Development',
+        items: [
+          { text: 'Build', link: '/guide/build' },
         ]
       }
     ],
