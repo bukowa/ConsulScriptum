@@ -515,13 +515,19 @@ steam: run-steam
 #  ARG3='Custodes Vocati'
 
 insert-consul-entry:
-	py ./scripts/insert_consul_entry.py $(ARG1) "$(ARG2)" "$(ARG3)"
+	py ./scripts/insert_consul_entry.py $(GAME) $(ARG1) "$(ARG2)" "$(ARG3)"
+ifeq ($(GAME),Rome2)
 	$(XML2UI_BIN) ./src/ui/frontend\ ui/sp_frame.xml ./src/ui/frontend\ ui/sp_frame
 	$(XML2UI_BIN) ./src/ui/common\ ui/menu_bar.xml ./src/ui/common\ ui/menu_bar
 	$(UI2XML_BIN) ./src/ui/frontend\ ui/sp_frame ./src/ui/frontend\ ui/sp_frame.xml
 	$(UI2XML_BIN) ./src/ui/common\ ui/menu_bar ./src/ui/common\ ui/menu_bar.xml
 	rm ./src/ui/frontend\ ui/sp_frame
 	rm ./src/ui/common\ ui/menu_bar
+else
+	$(XML2UI_BIN) ./src/ui/common\ ui/consul.xml ./src/ui/common\ ui/consul
+	$(UI2XML_BIN) ./src/ui/common\ ui/consul ./src/ui/common\ ui/consul.xml
+	rm ./src/ui/common\ ui/consul
+endif
 
 # Declare phony targets to prevent conflicts with file names
 .PHONY: setup \
