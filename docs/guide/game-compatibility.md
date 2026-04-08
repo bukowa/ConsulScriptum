@@ -1,4 +1,9 @@
-# Game Compatibility
+---
+title: "Game Compatibility"
+description: "Check supported games and feature compatibility for Consul Scriptum in Total War: Rome II and Attila. Learn about mod compatibility and stability."
+---
+
+# Games and compatibility
 
 <!-- @include: ./parts/status-table.md -->
 
@@ -17,7 +22,7 @@
 
 ## Mod Compatibility
 
-ConsulScriptum is designed to be highly non-invasive. It uses a single entry point (all_scripted.lua) to hook into the game, leaving all other untouched! This makes it **fully compatible** with nearly every mod and overhaul (like Divide et Impera or The Dawnless Days). 
+ConsulScriptum is designed to be highly non-invasive. It uses a single entry point (all_scripted.lua) to hook into the game, leaving all others untouched! This makes it **fully compatible** with nearly every mod and overhaul (like Divide et Impera or The Dawnless Days). 
 
 In the rare event that another mod also uses all_scripted.lua, compatibility can be restored by adding just a few lines of code.
 

@@ -1,15 +1,15 @@
-# Consul Scripts
+# Add Custom Consul scripts
 
 This guide is the simplest flow to add one custom Consul script.
 
 ## Before You Start
 
-If you don't have make installed, follow the setup steps in the [Build guide](./build.md#windows-setup-step-by-step).
+If you don't have make installed, follow the setup steps in [Build from source](./building-from-source#windows-setup-step-by-step).
 
-## Step 1) Add the Consul entry
+## Step 1) Add the Consul UI entry
 
 Run this once per game; if your script supports both games, run it two times (`GAME=Attila` and `GAME=Rome2`).
-
+This make target will generate the required UI files 
 ```bash
 make GAME=Attila insert-consul-entry \
   ARG1='consul_my_feature' \

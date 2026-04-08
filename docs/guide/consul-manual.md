@@ -2,7 +2,7 @@
 outline: [2, 4]
 ---
 
-# Consul Manual
+# Consul (one-click actions)
 
 1. Click the **Consul** tab at the top of the interface.
 2. Scroll through the list of pre-bundled scripts.
@@ -39,17 +39,11 @@ outline: [2, 4]
 ### How It Works
 When you click a Consul entry, that script becomes active. While active, it listens for game events such as selecting a settlement or a character, and then executes its action when that event happens. If the script is not active, it does nothing. Clicking the same entry again turns the script off.
 
-## Custom Scripts
-
-For custom scripts and commands, see [Consul Scripts](./consul-advanced).
-
 
 ## Available Scripts
 
-<div class="compact-reference">
+To view the list of available scripts, see [Consul Scripts](../reference/consul-scripts-reference).
 
-<!-- @include: ./parts/generated-consul-scripts.md -->
+## Custom Scripts
 
-</div>
-
----
+To learn how to add custom scripts, see [How to add a Consul Script](./advanced-consul-scripting).

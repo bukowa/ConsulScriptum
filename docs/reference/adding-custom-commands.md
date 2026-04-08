@@ -1,8 +1,6 @@
-# Custom Commands
+# Custom console commands
 
 Custom commands are `/slash-commands` that you write yourself and load into ConsulScriptum.
-
----
 
 ## Module format
 
@@ -47,8 +45,6 @@ return {
 | `returns` | boolean | Yes | Return value is printed to console output |
 | `setup` | `function(cfg)` | No | Called once when module loads. `cfg` = `consul.config.read()` |
 
----
-
 ## Installation
 
 ### Option A — local file (highest priority)
@@ -63,8 +59,6 @@ Include your commands at `consul/consul_commands.lua` inside a `.pack` file. Con
 
 Name your file `consul/consul_commands_dei.lua` inside a pack. It is loaded automatically only when Divide et Impera is active.
 
----
-
 ## Hot-reload
 
 ```
@@ -72,8 +66,6 @@ Name your file `consul/consul_commands_dei.lua` inside a pack. It is loaded auto
 ```
 
 Forces a fresh load of all three sources (local, pack, DEI) without restarting the game. Old command registrations from the previous load are removed first — you won't end up with duplicate or ghost commands.
-
----
 
 ## Using `setup()`
 
@@ -106,8 +98,6 @@ return {
     }
 }
 ```
-
----
 
 ## Examples
 
@@ -166,8 +156,6 @@ return {
 }
 ```
 
----
-
 ## Available API in commands
 
-See [Internal API](./internal-api) for the full reference.
+See [Internal API](./internal-lua-api) for the full reference.

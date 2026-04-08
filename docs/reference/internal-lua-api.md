@@ -2,7 +2,7 @@
 outline: deep
 ---
 
-# Internal API
+# Consul API (reference)
 
 The `consul` global table constitutes the entire ConsulScriptum API. Everything described here is accessible from Scriptum files and custom commands. Because consul is loaded in all_scripted.lua, you can use the API anywhere in your scripts, provided that consul is included in your load order.
 

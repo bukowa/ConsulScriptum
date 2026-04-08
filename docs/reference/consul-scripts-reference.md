@@ -2,7 +2,7 @@
 outline: deep
 ---
 
-# Consul Scripts Reference
+# Consul scripts (reference)
 
 This page lists all built-in scripts available from the **Consul** tab.
 

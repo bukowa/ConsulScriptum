@@ -1,3 +1,8 @@
+---
+title: "Technical Limitations & Constraints"
+description: "Understand the technical limitations and constraints of modding the Total War: Rome II and Attila engine. Coverage of UI restrictions, console input, and battle mode scripting."
+---
+
 # Limitations
 
 <!-- @include: ./parts/disclaimer.md -->
@@ -8,7 +13,7 @@ Most of the limitations described below are due to hardcoded constraints of the 
 
 ## Console input
 
-The console input component is a basic game engine `TextInput` element, which has several hardcoded restrictions that cannot be modified via scripts.
+The console input component is a basic game engine TextInput element, which has several hardcoded restrictions that cannot be modified via scripts.
 
 **No Enter key.** 
 The game does not capture the "Enter" key as a submission trigger for this UI component. You must click the **Send** button to execute your input.
@@ -26,7 +31,7 @@ Standard Lua or console-style autocompletion (pressing Tab) is not supported by 
 The game's input buffer silently truncates long strings, usually around 100-255 characters. If you paste a long script, the console may only receive the first few lines, leading to syntax errors like `unfinished string near '<eof>'`.
 
 ::: tip Multi-line Scripts
-The console is best for one-liners or running predefined commands.<br>For anything longer or more complex use [Scriptum](./scriptum) to run files directly from your disk.
+The console is best for one-liners or running predefined commands.<br>For anything longer or more complex, use [Scriptum](./scriptum-manual) to run files directly from your disk.
 :::
 
 ## Console output
@@ -48,7 +53,7 @@ The panel is currently hard-capped at 10 script buttons. This is not a random nu
 - **Attila**: While it technically supports dynamic lists, the 10-slot limit is maintained to keep the experience consistent across both games.
 
 ::: tip Pro Tip: Master Scripts
-If you run out of slots, you can create a "Master Script" that uses `dofile()` to execute multiple other scripts in sequence, or use the console to run one-off files.
+If you run out of slots, you can create a "Master Script" that uses dofile() to execute multiple other scripts in sequence, or use the console to run one-off files.
 
 **Need more slots?** Please [reach out via GitHub](https://github.com/bukowa/ConsulScriptum).
 :::

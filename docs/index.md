@@ -1,19 +1,20 @@
 ---
 layout: home
-title: ConsulScriptum
-titleTemplate: Scripting Console for Total War
+title: "Consul Scriptum"
+titleTemplate: "Scripting Console for Total War Games"
+description: "Automation and scripting console for Total War games. Use Consul for one-click modding, Console for Lua snippets, and Scriptum for complex file-based scripts."
 
 hero:
-  name: "ConsulScriptum"
+  name: "Consul Scriptum"
   text: "Scripting Interface & Console"
   tagline: "A direct UI bridge to the game's internal scripting engine. Automate your campaign via the Consul module—no technical knowledge or pack editing required. For detailed control, use Lua Console and Scriptum modules."
   actions:
     - theme: brand
-      text: Getting Started
+      text: Getting started
       link: /guide/getting-started
     - theme: alt
       text: Limitations
-      link: /guide/limitations
+      link: /guide/technical-limitations
     - theme: alt
       text: GitHub
       link: https://github.com/bukowa/ConsulScriptum

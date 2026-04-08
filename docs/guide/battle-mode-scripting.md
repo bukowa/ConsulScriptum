@@ -1,10 +1,8 @@
-# Battle Mode Guide
+# Battle mode
 
 By default, the ConsulScriptum interface is not available in battle because the game does not load the campaign scripting and UI interfaces during tactical sessions. 
 
 However, for both **Total War: Rome II** and **Total War: Attila**, a workaround is available to force the game to load these interfaces via a custom battlefield override.
-
----
 
 ## How to Enable (Rome II & Attila)
 
@@ -22,8 +20,6 @@ In both games, you can force the campaign UI (and thus the console) to load duri
 ### Toggling Off
 The `/use_in_battle` command is a toggle. If you wish to disable the console in battles (e.g., to restore standard UI performance), simply run the command again from a campaign session.
 
----
-
 ## Performance Notes
 
 ::: warning Performance Impact
@@ -35,8 +31,6 @@ The `/use_in_battle` command **only works within an active campaign session**. I
 
 **Modders & Developers**: If your project specifically requires console access in standalone battles, please contact me on [Discord](https://discord.gg/tgggqMs4). 
 :::
-
----
 
 ## Example Script: Battle Mode (Rome II & Attila)
 
@@ -84,8 +78,6 @@ for i = 1, bm:alliances():count() do
     end
 end
 ```
-
----
 
 ## Video Tutorial (Rome II Example)
 

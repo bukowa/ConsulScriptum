@@ -1,4 +1,4 @@
-# Build
+# Build from source
 
 This page explains how to use the project `Makefile` to set up dependencies, build the mod package, and run/install it for Rome II or Attila.
 
@@ -27,7 +27,7 @@ Download and run:
 
 - [GNU Make 3.81 installer](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download)
 
-During installation, ensure `make.exe` is added to your `PATH` (or add it manually after install).
+During installation, ensure `make.exe` is added to your `PATH` environment variable (or add it manually after install).
 
 Then in **Git Bash**, verify:
 

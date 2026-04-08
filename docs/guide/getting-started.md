@@ -1,27 +1,25 @@
-# Getting Started
+# Getting started
 
 ## Step 1: Installation
 
 <!-- @include: ./parts/installation-links.md -->
 
 <div class="cs-step-footer">
-  <a href="./compatibility" class="cs-step-ref">
+  <a href="./game-compatibility" class="cs-step-ref">
     <div class="cs-ref-icon">⚙️</div>
     <div class="cs-ref-content">
-      <div class="cs-ref-label">Compatibility Guide</div>
-      <div class="cs-ref-desc">Engine differences and stability notes</div>
+      <div class="cs-ref-label">Supported Games</div>
+      <div class="cs-ref-desc">Game differences and stability notes</div>
     </div>
   </a>
-  <a href="./limitations" class="cs-step-ref">
+  <a href="./technical-limitations" class="cs-step-ref">
     <div class="cs-ref-icon">⚠️</div>
     <div class="cs-ref-content">
       <div class="cs-ref-label">Limitations</div>
-      <div class="cs-ref-desc">Technical constraints and known issues</div>
+      <div class="cs-ref-desc">Technical constraints and issues</div>
     </div>
   </a>
 </div>
-
----
 
 ## Step 2: Accessing the Interface
 
@@ -56,7 +54,7 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
 :::
 
 ### Usage Notes
-- **Highlighting**: When a script is active the entry will highlight in green.
+- **Highlighting**: When a script is active, the entry will highlight in green.
 - **Toggle**: Click the highlighted entry again to deactivate it.
 
 <div class="cs-ui-magnifier">
@@ -76,14 +74,14 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
     <div class="cs-ref-icon">📜</div>
     <div class="cs-ref-content">
       <div class="cs-ref-label">Consul Manual</div>
-      <div class="cs-ref-desc">Complete library of one-click scripts</div>
+      <div class="cs-ref-desc">Read more about one-click scripts</div>
     </div>
   </a>
-  <a href="./consul-advanced" class="cs-step-ref">
+  <a href="./advanced-consul-scripting" class="cs-step-ref">
     <div class="cs-ref-icon">🛠️</div>
     <div class="cs-ref-content">
-      <div class="cs-ref-label">Consul Customization</div>
-      <div class="cs-ref-desc">Create your own Consul scripts</div>
+      <div class="cs-ref-label">Custom Consul scripts</div>
+      <div class="cs-ref-desc">How to create your custom scripts.</div>
     </div>
   </a>
 </div>
@@ -106,15 +104,15 @@ Use the **Console** tab for manual interaction. It allows you to run slash comma
   <a href="./console-manual" class="cs-step-ref">
     <div class="cs-ref-icon">💻</div>
     <div class="cs-ref-content">
-      <div class="cs-ref-label">Console Guide</div>
-      <div class="cs-ref-desc">Slash commands and Lua API reference</div>
+      <div class="cs-ref-label">Console Manual</div>
+      <div class="cs-ref-desc">How to work with the console</div>
     </div>
   </a>
-  <a href="../reference/custom-commands" class="cs-step-ref">
+  <a href="../reference/adding-custom-commands" class="cs-step-ref">
     <div class="cs-ref-icon">🛠️</div>
     <div class="cs-ref-content">
-      <div class="cs-ref-label">Custom Commands</div>
-      <div class="cs-ref-desc">How to add your own console /commands</div>
+      <div class="cs-ref-label">Custom commands</div>
+      <div class="cs-ref-desc">How to add your own /commands</div>
     </div>
   </a>
 </div>
@@ -132,11 +130,11 @@ Because the console input field is limited to short text, use the **Scriptum** t
   <a href="./scriptum-manual" class="cs-step-ref">
     <div class="cs-ref-icon">✍️</div>
     <div class="cs-ref-content">
-      <div class="cs-ref-label">Scriptum Guide</div>
-      <div class="cs-ref-desc">Advanced file-based scripting workflow</div>
+      <div class="cs-ref-label">Scriptum Manual</div>
+      <div class="cs-ref-desc">How to work with file-based scripting.</div>
     </div>
   </a>
-  <a href="./files" class="cs-step-ref">
+  <a href="./consul-scriptum-files" class="cs-step-ref">
     <div class="cs-ref-icon">📂</div>
     <div class="cs-ref-content">
       <div class="cs-ref-label">Consul Files</div>
