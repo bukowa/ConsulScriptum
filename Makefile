@@ -420,17 +420,19 @@ setup-ruby: setup-7zip
 # Rule for setting up ldoc
 setup-ldoc:
 	@if [ ! -f "$(LDOC_DIR)/ldoc/doc.lua" ]; then \
-		echo "ldoc not found, cloning..." && \
-		mkdir -p $(LDOC_DIR) && \
-		git clone $(LDOC_REPO) $(LDOC_DIR) && \
-		cd $(LDOC_DIR) && \
-		git checkout -q $(LDOC_REVISION) && \
-		echo "Checked out to specific revision."; \
+		echo "ldoc not found, cloning..."; \
+		mkdir -p $(LDOC_DIR); \
+		git clone $(LDOC_REPO) $(LDOC_DIR); \
+		cd $(LDOC_DIR) && git checkout -q $(LDOC_REVISION); \
 	else \
 		cd $(LDOC_DIR) && \
-		git fetch --all --quiet && \
-		git checkout -q $(LDOC_REVISION) && \
-		echo "LDoc pinned to revision $(LDOC_REVISION)."; \
+		current_rev=$$(git rev-parse HEAD) && \
+		if [ "$$current_rev" != "$(LDOC_REVISION)" ]; then \
+			echo "Updating LDoc from $$current_rev to $(LDOC_REVISION)..."; \
+			git fetch --all --quiet && git checkout -q $(LDOC_REVISION); \
+		else \
+			echo "LDoc is already at revision $(LDOC_REVISION)."; \
+		fi; \
 	fi
 
 # Rule for setting up Lua for ldoc execution
@@ -453,31 +455,44 @@ setup-lua-libs:
 		git clone $(PENLIGHT_REPO) "$(PENLIGHT_DIR)" && \
 		cd "$(PENLIGHT_DIR)" && \
 		git checkout -q $(PENLIGHT_REVISION) && \
-		echo "Penlight checked out to specific revision."; \
+		echo "Penlight checked out to $(PENLIGHT_REVISION)."; \
 	else \
 		cd "$(PENLIGHT_DIR)" && \
-		git fetch --all --quiet && \
-		git checkout -q $(PENLIGHT_REVISION) && \
-		echo "Penlight pinned to revision $(PENLIGHT_REVISION)."; \
+		current_rev=$$(git rev-parse HEAD) && \
+		if [ "$$current_rev" != "$(PENLIGHT_REVISION)" ]; then \
+			echo "Updating Penlight from $${current_rev:0:7} to $${$(PENLIGHT_REVISION):0:7}..." && \
+			git fetch --all --quiet && \
+			git checkout -q $(PENLIGHT_REVISION); \
+		else \
+			echo "Penlight is already at revision $(PENLIGHT_REVISION)."; \
+		fi; \
 	fi
 
 # Rule for generating documentation
 generate-docs: setup-lua setup-lua-libs setup-ldoc
 	@echo "Generating documentation..."
 	@mkdir -p "$(MAKE_DIR)docs/reference"
+	@if [ -f "$(MAKE_DIR)scripts/lua/ldoc/html/ldoc_md_ltp.lua" ]; then \
+		mkdir -p "$(LDOC_DIR)/ldoc/html" && \
+		cp "$(MAKE_DIR)scripts/lua/ldoc/html/ldoc_md_ltp.lua" "$(LDOC_DIR)/ldoc/html/ldoc_md_ltp.lua" && \
+		echo "Using project markdown template: scripts/lua/ldoc/html/ldoc_md_ltp.lua"; \
+	fi
 	LUA_PATH="$(MAKE_DIR)scripts/lua/?.lua;$(MAKE_DIR)scripts/lua/?/?.lua;$(MAKE_DIR)scripts/lua/?/?/?.lua;$(PENLIGHT_DIR)/lua/?.lua;$(PENLIGHT_DIR)/lua/?/init.lua;$(LDOC_DIR)/?.lua;$(LDOC_DIR)/?/init.lua;;" \
 	"$(LUA_FOR_LDOC_PATH)" "$(LDOC_DIR)/ldoc.lua" -c "$(MAKE_DIR)config.ld" "$(MAKE_DIR)src/consul/consul.lua"
 	@mkdir -p "$(MAKE_DIR)docs/reference"
 	@if [ -f "$(MAKE_DIR)consul.md" ]; then \
-		cp "$(MAKE_DIR)consul.md" "$(MAKE_DIR)docs/reference/internal-api-generated.md"; \
+		mkdir -p "$(MAKE_DIR)docs/reference/parts"; \
+		cp "$(MAKE_DIR)consul.md" "$(MAKE_DIR)docs/reference/parts/generated-internal-api.md"; \
 		rm -f "$(MAKE_DIR)consul.md"; \
-		echo "Generated docs/reference/internal-api-generated.md from consul.md"; \
+		echo "Generated docs/reference/parts/generated-internal-api.md from consul.md"; \
 	elif [ -f "$(MAKE_DIR)docs/reference/modules/consul.md" ]; then \
-		cp "$(MAKE_DIR)docs/reference/modules/consul.md" "$(MAKE_DIR)docs/reference/internal-api-generated.md"; \
-		echo "Generated docs/reference/internal-api-generated.md from modules/consul.md"; \
+		mkdir -p "$(MAKE_DIR)docs/reference/parts"; \
+		cp "$(MAKE_DIR)docs/reference/modules/consul.md" "$(MAKE_DIR)docs/reference/parts/generated-internal-api.md"; \
+		echo "Generated docs/reference/parts/generated-internal-api.md from modules/consul.md"; \
 	elif [ -f "$(MAKE_DIR)docs/reference/index.html" ]; then \
-		printf "# Internal API (Generated)\n\nLatest generated output is available in [LDoc HTML output](./index.html).\n" > "$(MAKE_DIR)docs/reference/internal-api-generated.md"; \
-		echo "Generated docs/reference/internal-api-generated.md from index.html fallback"; \
+		mkdir -p "$(MAKE_DIR)docs/reference/parts"; \
+		printf "## API: consul\n\nLatest generated output is available in [LDoc HTML output](../index.html).\n" > "$(MAKE_DIR)docs/reference/parts/generated-internal-api.md"; \
+		echo "Generated docs/reference/parts/generated-internal-api.md from index.html fallback"; \
 	else \
 		echo "Expected LDoc output not found at consul.md, docs/reference/modules/consul.md or docs/reference/index.html"; \
 		exit 1; \

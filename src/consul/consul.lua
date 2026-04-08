@@ -1,5 +1,4 @@
---- ConsulScriptum public API.
--- @module consul
+---@module consul
 
 consul_build = "Attila" -- or "Rome2"
 
@@ -160,9 +159,39 @@ consul = {
         end
     },
 
-    -- shortcut to create a new logger
     new_log = function(name)
         return require('consul_logging').Logger.new(name, consul.log.log_level);
+    end,
+
+    --- Creates a new logger instance.<br>
+    -- Very useful shortcut with predefined log levels.
+    -- @function consul.new_logger
+    -- @tparam[opt] string file_path The path to the log file.
+    -- @tparam[opt] integer level The log level - 2 for info (default).
+    -- @tparam[opt] string name The name of the logger.
+    -- @treturn table A new Logger instance.
+    -- @usage
+    -- -- DISABLED = -2,
+    -- -- TRACE = -1,
+    -- -- INTERNAL = 0,
+    -- -- DEBUG = 1,
+    -- -- INFO = 2,
+    -- -- WARN = 3,
+    -- -- ERROR = 4,
+    -- -- CRITICAL = 5,
+    -- -- create default logger with level (INFO)
+    -- local log = consul.new_logger("myfile.txt")
+    -- -- or pass a custom logging level   (DEBUG)
+    -- local log = consul.new_logger("myfile.txt", 1)
+    -- -- log info message
+    -- log:info("hello")!
+    -- -- log debug message
+    -- log:debug("debug!")
+    -- -- log error message
+    -- log:error("error!")
+    new_logger = function(file_path, level, name)
+        -- We pass the arguments to the original Logger.new in the correct order
+        return require('consul_logging').Logger.new(file_path, level, name)
     end,
 
     -- contrib
@@ -889,12 +918,11 @@ consul = {
     },
 
     console = {
-
         -- dump the console output to a file
         output_path = "consul.output",
 
         --- Clear all text currently shown in the Consul console output panel.
-        -- @function consul.console.clear
+        -- @function console.clear
         -- @usage consul.console.clear()
         clear = function()
             local ui = consul.ui
@@ -909,7 +937,7 @@ consul = {
         end,
 
         --- Write a message to the Consul console output panel and append it to consul.output.
-        -- @function consul.console.write
+        -- @function console.write
         -- @param msg string Message text to append.
         -- @usage consul.console.write("hello from script")
         write = function(msg)
@@ -2670,8 +2698,10 @@ consul.console.write(
         return CliExecute(...)
     end,
 
-    -- consul._game is shorten
-    ---@type GAME
+    --- Return active game interface `scripting.game_interface` or `nil`.<br>
+    -- This may be unavailable in Frontend/Battle contexts.
+    -- @function consul._game
+    -- @usage consul._game():force_make_peace(faction1, faction2)
     _game = function()
         -- !!
         -- I do not try to import the `EpisodicScripting` module

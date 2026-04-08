@@ -2,7 +2,7 @@
 > local h1 = ('#'):rep(lev)
 > local h2 = ('#'):rep(lev + 1)
 > local h3 = ('#'):rep(lev + 2)
-$(h1) API: $(module.name)
+$(h1) Generated reference
 
 > if module.summary and module.summary ~= '' then
 $(module.summary)
@@ -19,15 +19,33 @@ $(h2) $(kind)
 > if kitem then
 $(ldoc.descript(kitem))
 
+
 > end
 >   for item in items() do
-$(h3) `$(ldoc.display_name(item))`
-
-```lua
-$(ldoc.display_name(item))
-```
+$(h3) `$(module.name).$(item.name)`
 
 $(ldoc.descript(item))
+
+> if item.params and #item.params > 0 then
+$(h4) Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+>   for i = 1, #item.params do
+>     local p = item.params[i]
+>     local desc = (item.params.map and item.params.map[p]) or item.params[p] or ""
+>     desc = desc:gsub('\n', ' ')
+>     local p_type = item:type_of_param(p)
+>     p_type = (p_type and p_type ~= '') and p_type or "-"
+| `$(p)` | `$(p_type)` | $(desc) |
+>   end
+> end
+
+> if item.usage then
+$(h4) Example:
+```lua
+$(item.usage[1])
+```
+> end
 
 ---
 
