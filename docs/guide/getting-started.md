@@ -75,8 +75,15 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
   <a href="./consul-manual" class="cs-step-ref">
     <div class="cs-ref-icon">📜</div>
     <div class="cs-ref-content">
-      <div class="cs-ref-label">Consul Reference</div>
+      <div class="cs-ref-label">Consul Manual</div>
       <div class="cs-ref-desc">Complete library of one-click scripts</div>
+    </div>
+  </a>
+  <a href="./consul-advanced" class="cs-step-ref">
+    <div class="cs-ref-icon">🛠️</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Consul Customization</div>
+      <div class="cs-ref-desc">Create your own Consul scripts</div>
     </div>
   </a>
 </div>
@@ -96,7 +103,7 @@ Use the **Console** tab for manual interaction. It allows you to run slash comma
 :::
 
 <div class="cs-step-footer">
-  <a href="./console" class="cs-step-ref">
+  <a href="./console-manual" class="cs-step-ref">
     <div class="cs-ref-icon">💻</div>
     <div class="cs-ref-content">
       <div class="cs-ref-label">Console Guide</div>
@@ -122,7 +129,7 @@ Because the console input field is limited to short text, use the **Scriptum** t
 :::
 
 <div class="cs-step-footer">
-  <a href="./scriptum" class="cs-step-ref">
+  <a href="./scriptum-manual" class="cs-step-ref">
     <div class="cs-ref-icon">✍️</div>
     <div class="cs-ref-content">
       <div class="cs-ref-label">Scriptum Guide</div>
@@ -137,5 +144,3 @@ Because the console input field is limited to short text, use the **Scriptum** t
     </div>
   </a>
 </div>
-
-

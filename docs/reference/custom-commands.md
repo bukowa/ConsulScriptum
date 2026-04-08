@@ -170,11 +170,4 @@ return {
 
 ## Available API in commands
 
-| | Description |
-|-|-------------|
-| `consul._game()` | Safe access to `scripting.game_interface` |
-| `consul.console.write(msg)` | Write a line to console output |
-| `consul.config.read()` | Read current config table |
-| `consul.new_log(name)` | Create a named logger |
-
 See [Internal API](./internal-api) for the full reference.

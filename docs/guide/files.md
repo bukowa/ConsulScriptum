@@ -1,8 +1,7 @@
 # Local Files
 
+While Consul is running, it also creates and updates several support files that are useful for day-to-day work and debugging.
 All files are written to the **game root folder** (same directory as the game executable). They are plain text and can be opened in any editor.
-
----
 
 ## consul.output
 
@@ -16,13 +15,13 @@ sab
 ...
 ```
 
-Cleared automatically when autoclear triggers (`/autoclear`). You can open this file in a text editor while the game is running — it updates in real time.
+If autoclear is enabled (`/autoclear`), this file is truncated automatically when the autoclear threshold is reached (`/autoclear_after`). You can open this file in a text editor while the game is running - it updates as new lines are written.
 
 ---
 
 ## consul.history
 
-One command per line, appended on every Send. Loaded at startup. Max 100 lines; oldest entries are pruned when the limit is reached.
+One command per line, appended on every Send (except immediate duplicates). Loaded when the UI is created. The in-memory history navigation target is 100 entries, but the file itself is append-only.
 
 ```
 /faction_list
@@ -68,7 +67,7 @@ Internal debug log. Each line has a timestamp, level, and subsystem name. Useful
 [2026-04-05 21:13:58] [ERROR] consul:commands: Error loading custom commands: ...
 ```
 
-Log levels (from lowest to highest): `TRACE`, `INTERNAL`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `CRITICAL`.
+Log levels (from lowest to highest): `DISABLED`, `TRACE`, `INTERNAL`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `CRITICAL`.
 
 ---
 

@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # Console Manual
 
 The console is a simple `TextInput` UI element.
@@ -86,8 +90,5 @@ Previous commands are saved to `consul.history` (one per line, max 100 entries).
 
 `/autoclear` toggles automatic clearing of the output area after each command. Useful when running repeated commands and the output gets cluttered.
 
----
 
-## Built-in commands
-
-See the [Built-in Commands reference](../reference/commands) for the full list.
+<!-- @include: ../reference/parts/generated-commands.md -->

@@ -68,6 +68,7 @@ export default defineConfig({
       {
         text: 'Reference',
         items: [
+          { text: 'Consul Scripts', link: '/reference/consul-scripts' },
           { text: 'Console Commands', link: '/reference/commands' },
           { text: 'Internal API', link: '/reference/internal-api' },
         ]
