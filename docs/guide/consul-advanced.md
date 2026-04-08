@@ -1,10 +1,10 @@
-# Custom Consul Scripts
+# Consul Scripts
 
 This guide is the simplest flow to add one custom Consul script.
 
 ## Before You Start
 
-If you don't have make installed, follow the setup steps in the [Build guide](./build.md#1-bootstrap-dependencies).
+If you don't have make installed, follow the setup steps in the [Build guide](./build.md#windows-setup-step-by-step).
 
 ## Step 1) Add the Consul entry
 
@@ -121,3 +121,9 @@ Run this after adding or renaming a script entry.
 ```bash
 py ./scripts/generate_consul_scripts_docs.py
 ```
+
+## Step 4) Optional: Submit Changes
+
+If you want to share your script in the main repo, open a pull request on GitHub:
+
+- [ConsulScriptum Pull Requests](https://github.com/bukowa/ConsulScriptum/pulls)

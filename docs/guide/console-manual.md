@@ -1,18 +1,18 @@
-The console accepts two kinds of input: `/slash-commands` and raw Lua code.
+# Console Manual
+
+The console is a simple `TextInput` UI element.
 
 ::: warning Input field truncates long text
 Pasting more than a few lines will silently cut the input and produce an `unfinished string near '<eof>'` error. Use **Scriptum** for anything longer than a short expression.
 :::
 
 ::: warning No output copy
-You cannot select or copy text from the console output. All output is also written to `consul.output` in the game root folder — open that in a text editor.
+You cannot select or copy text from the console output. All output is also written to `consul.output` in the game root folder - open it in a text editor.
 :::
 
 ::: warning No Enter key
-You cannot press Enter to send — you must click the **Send** button every time.
+You cannot press Enter to send - you must click the **Send** button each time.
 :::
-
----
 
 ## How Input is Processed
 
@@ -28,7 +28,7 @@ For example, `/help` will list all built-in commands.
 
 ### 2. Lua Mode
 
-Anything that does **not** start with `/` is treated as raw Lua and executed directly in the game's scripting environment. The full game scripting API is available—you can use the console to register listeners, trigger events, or interact with any internal game model on the fly.
+Anything that does **not** start with `/` is treated as raw Lua and executed directly in the game's scripting environment. The full game scripting API is available - you can use the console to register listeners, trigger events, or interact with the internal game model on the fly.
 
 ```lua
 -- Write to the console output
@@ -44,12 +44,14 @@ The functions shown above are part of the core ConsulScriptum API. You can use t
 :::
 
 ::: tip Run scripts from Pack Files
-You can use the console to execute **any** script—not just files in your game folder, but also those hidden inside the game's `.pack` files. 
+You can use the console to execute **any** script - not just files in your game folder, but also those hidden inside the game's `.pack` files.
 
 This is perfect for reloading internal game scripts or running one-off files:
+
 ```lua
 dofile("lua_scripts/all_scripted.lua")
 ```
+
 If the script fails, the console will print the error message directly to the output.
 :::
 
@@ -76,7 +78,7 @@ This means you are interacting directly with the game's Lua environment just as 
 
 ## Command history
 
-Previous commands are saved to `consul.history` (one per line, max 100 entries). Use the on-screen **↑** and **↓** buttons to navigate. The keyboard arrow keys do not work.
+Previous commands are saved to `consul.history` (one per line, max 100 entries). Use the on-screen **up** and **down** buttons to navigate. The keyboard arrow keys do not work.
 
 ---
 

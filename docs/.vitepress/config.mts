@@ -52,21 +52,32 @@ export default defineConfig({
       {
         text: 'Manual',
         items: [
+          { text: 'Build', link: '/guide/build' },
           { text: 'Consul', link: '/guide/consul-manual' },
-          { text: 'Console', link: '/guide/console' },
-          { text: 'Scriptum', link: '/guide/scriptum' },
+          { text: 'Console', link: '/guide/console-manual' },
+          { text: 'Scriptum', link: '/guide/scriptum-manual' },
         ]
       },
       {
         text: 'Advanced',
         items: [
           { text: 'Local Files', link: '/guide/files' },
-          { text: 'Build', link: '/guide/build' },
           { text: 'Battle Mode', link: '/guide/battle' },
-          { text: 'Custom Consul Scripts', link: '/guide/consul-advanced' },
-          { text: 'Built-in Commands', link: '/reference/commands' },
-          { text: 'Custom Commands', link: '/reference/custom-commands' },
+          { text: 'Consul Scripts', link: '/guide/consul-advanced' },
+        ]
+      },
+      {
+        text: 'Reference',
+        items: [
+          { text: 'Console Commands', link: '/reference/commands' },
           { text: 'Internal API', link: '/reference/internal-api' },
+        ]
+      },
+      {
+        text: 'Customization',
+        items: [
+          { text: 'Consul Scripts', link: '/guide/consul-advanced' },
+          { text: 'Custom Commands', link: '/reference/custom-commands' },
         ]
       }
     ],

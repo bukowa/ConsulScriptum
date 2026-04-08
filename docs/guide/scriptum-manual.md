@@ -1,4 +1,4 @@
-# Scriptum
+# Scriptum Manual
 
 Scriptum is a panel of buttons, each mapped to a `.lua` file in the game root folder. Click a button to execute the corresponding file.
 
