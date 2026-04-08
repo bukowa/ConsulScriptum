@@ -1883,6 +1883,10 @@ consul.console.write(
         -- example scriptum_text1 -> consul_example.lua
         ui_scripts_map = {},
 
+        -- holds the name of the currently executed scriptum entry text component (e.g. scriptum_entry_text1)
+        -- during execution. Accessible within custom scripts via consul.scriptum.entry
+        entry = nil,
+
         -- read paths to files from inside consul.scriptum file
         -- each lines is a path to a file that can be executed from the listview
         -- if the consul.scriptum file is not found, it will be created
@@ -1995,7 +1999,18 @@ consul.console.write(
                         if ui_root then
                             log:debug("Setting scriptum entries: " .. ui_root_name .. " " .. ui_state_name)
                             ui_root:SetVisible(true)
+
+                            -- HACK: The friends_list UI tends to overwrite text when state changes.
+                            -- We save the current state first, cycle to force the text, then restore.
+                            local current_state = ui_state:CurrentState()
+
+                            ui_state:SetState('online')
                             ui_state:SetStateText(line)
+                            ui_state:SetState('offline')
+                            ui_state:SetStateText(line)
+
+                            ui_state:SetState(current_state)
+
                             ui_state:SetVisible(true)
                             consul.scriptum.ui_scripts_map[ui_root_name] = line
 
@@ -2035,8 +2050,16 @@ consul.console.write(
                 if script ~= nil then
                     log:debug("Executing script: " .. script)
 
-                    -- WARNING loadfile breaks the game again...
+                    -- Pass the text component name (e.g. scriptum_entry_text1) to the script
+                    -- This is what users actually want to toggle visually
+                    local index = string.sub(script_name, #ui.scriptum_entry + 1)
+                    consul.scriptum.entry = ui.scriptum_entry_text .. index
+
                     local success, err = pcall(dofile, script)
+
+                    -- Clean up after execution
+                    consul.scriptum.entry = nil
+
                     if not success then
                         log:error("Error executing script: " .. script .. " " .. err)
                         consul.console.write("error: " .. script .. " " .. err)
