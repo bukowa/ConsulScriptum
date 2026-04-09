@@ -1,7 +1,8 @@
 import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
-export default defineConfig({
+export default withMermaid(defineConfig({
     markdown: {
         config(md) {
             md.use(tabsMarkdownPlugin)
@@ -51,7 +52,7 @@ export default defineConfig({
         nav: [
             { text: 'Getting started', link: '/guide/getting-started' },
             { text: 'Installation', link: '/guide/installation-guide' },
-            { text: 'Reference', link: '/reference/internal-lua-api' },
+            { text: 'Scripting Manual', link: '/guide/scripting-manual' },
             {
                 text: 'v0.7.0',
                 items: [
@@ -82,6 +83,7 @@ export default defineConfig({
             {
                 text: 'Beyond the basics',
                 items: [
+                    { text: 'Scripting Manual', link: '/guide/scripting-manual' },
                     { text: 'Local files and logs', link: '/guide/consul-scriptum-files' },
                     { text: 'Battle mode', link: '/guide/battle-mode-scripting' },
                 ]
@@ -105,7 +107,9 @@ export default defineConfig({
                 items: [
                     { text: 'Consul API', link: '/reference/internal-lua-api' },
                     { text: 'Consul scripts', link: '/reference/consul-scripts-reference' },
-                    { text: 'console commands', link: '/reference/console-commands' },
+                    { text: 'Console commands', link: '/reference/console-commands' },
+                    { text: 'Rome II API Reference', link: '/reference/rome2-api' },
+                    { text: 'Attila API Reference', link: '/reference/attila-api' },
                 ]
             },
         ],
@@ -143,4 +147,9 @@ export default defineConfig({
             text: 'Edit this page on GitHub'
         }
     }
-})
+}, {
+    // Mermaid configuration
+    mermaid: {
+        securityLevel: 'loose'
+    }
+}))

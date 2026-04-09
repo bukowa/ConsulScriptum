@@ -155,6 +155,21 @@ export default {
         }
       })
 
+      // Close sidebar on anchor link click (mobile)
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement
+        const link = target.closest('a')
+        if (link && link.hash && (link.pathname === window.location.pathname || link.pathname === window.location.pathname + '/')) {
+          const sidebar = document.querySelector('.VPSidebar.open')
+          if (sidebar) {
+            const backdrop = document.querySelector('.VPBackdrop')
+            if (backdrop instanceof HTMLElement) {
+              backdrop.click()
+            }
+          }
+        }
+      }, true)
+
       // Inject expand hints for markdown media that don't have them
       const injectHints = () => {
         const media = document.querySelectorAll('.vp-doc video, .vp-tabs-content video, .vp-doc img:not(.logo), .vp-tabs-content img, .cs-ui-magnifier img')

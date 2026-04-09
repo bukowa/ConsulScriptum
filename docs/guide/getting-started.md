@@ -1,3 +1,8 @@
+---
+next:
+  text: Scripting Manual
+  link: /guide/scripting-manual
+---
 # Getting started
 
 ## Step 1: Installation
@@ -139,6 +144,20 @@ Because the console input field is limited to short text, use the **Scriptum** t
     <div class="cs-ref-content">
       <div class="cs-ref-label">Consul Files</div>
       <div class="cs-ref-desc">Learn about the outputs and logs that make scripting easier</div>
+    </div>
+  </a>
+</div>
+
+## Step 6: Writing your own scripts
+
+If you're ready to create your own mods or automate complex tasks, move on to the Scripting Manual. It explains how the game engine works and provides code patterns you can use immediately.
+
+<div class="cs-step-footer">
+  <a href="./scripting-manual" class="cs-step-ref">
+    <div class="cs-ref-icon">📖</div>
+    <div class="cs-ref-content">
+      <div class="cs-ref-label">Scripting Manual</div>
+      <div class="cs-ref-desc">Learn the fundamentals of Total War scripting</div>
     </div>
   </a>
 </div>

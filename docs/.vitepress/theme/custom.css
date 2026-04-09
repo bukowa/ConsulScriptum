@@ -20,7 +20,7 @@
   --cs-bg-base: #130F0A;
   --cs-bg-raised: #1C1610;
   --cs-bg-card: #231B12;
-  --cs-bg-overlay: rgba(19, 15, 10, 0.92);
+  --cs-bg-overlay: #130F0A; /* Full opaque to prevent bleed-through */
 
   /* Text */
   --cs-text-primary: #E8D5B0;
@@ -816,4 +816,46 @@ body::before {
   color: var(--cs-text-muted);
   line-height: 1.4;
   padding: 0 0.5rem;
+}
+
+/* ── Mobile Polish ────────────────────────────────────────── */
+@media (max-width: 959px) {
+  /* Force opaque backgrounds for all mobile overlays to prevent bleed-through */
+  .VPNav, 
+  .VPNavScreen, 
+  .VPDocAsideMobile,
+  .VPSidebar {
+    background: var(--cs-bg-base) !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Aside (TOC) and Sidebar specific background */
+  .VPSidebar, 
+  .VPDocAsideMobile,
+  .VPDocAsideMobile .content {
+    background: var(--cs-bg-raised) !important;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  /* Hero button stacking for mobile devices */
+  .VPHero .actions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+    padding-top: 1.5rem !important;
+  }
+
+  .VPHero .actions .item {
+    width: 100% !important;
+    max-width: 320px;
+    margin: 0 !important;
+  }
+
+  .VPHero .actions .VPButton {
+    width: 100% !important;
+    justify-content: center !important;
+    font-size: 0.9rem !important;
+  }
 }
