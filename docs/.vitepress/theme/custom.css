@@ -866,3 +866,32 @@ body::before {
     font-size: 0.9rem !important;
   }
 }
+
+/* -- Dynamic Game Displays -------------------------------------- */
+.cs-game-graph-sync {
+  display: grid !important;
+  align-items: start !important;
+}
+
+.cs-game-attila-only, .cs-game-rome2-only {
+  grid-area: 1 / 1 / 2 / 2 !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 1 !important;
+}
+
+html[data-game='Rome II'] .cs-game-attila-only { 
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+html[data-game='Attila'] .cs-game-rome2-only { 
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}

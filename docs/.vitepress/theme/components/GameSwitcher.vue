@@ -20,6 +20,17 @@ const selectedGame = computed({
 })
 
 const games = ['Attila', 'Rome II']
+
+import { watchEffect, onMounted } from 'vue'
+
+onMounted(() => {
+  watchEffect(() => {
+    if (typeof document !== 'undefined') {
+      const gameVal = sharedState?.content?.game || 'Attila'
+      document.documentElement.setAttribute('data-game', gameVal)
+    }
+  })
+})
 </script>
 
 <template>
