@@ -30,7 +30,7 @@ next:
 
 The interface consists of three main panels: **Console**, **Consul**, and **Scriptum**. You can switch between them using the tabs at the top of the ConsulScriptum window.
 
-:::tabs
+:::tabs key:game
 
 == Attila
 <video :src="$withBase('/videos/attila_accessconsole.mp4')" data-title="Accessing the Interface" data-game="Attila" autoplay loop muted playsinline></video>
@@ -48,7 +48,7 @@ Click the **ConsulScriptum toggle button** in the campaign UI top bar. The windo
 
 Most actions follow a simple **Point and Click** logic: activate a script, then select one or two targets (like a character or settlement) on the map to trigger the effect.
 
-:::tabs
+:::tabs key:game
 
 == Attila
 <video :src="$withBase('/videos/attila_index.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
@@ -95,7 +95,7 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
 
 Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts. Type /help to list all available slash-commands.
 
-:::tabs
+:::tabs key:game
 
 == Attila
 <video :src="$withBase('/videos/attila_console.mp4')" data-title="Scripting Console" data-game="Attila" autoplay loop muted playsinline></video>
@@ -126,9 +126,12 @@ Use the **Console** tab for manual interaction. It allows you to run slash comma
 
 Because the console input field is limited to short text, use the **Scriptum** tab for long or complex scripts. This module reads `.lua` files directly from your game folder.
 
-:::tabs
-== Attila & Rome II
-<video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Both" autoplay loop muted playsinline></video>
+:::tabs key:game
+== Attila
+<video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
+
+== Rome II
+<video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Rome II" autoplay loop muted playsinline></video>
 :::
 
 <div class="cs-step-footer">

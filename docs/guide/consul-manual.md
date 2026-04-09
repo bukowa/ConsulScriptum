@@ -9,7 +9,7 @@ outline: [2, 4]
 3. Click a script entry to execute it. **The entry will highlight in green** to indicate that the script is currently active or has been triggered.
 4. To deactivate or "unclick" a script, simply click the highlighted entry again.
 
-:::tabs
+:::tabs key:game
 
 == Attila
 <video :src="$withBase('/videos/attila_index.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>

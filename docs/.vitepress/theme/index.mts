@@ -6,6 +6,7 @@ import { h, reactive } from 'vue'
 import { withBase } from 'vitepress'
 import HeroDemo from './components/HeroDemo.vue'
 import MediaModal from './components/MediaModal.vue'
+import GameSwitcher from './components/GameSwitcher.vue'
 
 // Home page playlist for the hero section
 export const HOME_PLAYLIST = [
@@ -85,6 +86,8 @@ export default {
   Layout() {
     return h(DefaultTheme.Layout, null, {
       'home-hero-image': () => h(HeroDemo),
+      'nav-bar-content-before': () => h(GameSwitcher),
+      'nav-screen-content-before': () => h(GameSwitcher),
       'layout-bottom': () => h(MediaModal, {
         state: state,
         onClose: () => { state.isModalOpen = false }

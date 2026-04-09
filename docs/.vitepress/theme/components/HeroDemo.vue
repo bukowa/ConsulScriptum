@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject, watch } from 'vue'
 import { state, nextHero as next, prevHero as prev, HOME_PLAYLIST } from '../index.mts'
 
 const demoVideos = HOME_PLAYLIST
@@ -9,13 +9,42 @@ const currentVideo = computed(() => demoVideos[state.heroIndex])
 // Determine active game based on current video
 const activeGame = computed(() => currentVideo.value.game)
 
+// --- SYNC WITH GLOBAL GAME STATE ---
+const injectionKey = 'vitepress:tabSharedState'
+const sharedState = inject(injectionKey) as any
+
+const globalGame = computed({
+  get() { return sharedState?.content?.game || 'Attila' },
+  set(value) {
+    if (sharedState) {
+      if (!sharedState.content) sharedState.content = {}
+      sharedState.content.game = value
+    }
+  }
+})
+
+// When the user switches the hero carousel to a different game context
+watch(activeGame, (newGame) => {
+  if (newGame !== globalGame.value) {
+    globalGame.value = newGame
+  }
+})
+
+// When the global GameSwitcher or other site tabs change the system game state
+watch(globalGame, (newGame) => {
+  if (newGame !== activeGame.value) {
+    const index = demoVideos.findIndex(v => v.game === newGame)
+    if (index !== -1) state.heroIndex = index
+  }
+}, { immediate: true })
+// -----------------------------------
+
 const setIndex = (index: number) => {
   state.heroIndex = index
 }
 
 const jumpToGame = (gameName: string) => {
-  const index = demoVideos.findIndex(v => v.game === gameName)
-  if (index !== -1) state.heroIndex = index
+  globalGame.value = gameName
 }
 </script>
 

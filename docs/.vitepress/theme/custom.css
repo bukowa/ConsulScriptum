@@ -532,6 +532,13 @@ body::before {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.vp-tabs-content video,
+.vp-doc video {
+  aspect-ratio: 16 / 9;
+  background-color: rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+}
+
 .vp-tabs-content video:hover,
 .vp-doc video:hover,
 .vp-doc img:not(.logo):hover,
