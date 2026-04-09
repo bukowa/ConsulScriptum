@@ -2,9 +2,12 @@
 import { inject, computed } from 'vue'
 import { withBase } from 'vitepress'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   hash?: string
-}>()
+  type?: 'api' | 'events'
+}>(), {
+  type: 'api'
+})
 
 const injectionKey = 'vitepress:tabSharedState'
 const sharedState = inject(injectionKey) as any
@@ -14,7 +17,9 @@ const game = computed(() => {
 })
 
 const href = computed(() => {
-  const api = game.value === 'Rome II' ? 'rome2-api' : 'attila-api'
+  const isRome2 = game.value === 'Rome II'
+  const category = props.type === 'events' ? 'events' : 'api'
+  const api = isRome2 ? `rome2-${category}` : `attila-${category}`
   const hashPart = props.hash ? `#${props.hash}` : ''
   return withBase(`/reference/${api}${hashPart}`)
 })
