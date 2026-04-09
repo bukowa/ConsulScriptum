@@ -126,13 +126,7 @@ Use the **Console** tab for manual interaction. It allows you to run slash comma
 
 Because the console input field is limited to short text, use the **Scriptum** tab for long or complex scripts. This module reads `.lua` files directly from your game folder.
 
-:::tabs key:game
-== Attila
-<video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
-
-== Rome II
-<video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Rome II" autoplay loop muted playsinline></video>
-:::
+<video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Both" autoplay loop muted playsinline></video>
 
 <div class="cs-step-footer">
   <a href="./scriptum-manual" class="cs-step-ref">
