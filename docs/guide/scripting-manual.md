@@ -7,8 +7,8 @@ description: "A beginner-friendly guide to scripting with ConsulScriptum. Learn 
 
 This manual is for anyone who wants to move beyond the built-in commands and start writing their own Lua scripts for Total War. You don't need to be a programmer to start; you just need to understand the engine's scripting architecture.
 
-> [!TIP]
-> **Recommended Workflow**: To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual. It allows you to write code in your text editor and see results live in-game without restarts.
+> [!IMPORTANT]
+> To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual. It allows you to write code in your text editor and see results live in-game without restarts.
 
 ## 1. The Foundation
 To do anything in Total War, you first need to require the official interface.
@@ -38,17 +38,20 @@ local game = scripting.game_interface
 
 ### The GAME Interface
 
-The `game` variable is an instance of the <GameLink hash="game">**GAME**</GameLink> object. It serves as the **Sovereign Interface** between your Lua scripts and the C++ engine core.
+The `game` acts as the primary interface between your Lua scripts and the underlying game engine.
 
-This object is a **binding**—a specialized interface created by the developers to expose high-performance engine functions directly to Lua. It possesses a **dual nature** that is essential for every scripter to understand:
+::: details Technical Details
+The `game` variable is a **C++ Binding**. It serves as the primary interface between the Lua environment and the high-performance **engine core**.
 
-1.  **Global Authority**: It contains direct commands that manipulate the entire simulation state at once (e.g., ending turns, toggling the shroud, or disabling rebellions).
-2.  **The Navigational Gateway**: It is the "Root Node" of the game's data tree. To find a specific faction or region, you must start here and traverse down the hierarchy.
+Calling a function on this object triggers a **context-switch**, handing execution over to the engine for simulation updates before returning control to your script.
+:::
 
-> [!NOTE]
-> **Technical Insight**: Think of the `game` object as a live proxy. Unlike a static table, calling a function on `game` often triggers a context-switch into the C++ engine, where the real calculations happen.
+To keep things simple, just think of the `game` object as having two main powers:
 
-While the next section explains how to **navigate** the hierarchy, below are a few examples of **Global Authority** functions stored directly on the `game` object:
+1.  It has the global commands that affect the entire world at once. You can use it to instantly end turns, reveal the whole map, or disable rebellions everywhere.
+2.  It is the starting point for finding *anything*. If you want to find a specific general, city, or faction, you **always** start at the `game` variable and follow the "branches" down until you find what you need.
+
+While the next section explains how to **navigate** the hierarchy, below are a few examples of these global commands:
 
 | Power | Method Name | Effect |
 | :--- | :--- | :--- |
