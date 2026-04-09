@@ -1,6 +1,7 @@
 ---
 title: "Scripting Manual"
 description: "A beginner-friendly guide to scripting with ConsulScriptum. Learn about the game engine hierarchy, iteration patterns, and how to manipulate Rome II and Attila."
+outline: deep
 ---
 
 # Scripting Manual
@@ -349,17 +350,168 @@ end
 
 ## 4. Events: Event-Driven Triggers
 
-An **Event** is a trigger that executes code when a specific game state changes. Think of it as a listener: "When this event occurs, run this function."
+An **Event** is a hook into the game engine's simulation. Instead of your script running once and finishing, events allow you to write code that "waits" for something specific to happen in the world—like a player clicking a city, a turn beginning, or a general winning a battle.
+
+### 4.1 Anatomy of a Listener
+
+To react to an event, you "insert" a function into the game's event table. This is often called **registering a listener**. Using `table.insert` is the recommended way to add your logic without overwriting other scripts.
 
 ```lua
--- When a settlement is selected (clicked), do something!
 table.insert(events.SettlementSelected, 
     function(context)
-        local region_name = context:garrison_residence():region():name()
-        consul.console.write("You clicked on " .. region_name)
+        -- your logic goes here
     end
 )
 ```
+
+> [!TIP]
+> **This is how the Consul panel works!**
+> When you toggle a button in the [Consul manual](./consul-manual), you aren't just "running a script"—you are essentially activating an event listener that waits for you to click something in the game world before it executes its logic.
+
+> [!IMPORTANT]
+> **Case Sensitivity**: Event names are case-sensitive. `SettlementSelected` will trigger correctly, but `settlementselected` will fail silently.
+
+### 4.2 The "Context" Object: The Data Package
+
+When an event triggers your function, the engine hands you a **Context** object. Think of the context as a package containing the objects that are relevant to why the event fired.
+
+If you click a settlement, the `context` contains that settlement. If a turn starts, the `context` contains the faction whose turn it is. This allows you to write one script that behaves differently depending on *who* did *what*.
+
+| Event | Common Context Method | Returns Object |
+| :--- | :--- | :--- |
+| `SettlementSelected` | `context:garrison_residence()` | <GameLink hash="garrison-residence-script-interface">Garrison Residence</GameLink> |
+| `CharacterSelected` | `context:character()` | <GameLink hash="character-script-interface">Character</GameLink> |
+| `FactionTurnStart` | `context:faction()` | <GameLink hash="faction-script-interface">Faction</GameLink> |
+
+### 4.3 Practical Examples
+
+Events are the primary way to create interactive mods. Below are examples that work across both Rome II and Attila.
+
+:::tabs key:game
+
+== Attila
+```lua
+-- 1. Load the toolkit
+scripting = require "lua_scripts.episodicscripting"
+local game = scripting.game_interface
+
+-- 2. Reacting to a click
+-- Print the name of every settlement you click on to the console
+table.insert(events.SettlementSelected, 
+    function(context)
+        local region = context:garrison_residence():region()
+        consul.console.write("Inspecting: " .. region:name())
+    end
+)
+
+-- 3. The "Royal Gift" turn start script
+-- Give the player 1000 gold when their turn starts
+table.insert(events.FactionTurnStart, 
+    function(context)
+        local faction = context:faction()
+        if faction:is_human() then
+            game:treasury_mod(faction:name(), 1000)
+            consul.console.write("Royal treasury replenished for " .. faction:name())
+        end
+    end
+)
+```
+
+== Rome II
+```lua
+-- 1. Load the toolkit
+scripting = require "lua_scripts.EpisodicScripting"
+local game = scripting.game_interface
+
+-- 2. Reacting to a click
+-- Print the name of every settlement you click on to the console
+table.insert(events.SettlementSelected, 
+    function(context)
+        local region = context:garrison_residence():region()
+        consul.console.write("Inspecting: " .. region:name())
+    end
+)
+
+-- 3. The "Senate's Gift" turn start script
+-- Give the player 1000 gold when their turn starts
+table.insert(events.FactionTurnStart, 
+    function(context)
+        local faction = context:faction()
+        if faction:is_human() then
+            game:treasury_mod(faction:name(), 1000)
+            consul.console.write("Senate treasury replenished for " .. faction:name())
+        end
+    end
+)
+```
+:::
+
+> [!NOTE]
+> Check the <GameLink type="events">**EVENT REFERENCE**</GameLink> to find a full list of available events and their context parameters.
+
+### 4.4 Discovery & Debugging: Peeking Inside
+
+Sometimes you will encounter an event in the reference that has **"No parameters documented."** This doesn't mean it is empty; it just means the engine's internal metadata is hidden from the public reference. You can "peek" inside any event using logging tools.
+
+#### Logging the Context
+To see everything a `context` has to offer, you can dump it to the consul.log file or the console. Since the engine's `context` object doesn't tell you its own name, it is best practice to wrap it in a table so your logs are easy to identify:
+
+```lua
+table.insert(events.CharacterSelected, 
+    function(context)
+        -- We wrap the context so we know which event this log belongs to!
+        local debug_info = consul.pretty({
+            event = "CharacterSelected",
+            context = debug.getmetatable(context).__index
+        })
+        -- write to file
+        consul.log:info(debug_info)
+        -- or into console
+        consul.console.write(debug_info)
+    end
+)
+```
+The above will produce:
+```lua
+{
+  ["context"] = {
+    ["character"] = "function: 5B083868",
+    ["string"] = "",
+  },
+  ["event"] = "CharacterSelected",
+}
+```
+
+#### Understanding the Interface
+When you look at the log file, you may see a list of functions.
+If an event passes a `character` object, the `context` usually has a method like `:character()`.<br> This method returns a full <GameLink hash="character-script-interface">**CHARACTER_SCRIPT_INTERFACE**</GameLink>. This is the gateway to every character power described in the reference.
+
+> [!TIP]
+> **Why do this?** Logging the context is the best way to discover data for undocumented events. For example, some battle events might send the `unit` or `alliance` in the context, allowing you to trigger complex scripts exactly when a specific unit routs or catches fire.
+
+### 4.5 Power Tool: Automated Event Logging
+
+If you don't know which event to listen for, you can use Consul's built-in console commands to log **everything** that happens in the game world to the `consul.log` file.
+
+| Command | Description |
+| :--- | :--- |
+| `/log_events_game` | Logs world events (skips UI components, timers, and shortcuts). |
+| `/log_events_all` | Logs **every** engine event (CAUTION: extremely spammy!). |
+| `/log_game_event [Name]` | Starts logging a specific engine event by name. |
+
+#### Example Output
+When one of these commands is active, Consul automatically wraps the context and flattens it into a readable format in your `consul.log`:
+
+```lua
+{
+  ["_event"] = "PanelOpenedCampaign",
+  ["component"] = "Pointer<Component> (0x02f227d8c)",
+  ["string"] = "units_panel",
+}
+```
+
+This is the ultimate discovery tool: simply run `/log_events_game`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
+
 
 ---
 
@@ -401,7 +553,7 @@ for i = 0, factions:num_items() - 1 do
     -- 4. If it's a human, give them gold
     if fac:is_human() then
         consul.console.write("Cheating gold for: " .. fac:name())
-        game:treasury_add(fac:name(), 5000)
+        game:treasury_mod(fac:name(), 5000)
     end
 end
 ```
