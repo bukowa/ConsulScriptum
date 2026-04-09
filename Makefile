@@ -604,6 +604,27 @@ else
 	rm ./src/ui/common\ ui/consul
 endif
 
+# ============================================================
+# Documentation Targets
+# ============================================================
+
+docs-gen: generate-docs
+	py scripts/generate_commands_docs.py
+	py scripts/generate_consul_scripts_docs.py
+	py scripts/generate_changelog_docs.py
+
+docs-build: docs-gen
+	cd docs && npm install && npm run docs:build
+
+docs-deploy: docs-build
+	@echo "Deploying to GitHub Pages..."
+	rm -rf docs/.vitepress/dist/.git
+	cd docs/.vitepress/dist && \
+	git init && \
+	git add . && \
+	git commit -m "Deploy documentation" && \
+	git push -f git@github.com:bukowa/ConsulScriptum.git master:gh-pages
+
 # Declare phony targets to prevent conflicts with file names
 .PHONY: setup \
 			setup-7zip \
@@ -622,4 +643,8 @@ endif
 		run-steam \
 		steam \
 		alone \
-		clean
+		clean \
+		generate-docs \
+		docs-gen \
+		docs-build \
+		docs-deploy

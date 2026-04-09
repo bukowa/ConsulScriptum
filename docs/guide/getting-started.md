@@ -28,12 +28,12 @@ The interface consists of three main panels: **Console**, **Consul**, and **Scri
 :::tabs
 
 == Attila
-<video src="/videos/attila_accessconsole.mp4" data-title="Accessing the Interface" data-game="Attila" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/attila_accessconsole.mp4" data-title="Accessing the Interface" data-game="Attila" autoplay loop muted playsinline></video>
 
 In Attila, the ConsulScriptum window is visible on screen by default when you load into a campaign. There is no hide/show toggle yet. You can drag it to reposition it.
 
 == Rome II
-<video src="/videos/rome2_accessconsole.mp4" data-title="Accessing the Interface" data-game="Rome II" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/rome2_accessconsole.mp4" data-title="Accessing the Interface" data-game="Rome II" autoplay loop muted playsinline></video>
 
 Click the **ConsulScriptum toggle button** in the campaign UI top bar. The window will appear. You can drag it anywhere — its position is saved automatically between sessions.
 
@@ -46,10 +46,10 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
 :::tabs
 
 == Attila
-<video src="/videos/attila_index.mp4" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/attila_index.mp4" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
 == Rome II
-<video src="/videos/rome2_index.mp4" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/rome2_index.mp4" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
 
 :::
 
@@ -93,10 +93,10 @@ Use the **Console** tab for manual interaction. It allows you to run slash comma
 :::tabs
 
 == Attila
-<video src="/videos/attila_console.mp4" data-title="Scripting Console" data-game="Attila" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/attila_console.mp4" data-title="Scripting Console" data-game="Attila" autoplay loop muted playsinline></video>
 
 == Rome II
-<video src="/videos/rome2_console.mp4" data-title="Scripting Console" data-game="Rome II" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/rome2_console.mp4" data-title="Scripting Console" data-game="Rome II" autoplay loop muted playsinline></video>
 
 :::
 
@@ -123,7 +123,7 @@ Because the console input field is limited to short text, use the **Scriptum** t
 
 :::tabs
 == Attila & Rome II
-<video src="/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Both" autoplay loop muted playsinline></video>
+<video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Both" autoplay loop muted playsinline></video>
 :::
 
 <div class="cs-step-footer">

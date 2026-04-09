@@ -11,6 +11,7 @@ export default defineConfig({
     title: 'Consul Scriptum',
     titleTemplate: 'Total War Console - Consul Scriptum',
     description: 'An in-game Lua console and script runner for Total War: Rome II and Attila.',
+    base: '/ConsulScriptum/',
 
     // SEO Optimization
     lastUpdated: true,
