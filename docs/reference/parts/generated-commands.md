@@ -45,6 +45,9 @@ Log game events (excluding component and time trigger)
 #### `/log_game_event `
 Logs event Example: /log_game_event CharacterCreated
 
+#### `/logregistry`
+Logs all Lua registries and environments to consul.log.
+
 #### `/p `
 Pretty-prints a Lua value using 'penlight'. Example: /p _G
 

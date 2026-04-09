@@ -6,7 +6,8 @@ local changelog = {
             "\nAdded: An example template with instructions is available in the mod pack as `consul/consul_commands.lua`."..
             "\nAdded: Command `/reload_custom_commands` to refresh installed custom commands without restarting the game."..
             "\nAdded: `consul.scriptum.entry` variable is now available in custom scripts, allowing them to identify the button that triggered them."..
-            "\nFixed: Scriptum scripts now reload on any Consul component click to ensure they are fresh.",
+            "\nFixed: Scriptum scripts now reload on any Consul component click to ensure they are fresh."..
+            "\nAdded: Command `/logregistry` to dump all Lua registries and environments to `consul.log`.",
             Rome2  = "Added: Specific Divide et Impera (DEI) commands for population management (`/dei_reset_all_pop`, `/dei_set_pop`, `/dei_reset_region_pop`).",
             Attila = "Added: Consul now works in Attila campaign battles (trigger via /use_in_battle)"
         },

@@ -1446,6 +1446,17 @@ consul = {
                     exec = false,
                     returns = true,
                 },
+                ['/logregistry'] = {
+                    help = function()
+                        return "Logs all Lua registries and environments to consul.log."
+                    end,
+                    func = function()
+                        consul.debug.logregistry()
+                        return "All Lua registries logged to consul.log"
+                    end,
+                    exec = false,
+                    returns = true,
+                },
                 ['/debug'] = {
                     _is_running = false,
 
