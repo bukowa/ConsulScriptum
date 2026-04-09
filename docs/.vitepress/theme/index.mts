@@ -3,6 +3,7 @@ import './custom.css'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import type { App } from 'vue'
 import { h, reactive } from 'vue'
+import { withBase } from 'vitepress'
 import HeroDemo from './components/HeroDemo.vue'
 import MediaModal from './components/MediaModal.vue'
 
@@ -11,37 +12,37 @@ export const HOME_PLAYLIST = [
   {
     title: "Attila: Accessing the Interface",
     game: "Attila",
-    src: 'videos/attila_accessconsole.mp4',
+    src: withBase('/videos/attila_accessconsole.mp4'),
     type: 'video'
   },
   {
     title: "Attila: Interacting with Consul",
     game: "Attila",
-    src: 'videos/attila_index.mp4',
+    src: withBase('/videos/attila_index.mp4'),
     type: 'video'
   },
   {
     title: "Attila: Interactive Mode",
     game: "Attila",
-    src: 'videos/attila_console.mp4',
+    src: withBase('/videos/attila_console.mp4'),
     type: 'video'
   },
   {
     title: "Rome II: Accessing the Interface",
     game: "Rome II",
-    src: 'videos/rome2_accessconsole.mp4',
+    src: withBase('/videos/rome2_accessconsole.mp4'),
     type: 'video'
   },
   {
     title: "Rome II: Interacting with Consul",
     game: "Rome II",
-    src: 'videos/rome2_index.mp4',
+    src: withBase('/videos/rome2_index.mp4'),
     type: 'video'
   },
   {
     title: "Rome II: Interactive Mode",
     game: "Rome II",
-    src: 'videos/rome2_console.mp4',
+    src: withBase('/videos/rome2_console.mp4'),
     type: 'video'
   }
 ]
@@ -91,6 +92,7 @@ export default {
     })
   },
   enhanceApp({ app }: { app: App }) {
+    app.config.globalProperties.$withBase = withBase
     enhanceAppWithTabs(app)
 
     if (typeof window !== 'undefined') {

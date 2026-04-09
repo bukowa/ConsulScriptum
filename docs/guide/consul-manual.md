@@ -12,10 +12,10 @@ outline: [2, 4]
 :::tabs
 
 == Attila
-<video src="/ConsulScriptum/videos/attila_index.mp4" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/attila_index.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
 == Rome II
-<video src="/ConsulScriptum/videos/rome2_index.mp4" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/rome2_index.mp4')" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
 
 :::
 
@@ -27,8 +27,8 @@ outline: [2, 4]
 <div class="cs-ui-magnifier">
   <div class="cs-magnifier-label">Tooltip Preview</div>
   <div class="cs-magnifier-images">
-    <img src="/media/consul_tooltip1.png" alt="" />
-    <img src="/media/consul_tooltip2.png" alt="" />
+    <img :src="$withBase('/media/consul_tooltip1.png')" alt="" />
+    <img :src="$withBase('/media/consul_tooltip2.png')" alt="" />
   </div>
   <div class="cs-magnifier-hint">
     Hover your mouse over any script in the list to reveal its full usage instructions.

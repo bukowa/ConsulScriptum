@@ -16,7 +16,7 @@ Scriptum is a panel of buttons, each mapped to a .lua file in the game root fold
 ## Toggling Highlight (Green State)
 
 <div class="cs-video-prominent">
-  <video src="/ConsulScriptum/videos/scriptum_toggle.mp4" data-title="Green Toggle" data-game="Attila" autoplay loop muted playsinline></video>
+  <video :src="$withBase('/videos/scriptum_toggle.mp4')" data-title="Green Toggle" data-game="Attila" autoplay loop muted playsinline></video>
 </div>
 
 You can make your scripts behave like the built-in **Consul** scripts by toggling their visual "active" state (the green highlight). 
@@ -43,7 +43,7 @@ end
 The recommended way to work with Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code or Notepad++) open next to it. 
 
 <div class="cs-video-prominent">
-  <video src="/ConsulScriptum/videos/attila_scriptum.mp4" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
+  <video :src="$withBase('/videos/attila_scriptum.mp4')" data-title="Using Scriptum" data-game="Attila" autoplay loop muted playsinline></video>
 </div>
 
 ::: tip No Restart Required

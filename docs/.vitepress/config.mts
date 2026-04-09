@@ -1,5 +1,5 @@
-import {defineConfig} from 'vitepress'
-import {tabsMarkdownPlugin} from 'vitepress-plugin-tabs'
+import { defineConfig } from 'vitepress'
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 export default defineConfig({
     markdown: {
@@ -21,42 +21,42 @@ export default defineConfig({
     },
 
     head: [
-        ['link', {rel: 'icon', type: 'image/png', href: '/logo.png'}],
-        ['link', {rel: 'preconnect', href: 'https://fonts.googleapis.com'}],
-        ['link', {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: ''}],
+        ['link', { rel: 'icon', type: 'image/png', href: '/ConsulScriptum/logo.png' }],
+        ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+        ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
         ['link', {
             rel: 'stylesheet',
             href: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap'
         }],
-        ['meta', {name: 'theme-color', content: '#8B1A1A'}],
+        ['meta', { name: 'theme-color', content: '#8B1A1A' }],
 
         // Open Graph
-        ['meta', {property: 'og:type', content: 'website'}],
-        ['meta', {property: 'og:title', content: 'Consul Scriptum'}],
-        ['meta', {property: 'og:description', content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.'}],
-        ['meta', {property: 'og:image', content: 'https://bukowa.github.io/ConsulScriptum/logo.png'}],
-        ['meta', {property: 'og:url', content: 'https://bukowa.github.io/ConsulScriptum/'}],
+        ['meta', { property: 'og:type', content: 'website' }],
+        ['meta', { property: 'og:title', content: 'Consul Scriptum' }],
+        ['meta', { property: 'og:description', content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.' }],
+        ['meta', { property: 'og:image', content: 'https://bukowa.github.io/ConsulScriptum/logo.png' }],
+        ['meta', { property: 'og:url', content: 'https://bukowa.github.io/ConsulScriptum/' }],
 
         // Twitter
-        ['meta', {name: 'twitter:card', content: 'summary'}],
-        ['meta', {name: 'twitter:title', content: 'Consul Scriptum'}],
-        ['meta', {name: 'twitter:description', content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.'}],
-        ['meta', {name: 'twitter:image', content: 'https://bukowa.github.io/ConsulScriptum/logo.png'}],
+        ['meta', { name: 'twitter:card', content: 'summary' }],
+        ['meta', { name: 'twitter:title', content: 'Consul Scriptum' }],
+        ['meta', { name: 'twitter:description', content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.' }],
+        ['meta', { name: 'twitter:image', content: 'https://bukowa.github.io/ConsulScriptum/logo.png' }],
     ],
 
     themeConfig: {
-        logo: '/logo.png',
+        logo: '/ConsulScriptum/logo.png',
         siteTitle: 'Consul Scriptum',
 
         nav: [
-            {text: 'Getting started', link: '/guide/getting-started'},
-            {text: 'Installation', link: '/guide/installation-guide'},
-            {text: 'Reference', link: '/reference/console-commands'},
+            { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Installation', link: '/guide/installation-guide' },
+            { text: 'Reference', link: '/reference/internal-lua-api' },
             {
                 text: 'v0.7.0',
                 items: [
-                    {text: 'Changelog', link: '/guide/changelog'},
-                    {text: 'GitHub', link: 'https://github.com/bukowa/ConsulScriptum'},
+                    { text: 'Changelog', link: '/guide/changelog' },
+                    { text: 'GitHub', link: 'https://github.com/bukowa/ConsulScriptum' },
                 ]
             }
         ],
@@ -65,59 +65,59 @@ export default defineConfig({
             {
                 text: 'First steps',
                 items: [
-                    {text: 'Getting started', link: '/guide/getting-started'},
-                    {text: 'Installation', link: '/guide/installation-guide'},
-                    {text: 'Supported Games', link: '/guide/game-compatibility'},
-                    {text: 'Limitations', link: '/guide/technical-limitations'},
+                    { text: 'Getting started', link: '/guide/getting-started' },
+                    { text: 'Installation', link: '/guide/installation-guide' },
+                    { text: 'Supported Games', link: '/guide/game-compatibility' },
+                    { text: 'Limitations', link: '/guide/technical-limitations' },
                 ]
             },
             {
                 text: 'Using the interface',
                 items: [
-                    {text: 'One-Click Actions', link: '/guide/consul-manual'},
-                    {text: 'Commands and Lua', link: '/guide/console-manual'},
-                    {text: 'File-based Scripts', link: '/guide/scriptum-manual'},
+                    { text: 'One-Click Actions', link: '/guide/consul-manual' },
+                    { text: 'Commands and Lua', link: '/guide/console-manual' },
+                    { text: 'File-based Scripts', link: '/guide/scriptum-manual' },
                 ]
             },
             {
                 text: 'Beyond the basics',
                 items: [
-                    {text: 'Local files and logs', link: '/guide/consul-scriptum-files'},
-                    {text: 'Battle mode', link: '/guide/battle-mode-scripting'},
+                    { text: 'Local files and logs', link: '/guide/consul-scriptum-files' },
+                    { text: 'Battle mode', link: '/guide/battle-mode-scripting' },
                 ]
             },
             {
                 text: 'Extend and customize',
                 items: [
-                    {text: 'Add Consul scripts', link: '/guide/advanced-consul-scripting'},
-                    {text: 'Add console commands', link: '/reference/adding-custom-commands'},
+                    { text: 'Add Consul scripts', link: '/guide/advanced-consul-scripting' },
+                    { text: 'Add console commands', link: '/reference/adding-custom-commands' },
                 ]
             },
             {
                 text: 'Development',
                 items: [
-                    {text: 'Build from source', link: '/guide/building-from-source'},
-                    {text: 'Changelog', link: '/guide/changelog'},
+                    { text: 'Build from source', link: '/guide/building-from-source' },
+                    { text: 'Changelog', link: '/guide/changelog' },
                 ]
             },
             {
                 text: 'Reference',
                 items: [
-                    {text: 'Consul API', link: '/reference/internal-lua-api'},
-                    {text: 'Consul scripts', link: '/reference/consul-scripts-reference'},
-                    {text: 'console commands', link: '/reference/console-commands'},
+                    { text: 'Consul API', link: '/reference/internal-lua-api' },
+                    { text: 'Consul scripts', link: '/reference/consul-scripts-reference' },
+                    { text: 'console commands', link: '/reference/console-commands' },
                 ]
             },
         ],
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/bukowa/ConsulScriptum'},
-            {icon: 'discord', link: 'https://discord.gg/tgggqMs4'}
+            { icon: 'github', link: 'https://github.com/bukowa/ConsulScriptum' },
+            { icon: 'discord', link: 'https://discord.gg/tgggqMs4' }
         ],
 
         footer: {
             message: 'Released under the MIT License.',
-            copyright: 'Copyright © 2024 Mateusz Kurowski'
+            copyright: 'Copyright © 2026 Mateusz Kurowski'
         },
 
         search: {
@@ -132,7 +132,7 @@ export default defineConfig({
                     searchOptions: {
                         fuzzy: 0.2,
                         prefix: true,
-                        boost: {title: 4, text: 2, headings: 1}
+                        boost: { title: 4, text: 2, headings: 1 }
                     }
                 }
             }
