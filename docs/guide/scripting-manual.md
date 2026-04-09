@@ -7,6 +7,9 @@ description: "A beginner-friendly guide to scripting with ConsulScriptum. Learn 
 
 This manual is for anyone who wants to move beyond the built-in commands and start writing their own Lua scripts for Total War. You don't need to be a programmer to start; you just need to understand the engine's scripting architecture.
 
+> [!TIP]
+> **Recommended Workflow**: To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual. It allows you to write code in your text editor and see results live in-game without restarts.
+
 ## 1. The Foundation
 To do anything in Total War, you first need to require the official interface.
 :::tabs key:game
@@ -30,25 +33,34 @@ local game = scripting.game_interface
 :::
 
 > [!TIP]
-> **Consul Shortcut**: Use `consul._game()` for fast prototyping in the console.
+> **Consul**: Use `consul._game()` for fast prototyping in the console.
 
 
 ### The GAME Interface
 
-The `game` variable is an instance of the <GameLink hash="game">**GAME**</GameLink> object. It is the **Root Control Panel** of the entire engine. This object is a **binding** created by the game developers to expose C++ engine functions directly to Lua, allowing you to manipulate the game world in real-time.
+The `game` variable is an instance of the <GameLink hash="game">**GAME**</GameLink> object. It serves as the **Sovereign Interface** between your Lua scripts and the C++ engine core.
 
+This object is a **binding**—a specialized interface created by the developers to expose high-performance engine functions directly to Lua. It possesses a **dual nature** that is essential for every scripter to understand:
 
+1.  **Global Authority**: It contains direct commands that manipulate the entire simulation state at once (e.g., ending turns, toggling the shroud, or disabling rebellions).
+2.  **The Navigational Gateway**: It is the "Root Node" of the game's data tree. To find a specific faction or region, you must start here and traverse down the hierarchy.
 
-While the next section shows you how to "find" things, the `game` variable itself contains direct functions that affect the whole world at once.
-Below are few examples of such functions:
-| Action | Function Name | What it does |
-| :--- | :--- | :--- |
-| **Money** | `game:treasury_add()` | Grants gold to a faction. |
-| **Life/Death** | `game:kill_character()` | Instantly kills a character. |
-| **Events** | `game:trigger_incident()` | Starts a specific historical incident. |
-| **Buffs** | `game:apply_effect_bundle()` | Applies a persistent effect from the DB. |
 > [!NOTE]
-> To see the full list of over 100 global commands available on the game object, consult the <GameLink hash="game">**Game API Reference**</GameLink>. For in-depth tutorials on how these mechanics work together, refer to the official guides in [Section 8: Further Reading](#_8-further-reading-official-wikis).
+> **Technical Insight**: Think of the `game` object as a live proxy. Unlike a static table, calling a function on `game` often triggers a context-switch into the C++ engine, where the real calculations happen.
+
+While the next section explains how to **navigate** the hierarchy, below are a few examples of **Global Authority** functions stored directly on the `game` object:
+
+| Power | Method Name | Effect |
+| :--- | :--- | :--- |
+| **Turns** | `game:end_turn(true)` | Force-ends the current player's turn immediately. |
+| **Vision** | `game:show_shroud(false)` | Disables the "Fog of War" across the entire map. |
+| **Stability** | `game:disable_rebellions_worldwide(true)` | Prevents all rebellions from spawning globally. |
+
+> [!IMPORTANT]
+> **Understanding the API**: The <GameLink hash="game">**Game API Reference**</GameLink> is generated directly from raw engine Lua dumps. Because these are internal bindings, parameter names are often unavailable in the automated reference.
+> 
+> *   **Parameter Discovery**: To find exact arguments (such as expected keys, IDs, or string values), consult the official **CA Wiki** links in [Section 8](#_8-further-reading-official-wikis).
+> *   **Total War Ecosystem**: While this manual supports both games, official engine documentation is only available for **Attila onwards**. However, the engine logic is 99% identical for **Rome II** and highly consistent across other titles discussed in [Section 8](#_8-further-reading-official-wikis).
 
 
 ## 2. Navigating the Game Object Hierarchy
@@ -124,7 +136,6 @@ graph TD
 
 ```lua
 -- Load the GAME interface
--- Load the GAME interface
 scripting = require "lua_scripts.episodicscripting"
 local game = scripting.game_interface
 
@@ -139,6 +150,7 @@ local residence = region:garrison_residence()
 local is_sieged = residence:is_under_siege() -- Returns a BOOLEAN (true/false)
 
 -- Optional Log data to the console
+consul.console.clear()
 consul.console.write("number of armies: " .. count)
 consul.console.write("is siegied: " .. tostring(is_sieged))
 ```
@@ -161,9 +173,9 @@ local residence = region:garrison_residence()
 local is_sieged = residence:is_under_siege() -- Returns a BOOLEAN (true/false)
 
 -- Optional Log data to the console
+consul.console.clear()
 consul.console.write("number of armies: " .. count)
 consul.console.write("is siegied: " .. tostring(is_sieged))
-
 ```
 
 :::
@@ -180,8 +192,9 @@ You can find a single faction by its name, or look at every faction in the game.
 == Attila
 
 ```lua
-scripting = require "lua_scripts.episodicscripting"
+consul.console.clear() -- Clear the console output
 
+scripting = require "lua_scripts.episodicscripting"
 local game = scripting.game_interface
 local world = game:model():world()
 
@@ -199,8 +212,9 @@ end
 == Rome II
 
 ```lua
-scripting = require "lua_scripts.EpisodicScripting"
+consul.console.clear() -- Clear the console output
 
+scripting = require "lua_scripts.EpisodicScripting"
 local game = scripting.game_interface
 local world = game:model():world()
 
@@ -229,8 +243,9 @@ Regions are handled by a region manager inside the world.
 == Attila
 
 ```lua
-scripting = require "lua_scripts.episodicscripting"
+consul.console.clear()
 
+scripting = require "lua_scripts.episodicscripting"
 local game = scripting.game_interface
 local world = game:model():world()
 
@@ -248,8 +263,9 @@ end
 == Rome II
 
 ```lua
-scripting = require "lua_scripts.EpisodicScripting"
+consul.console.clear()
 
+scripting = require "lua_scripts.EpisodicScripting"
 local game = scripting.game_interface
 local world = game:model():world()
 
@@ -279,6 +295,8 @@ To find armies, you must first "drill down" into a specific Faction. Every Facti
 == Attila
 
 ```lua
+consul.console.clear()
+
 local game = scripting.game_interface
 local world = game:model():world()
 local rome = world:faction_by_key("att_fact_hunni")
@@ -298,6 +316,8 @@ end
 == Rome II
 
 ```lua
+consul.console.clear()
+
 local game = scripting.game_interface
 local world = game:model():world()
 local rome = world:faction_by_key("rom_rome")
@@ -367,6 +387,7 @@ Here is a complete script you can run in **Scriptum**. It finds all human player
 -- 1. Load the toolkit
 scripting = require "lua_scripts.EpisodicScripting"
 local game = scripting.game_interface
+consul.console.clear() -- Clear the console output
 -- 2. Follow the Game Model to the Faction List
 local factions = game:model():world():faction_list()
 
@@ -388,8 +409,7 @@ end
 
 For a deeper look at the mechanics of Total War scripting, refer to the official Creative Assembly documentation. These guides cover the "Official" toolkit in extreme detail:
 
-- [Total War: Attila KIT - Campaign Script Interface](https://wiki.totalwar.com/w/Total_War:_ATTILA_KIT_-_Campaign_Script_Interface)
-- [Total War: Attila KIT - Extra Scripting Guides](https://wiki.totalwar.com/w/Total_War:_ATTILA_KIT_-_Extra_Scripting_Guides)
+- [Total War: ATTILA Kit Scripting](https://wiki.totalwar.com/w/Total_War:_ATTILA_Kit_Scripting.html)
 
 > [!TIP]
 > While Rome II lacks official documentation from the game developers, Attila is 99% similar.
