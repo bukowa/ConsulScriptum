@@ -273,4 +273,7 @@ consul_game_events_attila = {
     "WorldCreated",
 }
 
-return { base = consul_game_events_attila }
+return {
+    base = consul_game_events_attila,
+    decompiled = {}
+}

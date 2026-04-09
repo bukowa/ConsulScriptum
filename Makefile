@@ -236,7 +236,7 @@ $(BUILD_DIR)/consul/consul_config.lua: \
 	@cp "$<" "$@"
 
 $(BUILD_DIR)/consul/consul_game_events.lua: \
-	src/consul/consul_game_events.lua
+	src/consul/$(if $(filter Attila,$(GAME)),consul_game_events_attila.lua,consul_game_events.lua)
 	$(create_dir)
 	@cp "$<" "$@"
 

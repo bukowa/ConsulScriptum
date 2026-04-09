@@ -279,7 +279,8 @@ end
 function Logger:get_all_events()
     return consul.utils.merge_and_deduplicate(
             consul._events.base,
-            consul._events.decompiled
+            consul._events.decompiled,
+            self:require('data.lua_scripts.events')
     )
 end
 
@@ -330,8 +331,8 @@ end
 
 -- Log all events excluding specified events
 function Logger:log_events_all_excluding(excluded_events_list)
-    -- Import all events
-    local all_events = self:require('data.lua_scripts.events')
+    -- Import all events using our project's event provider
+    local all_events = self:get_all_events()
 
     -- Convert list to a lookup table for quick filtering
     local excluded_events = {}
