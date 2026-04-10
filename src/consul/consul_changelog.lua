@@ -9,7 +9,8 @@ local changelog = {
             "\nFixed: Scriptum scripts now reload on any Consul component click to ensure they are fresh."..
             "\nAdded: Command `/logregistry` to dump all Lua registries and environments to `consul.log`.",
             Rome2  = "Added: Specific Divide et Impera (DEI) commands for population management (`/dei_reset_all_pop`, `/dei_set_pop`, `/dei_reset_region_pop`).",
-            Attila = "Added: Consul now works in Attila campaign battles (trigger via /use_in_battle)"
+            Attila = "Added: Consul now works in Attila campaign battles (trigger via /use_in_battle)"..
+            "\nAdded: All game events for Attila for event tracking."
         },
         ["0.6.2"] = {
             common = "Fixed: The changelog module now correctly loads in campaign mode by fixing the require path."
