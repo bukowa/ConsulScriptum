@@ -77,6 +77,17 @@ consul = {
                 end
             end
         end,
+        --- A function that logs all available engine events to the consul.log file.
+        --- Very useful if you want to see what events you can listen to.
+        --- @function debug.logevents
+        --- @usage
+        --- -- check consul.log for the output
+        --- consul.debug.logevents()
+        logevents = function()
+            local log = consul.new_log('debug:logevents')
+            log:info("Dumping engine events:")
+            log:info(consul.pretty(consul.log:get_all_events()))
+        end,
     },
 
     -- setup consul
@@ -102,6 +113,12 @@ consul = {
         table.insert(events.UICreated, consul.scriptum.setup)
         table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
         table.insert(events.UICreated, consul.changelog.OnUICreated)
+        
+        -- persistent debug logging
+        local cfg = consul.config.read()
+        if cfg.debug and cfg.debug.log_events then
+            consul.log:log_events_all()
+        end
     end,
 
     -- logging
@@ -409,6 +426,9 @@ consul = {
                 },
                 battle = {
                     use_in_battle = false,
+                },
+                debug = {
+                    log_events = false,
                 }
             }
         end,
@@ -431,6 +451,9 @@ consul = {
 
                 and type(_config.battle) == "table"
                 and type(_config.battle.use_in_battle) == "boolean"
+
+                and type(_config.debug) == "table"
+                and type(_config.debug.log_events) == "boolean"
         end,
 
         --- A function that reads the config file and writes it back to the file.
@@ -1305,7 +1328,7 @@ consul = {
                 },
                 ['/clear'] = {
                     help = function()
-                        return "Clears the console output."
+                        return "Clear console output."
                     end,
                     func = function()
                         consul.console.clear()
@@ -1315,7 +1338,7 @@ consul = {
                 },
                 ['/history'] = {
                     help = function()
-                        return "Prints the history of the console."
+                        return "Print console history."
                     end,
                     func = function()
                         local hst = consul.history
@@ -1442,6 +1465,21 @@ consul = {
                         end)
 
                         command._is_running = true
+                    end,
+                    exec = false,
+                    returns = true,
+                },
+                ['/consul_debug_events'] = {
+                    help = function()
+                        return "Toggle persistent event logging at startup."
+                    end,
+                    func = function()
+                        local newState = ""
+                        consul.config.process(function(cfg)
+                            cfg.debug.log_events = not cfg.debug.log_events
+                            newState = tostring(cfg.debug.log_events)
+                        end)
+                        return "Persistent early event logging: " .. newState
                     end,
                     exec = false,
                     returns = true,
@@ -1651,7 +1689,7 @@ consul = {
                 },
                 ['/cli_help'] = {
                     help = function()
-                        return "Prints info about the CliExecute functions in the base game."
+                        return "Info on engine CliExecute functions."
                     end,
                     func = function()
                         return [[

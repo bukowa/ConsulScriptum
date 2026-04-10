@@ -155,6 +155,21 @@ consul.console.write("hello from script")
 
 ---
 
+#### `consul.debug.logevents`
+
+A function that logs all available engine events to the consul.log file.
+ Very useful if you want to see what events you can listen to.
+
+
+ Example:
+```lua
+-- check consul.log for the output
+consul.debug.logevents()
+
+```
+
+---
+
 #### `consul.debug.logregistry`
 
 A function that logs every environment in all of the game's Lua registries.

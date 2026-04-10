@@ -498,6 +498,7 @@ If you don't know which event to listen for, you can use Consul's built-in conso
 | `/log_events_game` | Logs world events (skips UI components, timers, and shortcuts). |
 | `/log_events_all` | Logs **every** engine event (CAUTION: extremely spammy!). |
 | `/log_game_event [Name]` | Starts logging a specific engine event by name. |
+| `consul.debug.logevents()` | Lua function that dumps all available engine event names to `consul.log`. |
 
 #### Example Output
 When one of these commands is active, Consul automatically wraps the context and flattens it into a readable format in your `consul.log`:
@@ -511,6 +512,35 @@ When one of these commands is active, Consul automatically wraps the context and
 ```
 
 This is the ultimate discovery tool: simply run `/log_events_game`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
+
+### 4.6 Timing: Where to register?
+
+The timing of event registration matters. Depending on when an event fires, you might need to register your listener in different places:
+
+- **Episodic Events**: Events like `NewCampaignStarted` fire only once when a new campaign is created. Because these fire before the UI is ready, they must be registered in the engine's base scripts (e.g., `campaigns/<name>/scripting.lua`).
+- **Standard Events**: Most world events (clicks, turn starts, battles) fire repeatedly throughout the game. These can be safely registered in any script file, including those loaded by Consul.
+
+### 4.7 Safety: The "Ready" State
+
+When the game loads, several events fire in sequence. Not all of them are safe for world manipulation:
+
+- **`LoadingGame`**: Runs while the engine is still linking data. Executing complex game functions here can cause crashes.
+- **`FirstTickAfterWorldCreated`**: This is the "Golden Hook." It is the earliest point where the world state is fully established and safe to manipulate via the API.
+
+> [!TIP]
+> If your script needs to setup things (like giving a faction starting gold or revealing the map) the moment a game loads, always use `FirstTickAfterWorldCreated`.
+
+### 4.8 Persistent Debug Logging
+
+If you need to debug events that happen very early (during the load screen or campaign creation), the standard console commands won't work because the console UI hasn't been created yet.
+
+Consul provides a persistent flag that keeps event logging active from the moment the game starts:
+
+| Command | Description |
+| :--- | :--- |
+| `/consul_debug_events` | Toggles persistent event logging. This setting is saved to your config. |
+
+When enabled, Consul will automatically call `consul.log:log_game_events()` the moment it is loaded in `all_scripted.lua`, ensuring every early boot event is captured in your `consul.log`.
 
 
 ---

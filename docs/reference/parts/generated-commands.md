@@ -13,10 +13,13 @@ Prints the changelog.
 Marks current changelog as read.
 
 #### `/clear`
-Clears the console output.
+Clear console output.
 
 #### `/cli_help`
-Prints info about the CliExecute functions in the base game.
+Info on engine CliExecute functions.
+
+#### `/consul_debug_events`
+Toggle persistent event logging at startup.
 
 #### `/debug`
 Prints debug information about characters,settlements,etc.
@@ -34,7 +37,7 @@ Prints the list of factions.
 Show help message.
 
 #### `/history`
-Prints the history of the console.
+Print console history.
 
 #### `/log_events_all`
 Log all game events to the consul.log file
