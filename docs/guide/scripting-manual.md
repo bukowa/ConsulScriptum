@@ -344,7 +344,7 @@ end
 > Check the <GameLink hash="military-force-script-interface">**MILITARY_FORCE_SCRIPT_INTERFACE**</GameLink> reference.
 
 
----
+
 
 
 
@@ -558,8 +558,6 @@ This means that when you come back from a battle, the engine treats it as a fres
 > These are typically called inside the **`SavingGame`** and **`LoadingGame`** events, which provide the required `context` in their context.
 
 
----
-
 ## 5. Advanced: How "require" works
 
 You will often see `require 'something'` at the top of scripts. This is how you borrow code from other files. Behind the scenes, `require` does two main things: it runs the file once, and it caches the result.
@@ -672,7 +670,7 @@ data/ui/?.lua;
 consul/?.lua;
 ```
 
----
+
 
 ## 6. Advanced: Lua Environments & The Registry
 
@@ -703,85 +701,10 @@ for k, v in pairs(debug.getregistry()) do
 end
 ```
 
----
-
-## 7. Putting it All Together: The Intelligence Hub
-
-This final example combines everything we've learned: modular design (`require`), event-driven interaction, data discovery (`consul.pretty`), and lifecycle safety (`FirstTickAfterWorldCreated`). 
-
-This script creates a tool that clears the console and prints a detailed "Intelligence Report" whenever you select one of your generals.
-
-### Part A: The Utility Module (`intel_utils.lua`)
-By using the **Return Pattern**, we keep our data-formatting logic separate from our event handlers.
-
+## 7. Putting it All Together:
 ```lua
--- File: intel_utils.lua
-local M = {}
-
--- A function to extract and format army data into a readable table
-function M.get_army_data(force)
-    local unit_list = force:unit_list()
-    local data = {
-        total_units = unit_list:num_items(),
-        composition = {}
-    }
-    
-    for i = 0, data.total_units - 1 do
-        local unit = unit_list:item_at(i)
-        table.insert(data.composition, {
-            key = unit:unit_key(),
-            rank = unit:rank()
-        })
-    end
-    return data
-end
-
-return M
+to be done
 ```
-
-### Part B: The Main Monitor (`main.lua`)
-This script uses the utility to provide real-time feedback in the game console.
-
-```lua
--- 1. Load our module and standard tools
-local intel = require "intel_utils"
-consul.console.clear()
-
--- 2. Lifecycle: Initialize systems when the world is ready
--- This fires every time you load a game OR return from a battle.
-table.insert(events.FirstTickAfterWorldCreated, function()
-    consul.console.write(">>> Intelligence Hub: ACTIVE")
-    consul.log:info("Scribe systems online and monitoring world events.")
-end)
-
--- 3. Interactivity: Listen for character selection
-table.insert(events.CharacterSelected, function(context)
-    local char = context:character()
-    
-    -- We only care about our own generals
-    if char:has_military_force() and char:faction():is_human() then
-        consul.console.clear()
-        consul.console.write(">>> SCANNING: " .. char:get_forename())
-        
-        -- Use our module to get formatted data
-        local report = intel.get_army_data(char:military_force())
-        
-        -- Print the report using the discovery tool
-        consul.console.write(consul.pretty(report))
-        
-        -- Log the internal context for discovery (Section 4.4)
-        consul.log:info("Auto-discovery log generated for " .. char:get_forename())
-    end
-end)
-```
-
-### Why this is better:
-- **Clean Console**: It uses `consul.console.clear()` to ensure you only see the data you need right now.
-- **Modularity**: If you want to change how the report looks, you only edit `intel_utils.lua`, leaving your event logic untouched.
-- **Safety**: It uses `FirstTickAfterWorldCreated`, so even if you return from a massive battle, the monitor automatically comes back online without crashing.
-- **Discovery**: It logs the raw `character` context every time, allowing you to find new methods to add to your report.
-
----
 
 ## 8. Further Reading: Official Wikis
 
