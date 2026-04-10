@@ -10,6 +10,8 @@
     2. Mod Pack: Create a mod pack file (e.g. "My Custom Commands Pack") to distribute on Steam Workshop. 
        Inside your pack, name your file `consul_commands.lua` and place it at: consul/consul_commands.lua
 
+    Tip: Use the command `/reload_custom_commands` to refresh all command modules (including core and overrides) while the game is running.
+
     Command Properties:
     - exec (boolean)    : If true, the string returned by `func` is dynamically executed by the console as raw Lua code (or another command).
     - returns (boolean) : If true, the string returned by `func` is printed directly to the visual console output.
