@@ -7,16 +7,10 @@ OUTPUT_FILE = 'docs/guide/parts/generated-changelog.md'
 
 def parse_changelog(content):
     # regex for version blocks like ["0.6.2"] = { ... }
-    # This regex is more robust to find entries within the notes table
-    version_pattern = re.compile(r'\[["\']([^"\']+)["\']\]\s*=\s*\{(.*?)\n\s*\},', re.DOTALL)
+    # Made the trailing comma optional and moved it out of the capturing group
+    version_pattern = re.compile(r'\[["\']([^"\']+)["\']\]\s*=\s*\{(.*?)\n\s*\}', re.DOTALL)
     
-    # Also check without comma for the last entry
     matches = list(version_pattern.finditer(content))
-    if not matches:
-        # Try without the trailing comma
-        version_pattern = re.compile(r'\[["\']([^"\']+)["\']\]\s*=\s*\{(.*?)\n\s*\}', re.DOTALL)
-        matches = list(version_pattern.finditer(content))
-
     entries = []
     
     for match in matches:
@@ -31,55 +25,43 @@ def parse_changelog(content):
             
         note_data = {}
         
-        # Extract fields like common, Rome2, Attila
-        field_pattern = re.compile(r'(\w+)\s*=\s*(".*?"|\'.*?\')(\s*\.\.\s*("\s*\\n.*?"|\'\s*\\n.*?\'))*', re.DOTALL)
-        # Note: the above regex might be too simple for multiline concatenated Lua strings
-        
-        # Let's use a simpler approach for the fields since they are basically: key = "value"
-        # and handle concatenation manually
-        
         lines = body.split('\n')
         current_key = None
-        current_val = ""
         
         for line in lines:
             line = line.strip()
             if not line: continue
             
-            # Match start of a field: key = "value"
+            # Match start of a field: key = "value" or key = [[value]]
             field_start_match = re.match(r'^(\w+)\s*=\s*(.*)$', line)
             if field_start_match:
                 current_key = field_start_match.group(1)
                 val_part = field_start_match.group(2)
-                # Remove starting quote and any trailing stuff
-                current_val = val_part
-                note_data[current_key] = current_val
-            elif current_key and line.startswith('..'):
-                # Continuation line
-                note_data[current_key] += " " + line[2:].strip()
+                note_data[current_key] = val_part
+            elif current_key:
+                # Continuation line (handles Lua concatenation artifacts in post-processing)
+                note_data[current_key] += " " + line
         
-        # Post-process values (remove quotes and handle \n)
+        # Post-process values (remove quotes, handle concatenation and \n)
         for k in note_data:
             v = note_data[k]
             
-            # Remove all forms of Lua string concatenation artifacts
-            # Matches strings like "some text" ..
-            v = re.sub(r'["\']\s*\.\.\s*$', '', v) 
-            # Matches strings like .. "some text"
-            v = re.sub(r'^\s*\.\.\s*["\']', '', v)
+            # Remove all forms of Lua string concatenation/quote artifacts
+            # Remove trailing comma if exists (usually at the end of the last line of a field)
+            v = v.strip().rstrip(',')
             
-            # Remove leading/trailing quotes from the whole thing
-            v = v.strip()
-            if v.startswith('"') or v.startswith("'"):
-                v = v[1:]
-            if v.endswith('"') or v.endswith("'") or v.endswith(','):
-                v = v.rstrip(',')
-                v = v.rstrip('"').rstrip("'")
-            
-            # Final cleanup of any lingering ".. or similar from the middle if concatenation was complex
+            # Handle concatenation operators and internal quotes
+            # Replace: " .. "  or " .. \n " or just ..
             v = re.sub(r'["\']\s*\.\.\s*["\']', '', v)
             v = re.sub(r'["\']\s*\.\.\s*', '', v)
             v = re.sub(r'\s*\.\.\s*["\']', '', v)
+            v = re.sub(r'\s*\.\.\s*', '', v)
+            
+            # Remove leading/trailing quotes
+            if v.startswith('"') or v.startswith("'"):
+                v = v[1:]
+            if v.endswith('"') or v.endswith("'"):
+                v = v[:-1]
             
             # Unescape newlines and clean up
             v = v.replace('\\n', '\n')

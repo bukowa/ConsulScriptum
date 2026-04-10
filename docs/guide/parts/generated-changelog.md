@@ -1,12 +1,19 @@
 ## Unreleased
 **Common:**
 - Added: Support for loading custom commands directly from the game directory or pack mods (you can now distribute your commands on the Steam Workshop).
+- Added: An example template with instructions is available in the mod pack as `consul/consul_commands.lua`.
+- Added: Command `/reload_custom_commands` to refresh installed custom commands without restarting the game.
+- Added: `consul.scriptum.entry` variable is now available in custom scripts, allowing them to identify and highlight the button (green) that triggered them. More info in the Consul documentation.
+- Fixed: Scriptum scripts now reload on any Consul component click to ensure they are fresh.
+- Added: Command `/logregistry` to dump all Lua registries and environments to `consul.log`.
+- Added: Command `/consul_debug_events` to toggle persistent event logging at startup.
 
 **Rome II specific:**
 - Added: Specific Divide et Impera (DEI) commands for population management (`/dei_reset_all_pop`, `/dei_set_pop`, `/dei_reset_region_pop`).
 
 **Attila specific:**
 - Added: Consul now works in Attila campaign battles (trigger via /use_in_battle)
+- Added: All game events for Attila for event tracking.
 
 ---
 
@@ -21,6 +28,19 @@
 - Added: Changelog feature.
 - Added: Command /changelog - displays version notes.
 - Added: Command /changelog_read - marks current version as read and hides it on startup.
+
+---
+
+## v0.6.0
+**Common:**
+- Added: Ported Consul to Attila: Total War (Alpha).
+- Added: GitHub release page is now available for the Attila build.
+
+**Rome II specific:**
+- Fixed: Correctly hooked Rome2 systems.
+
+**Attila specific:**
+- Fixed: Correctly hooked Attila systems.
 
 ---
 
