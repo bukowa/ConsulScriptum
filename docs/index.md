@@ -13,8 +13,8 @@ hero:
       text: Getting started
       link: /guide/getting-started
     - theme: alt
-      text: Limitations
-      link: /guide/technical-limitations
+      text: Scripting Manual
+      link: /guide/scripting-manual
     - theme: alt
       text: GitHub
       link: https://github.com/bukowa/ConsulScriptum

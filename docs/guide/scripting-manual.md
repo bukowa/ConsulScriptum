@@ -517,20 +517,146 @@ This is the ultimate discovery tool: simply run `/log_events_game`, go back into
 
 ## 5. Advanced: How "require" works
 
-You will often see `require 'something'` at the top of scripts. This is how you borrow code from other files.
+You will often see `require 'something'` at the top of scripts. This is how you borrow code from other files. Behind the scenes, `require` does two main things: it runs the file once, and it caches the result.
 
-### The "Already Done" List
-Lua is smart. It keeps a "Done List" (called `package.loaded`). If it's already there, it just hands you the existing version immediately. It **never** reads the file a second time.
+### 5.1 The "Return" Pattern (Recommended)
+In Lua, a file can act like a single value. When a file ends with a `return` statement, `require` will capture that value and hand it back to your script. This is the standard way to create tools and libraries.
+
+**1. Create your library file:**
+Inside your toolkit file, you create a table, add functions to it, and then return it at the very bottom.
+
+```lua
+-- File: my_library.lua
+local tools = {}
+
+tools.add = function(a, b) 
+    return a + b 
+end
+
+return tools  -- Hand the table back to whoever calls require
+```
+
+**2. Use it in your main script:**
+You capture the returned table in a variable and call the functions inside it.
+
+```lua
+-- File: main.lua
+local math_kit = require "my_library"
+
+local result = math_kit.add(2, 2)
+print(result) -- returns 4
+```
+
+### 5.2 The "Global" Pattern (Legacy)
+Some older scripts (or scripts that modify the underlying game) don't return anything. Instead, they just define functions directly into the **Global Environment** (the "Global Bucket").
+
+**1. Create your script:**
+Notice there is no `return` at the bottom.
+
+```lua
+-- File: my_globals.lua
+function cheat_money()
+    -- This function is now a Global
+    game:treasury_mod("rom_rome", 5000)
+end
+```
+
+**2. Load it in your main script:**
+Since nothing is returned, you don't need to assign it to a variable. Call `require` once to "run" the file and populate the environment.
+
+```lua
+-- File: main.lua
+require "my_globals" -- This runs the file once
+
+cheat_money() -- The function is now available everywhere!
+```
+
+### 5.3 Assignment vs. Just Calling
+When you use `require`, you have two choices for how you write it. The difference depends on what the file does:
+
+| Style | Result | When to use it |
+| :--- | :--- | :--- |
+| `local mod = require "file"` | `mod` becomes the **table** returned by the file. | **Best Practice.** Keeps your script clean and prevents naming conflicts. |
+| `require "file"` | The code inside runs, but any return value is discarded. | Use this if the file is a **Global Script** that defines things directly into the engine. |
+
+> [!NOTE]
+> **What if a Global Script is assigned?** If you write `local my_mod = require "my_globals"` (from the example above), the variable `my_mod` will just be equal to `true`. This is Lua's way of saying "I loaded the file successfully, but it didn't give me any data back."
+
+### 5.5 How Lua finds files
+When you call `require "my_folder.my_script"`, Lua doesn't look for a file exactly named that. It uses a set of rules to translate that string into a real file path.
+
+#### 1. The Dot to Slash Translation
+Lua treats the dot (`.`) as a folder separator. Before it starts searching, it automatically converts all dots into slashes.
+
+*   `require "episodic_scripting"` → stays same
+*   `require "lua_scripts.episodic_scripting"` → becomes `lua_scripts/episodic_scripting`
+
+#### 2. The Search Templates (`package.path`)
+Lua looks at a special variable called `package.path`. This is a string containing "templates" separated by semicolons. Each template uses a question mark (`?`) as a placeholder for the module name.
+
+A typical `package.path` might look like this:
+`?;?.lua;lua_scripts/?.lua;consul/?.lua`
+
+If you call `require "my_script"`, Lua will try to find:
+1.  `my_script` (no extension)
+2.  `my_script.lua`
+3.  `lua_scripts/my_script.lua`
+4.  `consul/my_script.lua`
+
+> [!TIP]
+> **Consul Context**: Consul automatically adds its own folders to the `package.path` when it starts up. This is why you can simply write `require "consul_logging"` instead of having to provide the full path to the `src` directory every time.
+
+#### Real-world Discovery
+You can check the engine's current paths at any time by running a simple return command in the Consul console:
+
+**Command:**
+```powershell
+/r package.path
+```
+
+**Example Output:**
+```lua
+C:\Users\<USER>\AppData\Roaming\The Creative Assembly\Attila\maps\?.lua;
+C:\Users\<USER>\AppData\Roaming\The Creative Assembly\Attila\maps\campaigns/bel_attila/?.lua;
+data/Script/_Lib/?.lua;
+data/campaigns/bel_attila/?.lua;
+data/campaigns/bel_attila/factions/?.lua;
+?.lua;
+data/ui/templates/?.lua;
+data/ui/?.lua;
+consul/?.lua;
+```
 
 ---
 
-## 6. Advanced: Registries (Isolated Environments)
+## 6. Advanced: Lua Environments & The Registry
 
-The Total War environment is partitioned into isolated execution environments called **Registries**.
-- **The UI Registry**: Contains tools for interface manipulation (`UIComponent`).
-- **The Campaign Registry**: Contains tools for world state manipulation.
+In Total War, the Lua environment isn't one giant bucket. Instead, the game engine partitions functionality across different **environments**. This is why a variable like `UIComponent` might be available when you are clicking a button, but "missing" if you try to use it in a background campaign script.
 
-If a tool is missing in your current environment, Consul can "bridge" registries to find it. This is known as **Registry Diving**.
+### Using the Registry to find "Missing" Objects
+The **Lua Registry** is a hidden table that stores almost everything the game loads. If a global is missing in your current context, it's usually still tucked away in the registry.
+
+To discover what is available, use these Consul tools to dump every loaded environment to your `consul.log`:
+
+| Method | Description |
+| :--- | :--- |
+| `/logregistry` | Console command that logs all registry environments. |
+| `consul.debug.logregistry()` | Lua function that performs the same dump. |
+
+### How to "Grab" a missing global
+Once you find the name of a missing object in the log (for example, `UIComponent`), you can "grab" it by looping through the registry yourself.
+
+```lua
+-- Simple example: searching the registry for UIComponent
+for k, v in pairs(debug.getregistry()) do
+    local status, env = pcall(debug.getfenv, v)
+    if status and type(env) == "table" and env.UIComponent then
+        -- We found it! Now we can use it.
+        UIComponent = env.UIComponent
+        break
+    end
+end
+```
 
 ---
 
@@ -565,6 +691,7 @@ end
 For a deeper look at the mechanics of Total War scripting, refer to the official Creative Assembly documentation. These guides cover the "Official" toolkit in extreme detail:
 
 - [Total War: ATTILA Kit Scripting](https://wiki.totalwar.com/w/Total_War:_ATTILA_Kit_Scripting.html)
+- [Collection of Official Total War Docs](https://chadvandy.github.io/tw_modding_resources/)
 
 > [!TIP]
 > While Rome II lacks official documentation from the game developers, Attila is 99% similar.
