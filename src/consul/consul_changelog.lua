@@ -1,8 +1,10 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
-            common = "Added: Support for loading custom commands directly from the game directory or pack mods (you can now distribute your commands on the Steam Workshop)."..
+        ["0.7.0"] = {
+            common = "Added: Official manual page with detailed instructions on how scripting works and how to create your own scripts: https://bukowa.github.io/ConsulScriptum"..
+            "\nAdded: Direct link to the manual added to the top of the Steam Workshop description."..
+            "\nAdded: Support for loading custom commands directly from the game directory or pack mods (you can now distribute your commands on the Steam Workshop)."..
             "\nAdded: An example template with instructions is available in the mod pack as `consul/consul_commands.lua`."..
             "\nAdded: Command `/reload_custom_commands` to refresh installed custom commands without restarting the game."..
             "\nAdded: `consul.scriptum.entry` variable is now available in custom scripts, allowing them to identify and highlight the button (green) that triggered them. More info in the Consul documentation."..

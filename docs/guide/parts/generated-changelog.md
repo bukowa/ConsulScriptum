@@ -1,5 +1,7 @@
-## Unreleased
+## v0.7.0
 **Common:**
+- Added: Official manual page with detailed instructions on how scripting works and how to create your own scripts: https://bukowa.github.io/ConsulScriptum
+- Added: Direct link to the manual added to the top of the Steam Workshop description.
 - Added: Support for loading custom commands directly from the game directory or pack mods (you can now distribute your commands on the Steam Workshop).
 - Added: An example template with instructions is available in the mod pack as `consul/consul_commands.lua`.
 - Added: Command `/reload_custom_commands` to refresh installed custom commands without restarting the game.
