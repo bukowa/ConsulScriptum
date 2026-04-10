@@ -9,7 +9,11 @@ outline: deep
 This manual is for anyone who wants to move beyond the built-in commands and start writing their own Lua scripts for Total War. You don't need to be a programmer to start; you just need to understand the engine's scripting architecture.
 
 > [!IMPORTANT]
-> To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual. It allows you to write code in your text editor and see results live in-game without restarts.
+> To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual.<br> 
+> It allows you to write code in your text editor and see results live in-game without restarts.
+
+> [!IMPORTANT]
+> All the following script examples are designed to work in the **Grand Campaign** for both Rome II and Attila.
 
 ## 1. The Foundation
 To do anything in Total War, you first need to require the official interface.
@@ -312,7 +316,7 @@ for i = 0, armies:num_items() - 1 do
     local force = armies:item_at(i)
     -- Is it an army or a navy?
     if force:is_army() then
-        consul.console.write("Rome has an army at " .. force:general_character():logical_position_x())
+        consul.console.write("Huns have an army at " .. force:general_character():logical_position_x())
     end
 end
 ```
@@ -379,13 +383,16 @@ If you click a settlement, the `context` contains that settlement. If a turn sta
 
 | Event | Common Context Method | Returns Object |
 | :--- | :--- | :--- |
-| `SettlementSelected` | `context:garrison_residence()` | <GameLink hash="garrison-residence-script-interface">Garrison Residence</GameLink> |
-| `CharacterSelected` | `context:character()` | <GameLink hash="character-script-interface">Character</GameLink> |
-| `FactionTurnStart` | `context:faction()` | <GameLink hash="faction-script-interface">Faction</GameLink> |
+| <GameLink type="events" hash="settlementselected">`SettlementSelected`</GameLink> | `context:garrison_residence()` | <GameLink hash="garrison-residence-script-interface">GARRISON_RESIDENCE_SCRIPT_INTERFACE</GameLink> |
+| <GameLink type="events" hash="characterselected">`CharacterSelected`</GameLink> | `context:character()` | <GameLink hash="character-script-interface">CHARACTER_SCRIPT_INTERFACE</GameLink> |
+| <GameLink type="events" hash="factionturnstart">`FactionTurnStart`</GameLink> | `context:faction()` | <GameLink hash="faction-script-interface">FACTION_SCRIPT_INTERFACE</GameLink> |
 
 ### 4.3 Practical Examples
 
 Events are the primary way to create interactive mods. Below are examples that work across both Rome II and Attila.
+
+> [!TIP]
+> After executing this script click on a **Settlement** or **Character** then check the Consul console!
 
 :::tabs key:game
 
@@ -404,15 +411,12 @@ table.insert(events.SettlementSelected,
     end
 )
 
--- 3. The "Royal Gift" turn start script
--- Give the player 1000 gold when their turn starts
-table.insert(events.FactionTurnStart, 
+-- 3. Inspecting a character
+-- Print information about every character you click on
+table.insert(events.CharacterSelected, 
     function(context)
-        local faction = context:faction()
-        if faction:is_human() then
-            game:treasury_mod(faction:name(), 1000)
-            consul.console.write("Royal treasury replenished for " .. faction:name())
-        end
+        local character = context:character()
+        consul.console.write("Selected: " .. character:get_forename() .. " (age " .. character:age() .. ")")
     end
 )
 ```
@@ -432,15 +436,12 @@ table.insert(events.SettlementSelected,
     end
 )
 
--- 3. The "Senate's Gift" turn start script
--- Give the player 1000 gold when their turn starts
-table.insert(events.FactionTurnStart, 
+-- 3. Inspecting a character
+-- Print information about every character you click on
+table.insert(events.CharacterSelected, 
     function(context)
-        local faction = context:faction()
-        if faction:is_human() then
-            game:treasury_mod(faction:name(), 1000)
-            consul.console.write("Senate treasury replenished for " .. faction:name())
-        end
+        local character = context:character()
+        consul.console.write("Selected: " .. character:get_forename() .. " (age " .. character:age() .. ")")
     end
 )
 ```
@@ -501,7 +502,10 @@ If you don't know which event to listen for, you can use Consul's built-in conso
 | `/consul_debug_events` | Toggles persistent event logging (starts at game boot). |
 
 #### Example Output
-When one of these commands is active, Consul automatically wraps the context and flattens it into a readable format in your `consul.log`:
+When one of these commands is active, Consul automatically wraps the context and flattens it into a readable format in your `consul.log` file:
+
+> [!NOTE]
+> **Consul Files**: Learn more about how they work in the [Local files and logs manual](./consul-scriptum-files).
 
 ```lua
 {
@@ -511,7 +515,7 @@ When one of these commands is active, Consul automatically wraps the context and
 }
 ```
 
-This is the ultimate discovery tool: simply run `/log_events_game`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
+This is the ultimate discovery tool: simply run `/log_events_all`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
 
 #### Catching Early Boot Events
 Standard console commands only work once the UI is loaded. If you need to debug events that happen earlier (during the load screen or campaign creation), use the persistent flag:
@@ -523,7 +527,7 @@ Standard console commands only work once the UI is loaded. If you need to debug 
 When enabled, Consul starts logging the moment it is loaded in `all_scripted.lua`.
 
 > [!IMPORTANT]
-> **Restart Required**: Because boot events fire during the very first seconds of the game's startup sequence, you must **restart the game (or campaign)** after toggling this setting for it to take effect.
+> **Restart Required**: Because boot events fire during the very first seconds of the game's startup sequence, you must **restart the game (or reload the save)** after toggling this setting for it to take effect.
 
 ### 4.6 The Event Lifecycle: Timing & Safety
 
@@ -614,6 +618,9 @@ require "my_globals" -- This runs the file once
 cheat_money() -- The function is now available everywhere!
 ```
 
+> [!NOTE]
+> **What if a Global Script is assigned?** If you write `local my_mod = require "my_globals"` (from the example above), the variable `my_mod` will just be equal to `true`. This is Lua's way of saying "I loaded the file successfully, but it didn't give me any data back."
+
 ### 5.3 Assignment vs. Just Calling
 When you use `require`, you have two choices for how you write it. The difference depends on what the file does:
 
@@ -621,9 +628,6 @@ When you use `require`, you have two choices for how you write it. The differenc
 | :--- | :--- | :--- |
 | `local mod = require "file"` | `mod` becomes the **table** returned by the file. | **Best Practice.** Keeps your script clean and prevents naming conflicts. |
 | `require "file"` | The code inside runs, but any return value is discarded. | Use this if the file is a **Global Script** that defines things directly into the engine. |
-
-> [!NOTE]
-> **What if a Global Script is assigned?** If you write `local my_mod = require "my_globals"` (from the example above), the variable `my_mod` will just be equal to `true`. This is Lua's way of saying "I loaded the file successfully, but it didn't give me any data back."
 
 ### 5.5 How Lua finds files
 When you call `require "my_folder.my_script"`, Lua doesn't look for a file exactly named that. It uses a set of rules to translate that string into a real file path.
@@ -647,7 +651,7 @@ If you call `require "my_script"`, Lua will try to find:
 4.  `consul/my_script.lua`
 
 > [!TIP]
-> **Consul Context**: Consul automatically adds its own folders to the `package.path` when it starts up. This is why you can simply write `require "consul_logging"` instead of having to provide the full path to the `src` directory every time.
+> **Consul Context**: Consul automatically adds its own folders to the `package.path` when it starts up. This is why you can simply write `require "consul"` instead of having to provide the full path to the `src` directory every time.
 
 #### Real-world Discovery
 You can check the engine's current paths at any time by running a simple return command in the Consul console:
@@ -668,6 +672,26 @@ data/campaigns/bel_attila/factions/?.lua;
 data/ui/templates/?.lua;
 data/ui/?.lua;
 consul/?.lua;
+```
+
+#### Troubleshooting: When "require" fails
+If you are having trouble loading a file, it means the folder containing your script is not in the engine's search path. You can solve this by either inspecting the paths or manually adding your own.
+
+**1. Log the search path to debug**<br>
+You can write the current paths to your `consul.log` file to see exactly where the engine is looking:
+```lua
+consul.log:info(package.path)
+```
+
+**2. Adding your own custom path**<br>
+If your scripts are in a custom folder (like `my_mod_folder`), you can manually add it to the search path at the very top of your script. This ensures the engine can find your files no matter where they are located:
+```lua
+-- Add your custom folder to the search path
+-- The "?" is a placeholder for the file name you will "require"
+package.path = package.path .. ";my_mod_folder/?.lua"
+
+-- Now you can load your files from that folder
+require "my_custom_script"
 ```
 
 
