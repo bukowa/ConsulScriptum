@@ -498,7 +498,7 @@ If you don't know which event to listen for, you can use Consul's built-in conso
 | `/log_events_game` | Logs world events (skips UI components, timers, and shortcuts). |
 | `/log_events_all` | Logs **every** engine event (CAUTION: extremely spammy!). |
 | `/log_game_event [Name]` | Starts logging a specific engine event by name. |
-| `consul.debug.logevents()` | Lua function that dumps all available engine event names to `consul.log`. |
+| `/consul_debug_events` | Toggles persistent event logging (starts at game boot). |
 
 #### Example Output
 When one of these commands is active, Consul automatically wraps the context and flattens it into a readable format in your `consul.log`:
@@ -513,34 +513,49 @@ When one of these commands is active, Consul automatically wraps the context and
 
 This is the ultimate discovery tool: simply run `/log_events_game`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
 
-### 4.6 Timing: Where to register?
-
-The timing of event registration matters. Depending on when an event fires, you might need to register your listener in different places:
-
-- **Episodic Events**: Events like `NewCampaignStarted` fire only once when a new campaign is created. Because these fire before the UI is ready, they must be registered in the engine's base scripts (e.g., `campaigns/<name>/scripting.lua`).
-- **Standard Events**: Most world events (clicks, turn starts, battles) fire repeatedly throughout the game. These can be safely registered in any script file, including those loaded by Consul.
-
-### 4.7 Safety: The "Ready" State
-
-When the game loads, several events fire in sequence. Not all of them are safe for world manipulation:
-
-- **`LoadingGame`**: Runs while the engine is still linking data. Executing complex game functions here can cause crashes.
-- **`FirstTickAfterWorldCreated`**: This is the "Golden Hook." It is the earliest point where the world state is fully established and safe to manipulate via the API.
-
-> [!TIP]
-> If your script needs to setup things (like giving a faction starting gold or revealing the map) the moment a game loads, always use `FirstTickAfterWorldCreated`.
-
-### 4.8 Persistent Debug Logging
-
-If you need to debug events that happen very early (during the load screen or campaign creation), the standard console commands won't work because the console UI hasn't been created yet.
-
-Consul provides a persistent flag that keeps event logging active from the moment the game starts:
+#### Catching Early Boot Events
+Standard console commands only work once the UI is loaded. If you need to debug events that happen earlier (during the load screen or campaign creation), use the persistent flag:
 
 | Command | Description |
 | :--- | :--- |
 | `/consul_debug_events` | Toggles persistent event logging. This setting is saved to your config. |
 
-When enabled, Consul will automatically call `consul.log:log_game_events()` the moment it is loaded in `all_scripted.lua`, ensuring every early boot event is captured in your `consul.log`.
+When enabled, Consul starts logging the moment it is loaded in `all_scripted.lua`.
+
+> [!IMPORTANT]
+> **Restart Required**: Because boot events fire during the very first seconds of the game's startup sequence, you must **restart the game (or campaign)** after toggling this setting for it to take effect.
+
+### 4.6 The Event Lifecycle: Timing & Safety
+
+Not all events are created equal. Understanding the "Lifecycle" of a session is key to writing stable scripts.
+
+#### Registration Timing
+Depending on when an event fires, you might need to register your listener in different places:
+
+- **Episodic Events**: Events like `NewCampaignStarted` fire only once when a new campaign is created. Because these fire before the UI is ready, they must be registered in the engine's base scripts (e.g., `campaigns/<name>/scripting.lua`).
+- **Standard Events**: Most world events (clicks, turn starts, battles) fire repeatedly throughout the game. These can be safely registered in any script file, including those loaded by Consul.
+
+#### Safety: The "Golden Hook"
+When the game loads, several events fire in sequence. Not all of them are safe for world manipulation:
+
+- **`LoadingGame`**: Runs while the engine is still linking data. Executing complex game functions here can cause crashes.
+- **`FirstTickAfterWorldCreated`**: This is the "Golden Hook." It is the earliest point where the world state is fully established and safe to manipulate. It runs **every time** a game is loaded—including when you return to the campaign map from a battle.
+
+#### Battle Transitions & Persistence
+In Total War, entering and leaving a battle is not a seamless transition. Behind the scenes:
+1. **Entering Battle**: The game saves the campaign state and shuts down the campaign environment.
+2. **Leaving Battle**: The game **reloads** the campaign state from scratch.
+
+This means that when you come back from a battle, the engine treats it as a fresh "Load Game" event. All your script variables will be reset to their initial values, and `FirstTickAfterWorldCreated` will fire **again**.
+
+> [!TIP]
+> **Persistence (Saving & Loading)**: In Total War, script variables are "volatile." They are wiped every time the campaign reloads—which happens when you load a save file **and** every time you return from a battle. 
+>
+> To make your script "remember" data permanently (writing it into the `.save` file), you must use the engine's persistence system:
+> - **`game:save_named_value(name, value, context)`**
+> - **`game:load_named_value(name, default, context)`**
+>
+> These are typically called inside the **`SavingGame`** and **`LoadingGame`** events, which provide the required `context` in their context.
 
 
 ---
@@ -690,29 +705,81 @@ end
 
 ---
 
-## 7. Putting it All Together: A Global Cheat Script
+## 7. Putting it All Together: The Intelligence Hub
 
-Here is a complete script you can run in **Scriptum**. It finds all human players and gives them 5000 gold.
+This final example combines everything we've learned: modular design (`require`), event-driven interaction, data discovery (`consul.pretty`), and lifecycle safety (`FirstTickAfterWorldCreated`). 
+
+This script creates a tool that clears the console and prints a detailed "Intelligence Report" whenever you select one of your generals.
+
+### Part A: The Utility Module (`intel_utils.lua`)
+By using the **Return Pattern**, we keep our data-formatting logic separate from our event handlers.
 
 ```lua
--- 1. Load the toolkit
-scripting = require "lua_scripts.EpisodicScripting"
-local game = scripting.game_interface
-consul.console.clear() -- Clear the console output
--- 2. Follow the Game Model to the Faction List
-local factions = game:model():world():faction_list()
+-- File: intel_utils.lua
+local M = {}
 
--- 3. Loop through every faction
-for i = 0, factions:num_items() - 1 do
-    local fac = factions:item_at(i)
+-- A function to extract and format army data into a readable table
+function M.get_army_data(force)
+    local unit_list = force:unit_list()
+    local data = {
+        total_units = unit_list:num_items(),
+        composition = {}
+    }
     
-    -- 4. If it's a human, give them gold
-    if fac:is_human() then
-        consul.console.write("Cheating gold for: " .. fac:name())
-        game:treasury_mod(fac:name(), 5000)
+    for i = 0, data.total_units - 1 do
+        local unit = unit_list:item_at(i)
+        table.insert(data.composition, {
+            key = unit:unit_key(),
+            rank = unit:rank()
+        })
     end
+    return data
 end
+
+return M
 ```
+
+### Part B: The Main Monitor (`main.lua`)
+This script uses the utility to provide real-time feedback in the game console.
+
+```lua
+-- 1. Load our module and standard tools
+local intel = require "intel_utils"
+consul.console.clear()
+
+-- 2. Lifecycle: Initialize systems when the world is ready
+-- This fires every time you load a game OR return from a battle.
+table.insert(events.FirstTickAfterWorldCreated, function()
+    consul.console.write(">>> Intelligence Hub: ACTIVE")
+    consul.log:info("Scribe systems online and monitoring world events.")
+end)
+
+-- 3. Interactivity: Listen for character selection
+table.insert(events.CharacterSelected, function(context)
+    local char = context:character()
+    
+    -- We only care about our own generals
+    if char:has_military_force() and char:faction():is_human() then
+        consul.console.clear()
+        consul.console.write(">>> SCANNING: " .. char:get_forename())
+        
+        -- Use our module to get formatted data
+        local report = intel.get_army_data(char:military_force())
+        
+        -- Print the report using the discovery tool
+        consul.console.write(consul.pretty(report))
+        
+        -- Log the internal context for discovery (Section 4.4)
+        consul.log:info("Auto-discovery log generated for " .. char:get_forename())
+    end
+end)
+```
+
+### Why this is better:
+- **Clean Console**: It uses `consul.console.clear()` to ensure you only see the data you need right now.
+- **Modularity**: If you want to change how the report looks, you only edit `intel_utils.lua`, leaving your event logic untouched.
+- **Safety**: It uses `FirstTickAfterWorldCreated`, so even if you return from a massive battle, the monitor automatically comes back online without crashing.
+- **Discovery**: It logs the raw `character` context every time, allowing you to find new methods to add to your report.
 
 ---
 
