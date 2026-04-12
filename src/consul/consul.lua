@@ -88,6 +88,97 @@ consul = {
             log:info("Dumping engine events:")
             log:info(consul.pretty(consul.log:get_all_events()))
         end,
+        profi = {
+            _profi = require 'profi.profi',
+            _filename = "profi_report.txt",
+            --- Starts the ProFi Lua profiler.
+            --- @function debug.profi.start
+            --- @tparam[opt] string filename The filename to save the report to (defaults to "profi_report.txt").
+            --- @usage
+            --- consul.debug.profi.start("my_report.txt")
+            start = function(filename)
+                consul.debug.profi._filename = filename or "profi_report.txt"
+                consul.debug.profi._profi:start('once')
+                return "profi.lua profiling started."
+            end,
+            --- Stops the ProFi Lua profiler and writes the report.
+            --- @function debug.profi.stop
+            --- @tparam[opt] string filename The filename to save the report to (overrides the one from start).
+            --- @usage
+            --- consul.debug.profi.stop()
+            stop = function(filename)
+                consul.debug.profi._profi:stop()
+                local final_filename = filename or consul.debug.profi._filename
+                consul.debug.profi._profi:writeReport(final_filename)
+                consul.debug.profi._profi:reset()
+                return "profi.lua profiling stopped. Report written to: " .. final_filename
+            end
+        },
+        profile = {
+            _profiler = require 'profile.profile',
+            _filename = "profile_report.txt",
+            --- Starts the 2dengine Lua profiler.
+            --- @function debug.profile.start
+            --- @usage
+            --- consul.debug.profile.start()
+            start = function()
+                consul.debug.profile._profiler.start()
+                return "profile.lua profiling started."
+            end,
+            --- Stops the 2dengine Lua profiler, saves it to a file, and returns a report string.
+            --- @function debug.profile.stop
+            --- @tparam[opt] string filename The filename to save the report to (defaults to "profile_report.txt").
+            --- @return string The profiling report.
+            --- @usage
+            --- local report = consul.debug.profile.stop("my_profile.txt")
+            --- consul.console.write(report)
+            stop = function(filename)
+                consul.debug.profile._profiler.stop()
+                local final_filename = filename or consul.debug.profile._filename
+                local report = consul.debug.profile._profiler.report()
+                
+                local f = io.open(final_filename, "w")
+                if f then
+                    f:write(report)
+                    f:close()
+                end
+                consul.debug.profile._profiler.reset()
+                return "profile.lua profiling stopped. Report written to: " .. final_filename
+            end,
+        },
+
+
+
+        --- Sets all diplomacy to false via (force_diplomacy) for all faction pairs.
+        --- @function debug.disable_all_diplomacy
+        --- @usage
+        --- consul.debug.disable_all_diplomacy()
+        disable_all_diplomacy = function()
+            local diplomacy_types = {
+                "trade agreement", "military access", "military alliance", "cancel military access",
+                "alliance", "regions", "technology", "state gift", "payments", "vassal", "peace", "war",
+                "join war", "break trade", "break alliance", "hostages", "marriage", "non aggression pact",
+                "soft military access", "hard military access", "cancel soft military access",
+                "defensive alliance", "client state", "form confederation", "break non aggression pact",
+                "break soft military access", "break hard military access", "break defensive alliance",
+                "break vassal", "break client state", "state gift unilateral"
+            }
+            local factions = consul.game.faction_list()
+            local count = 0
+            for i = 1, #factions do
+                for j = 1, #factions do
+                    if i ~= j then
+                        for k = 1, #diplomacy_types do
+                            consul._game():force_diplomacy(factions[i], factions[j], diplomacy_types[k], false, false)
+                            count = count + 1
+                        end
+                    end
+                end
+            end
+            return true
+        end,
+        _turn_start_time = 0,
+        _measuring_turn = false,
     },
 
     -- setup consul
@@ -119,10 +210,21 @@ consul = {
         if cfg.debug and cfg.debug.log_events then
             consul.log:log_events_all()
         end
+
+        -- turn time measurement
+        table.insert(events.FactionTurnStart, function(context)
+            if consul.debug._measuring_turn and context:faction():is_human() then
+                local duration = os.clock() - consul.debug._turn_start_time
+                local msg = "Turn cycle completed in " .. string.format("%.2f", duration) .. " seconds."
+                consul.console.write(msg)
+                consul.log:info(msg)
+                consul.debug._measuring_turn = false
+            end
+        end)
     end,
 
     -- logging
-    log = require('consul_logging').Logger.new('consul', -1),
+    log = require('consul_logging').Logger.new('consul'),
 
     -- changelog
     changelog = {
@@ -1271,7 +1373,29 @@ consul = {
                     end,
                     exec = false,
                     returns = true,
-                }
+                },
+                ['/profi_stop'] = {
+                    help = function() return "Stop profi.lua and save to <filename>." end,
+                    func = function(_cmd)
+                        local arg = string.sub(_cmd, 13)
+                        if #_cmd <= 11 or arg == "" then
+                            return "Error: No filename provided. Usage: /profi_stop <filename>"
+                        end
+                        return consul.debug.profi.stop(arg)
+                    end,
+                    exec = false, returns = true,
+                },
+                ['/profiler_stop'] = {
+                    help = function() return "Stop profiler.lua and save to <filename>." end,
+                    func = function(_cmd)
+                        local arg = string.sub(_cmd, 16)
+                        if #_cmd <= 14 or arg == "" then
+                            return "Error: No filename provided. Usage: /profiler_stop <filename>"
+                        end
+                        return consul.debug.profile.stop(10, arg)
+                    end,
+                    exec = false, returns = true,
+                },
             },
             exact = {
                 ['/reload_custom_commands'] = {
@@ -1777,6 +1901,26 @@ This is some information about the CliExecute functions in the base game.
                         consul.log:info("Logging game events")
                         consul.log:log_game_events()
                     end,
+                },
+                ['/profi_start'] = {
+                    help = function() return "Start profi.lua." end,
+                    func = function() return consul.debug.profi.start() end,
+                    exec = false, returns = true,
+                },
+                ['/profiler_start'] = {
+                    help = function() return "Start profiler.lua." end,
+                    func = function() return consul.debug.profile.start() end,
+                    exec = false, returns = true,
+                },
+                ['/consul_debug_turn_time'] = {
+                    help = function() return "Measure AI turn time." end,
+                    func = function()
+                        consul.debug._turn_start_time = os.clock()
+                        consul.debug._measuring_turn = true
+                        consul._game():end_turn(true)
+                        return "Turn measurement started. Ending turn..."
+                    end,
+                    exec = false, returns = true,
                 },
             },
         },

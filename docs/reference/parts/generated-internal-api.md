@@ -155,6 +155,19 @@ consul.console.write("hello from script")
 
 ---
 
+#### `consul.debug.disable_all_diplomacy`
+
+Sets all diplomacy to false via (force_diplomacy) for all faction pairs.
+
+
+ Example:
+```lua
+consul.debug.disable_all_diplomacy()
+
+```
+
+---
+
 #### `consul.debug.logevents`
 
 A function that logs all available engine events to the consul.log file.
@@ -183,6 +196,71 @@ A function that logs every environment in all of the game's Lua registries.
 -- output may vary based on where the function is called
 -- I used it extensively when debugging different issues with the scripts
 consul.debug.logregistry()
+
+```
+
+---
+
+#### `consul.debug.profi.start`
+
+Starts the ProFi Lua profiler.
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `filename` | `string` |  The filename to save the report to (defaults to "profi_report.txt"). |
+
+ Example:
+```lua
+consul.debug.profi.start("my_report.txt")
+
+```
+
+---
+
+#### `consul.debug.profi.stop`
+
+Stops the ProFi Lua profiler and writes the report.
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `filename` | `string` |  The filename to save the report to (overrides the one from start). |
+
+ Example:
+```lua
+consul.debug.profi.stop()
+
+```
+
+---
+
+#### `consul.debug.profile.start`
+
+Starts the 2dengine Lua profiler.
+
+
+ Example:
+```lua
+consul.debug.profile.start()
+
+```
+
+---
+
+#### `consul.debug.profile.stop`
+
+Stops the 2dengine Lua profiler, saves it to a file, and returns a report string.
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `filename` | `string` |  The filename to save the report to (defaults to "profile_report.txt"). |
+
+ Example:
+```lua
+local report = consul.debug.profile.stop("my_profile.txt")
+consul.console.write(report)
 
 ```
 

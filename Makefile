@@ -146,7 +146,9 @@ CONTRIB_TARGETS := \
 	$(BUILD_DIR)/consul/penlight/pretty.lua \
 	$(BUILD_DIR)/consul/penlight/stringx.lua \
 	$(BUILD_DIR)/consul/penlight/types.lua \
-	$(BUILD_DIR)/consul/penlight/utils.lua
+	$(BUILD_DIR)/consul/penlight/utils.lua \
+	$(BUILD_DIR)/consul/profi/profi.lua \
+	$(BUILD_DIR)/consul/profile/profile.lua
 
 # Rule for creating the mod package with rpfm_cli
 $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
@@ -277,6 +279,16 @@ $(BUILD_DIR)/consul/serpent/serpent.lua: \
 
 $(BUILD_DIR)/consul/inspect/inspect.lua: \
 	src/inspect/inspect.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/profi/profi.lua: \
+	src/profi/profi.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/profile/profile.lua: \
+	src/profile/profile.lua
 	$(create_dir)
 	@cp "$<" "$@"
 

@@ -1,3 +1,11 @@
+## vUnreleased
+**Common:**
+- Added: Commands for Lua profiling via `/profi_start`, `/profiler_start`, `/profi_stop <filename>`, and `/profiler_stop <filename>` commands.
+- Added: Command `/consul_debug_turn_time` to measure AI turn duration.
+- Added: New function `consul.debug.disable_all_diplomacy()` to instantly block all diplomacy actions between all factions.
+
+---
+
 ## v0.7.0
 **Common:**
 - Added: Official manual page with detailed instructions on how scripting works and how to create your own scripts: https://bukowa.github.io/ConsulScriptum

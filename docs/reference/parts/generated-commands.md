@@ -21,6 +21,9 @@ Info on engine CliExecute functions.
 #### `/consul_debug_events`
 Toggle persistent event logging at startup.
 
+#### `/consul_debug_turn_time`
+Measure AI turn time.
+
 #### `/debug`
 Prints debug information about characters,settlements,etc.
 
@@ -56,6 +59,18 @@ Pretty-prints a Lua value using 'penlight'. Example: /p _G
 
 #### `/p2 `
 Pretty-prints a Lua value using 'inspect'. Example: /p2 _G
+
+#### `/profi_start`
+Start profi.lua.
+
+#### `/profi_stop`
+Stop profi.lua and save to &lt;filename&gt;.
+
+#### `/profiler_start`
+Start profiler.lua.
+
+#### `/profiler_stop`
+Stop profiler.lua and save to &lt;filename&gt;.
 
 #### `/r `
 Shorthand for 'return &lt;Lua code&gt;. Example: /r 2 + 2

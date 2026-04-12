@@ -1,6 +1,11 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
+        ["Unreleased"] = {
+            common = "Added: Commands for Lua profiling via `/profi_start`, `/profiler_start`, `/profi_stop <filename>`, and `/profiler_stop <filename>` commands."..
+            "\nAdded: Command `/consul_debug_turn_time` to measure AI turn duration."..
+            "\nAdded: New function `consul.debug.disable_all_diplomacy()` to instantly block all diplomacy actions between all factions."
+        },
         ["0.7.0"] = {
             common = "Added: Official manual page with detailed instructions on how scripting works and how to create your own scripts: https://bukowa.github.io/ConsulScriptum"..
             "\nAdded: Direct link to the manual added to the top of the Steam Workshop description."..
