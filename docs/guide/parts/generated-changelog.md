@@ -1,4 +1,4 @@
-## vUnreleased
+## v0.7.1
 **Common:**
 - Added: Commands for Lua profiling via `/profi_start`, `/profiler_start`, `/profi_stop <filename>`, and `/profiler_stop <filename>` commands.
 - Added: Command `/consul_debug_turn_time` to measure AI turn duration.

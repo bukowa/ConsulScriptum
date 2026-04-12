@@ -60,7 +60,7 @@ export default withMermaid(defineConfig({
             {text: 'Installation', link: '/guide/installation-guide'},
             {text: 'Scripting Manual', link: '/guide/scripting-manual'},
             {
-                text: 'v0.7.0',
+                text: 'v0.7.1',
                 items: [
                     {text: 'Changelog', link: '/guide/changelog'},
                     {text: 'GitHub', link: 'https://github.com/bukowa/ConsulScriptum'},
