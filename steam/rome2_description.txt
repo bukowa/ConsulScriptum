@@ -1,0 +1,108 @@
+[h2]Documentation & Manual[/h2]
+[b]Full instructions with images and videos are available on the official documentation site:[/b]
+
+[url=https://bukowa.github.io/ConsulScriptum/][b]➜ Read Documentation & Manual[/b][/url]
+
+Covers everything: installation, all features, scripting guide, API reference, and more.
+
+[h2]Introduction[/h2]
+[b]Consul[/b]: In ancient Rome, a consul was one of the two highest-ranking elected officials who jointly governed the republic. The term later came to denote high-ranking officials or diplomats in other contexts.
+
+[b]Scriptum[/b]: This means "written" (from the verb scribere, "to write"). It can refer to a document, text, or written work.
+
+Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on context: It could metaphorically imply "the written authority" or "a document issued by a consul." In a creative or modern context, it might be used as a title for a fictional work, legal decree, or diplomatic text.
+
+[h1]Scripting Console & Debugging Tool[/h1]
+
+[b]No technical knowledge required![/b] While under the hood it is a full Lua scripting console, it comes with a collection of simple, ready-to-use "one-click" scripts. You can use it right away without ever writing a line of code.
+
+[url=https://bukowa.github.io/ConsulScriptum/guide/getting-started][b]➜ Open Getting Started Guide[/b][/url]
+
+[h2]Scripting Manual[/h2]
+[b]Want to write your own scripts?[/b]
+I've created a comprehensive manual covering everything from basic Lua to advanced game-specific event handling.
+
+[url=https://bukowa.github.io/ConsulScriptum/guide/scripting-manual][b]➜ Open Detailed Scripting Manual[/b][/url]
+
+[h3]Consul (Non-Technical)[/h3]
+A window with a list of scripts that you can activate with a click. This provides a non-technical way to use scripts included in the mod—such as the character-kill script—without needing to interact with the console, making it more immersive.
+
+[img]https://images.steamusercontent.com/ugc/11741238541397539551/02865401B7B71861886990E0775D95189DCCF5DE/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+
+[h3]Console[/h3]
+The console gives you raw access to Lua and all the extra commands I implement and distribute with the mod.
+
+[img]https://images.steamusercontent.com/ugc/9288265473073402133/CF3ACB1078AD7AC759A853C94FB9DBC0707D9948/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+
+[h3]Scriptum (Technical)[/h3]
+This allows you to write your own scripts, place them in the game data folder, and execute them with a click. No need to restart the game—just reopen the Consul to load new scripts (this is not required after changing an existing script).
+
+[img]https://images.steamusercontent.com/ugc/15898757216557382161/450DFF9B890004225520A21A2550193B06D664E3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+
+[h2]Included Scripts[/h2]
+The following one-click scripts are bundled with the mod:
+[list]
+[*][b]Ad Rebellos[/b] — Spawns a rebellion in the selected settlement.
+[*][b]Adice Provinciam[/b] — Transfers settlement ownership to another faction.
+[*][b]Casus Belli[/b] — Forces a war declaration between two selected factions.
+[*][b]Custodes Vocati[/b] — Exchanges the garrison of a settlement with a field army.
+[*][b]Exterminare[/b] — Kills any selected character.
+[*][b]Impetus[/b] — Fully restores action points for any selected character.
+[*][b]Incrementum[/b] — Grants +1 Growth Point to the selected settlement.
+[*][b]Pax Aeterna[/b] — Forces a peace agreement between two selected factions.
+[*][b]Sedatio[/b] — Boosts public order by +10 across the selected settlement's province.
+[*][b]Subiugatio[/b] — Forces vassalage between two selected factions.
+[*][b]Vexatio[/b] — Penalizes public order by -10 across the selected settlement's province.
+[/list]
+
+[h3]Technical Limitations & FAQ[/h3]
+Detailed information about engine limitations, workarounds, and frequently asked questions are available here:
+[url=https://bukowa.github.io/ConsulScriptum/guide/technical-limitations][b]➜ View Technical Limitations & FAQ[/b][/url]
+
+[h3]Tags[/h3]
+- scripting, console, debug, modding, lua
+
+[h3]Load order[/h3]
+Modifies only these files, and should be placed above all others.
+Load on top of everything.
+[img]https://images.steamusercontent.com/ugc/16764158438205361713/E344F33DD0CCF0AE39FADEE8B8C3A88130F2E3E2/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+
+[h3]Compatibility[/h3]
+Compatible with everything. Unless someone copied code directly from Consul Scriptum.
+Save game compatible.
+
+[h3]Source code[/h3]
+- https://github.com/bukowa/ConsulScriptum
+
+If you reuse or redistribute, please leave a link to this Workshop page.
+
+[h3]Bugs[/h3]
+Please report any bugs in the GitHub repository — it is much easier to track them there than in Steam comments.
+- https://github.com/bukowa/ConsulScriptum/issues
+
+[h2]Credits & Acknowledgments[/h2]
+
+[b]Individual Contributors[/b]
+
+[list]
+[*] [b]DEI Discord Community[/b] — For their incredible help, insights, and support.
+[*] [b]Jake Armitage[/b] — For extra information and technical research.
+[/list]
+
+[b]Open Source & Libraries[/b]
+
+[list]
+[*] [url=https://github.com/taw/etwng]Taw's ETWNG[/url] — For the core research and decoding of UI pack files.
+[*] [url=https://github.com/Cpecific/twwh2_ctm]Cpecific's twwh2_ctm[/url] — UI Layout tool
+[/list]
+
+[h3]Documentation & API Reference[/h3]
+[url=https://bukowa.github.io/ConsulScriptum/][b]➜ Visit Full Documentation Website[/b][/url]
+
+[h3]Discord[/h3]
+I've made a Discord server for any script related talk / help.
+[url=https://discord.gg/tgggqMs4][b]➜ Join Discord Community[/b][/url]
+
+[h3]Support[/h3]
+If you'd like to support the project development, you can find me on Ko-fi. Thank you everyone for any kind of support, it means a lot to me.
+[url=https://ko-fi.com/bukowa][b]➜ Support this project on Ko-fi[/b][/url]
