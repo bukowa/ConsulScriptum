@@ -1,3 +1,12 @@
+## v0.7.2
+**Common:**
+- Added: Command `/consul_log_level <integer>` to set the consul log level persistently (e.g. 1=DEBUG, 2=INFO, 3=WARN).
+
+**Attila specific:**
+- Fixed: /debug commands now properly prints information in Attila
+
+---
+
 ## v0.7.1
 **Common:**
 - Added: Commands for Lua profiling via `/profi_start`, `/profiler_start`, `/profi_stop <filename>`, and `/profiler_stop <filename>` commands.

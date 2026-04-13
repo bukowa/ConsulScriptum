@@ -24,6 +24,9 @@ Toggle persistent event logging at startup.
 #### `/consul_debug_turn_time`
 Measure AI turn time.
 
+#### `/consul_log_level `
+Set consul log level. Levels: -2 DISABLED -1 TRACE 0 INTERNAL 1 DEBUG 2 INFO 3 WARN 4 ERROR 5 CRITICAL.
+
 #### `/debug`
 Prints debug information about characters,settlements,etc.
 
