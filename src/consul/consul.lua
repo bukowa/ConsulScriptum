@@ -207,8 +207,13 @@ consul = {
         
         -- persistent debug logging
         local cfg = consul.config.read()
-        if cfg.debug and cfg.debug.log_events then
-            consul.log:log_events_all()
+        if cfg.debug then
+            if cfg.debug.log_level then
+                consul.log:set_level(cfg.debug.log_level)
+            end
+            if cfg.debug.log_events then
+                consul.log:log_events_all()
+            end
         end
 
         -- turn time measurement
@@ -531,6 +536,7 @@ consul = {
                 },
                 debug = {
                     log_events = false,
+                    log_level = 2,
                 }
             }
         end,
@@ -556,6 +562,7 @@ consul = {
 
                 and type(_config.debug) == "table"
                 and type(_config.debug.log_events) == "boolean"
+                and type(_config.debug.log_level) == "number"
         end,
 
         --- A function that reads the config file and writes it back to the file.
@@ -1395,6 +1402,29 @@ consul = {
                         return consul.debug.profile.stop(10, arg)
                     end,
                     exec = false, returns = true,
+                },
+                ['/consul_log_level '] = {
+                    help = function()
+                        return "Set consul log level. Levels: -2 DISABLED -1 TRACE 0 INTERNAL 1 DEBUG 2 INFO 3 WARN 4 ERROR 5 CRITICAL."
+                    end,
+                    func = function(_cmd)
+                        local n = tonumber(string.sub(_cmd, 19))
+                        if not n then
+                            return "Invalid number. Usage: /consul_log_level <integer>"
+                        end
+                        consul.log:set_level(n)
+                        consul.config.process(function(cfg)
+                            cfg.debug.log_level = n
+                        end)
+                        return "Log level set to: " .. tostring(n)
+                    end,
+                    exec = false,
+                    returns = true,
+                    setup = function(cfg)
+                        if cfg.debug and cfg.debug.log_level then
+                            consul.log:set_level(cfg.debug.log_level)
+                        end
+                    end
                 },
             },
             exact = {
