@@ -3147,7 +3147,16 @@ consul.console.write(
             return string.sub(tostring(_any), 1, 21) == "NULL_SCRIPT_INTERFACE"
         end,
 
-        garrison_script_interface = function(_garrison)
+        garrison_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.garrison_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.garrison_script_interface_attila
+            end
+            return func(...)
+        end,
+        garrison_script_interface_rome = function(_garrison)
             if consul.pprinter._is_null(_garrison) then
                 return {}
             end
@@ -3176,8 +3185,47 @@ consul.console.write(
                 ['unit_count'] = _garrison:unit_count(),
             }
         end,
+        garrison_script_interface_attila = function(_garrison)
+            if consul.pprinter._is_null(_garrison) then
+                return {}
+            end
 
-        unit_script_interface = function(_unit, _index)
+            -- return faction only if army is null
+            -- otherwise we will loop too much
+            local faction = {}
+            if consul.pprinter._is_null(_garrison:army()) then
+                faction = consul.pprinter.faction_script_interface(_garrison:faction())
+            end
+
+            return {
+                ['army'] = _garrison:army(),
+                ['buildings'] = _garrison:buildings(),
+                ['can_assault'] = _garrison:can_assault(),
+                ['faction'] = faction,
+                ['has_army'] = _garrison:has_army(),
+                ['has_navy'] = _garrison:has_navy(),
+                ['is_settlement'] = _garrison:is_settlement(),
+                ['is_slot'] = _garrison:is_slot(),
+                ['is_under_siege'] = _garrison:is_under_siege(),
+                ['model'] = _garrison:model(),
+                ['navy'] = _garrison:navy(),
+                ['region'] = _garrison:region(),
+                ['settlement_interface'] = consul.pprinter.settlement_script_interface(_garrison:settlement_interface()),
+                ['slot_interface'] = _garrison:slot_interface(),
+                ['unit_count'] = _garrison:unit_count(),
+            }
+        end,
+
+        unit_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.unit_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.unit_script_interface_attila
+            end
+            return func(...)
+        end,
+        unit_script_interface_rome = function(_unit, _index)
             if consul.pprinter._is_null(_unit) then
                 return {}
             end
@@ -3199,6 +3247,31 @@ consul.console.write(
             }
         end,
 
+        unit_script_interface_attila = function(_unit, _index)
+            if consul.pprinter._is_null(_unit) then
+                return {}
+            end
+            return {
+                --["faction"] = "function: 571787B0",
+                --["force_commander"] = "function: 571786B0",
+                --["has_force_commander"] = "function: 571785B0",
+                --["has_unit_commander"] = "function: 57178550",
+                --["is_land_unit"] = "function: 57178590",
+                --["is_naval_unit"] = "function: 571785D0",
+                --["military_force"] = "function: 57178690",
+                --["model"] = "function: 57178670",
+                --["new"] = "function: 57145580",
+                --["unit_commander"] = "function: 571786F0",
+                ['unit_key'] = _unit:unit_key(),
+                ['unit_category'] = _unit:unit_category(),
+                ['unit_class'] = _unit:unit_class(),
+                ['can_upgrade_unit'] = _unit:can_upgrade_unit(),
+                ['can_upgrade_unit_equipment'] = _unit:can_upgrade_unit_equipment(),
+                ['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
+                --['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
+            }
+        end,
+
         unit_list_script_interface = function(_unitlist)
             if consul.pprinter._is_null(_unitlist) then
                 return {}
@@ -3211,7 +3284,16 @@ consul.console.write(
             return units
         end,
 
-        military_force_script_interface = function(_force)
+        military_force_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.military_force_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.military_force_script_interface_attila
+            end
+            return func(...)
+        end,
+        military_force_script_interface_rome = function(_force)
             if consul.pprinter._is_null(_force) then
                 return {}
             end
@@ -3230,8 +3312,41 @@ consul.console.write(
                 ['unit_list'] = consul.pprinter.unit_list_script_interface(_force:unit_list())
             }
         end,
+        military_force_script_interface_attila = function(_force)
+            if consul.pprinter._is_null(_force) then
+                return {}
+            end
+            return {
+                ["active_stance"] = _force:active_stance(),
+                ["building_exists"] = _force:building_exists(),
+                ["buildings"] = consul.pprinter._wont_print,
+                ["can_activate_stance"] = _force:can_activate_stance(),
+                ["character_list"] = consul.pprinter._wont_print,
+                ["command_queue_index"] = _force:command_queue_index(),
+                ["contains_mercenaries"] = _force:contains_mercenaries(),
+                ["faction"] = consul.pprinter._wont_print,
+                ["garrison_residence"] = consul.pprinter._wont_print,
+                ["general_character"] = consul.pprinter._wont_print,
+                ["has_garrison_residence"] = _force:has_garrison_residence(),
+                ["has_general"] = _force:has_general(),
+                ["is_army"] = _force:is_army(),
+                ["is_horde"] = _force:is_horde(),
+                ["is_navy"] = _force:is_navy(),
+                ["upkeep"] = _force:upkeep(),
+                ['unit_list'] = consul.pprinter.unit_list_script_interface(_force:unit_list())
+            }
+        end,
 
-        character_script_interface = function(_char)
+        character_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.character_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.character_script_interface_attila
+            end
+            return func(...)
+        end,
+        character_script_interface_rome = function(_char)
             if consul.pprinter._is_null(_char) then
                 return {}
             end
@@ -3254,6 +3369,8 @@ consul.console.write(
                 ['defensive_sieges_won'] = _char:defensive_sieges_won(),
                 ['display_position_x'] = _char:display_position_x(),
                 ['display_position_y'] = _char:display_position_y(),
+                ['logical_position_x'] = _char:logical_position_x(),
+                ['logical_position_y'] = _char:logical_position_y(),
                 ['faction'] = consul.pprinter.faction_script_interface(_char:faction()),
                 ['forename'] = _char:forename(),
                 ['fought_in_battle'] = _char:fought_in_battle(),
@@ -3281,8 +3398,6 @@ consul.console.write(
                 ['is_hidden'] = _char:is_hidden(),
                 ['is_male'] = _char:is_male(),
                 ['is_polititian'] = _char:is_polititian(),
-                ['logical_position_x'] = _char:logical_position_x(),
-                ['logical_position_y'] = _char:logical_position_y(),
                 ['military_force'] = consul.pprinter.military_force_script_interface(_char:military_force()),
                 ['model'] = _char:model(),
                 ['number_of_traits'] = _char:number_of_traits(),
@@ -3310,8 +3425,99 @@ consul.console.write(
                 ['won_battle'] = _char:won_battle(),
             }
         end,
+        character_script_interface_attila = function(_char)
+            if consul.pprinter._is_null(_char) then
+                return {}
+            end
+            return {
+                ['action_points_per_turn'] = _char:action_points_per_turn(),
+                ['action_points_remaining_percent'] = _char:action_points_remaining_percent(),
+                ['age'] = _char:age(),
+                ['battles_fought'] = _char:battles_fought(),
+                ['battles_won'] = _char:battles_won(),
+                ['body_guard_casulties'] = 'will crash game in campaign',
+                ['character_type'] = _char:character_type(),
+                ['command_queue_index'] = _char:command_queue_index(),
+                ['cqi'] = _char:cqi(),
+                ['defensive_ambush_battles_fought'] = _char:defensive_ambush_battles_fought(),
+                ['defensive_ambush_battles_won'] = _char:defensive_ambush_battles_won(),
+                ['defensive_battles_fought'] = _char:defensive_battles_fought(),
+                ['defensive_battles_won'] = _char:defensive_battles_won(),
+                ['defensive_naval_battles_fought'] = _char:defensive_naval_battles_fought(),
+                ['defensive_naval_battles_won'] = _char:defensive_naval_battles_won(),
+                ['defensive_sieges_fought'] = _char:defensive_sieges_fought(),
+                ['defensive_sieges_won'] = _char:defensive_sieges_won(),
+                ['display_position_x'] = _char:display_position_x(),
+                ['display_position_y'] = _char:display_position_y(),
+                ['logical_position_x'] = _char:logical_position_x(),
+                ['logical_position_y'] = _char:logical_position_y(),
+                ['faction'] = consul.pprinter.faction_script_interface(_char:faction()),
+                ['family_member'] = _char:family_member(),
+                ['father'] = _char:father(),
+                ['forename'] = _char:forename(),
+                ['fought_in_battle'] = _char:fought_in_battle(),
+                ['garrison_residence'] = consul.pprinter.garrison_script_interface(_char:garrison_residence()),
+                ['get_forename'] = _char:get_forename(),
+                ['get_surname'] = _char:get_surname(),
+                ['gravitas'] = _char:gravitas(),
+                ['has_ancillary'] = _char:has_ancillary(),
+                ['has_father'] = _char:has_father(),
+                ['has_mother'] = _char:has_mother(),
+                ['has_garrison_residence'] = _char:has_garrison_residence(),
+                ['has_military_force'] = _char:has_military_force(),
+                ['has_recruited_mercenaries'] = _char:has_recruited_mercenaries(),
+                ['has_region'] = _char:has_region(),
+                ['has_skill'] = _char:has_skill(),
+                ['has_trait'] = _char:has_trait(),
+                ['in_port'] = _char:in_port(),
+                ['in_settlement'] = _char:in_settlement(),
+                ['is_ambushing'] = _char:is_ambushing(),
+                ['is_besieging'] = _char:is_besieging(),
+                ['is_blockading'] = _char:is_blockading(),
+                ['is_carrying_troops'] = 'will crash agent in campaign',
+                ['is_deployed'] = _char:is_deployed(),
+                ['is_embedded_in_military_force'] = _char:is_embedded_in_military_force(),
+                ['is_faction_leader'] = _char:is_faction_leader(),
+                ['is_hidden'] = _char:is_hidden(),
+                ['is_male'] = _char:is_male(),
+                ['is_politician'] = _char:is_politician(),
+                ['loyalty'] = _char:loyalty(),
+                ['military_force'] = consul.pprinter.military_force_script_interface(_char:military_force()),
+                ['mother'] = _char:mother(),
+                ['number_of_traits'] = _char:number_of_traits(),
+                ['offensive_ambush_battles_fought'] = _char:offensive_ambush_battles_fought(),
+                ['offensive_ambush_battles_won'] = _char:offensive_ambush_battles_won(),
+                ['offensive_battles_fought'] = _char:offensive_battles_fought(),
+                ['offensive_battles_won'] = _char:offensive_battles_won(),
+                ['offensive_naval_battles_fought'] = _char:offensive_naval_battles_fought(),
+                ['offensive_naval_battles_won'] = _char:offensive_naval_battles_won(),
+                ['offensive_sieges_fought'] = _char:offensive_sieges_fought(),
+                ['offensive_sieges_won'] = _char:offensive_sieges_won(),
+                ['percentage_of_own_alliance_killed'] = _char:percentage_of_own_alliance_killed(),
+                ['performed_action_this_turn'] = _char:performed_action_this_turn(),
+                ['rank'] = _char:rank(),
+                ['region'] = _char:region(),
+                ['routed_in_battle'] = 'will crash game in campaign',
+                ['surname'] = _char:surname(),
+                ['trait_level'] = _char:trait_level(),
+                ['trait_points'] = _char:trait_points(),
+                ['turns_at_sea'] = _char:turns_at_sea(),
+                ['turns_in_enemy_regions'] = _char:turns_in_enemy_regions(),
+                ['turns_in_own_regions'] = _char:turns_in_own_regions(),
+                ['won_battle'] = _char:won_battle(),
+            }
+        end,
 
-        faction_script_interface = function(_fac)
+        faction_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.faction_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.faction_script_interface_attila
+            end
+            return func(...)
+        end,
+        faction_script_interface_rome = function(_fac)
             if consul.pprinter._is_null(_fac) then
                 return {}
             end
@@ -3385,8 +3591,85 @@ consul.console.write(
                 ["upkeep_expenditure_percent"] = _fac:upkeep_expenditure_percent(),
             }
         end,
+        faction_script_interface_attila = function(_fac)
+            if consul.pprinter._is_null(_fac) then
+                return {}
+            end
+            return {
+                ["allied_with"] = _fac:allied_with(),
+                ["ancillary_exists"] = _fac:ancillary_exists(),
+                ["at_war"] = _fac:at_war(),
+                ["at_war_with"] = _fac:at_war_with(),
+                ["character_list"] = _fac:character_list(),
+                ["command_queue_index"] = _fac:command_queue_index(),
+                ["culture"] = _fac:culture(),
+                ["ended_war_this_turn"] = _fac:ended_war_this_turn(),
+                ["faction_leader"] = _fac:faction_leader(),
+                ["has_faction_leader"] = _fac:has_faction_leader(),
+                ["has_food_shortage"] = _fac:has_food_shortage(),
+                ["has_home_region"] = _fac:has_home_region(),
+                ["has_technology"] = _fac:has_technology(),
+                ["home_region"] = _fac:home_region(),
+                ["imperium_level"] = _fac:imperium_level(),
+                ["is_horde"] = _fac:is_horde(),
+                ["is_human"] = _fac:is_human(),
+                ["is_null_interface"] = _fac:is_null_interface(),
+                ["is_trading_with"] = _fac:is_trading_with(),
+                ["losing_money"] = _fac:losing_money(),
+                ["military_force_list"] = _fac:military_force_list(),
+                ["model"] = _fac:model(),
+                ["name"] = _fac:name(),
+                ["new"] = _fac:new(),
+                ["num_allies"] = _fac:num_allies(),
+                ["num_generals"] = _fac:num_generals(),
+                ["region_list"] = _fac:region_list(),
+                ["research_queue_idle"] = (function()
+                    -- wont work for rebels
+                    if _fac:name() == "rebels" then
+                        return "will crash game in campaign"
+                    end
+                    return _fac:research_queue_idle()
+                end)(),
+                ["sea_trade_route_raided"] = _fac:sea_trade_route_raided(),
+                ["started_war_this_turn"] = _fac:started_war_this_turn(),
+                ["state_religion"] = _fac:state_religion(),
+                ["state_religion_percentage"] = _fac:state_religion_percentage(),
+                ["subculture"] = _fac:subculture(),
+                ["tax_level"] = _fac:tax_level(),
+                ["trade_resource_exists"] = _fac:trade_resource_exists(),
+                ["trade_route_limit_reached"] = (function()
+                    -- wont work for rebels
+                    if _fac:name() == "rebels" then
+                        return "will crash game in campaign"
+                    end
+                    return _fac:trade_route_limit_reached()
+                end)(),
+                ["trade_ship_not_in_trade_node"] = _fac:trade_ship_not_in_trade_node(),
+                ["trade_value"] = _fac:trade_value(),
+                ["trade_value_percent"] = _fac:trade_value_percent(),
+                ["treasury"] = _fac:treasury(),
+                ["treasury_percent"] = _fac:treasury_percent(),
+                ["unused_international_trade_route"] = (function()
+                    -- wont work for rebels
+                    if _fac:name() == "rebels" then
+                        return "will crash game in campaign"
+                    end
+                    return _fac:unused_international_trade_route()
+                end)(),
+                ["upkeep_expenditure_percent"] = _fac:upkeep_expenditure_percent(),
+            }
+        end,
 
-        settlement_script_interface = function(_settl)
+        settlement_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.settlement_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.settlement_script_interface_attila
+            end
+            return func(...)
+        end,
+        settlement_script_interface_rome = function(_settl)
             if consul.pprinter._is_null(_settl) then
                 return {}
             end
@@ -3408,8 +3691,38 @@ consul.console.write(
                 ["slot_list"] = consul.pprinter.slot_list_interface(_settl:slot_list())
             }
         end,
+        settlement_script_interface_attila = function(_settl)
+            if consul.pprinter._is_null(_settl) then
+                return {}
+            end
+            return {
+                ["commander"] = _settl:commander(),
+                ["display_position_x"] = _settl:display_position_x(),
+                ["display_position_y"] = _settl:display_position_y(),
+                ["logical_position_x"] = _settl:logical_position_x(),
+                ["logical_position_y"] = _settl:logical_position_y(),
+                ["faction"] = _settl:faction(),
+                ["has_commander"] = _settl:has_commander(),
+                ["is_null_interface"] = _settl:is_null_interface(),
+                ["region"] = consul.pprinter.region_script_interface(_settl:region(), {
+                    -- do not print slot list
+                    -- it is printed in `slot_list_interface` below
+                    _print__slot_list = false,
+                }),
+                ["slot_list"] = consul.pprinter.slot_list_interface(_settl:slot_list())
+            }
+        end,
 
-        region_script_interface = function(_region, _opts)
+        region_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.region_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.region_script_interface_attila
+            end
+            return func(...)
+        end,
+        region_script_interface_rome = function(_region, _opts)
             if consul.pprinter._is_null(_region) then
                 return {}
             end
@@ -3442,8 +3755,51 @@ consul.console.write(
                 ["town_wealth_growth"] = _region:town_wealth_growth()
             }
         end,
+        region_script_interface_attila = function(_region, _opts)
+        if consul.pprinter._is_null(_region) then
+            return {}
+        end
+        return {
+            ["adjacent_region_list"] = _region:adjacent_region_list(),
+            ["building_exists"] = _region:building_exists(),
+            ["building_superchain_exists"] = _region:building_superchain_exists(),
+            ["garrison_residence"] = _region:garrison_residence(),
+            ["governor"] = _region:governor(),
+            ["has_governor"] = _region:has_governor(),
+            ["is_null_interface"] = _region:is_null_interface(),
+            ["last_building_constructed_key"] = _region:last_building_constructed_key(),
+            ["majority_religion"] = _region:majority_religion(),
+            ["majority_religion_percentage"] = _region:majority_religion_percentage(),
+            ["name"] = _region:name(),
+            ["num_buildings"] = _region:num_buildings(),
+            ["owning_faction"] = _region:owning_faction(),
+            ["public_order"] = _region:public_order(),
+            ["region_wealth_change_percent"] = _region:region_wealth_change_percent(),
+            ["resource_exists"] = _region:resource_exists(),
+            ["sanitation"] = _region:sanitation(),
+            ["settlement"] = _region:settlement(),
+            ["slot_list"] = (function()
+                if (_opts and _opts._print__slot_list) then
+                    return consul.pprinter.slot_list_interface(_region:slot_list())
+                end
+                return consul.pprinter._wont_print
+            end)(),
+            ["slot_type_exists"] = _region:slot_type_exists(),
+            ["squalor"] = _region:squalor(),
+            ["town_wealth_growth"] = _region:town_wealth_growth()
+        }
+        end,
 
-        building_script_interface = function(_build)
+        building_script_interface = function(...)
+            local func = nil
+            if consul_build == "Rome2" then
+                func = consul.pprinter.building_script_interface_rome
+            elseif consul_build == "Attila" then
+                func = consul.pprinter.building_script_interface_attila
+            end
+            return func(...)
+        end,
+        building_script_interface_rome = function(_build)
             if consul.pprinter._is_null(_build) then
                 return {}
             end
@@ -3451,6 +3807,20 @@ consul.console.write(
                 ["chain"] = _build:chain(),
                 ["faction"] = _build:faction(),
                 ["name"] = _build:name(),
+                ["region"] = _build:region(),
+                ["slot"] = _build:slot(),
+                ["superchain"] = _build:superchain()
+            }
+        end,
+        building_script_interface_attila = function(_build)
+            if consul.pprinter._is_null(_build) then
+                return {}
+            end
+            return {
+                ["chain"] = _build:chain(),
+                ["faction"] = _build:faction(),
+                ["name"] = _build:name(),
+                ["percent_health"] = _build:percent_health(),
                 ["region"] = _build:region(),
                 ["slot"] = _build:slot(),
                 ["superchain"] = _build:superchain()
