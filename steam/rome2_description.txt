@@ -1,3 +1,5 @@
+[previewyoutube=6WbE6nKbPTQ;thumbnail][/previewyoutube]
+
 [h2]Documentation & Manual[/h2]
 [b]Full instructions with images and videos are available on the official documentation site:[/b]
 
@@ -29,17 +31,7 @@ A window with a list of scripts that you can activate with a click. This provide
 
 [img]https://images.steamusercontent.com/ugc/11741238541397539551/02865401B7B71861886990E0775D95189DCCF5DE/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
-[h3]Console[/h3]
-The console gives you raw access to Lua and all the extra commands I implement and distribute with the mod.
-
-[img]https://images.steamusercontent.com/ugc/9288265473073402133/CF3ACB1078AD7AC759A853C94FB9DBC0707D9948/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
-
-[h3]Scriptum (Technical)[/h3]
-This allows you to write your own scripts, place them in the game data folder, and execute them with a click. No need to restart the game—just reopen the Consul to load new scripts (this is not required after changing an existing script).
-
-[img]https://images.steamusercontent.com/ugc/15898757216557382161/450DFF9B890004225520A21A2550193B06D664E3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
-
-[h2]Included Scripts[/h2]
+[h3]Included Scripts[/h3]
 The following one-click scripts are bundled with the mod:
 [list]
 [*][b]Ad Rebellos[/b] — Spawns a rebellion in the selected settlement.
@@ -54,6 +46,16 @@ The following one-click scripts are bundled with the mod:
 [*][b]Subiugatio[/b] — Forces vassalage between two selected factions.
 [*][b]Vexatio[/b] — Penalizes public order by -10 across the selected settlement's province.
 [/list]
+
+[h3]Console[/h3]
+The console gives you raw access to Lua and all the extra commands I implement and distribute with the mod.
+
+[img]https://images.steamusercontent.com/ugc/9288265473073402133/CF3ACB1078AD7AC759A853C94FB9DBC0707D9948/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+
+[h3]Scriptum (Technical)[/h3]
+This allows you to write your own scripts, place them in the game data folder, and execute them with a click. No need to restart the game—just reopen the Consul to load new scripts (this is not required after changing an existing script).
+
+[img]https://images.steamusercontent.com/ugc/15898757216557382161/450DFF9B890004225520A21A2550193B06D664E3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h3]Technical Limitations & FAQ[/h3]
 Detailed information about engine limitations, workarounds, and frequently asked questions are available here:

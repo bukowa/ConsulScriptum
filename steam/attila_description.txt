@@ -1,3 +1,5 @@
+[previewyoutube=6WbE6nKbPTQ;thumbnail][/previewyoutube]
+
 [h2]Documentation & Manual[/h2]
 [b]Full instructions with images and videos are available on the official documentation site:[/b]
 
@@ -29,17 +31,7 @@ A window with a list of scripts that you can activate with a single click. This 
 
 [img]PLACEHOLDER_ATTILA/consul-consul.png[/img]
 
-[h3]Console[/h3]
-The console gives you raw access to Lua and all the extra commands included with the mod. Type a slash command or a Lua snippet and click Send to execute it.
-
-[img]PLACEHOLDER_ATTILA/consul-console.png[/img]
-
-[h3]Scriptum (Technical)[/h3]
-This allows you to write your own scripts, place them in the game folder, and execute them with a click. No need to restart the game — just save your file and click the button again to run the updated code immediately.
-
-[img]PLACEHOLDER_ATTILA/consul-scriptum.png[/img]
-
-[h2]Included Scripts[/h2]
+[h3]Included Scripts[/h3]
 The following one-click scripts are bundled with the mod:
 [list]
 [*][b]Ad Rebellos[/b] — Spawns a rebellion in the selected settlement.
@@ -54,6 +46,16 @@ The following one-click scripts are bundled with the mod:
 [*][b]Subiugatio[/b] — Forces vassalage between two selected factions.
 [*][b]Vexatio[/b] — Penalizes public order by -10 across the selected settlement's province.
 [/list]
+
+[h3]Console[/h3]
+The console gives you raw access to Lua and all the extra commands included with the mod. Type a slash command or a Lua snippet and click Send to execute it.
+
+[img]PLACEHOLDER_ATTILA/consul-console.png[/img]
+
+[h3]Scriptum (Technical)[/h3]
+This allows you to write your own scripts, place them in the game folder, and execute them with a click. No need to restart the game — just save your file and click the button again to run the updated code immediately.
+
+[img]PLACEHOLDER_ATTILA/consul-scriptum.png[/img]
 
 [h3]Technical Limitations & FAQ[/h3]
 Detailed information about engine limitations, workarounds, and frequently asked questions are available here:
