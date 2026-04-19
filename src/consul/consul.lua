@@ -702,6 +702,114 @@ consul = {
         _UIContext = nil,          -- context
         _UIContextComponent = nil, -- context.component
 
+        debug = {
+            get_id_chains = function(component)
+            local chain = {}
+            local current = component
+
+            while current do
+                table.insert(chain, 1, tostring(current:Id())) -- Insert at front to keep order
+                local parent = current:Parent()
+                if not parent then break end
+                current = consul.ui._UIComponent(parent) -- Assuming 'Parent()' is the method to get the container
+            end
+            
+            return chain
+            end,
+
+            get_component_report = function(component)
+                local safe_call = function(obj, method)
+                    if not obj[method] then return "n/a" end
+                    if type(obj[method]) ~= "function" then return tostring(obj[method]) end
+
+                    local ok, val1, val2, val3, val4 = pcall(function() return obj[method](obj) end)
+                    if not ok then return "error" end
+
+                    -- handle multiple returns
+                    if val4 ~= nil then return { val1, val2, val3, val4 } end
+                    if val3 ~= nil then return { val1, val2, val3 } end
+                    if val2 ~= nil then return { val1, val2 } end
+                    return val1
+                end
+
+                local report = {
+                    Id = safe_call(component, "Id"),
+                    Hierarchy = table.concat(consul.ui.debug.get_id_chains(component), " > "),
+                    properties = {
+                        Address = safe_call(component, "Address"),
+                        Id = safe_call(component, "Id"),
+                        IsInteractive = safe_call(component, "IsInteractive"),
+                        Priority = safe_call(component, "Priority"),
+                        TextDimensions = safe_call(component, "TextDimensions"),
+
+                        -- positions & dimensions
+                        Bounds = safe_call(component, "Bounds"),
+                        Dimensions = safe_call(component, "Dimensions"),
+                        Position = safe_call(component, "Position"),
+                        Width = safe_call(component, "Width"),
+                        Height = safe_call(component, "Height"),
+                        CurrentState = safe_call(component, "CurrentState"),
+                        Visible = safe_call(component, "Visible"),
+                    }
+                }
+                return report
+            end,
+
+            format_report = function(report)
+                local output = {}
+
+                local spaces_map = {
+                    ["Address"]             = 25,
+                    ["Bounds"]              = 26,
+                    ["CurrentState"]        = 19,
+                    ["Dimensions"]          = 20,
+                    ["Height"]              = 27,
+                    ["Id"]                  = 33,
+                    ["IsInteractive"]       = 19,
+                    ["Position"]            = 25,
+                    ["Priority"]            = 25,
+                    ["TextDimensions"]      = 14,
+                    ["Visible"]             = 27,
+                    ["Width"]               = 27
+                }
+
+                local property_order = {
+                    "Id",
+                    "Address",
+                    "Visible",
+                    "IsInteractive",
+                    "CurrentState",
+                    "Priority",
+                    "Position",
+                    "Bounds",
+                    "Dimensions",
+                    "Width",
+                    "Height",
+                    "TextDimensions"
+                }
+
+                table.insert(output, "--------------------------------------------------------------------------------")
+
+                if report.properties then
+                    for _, k in ipairs(property_order) do
+                        local val = report.properties[k]
+
+                        if val ~= nil then
+                            local val_str = (type(val) == "table") and table.concat(val, ", ") or tostring(val)
+                            local num_spaces = spaces_map[k] or 10
+
+                            table.insert(output, k .. ":" .. string.rep(" ", num_spaces) .. val_str)
+                        end
+                    end
+                end
+
+                table.insert(output, "--------------------------------------------------------------------------------")
+                table.insert(output, "Hierarchy:  " .. tostring(report.Hierarchy))
+
+                return table.concat(output, "\n")
+            end,
+        },
+
         --- A shortcut function that finds a UIComponent by key.<br>
         --- Contains some guards to make sure the function works as expected.
         --- @function ui.find
@@ -1614,7 +1722,9 @@ consul = {
                         table.insert(events.ComponentLClickUp, function(context)
                             if command._is_running then
                                 console.clear()
-                                console.write(consul.pretty(debug.getmetatable(context)))
+                                local component = UIComponent(context.component)
+                                local report = consul.ui.debug.get_component_report(component)
+                                console.write(consul.ui.debug.format_report(report))
                             end
                         end)
 
@@ -1640,7 +1750,9 @@ consul = {
                         table.insert(events.ComponentMouseOn, function(context)
                             if command._is_running then
                                 console.clear()
-                                console.write(consul.pretty(debug.getmetatable(context)))
+                                local component = UIComponent(context.component)
+                                local report = consul.ui.debug.get_component_report(component)
+                                console.write(consul.ui.debug.format_report(report))
                             end
                         end)
 
