@@ -218,7 +218,7 @@
             </states>
             <properties count="0">
             </properties>
-            <i>30</i><!-- priority? -->
+            <i>300000</i><!-- priority? -->
             <funcs count="0">
             </funcs>
             <children count="3">
