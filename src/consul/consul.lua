@@ -829,15 +829,23 @@ consul = {
 
             OnUICreated = function()
                 local ui = consul.ui
+                local log = consul.new_log('ui.attila:OnUICreated')
+                log:debug("Attila specific OnUICreated start")
+
                 ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
                 ui.MoveToConfigPosition()
                 --ui.find(ui.consul):TriggerAnimation('move_up')
                 ui.find(ui.scriptum):TriggerAnimation('move_up')
                 ui.find(ui.consul_minimize):SimulateLClick()
                 ui.find(ui.scriptum_minimize):SimulateLClick()
+
+                log:debug("Attila specific OnUICreated end")
             end,
 
             OnComponentMoved = function(context)
+                local log = consul.new_log('ui.attila:OnComponentMoved')
+                log:debug("Attila specific OnComponentMoved start")
+
                 if context.string ~= consul.ui.root then return end
                 local ui, attila = consul.ui, consul.ui.attila
                 -- in campaign
@@ -855,9 +863,14 @@ consul = {
                 attila.xx, attila.yy = c:Position()
                 attila.should_move = true
                 c:SetVisible(false)
+
+                log:debug("Attila specific OnComponentMoved end")
             end,
 
             TimeTrigger = function()
+                local log = consul.new_log('ui.attila:TimeTrigger')
+                log:debug("Attila specific TimeTrigger start")
+
                 local ui, attila = consul.ui, consul.ui.attila
                 local c = ui.find(ui.root)
                 local x, y = c:Position()
@@ -868,6 +881,8 @@ consul = {
                     c:MoveTo(xx, yy)
                     attila.should_move = false
                 end
+
+                log:debug("Attila specific TimeTrigger end")
             end,
         },
 
