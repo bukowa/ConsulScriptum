@@ -1,3 +1,10 @@
+## vUnreleased
+**Common:**
+- Added: New 'Debugging The World' section to the official manual.
+- Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila).
+
+---
+
 ## v0.7.2
 **Common:**
 - Added: Command `/consul_log_level <integer>` to set the consul log level persistently (e.g. 1=DEBUG, 2=INFO, 3=WARN).

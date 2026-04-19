@@ -1,6 +1,10 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
+        ["Unreleased"] = {
+            common = "Added: New 'Debugging The World' section to the official manual."..
+            "\nFixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila)."
+        },
         ["0.7.2"] = {
             common = "Added: Command `/consul_log_level <integer>` to set the consul log level persistently (e.g. 1=DEBUG, 2=INFO, 3=WARN).",
             Attila = "Fixed: /debug commands now properly prints information in Attila"
