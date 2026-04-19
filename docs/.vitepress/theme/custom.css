@@ -122,6 +122,13 @@ h3 {
   color: var(--cs-gold);
 }
 
+/* ── Docs typography ──────────────────────────────────────── */
+
+.vp-doc h2 {
+  border-top: none;
+  margin-bottom: 24px;
+}
+
 /* ── Navigation ───────────────────────────────────────────── */
 .VPNav {
   background: var(--cs-bg-overlay) !important;
@@ -129,11 +136,16 @@ h3 {
   backdrop-filter: blur(12px);
 }
 
+.VPNav .container {
+  gap: 1.5em;
+}
+
 .VPNavBar .title {
   font-family: 'Cinzel', serif !important;
   font-size: 1.1rem !important;
   color: var(--cs-gold-light) !important;
   letter-spacing: 0.06em;
+  border: none;
 }
 
 .VPNavBarTitle .logo {
@@ -167,6 +179,11 @@ h3 {
   color: var(--cs-text-muted);
 }
 
+.VPSidebarItem h2.text {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
 .VPSidebarItem.is-active>.item .text,
 .VPSidebarItem.is-link.is-active>.item>.link .text {
   color: var(--cs-gold-light) !important;
@@ -184,6 +201,12 @@ h3 {
   text-transform: uppercase;
   color: var(--cs-crimson-light) !important;
   font-weight: 700;
+}
+
+.VPLocalNav .VPLocalNavOutlineDropdown button,
+.VPLocalNav .menu,
+.VPLocalNav .menu-icon {
+  font-size: 16px;
 }
 
 /* ── Content area ─────────────────────────────────────────── */
@@ -298,7 +321,7 @@ pre code {
   color: var(--cs-gold);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.2s, color 0.2s;
+  transition: all 0.2s;
 }
 
 .vp-doc a:hover {
@@ -334,8 +357,32 @@ pre code {
   font-size: 1.3rem !important;
 }
 
+.VPHero .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.VPHero .image {
+  margin: 0 auto;
+}
+
 .VPHero .image-container {
+  transform: none;
   filter: drop-shadow(0 0 40px var(--cs-crimson-glow));
+}
+
+@media (min-width: 960px) {
+  .VPHero .container {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  .VPHero .image, .VPHero .main {
+    width: 48%;
+    flex: 0 0 48%;
+    margin: 0;
+  }
 }
 
 /* ── Feature cards ────────────────────────────────────────── */
@@ -452,14 +499,23 @@ body::before {
 }
 
 /* ── Search box ───────────────────────────────────────────── */
-.VPNavBarSearch .DocSearch-Button {
-  background: var(--cs-bg-card) !important;
-  border: 1px solid var(--cs-border) !important;
-  color: var(--cs-text-muted) !important;
+
+@media (min-width: 960px) {
+  .VPNavBarSearch {
+    padding-left: 1.5em;
+  }
 }
 
-.VPNavBarSearch .DocSearch-Button:hover {
-  border-color: var(--cs-border-strong) !important;
+@media (min-width: 768px) {
+  .VPNavBarSearch .DocSearch-Button {
+    background: var(--cs-bg-card) !important;
+    border: 1px solid var(--cs-border) !important;
+    color: var(--cs-text-muted) !important;
+  }
+
+  .VPNavBarSearch .DocSearch-Button:hover {
+    border-color: var(--cs-border-strong) !important;
+  }
 }
 
 /* ── Local search modal ───────────────────────────────────── */
@@ -844,19 +900,21 @@ body::before {
     background: var(--cs-bg-raised) !important;
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6) !important;
   }
+}
 
+@media (max-width: 600px) {
   /* Hero button stacking for mobile devices */
   .VPHero .actions {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 0.8rem !important;
+    gap: 0.5rem !important;
     padding-top: 1.5rem !important;
   }
 
-  .VPHero .actions .item {
+  .VPHero .actions .action {
     width: 100% !important;
-    max-width: 320px;
+    max-width: 300px;
     margin: 0 !important;
   }
 

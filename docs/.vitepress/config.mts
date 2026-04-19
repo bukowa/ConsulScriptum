@@ -13,6 +13,7 @@ export default withMermaid(defineConfig({
     titleTemplate: 'Total War Console - Consul Scriptum',
     description: 'An in-game Lua console and script runner for Total War: Rome II and Attila.',
     base: '/ConsulScriptum/',
+    appearance: 'force-dark',
 
     // SEO Optimization
     lastUpdated: true,

@@ -54,9 +54,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0 12px;
-  height: 36px;
-  margin-left: 12px;
+  padding: 0;
+  height: 40px
 }
 
 .cs-game-label {
@@ -79,8 +78,8 @@ onMounted(() => {
   appearance: none;
   background-color: var(--cs-bg-card, #231B12);
   border: 1px solid var(--cs-border, rgba(201, 168, 76, 0.2));
-  border-radius: 4px;
-  padding: 0.2rem 2rem 0.2rem 0.75rem;
+  border-radius: 8px;
+  padding: 0 30px 0 15px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
   font-weight: 500;
@@ -88,12 +87,13 @@ onMounted(() => {
   cursor: pointer;
   outline: none;
   transition: all 0.2s ease;
-  min-width: 110px;
+  min-width: 100px;
+  height: 40px;
 }
 
 .cs-game-select:hover {
   border-color: var(--cs-border-strong, rgba(201, 168, 76, 0.45));
-  background-color: var(--cs-bg-raised, #1C1610);
+  //background-color: var(--cs-bg-raised, #1C1610);
 }
 
 .cs-game-select:focus {
@@ -123,14 +123,9 @@ onMounted(() => {
   opacity: 1;
 }
 
-/* Adjustments for mobile view where it might wrap or need spacing */
-@media (max-width: 768px) {
-  .cs-game-selector {
-    margin-left: 0;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--vp-c-divider);
-    justify-content: space-between;
-    height: auto;
+@media (max-width: 767px) {
+  .VPNavBar .cs-game-selector {
+   display: none;
   }
 }
 </style>

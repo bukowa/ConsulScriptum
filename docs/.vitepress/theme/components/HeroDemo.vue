@@ -117,10 +117,9 @@ const jumpToGame = (gameName: string) => {
 <style scoped>
 .hero-demo-container {
   width: 100%;
-  max-width: 720px;
-  margin: 0 -40px 0 auto;
   position: relative;
   z-index: 10;
+  margin: 0 auto;
 }
 
 .hero-demo-tabs {
@@ -128,6 +127,7 @@ const jumpToGame = (gameName: string) => {
   justify-content: center;
   gap: 12px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .hero-demo-tab {
@@ -161,10 +161,10 @@ const jumpToGame = (gameName: string) => {
   background: #000;
   border: 1px solid var(--cs-border-strong);
   border-radius: 12px;
-  /* overflow: hidden; Removed to allow arrows to float outside */
   box-shadow: 0 15px 50px rgba(0,0,0,0.9);
   position: relative;
   aspect-ratio: 4 / 3;
+  width: 100%;
 }
 
 .video-wrapper {
@@ -173,8 +173,8 @@ const jumpToGame = (gameName: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Moved from parent to clip only the video */
-  border-radius: 11px; /* Slightly less than parent for clean fit */
+  overflow: hidden;
+  border-radius: 11px;
 }
 
 .demo-video {
@@ -190,13 +190,13 @@ const jumpToGame = (gameName: string) => {
   transform: scale(1.01);
 }
 
-/* Navigation Arrows - Larger and more prominent */
+/* Navigation Arrows */
 .nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(201, 168, 76, 0.2);
   color: var(--cs-gold);
@@ -210,6 +210,19 @@ const jumpToGame = (gameName: string) => {
   backdrop-filter: blur(4px);
 }
 
+@media (min-width: 768px) {
+  .nav-arrow {
+    width: 64px;
+    height: 64px;
+  }
+  .prev { left: -32px; }
+  .next { right: -32px; }
+}
+@media (max-width: 767px) {
+  .prev { left: -16px; }
+  .next { right: -16px; }
+}
+
 .nav-arrow:hover {
   background: rgba(139, 0, 0, 0.7);
   border-color: var(--cs-gold-light);
@@ -217,9 +230,6 @@ const jumpToGame = (gameName: string) => {
   box-shadow: 0 0 25px rgba(139, 0, 0, 0.5);
   transform: translateY(-50%) scale(1.1);
 }
-
-.prev { left: -32px; }
-.next { right: -32px; }
 
 .arrow-icon {
   font-size: 3.5rem;
@@ -235,13 +245,20 @@ const jumpToGame = (gameName: string) => {
 /* Video Info Badge */
 .video-info {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 16px;
+  left: 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   pointer-events: none;
   z-index: 5;
+}
+
+@media (min-width: 768px) {
+  .video-info {
+    top: 24px;
+    left: 24px;
+  }
 }
 
 .game-tag {
@@ -259,11 +276,17 @@ const jumpToGame = (gameName: string) => {
 
 .video-title {
   font-family: 'Crimson Text', serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #fff;
   text-shadow: 0 2px 10px rgba(0,0,0,1);
   font-style: italic;
   font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .video-title {
+    font-size: 1.1rem;
+  }
 }
 
 /* Dot Indicators */
@@ -296,12 +319,5 @@ const jumpToGame = (gameName: string) => {
   background: var(--cs-gold);
   transform: scale(1.4);
   box-shadow: 0 0 10px var(--cs-gold);
-}
-
-@media (max-width: 640px) {
-  .hero-demo-container {
-    max-width: 100%;
-    margin-top: 2rem;
-  }
 }
 </style>
