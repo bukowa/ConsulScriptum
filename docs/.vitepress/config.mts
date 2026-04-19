@@ -59,7 +59,6 @@ export default withMermaid(defineConfig({
         nav: [
             {text: 'Getting started', link: '/guide/getting-started'},
             {text: 'Scripting Manual', link: '/guide/scripting-manual'},
-            {text: 'Installation', link: '/guide/installation-guide'},
             {
                 text: 'v0.7.2',
                 items: [

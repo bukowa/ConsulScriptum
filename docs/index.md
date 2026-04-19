@@ -2,12 +2,12 @@
 layout: home
 title: "Consul Scriptum"
 titleTemplate: "Scripting Console for Total War Games"
-description: "Automation and scripting console for Total War games. Use Consul for one-click modding, Console for Lua snippets, and Scriptum for complex file-based scripts."
+description: "Open-source scripting console for Rome II and Attila. Kill characters, transfer settlements, run Lua scripts — all live in your campaign."
 
 hero:
   name: "Consul Scriptum"
-  text: "Scripting Interface & Console"
-  tagline: "A direct UI bridge to the game's internal scripting engine. Automate your campaign via the Consul module—no technical knowledge or pack editing required. For detailed control, use Lua Console and Scriptum modules."
+  text: "Scripting Console for Total War"
+  tagline: "An open-source mod that gives you a scripting console inside your campaign. Kill characters, transfer settlements, run Lua code —<br>— no restarts, no pack editing."
   actions:
     - theme: brand
       text: Getting started
@@ -22,67 +22,15 @@ hero:
 features:
   - icon: 📋
     title: Consul
-    details: The entry point for all players. Modify your live campaign instantly with one-click actions—like using the *Exterminare* script to kill characters or *Adice Provinciam* to transfer settlements on the campaign map. No technical knowledge required.
+    details: Point-and-click scripts for your campaign. Pick a script, click a target on the map, done. Kill characters, transfer settlements, and more — no coding needed.
 
   - icon: ⌨️
     title: Console & Scriptum
-    details: The advanced interface for script interactions. Use the console for immediate slash-commands and raw Lua snippets or execute complex external .lua files live from your game folder without restarting the game. Technical knowledge required.
+    details: A Lua console inside the game. Run commands, test snippets, or execute full .lua files from your game folder — all without restarting.
 
   - icon: 🛡️
-    title: Scope & Safety
-    details: Strictly non-invasive. This tool interacts with official game Lua APIs to change the game state; it does not bypass engine constraints, modify core files, extend the engine, or function as a hack.
+    title: Just a mod
+    details: A regular .pack mod that uses only the official game scripting APIs. No DLL injection, no memory hacks, no engine modifications.
 ---
 
-<div class="disclaimer-section">
 
-<!-- @include: ./guide/parts/disclaimer.md -->
-
-</div>
-
-<style scoped>
-.disclaimer-section {
-  max-width: 720px;
-  margin: 4rem auto;
-  padding: 0 2rem;
-  text-align: center;
-}
-.disclaimer-section h2 {
-  margin-bottom: 2.5rem;
-  font-family: 'Cinzel', serif;
-  color: var(--cs-crimson-light);
-  letter-spacing: 0.1em;
-}
-.disclaimer-section p {
-  margin-bottom: 2rem;
-  color: var(--cs-text-muted);
-}
-.disclaimer-section table {
-  width: 95%;
-  border-collapse: collapse;
-  font-family: 'Crimson Text', serif;
-  font-size: 1rem;
-  margin-left: auto !important;
-  margin-right: 0 !important;
-}
-.disclaimer-section th {
-  text-align: center !important;
-  padding-bottom: 1rem;
-  color: var(--cs-gold);
-  border-bottom: 1px solid var(--cs-border-strong);
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-}
-.disclaimer-section td {
-  padding: 1.25rem 0.5rem;
-  border-bottom: 1px solid var(--cs-border-faint);
-  color: var(--cs-text-muted);
-  text-align: center !important;
-}
-.disclaimer-section tr:last-child td {
-  border-bottom: none;
-}
-.disclaimer-section strong {
-  color: var(--cs-gold-light);
-}
-</style>
