@@ -1,3 +1,9 @@
+---
+next:
+  text: Scripting Manual
+  link: /guide/scripting-manual
+---
+
 # Debugging The UI
 
 Consul Scriptum includes tools to inspect the game's User Interface hierarchy directly. By using the UI debugging

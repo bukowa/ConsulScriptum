@@ -1,3 +1,8 @@
+---
+next:
+  text: Debugging The World
+  link: /guide/debugging-the-world
+---
 # Local files and logs
 
 While Consul is running, it also creates and updates several support files that are useful for day-to-day work and debugging.

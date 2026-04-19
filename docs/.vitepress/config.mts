@@ -90,10 +90,10 @@ export default withMermaid(defineConfig({
             {
                 text: 'Beyond the basics',
                 items: [
-                    {text: 'Scripting Manual', link: '/guide/scripting-manual'},
+                    {text: 'Local files and logs', link: '/guide/consul-scriptum-files'},
                     {text: 'Debugging The World', link: '/guide/debugging-the-world'},
                     {text: 'Debugging The UI', link: '/guide/debugging-the-ui'},
-                    {text: 'Local files and logs', link: '/guide/consul-scriptum-files'},
+                    {text: 'Scripting Manual', link: '/guide/scripting-manual'},
                     {text: 'Battle mode', link: '/guide/battle-mode-scripting'},
                 ]
             },

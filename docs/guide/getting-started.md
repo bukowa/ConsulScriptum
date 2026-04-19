@@ -1,7 +1,7 @@
 ---
 next:
-  text: Scripting Manual
-  link: /guide/scripting-manual
+  text: Installation
+  link: /guide/installation-guide
 ---
 # Getting started
 

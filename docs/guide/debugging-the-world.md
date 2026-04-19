@@ -1,3 +1,9 @@
+---
+next:
+  text: Debugging The UI
+  link: /guide/debugging-the-ui
+---
+
 # Debugging The World
 
 Consul Scriptum provides a way to inspect game objects directly in the world without writing a single line of code. By toggling debug mode, you will see the available Lua data for settlements, characters, and units as you interact with them.

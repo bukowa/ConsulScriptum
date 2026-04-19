@@ -1,6 +1,9 @@
 ---
 title: "Total War Script Runner (Scriptum)"
 description: "File-based scripting for Total War. Execute complex .lua files live in Rome II and Attila without restarting the game. Perfect for mod development."
+next:
+  text: Local Files and Logs
+  link: /guide/consul-scriptum-files
 ---
 
 # Scriptum
