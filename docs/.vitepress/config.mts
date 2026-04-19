@@ -92,6 +92,7 @@ export default withMermaid(defineConfig({
                 items: [
                     {text: 'Scripting Manual', link: '/guide/scripting-manual'},
                     {text: 'Debugging The World', link: '/guide/debugging-the-world'},
+                    {text: 'Debugging The UI', link: '/guide/debugging-the-ui'},
                     {text: 'Local files and logs', link: '/guide/consul-scriptum-files'},
                     {text: 'Battle mode', link: '/guide/battle-mode-scripting'},
                 ]
