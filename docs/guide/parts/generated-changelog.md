@@ -2,6 +2,7 @@
 **Common:**
 - Added: New 'Debugging The World' section to the official manual.
 - Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila).
+- Fixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).
 
 ---
 
