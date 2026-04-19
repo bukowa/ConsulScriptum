@@ -329,6 +329,24 @@ consul.console.write(regions[1])
 
 ---
 
+#### `consul.game.settlement`
+
+A function that returns a settlement by key.
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `key` | `string` |  The key of the settlement to return. |
+
+ Example:
+```lua
+local settlement = consul.game.settlement("settlement_key")
+consul.console.write(settlement:name())
+
+```
+
+---
+
 #### `consul.game.world`
 
 A function that returns the world of the game.

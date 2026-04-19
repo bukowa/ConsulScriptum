@@ -57,8 +57,8 @@ export default withMermaid(defineConfig({
 
         nav: [
             {text: 'Getting started', link: '/guide/getting-started'},
-            {text: 'Installation', link: '/guide/installation-guide'},
             {text: 'Scripting Manual', link: '/guide/scripting-manual'},
+            {text: 'Installation', link: '/guide/installation-guide'},
             {
                 text: 'v0.7.2',
                 items: [
@@ -90,6 +90,7 @@ export default withMermaid(defineConfig({
                 text: 'Beyond the basics',
                 items: [
                     {text: 'Scripting Manual', link: '/guide/scripting-manual'},
+                    {text: 'Debugging The World', link: '/guide/debugging-the-world'},
                     {text: 'Local files and logs', link: '/guide/consul-scriptum-files'},
                     {text: 'Battle mode', link: '/guide/battle-mode-scripting'},
                 ]
