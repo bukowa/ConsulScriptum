@@ -4,7 +4,8 @@ local changelog = {
         ["Unreleased"] = {
             common = "Added: New 'Debugging The World' section to the official manual."..
             "\nFixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila)."..
-            "\nFixed: increased priority of consul UI to ensure it loads on top (especially important for Attila)."
+            "\nFixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).",
+            Attila = "Fixed: prevent multiple creations of consul UI in battle mode.",
         },
         ["0.7.2"] = {
             common = "Added: Command `/consul_log_level <integer>` to set the consul log level persistently (e.g. 1=DEBUG, 2=INFO, 3=WARN).",

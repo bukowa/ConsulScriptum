@@ -827,10 +827,20 @@ consul = {
             yy = 0,
             should_move = false,
 
+            -- to avoid creating consul multiple times in battle, as the UI is recreated multiple times
+            -- this is strange behavior because the UICreated event is not "called"; it is called but does not
+            -- appear in the log of the events... if that makes sense lol
+            created = false,
+
             OnUICreated = function()
                 local ui = consul.ui
                 local log = consul.new_log('ui.attila:OnUICreated')
                 log:debug("Attila specific OnUICreated start")
+
+                if consul.ui.attila.created then
+                    log:debug("Consul already created, skipping...")
+                    return
+                end
 
                 ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
                 ui.MoveToConfigPosition()
@@ -839,6 +849,7 @@ consul = {
                 ui.find(ui.consul_minimize):SimulateLClick()
                 ui.find(ui.scriptum_minimize):SimulateLClick()
 
+                consul.ui.attila.created = true
                 log:debug("Attila specific OnUICreated end")
             end,
 
