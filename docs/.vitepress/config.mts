@@ -131,7 +131,7 @@ export default withMermaid(defineConfig({
 
         socialLinks: [
             {icon: 'github', link: 'https://github.com/bukowa/ConsulScriptum'},
-            {icon: 'discord', link: 'https://discord.gg/tgggqMs4'}
+            {icon: 'discord', link: 'https://discord.gg/6vm2M94vhX'}
         ],
 
         footer: {

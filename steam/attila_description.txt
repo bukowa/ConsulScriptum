@@ -104,7 +104,7 @@ Please report any bugs in the GitHub repository — it is much easier to track t
 
 [h3]Discord[/h3]
 I've made a Discord server for any script-related talk and help.
-[url=https://discord.gg/tgggqMs4][b]➜ Join Discord Community[/b][/url]
+[url=https://discord.gg/6vm2M94vhX][b]➜ Join Discord Community[/b][/url]
 
 [h3]Support[/h3]
 If you'd like to support the project development, you can find me on Ko-fi. Thank you everyone for any kind of support, it means a lot to me.

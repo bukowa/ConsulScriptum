@@ -29,7 +29,7 @@ Enabling the console in battle forces the game to load additional scripting and 
 ::: warning Campaign Sessions Only
 The `/use_in_battle` command **only works within an active campaign session**. It cannot be used to enable the console for Custom Battles or Historical Battles launched from the main menu by default.
 
-**Modders & Developers**: If your project specifically requires console access in standalone battles, please contact me on [Discord](https://discord.gg/tgggqMs4). 
+**Modders & Developers**: If your project specifically requires console access in standalone battles, please contact me on [Discord](https://discord.gg/6vm2M94vhX). 
 :::
 
 ## Example Script: Battle Mode (Rome II & Attila)

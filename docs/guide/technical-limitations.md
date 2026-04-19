@@ -8,7 +8,7 @@ description: "Understand the technical limitations and constraints of modding th
 <!-- @include: ./parts/disclaimer.md -->
 
 ::: tip Help Improve This Project
-Most of the limitations described below are due to hardcoded constraints of the game engine's UI system. If you are a modder and know a technical workaround for any of these issues (especially regarding keyboard events, custom fonts, or input focus), please [get in touch on Discord](https://discord.gg/tgggqMs4) or [open an issue on GitHub](https://github.com/bukowa/ConsulScriptum/issues).
+Most of the limitations described below are due to hardcoded constraints of the game engine's UI system. If you are a modder and know a technical workaround for any of these issues (especially regarding keyboard events, custom fonts, or input focus), please [get in touch on Discord](https://discord.gg/6vm2M94vhX) or [open an issue on GitHub](https://github.com/bukowa/ConsulScriptum/issues).
 :::
 
 ## Console input
