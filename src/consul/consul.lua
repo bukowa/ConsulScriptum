@@ -1755,7 +1755,10 @@ consul = {
                                 end
 
                                 -- run the function
-                                f(context)
+                                local _, err = pcall(f, context)
+                                if err ~= nil then
+                                    consul.log:error(err)
+                                end
                             end
                         end
 
@@ -1771,29 +1774,116 @@ consul = {
                             consul.debug.faction = context:character():faction()
                         end))
 
-                        table.insert(events.ComponentLClickUp, wrap({ clean = false }, function(context)
-                            if string.sub(context.string, 1, 21) == "radar_icon_settlement" then
-                                -- clear here - otherwise each click
-                                -- on any component will clear the console
-                                console.clear()
+                        local game_mappings = {
+                            Attila = {
+                                main_icon = {
+                                    type = "settlement",
+                                    strip = { "radar_icon_settlement:" },
+                                    strip_element = "parent",
+                                    f = function(name)
+                                        local settlement = consul.game.region(name):settlement()
+                                        return pprinter.settlement_script_interface(settlement)
+                                    end,
+                                },
+                                button_icon = {
+                                    type = "faction",
+                                    strip = { "faction_icon_" },
+                                    strip_element = "parent",
+                                    f = function(name)
+                                        local faction = consul.game.faction(name)
+                                        return pprinter.faction_script_interface(faction)
+                                    end,
+                                },
+                                faction_row_entry_ = {
+                                    type = "faction",
+                                    strip = { "faction_row_entry_" },
+                                    strip_element = "this",
+                                    f = function(name)
+                                        local faction = consul.game.faction(name)
+                                        return pprinter.faction_script_interface(faction)
+                                    end,
+                                }
+                            },
+                            Rome2 = {
+                                ["radar_icon_settlement:"] = {
+                                    type = "settlement",
+                                    strip = { "radar_icon_settlement:" },
+                                    strip_element = "this",
+                                    f = function(name)
+                                        local parts = {}
+                                        for part in string.gmatch(name, "[^:]+") do
+                                            table.insert(parts, part)
+                                        end
+                                        local settlement = consul.game.region(parts[1]):settlement()
+                                        return pprinter.settlement_script_interface(settlement)
+                                    end,
+                                },
+                                ["faction_icon_"] = {
+                                    type = "faction",
+                                    strip = { "faction_icon_" },
+                                    strip_element = "this",
+                                    f = function(name)
+                                        local faction = consul.game.faction(name)
+                                        return pprinter.faction_script_interface(faction)
+                                    end,
+                                },
+                                faction_row_entry_ = {
+                                    type = "faction",
+                                    strip = { "faction_row_entry_" },
+                                    strip_element = "this",
+                                    f = function(name)
+                                        local faction = consul.game.faction(name)
+                                        return pprinter.faction_script_interface(faction)
+                                    end,
+                                }
+                            }
+                        }
 
-                                local parts = {}
-                                for part in string.gmatch(context.string, "[^:]+") do
-                                    table.insert(parts, part)
+                        local mapping = game_mappings[consul_build] or {}
+
+                        table.insert(events.ComponentLClickUp, wrap({clean = false}, function(ctx)
+                            local name = nil
+                            local config = nil
+
+                            if mapping[ctx.string] then
+                                config = mapping[ctx.string]
+                            else
+                                for key, value in pairs(mapping) do
+                                    if ctx.string:sub(1, #key) == key then
+                                        config = value
+                                        break
+                                    end
                                 end
-
-                                -- we need 3 parts
-                                if #parts ~= 3 then
-                                    return
-                                end
-
-                                -- grab the region name
-                                local region = parts[2]
-                                local faction = consul.game.region(region):owning_faction()
-                                consul.debug.faction = faction
-                                --
-                                console.write(pretty(pprinter.faction_script_interface(faction)))
                             end
+
+                            if not config then return end
+
+                            local btn = consul.ui._UIComponent(ctx.component)
+                            if not btn then return end
+
+                            local target = nil
+                            if config.strip_element == "parent" then
+                                local parent_raw = btn:Parent()
+                                if parent_raw then
+                                    target = consul.ui._UIComponent(parent_raw)
+                                end
+                            else
+                                target = btn
+                            end
+
+                            if target then
+                                local id = tostring(target:Id())
+
+                                for _, prefix in ipairs(config.strip) do
+                                    if id:sub(1, #prefix) == prefix then
+                                        name = id:sub(#prefix + 1)
+                                        break
+                                    end
+                                end
+                            end
+
+                            console.clear()
+                            console.write(consul.pretty(config["f"](name)))
                         end))
 
                         -- _debug_character_unit_list
@@ -3102,10 +3192,19 @@ consul.console.write(
         --- @usage
         --- local region = consul.game.region("region_key")
         --- consul.console.write(region:name())
-        --- @usage
-        --- local region = consul.game.region("region_key")
         region = function(key)
             return consul._game():model():world():region_manager():region_by_key(key)
+        end,
+
+        --- A function that returns a settlement by key.
+        --- @function game.settlement
+        --- @tparam string key The key of the settlement to return.
+        --- @return Settlement The settlement found.
+        --- @usage
+        --- local settlement = consul.game.settlement("settlement_key")
+        --- consul.console.write(settlement:name())
+        settlement = function(key)
+            return consul._game():model():world():region_manager():settlement_by_key(key)
         end,
 
         --- A function that returns a list of all regions.
