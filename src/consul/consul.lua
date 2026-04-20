@@ -20,8 +20,6 @@ consul = {
 
     -- attribute holding stuff selected by debug
     debug = {
-        -- character selected in debug mode
-        character = nil,
         -- return a cqi for lookups
         character_cqi = function()
             return 'character_cqi:' .. consul.debug.character:cqi()
@@ -39,8 +37,12 @@ consul = {
         --    consul.log:info("")
         --    return consul._game():unhide_character(cqi, x, y, queue)
         --end,
+        character = nil,
         settlement = nil,
         faction = nil,
+        units = {},
+        unit = nil,
+        component = nil,
         --- A function that logs every environment in all of the game's Lua registries.
         --- Uses consul.pretty to format the output into the consul.log file.
         --- Very useful if you want to see what the game makes available to Lua.
@@ -741,7 +743,7 @@ consul = {
                         IsInteractive = safe_call(component, "IsInteractive"),
                         Priority = safe_call(component, "Priority"),
                         TextDimensions = safe_call(component, "TextDimensions"),
-
+                        ChildCount = safe_call(component, "ChildCount"),
                         -- positions & dimensions
                         Bounds = safe_call(component, "Bounds"),
                         Dimensions = safe_call(component, "Dimensions"),
@@ -760,6 +762,7 @@ consul = {
 
                 local spaces_map = {
                     ["Address"]             = 25,
+                    ["ChildCount"]          = 20,
                     ["Bounds"]              = 26,
                     ["CurrentState"]        = 19,
                     ["Dimensions"]          = 20,
@@ -777,6 +780,7 @@ consul = {
                     "Id",
                     "Address",
                     "Visible",
+                    "ChildCount",
                     "IsInteractive",
                     "CurrentState",
                     "Priority",
@@ -1725,6 +1729,7 @@ consul = {
                                 local component = UIComponent(context.component)
                                 local report = consul.ui.debug.get_component_report(component)
                                 console.write(consul.ui.debug.format_report(report))
+                                consul.debug.component = component
                             end
                         end)
 
@@ -1790,6 +1795,15 @@ consul = {
                 ['/debug'] = {
                     _is_running = false,
 
+                pretty = function(_tbl)
+                    return consul.serpent.block(_tbl, {
+                        indent = consul.tab,
+                        sortkeys = false,
+                        comment = false,
+                        nocode = true,
+                        compact = false,
+                    })
+                end,
                     help = function()
                         return 'Prints debug information about characters,settlements,etc.'
                     end,
@@ -1800,33 +1814,26 @@ consul = {
                     -- and then map to the actual unit index to the character unit list
 
                     _debug_character_unit_list = {
-                        -- the unit list of the selected character
-                        unit_list = nil,
+
                         OnCharacterSelected = function(context)
                             local command = consul.console.commands.exact['/debug']
                             if not command._is_running then
                                 return
                             end
-                            -- clear the unit list
-                            command._debug_character_unit_list.unit_list = nil
 
-                            -- character was selected, grab the unit list
                             local unit_list = context:character():military_force():unit_list()
+                            local debug_units = {}
 
-                            local units = {}
                             for i = 0, unit_list:num_items() - 1 do
                                 local unit = unit_list:item_at(i)
                                 -- build it here, so nothing breaks later
-                                units['LandUnit ' .. tostring(i)] = {
-                                    ['unit_key'] = unit:unit_key(),
-                                    ['unit_category'] = unit:unit_category(),
-                                    ['unit_class'] = unit:unit_class(),
-                                }
+                                local unit_key = 'LandUnit ' .. tostring(i)
+                                debug_units[unit_key] = unit
                             end
 
-                            -- bind the unit list
-                            command._debug_character_unit_list.unit_list = units
+                            consul.debug.units = debug_units
                         end,
+
                         ComponentMouseOn = function(context)
                             local command = consul.console.commands.exact['/debug']
                             if not command._is_running then
@@ -1835,10 +1842,11 @@ consul = {
 
                             -- make sure mouseover was on a unit
                             if string.sub(context.string, 1, 9) == "LandUnit " then
-                                local unit = command._debug_character_unit_list.unit_list[context.string]
-                                if unit then
+                                local debug_unit = consul.debug.units[context.string]
+                                if debug_unit then
                                     consul.console.clear()
-                                    consul.console.write(consul.pretty(unit))
+                                    consul.console.write(command.pretty(consul.pprinter.unit_script_interface(debug_unit)))
+                                    consul.debug.unit = debug_unit
                                 end
                                 return
                             end
@@ -1847,7 +1855,7 @@ consul = {
                             if context.string:match('_recruitable$') then
                                 consul.log:info(consul.pretty(debug.getmetatable(context)))
                                 consul.console.clear()
-                                consul.console.write(consul.pretty({
+                                consul.console.write(command.pretty({
                                     ['unit_key'] = context.string:sub(1, - #'_recruitable' - 1)
                                 }))
                                 return
@@ -1857,7 +1865,7 @@ consul = {
                             if context.string:match('_mercenary$') then
                                 consul.log:info(consul.pretty(debug.getmetatable(context)))
                                 consul.console.clear()
-                                consul.console.write(consul.pretty({
+                                consul.console.write(command.pretty({
                                     ['unit_key'] = context.string:sub(1, - #'_mercenary' - 1)
                                 }))
                                 return
@@ -1869,10 +1877,6 @@ consul = {
                         local command = consul.console.commands.exact['/debug']
                         local pprinter = consul.pprinter
                         local console = consul.console
-                        local pretty = function(_tbl)
-                            return consul.pretty(_tbl, string.char(1) .. " ", true)
-                        end
-
                         -- if already running, stop
                         if command._is_running then
                             command._is_running = false
@@ -1901,13 +1905,13 @@ consul = {
                         end
 
                         table.insert(events.SettlementSelected, wrap({ clean = true }, function(context)
-                            console.write(pretty(pprinter.garrison_script_interface(context:garrison_residence())))
+                            console.write(command.pretty(pprinter.garrison_script_interface(context:garrison_residence())))
                             consul.debug.settlement = context:garrison_residence()
                             consul.debug.faction = context:garrison_residence():faction()
                         end))
 
                         table.insert(events.CharacterSelected, wrap({ clean = true }, function(context)
-                            console.write(pretty(pprinter.character_script_interface(context:character())))
+                            console.write(command.pretty(pprinter.character_script_interface(context:character())))
                             consul.debug.character = context:character()
                             consul.debug.faction = context:character():faction()
                         end))
@@ -1920,6 +1924,7 @@ consul = {
                                     strip_element = "parent",
                                     f = function(name)
                                         local settlement = consul.game.region(name):settlement()
+                                        consul.debug.settlement = settlement
                                         return pprinter.settlement_script_interface(settlement)
                                     end,
                                 },
@@ -1929,6 +1934,7 @@ consul = {
                                     strip_element = "parent",
                                     f = function(name)
                                         local faction = consul.game.faction(name)
+                                        consul.debug.faction = faction
                                         return pprinter.faction_script_interface(faction)
                                     end,
                                 },
@@ -1938,6 +1944,7 @@ consul = {
                                     strip_element = "this",
                                     f = function(name)
                                         local faction = consul.game.faction(name)
+                                        consul.debug.faction = faction
                                         return pprinter.faction_script_interface(faction)
                                     end,
                                 }
@@ -1953,6 +1960,7 @@ consul = {
                                             table.insert(parts, part)
                                         end
                                         local settlement = consul.game.region(parts[1]):settlement()
+                                        consul.debug.settlement = settlement
                                         return pprinter.settlement_script_interface(settlement)
                                     end,
                                 },
@@ -1962,6 +1970,7 @@ consul = {
                                     strip_element = "this",
                                     f = function(name)
                                         local faction = consul.game.faction(name)
+                                        consul.debug.faction = faction
                                         return pprinter.faction_script_interface(faction)
                                     end,
                                 },
@@ -1971,6 +1980,7 @@ consul = {
                                     strip_element = "this",
                                     f = function(name)
                                         local faction = consul.game.faction(name)
+                                        consul.debug.faction = faction
                                         return pprinter.faction_script_interface(faction)
                                     end,
                                 }
@@ -2021,12 +2031,13 @@ consul = {
                             end
 
                             console.clear()
-                            console.write(consul.pretty(config["f"](name)))
+                            console.write(command.pretty(config["f"](name)))
                         end))
 
                         -- _debug_character_unit_list
                         table.insert(events.CharacterSelected, command._debug_character_unit_list.OnCharacterSelected)
                         table.insert(events.ComponentMouseOn, command._debug_character_unit_list.ComponentMouseOn)
+                        table.insert(events.ComponentLClickUp, command._debug_character_unit_list.ComponentMouseOn)
 
                         -- mark as running
                         command._is_running = true
@@ -3408,13 +3419,14 @@ consul.console.write(
     },
 
     pprinter = {
-        _wont_print = "CONSUL_WONT_PRINT",
-
         _is_null = function(_any)
             return string.sub(tostring(_any), 1, 21) == "NULL_SCRIPT_INTERFACE"
         end,
 
         garrison_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:garrison_script_interface')
+            log:debug("Garrison script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.garrison_script_interface_rome
@@ -3423,16 +3435,21 @@ consul.console.write(
             end
             return func(...)
         end,
-        garrison_script_interface_rome = function(_garrison)
+        garrison_script_interface_rome = function(_garrison, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
+
+            _opts._dont_print__garrison_residence = true
+
             if consul.pprinter._is_null(_garrison) then
                 return {}
             end
-
             -- return faction only if army is null
             -- otherwise we will loop too much
             local faction = {}
             if consul.pprinter._is_null(_garrison:army()) then
-                faction = consul.pprinter.faction_script_interface(_garrison:faction())
+                faction = consul.pprinter.faction_script_interface(_garrison:faction(), _opts)
             end
 
             return {
@@ -3447,12 +3464,18 @@ consul.console.write(
                 ['model'] = _garrison:model(),
                 ['navy'] = _garrison:navy(),
                 ['region'] = _garrison:region(),
-                ['settlement_interface'] = consul.pprinter.settlement_script_interface(_garrison:settlement_interface()),
+                ['settlement_interface'] = consul.pprinter.settlement_script_interface(_garrison:settlement_interface(), _opts),
                 ['slot_interface'] = _garrison:slot_interface(),
                 ['unit_count'] = _garrison:unit_count(),
             }
         end,
-        garrison_script_interface_attila = function(_garrison)
+        garrison_script_interface_attila = function(_garrison, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
+
+            _opts._dont_print__garrison_residence = true
+
             if consul.pprinter._is_null(_garrison) then
                 return {}
             end
@@ -3461,7 +3484,7 @@ consul.console.write(
             -- otherwise we will loop too much
             local faction = {}
             if consul.pprinter._is_null(_garrison:army()) then
-                faction = consul.pprinter.faction_script_interface(_garrison:faction())
+                faction = consul.pprinter.faction_script_interface(_garrison:faction(), _opts)
             end
 
             return {
@@ -3477,13 +3500,16 @@ consul.console.write(
                 ['model'] = _garrison:model(),
                 ['navy'] = _garrison:navy(),
                 ['region'] = _garrison:region(),
-                ['settlement_interface'] = consul.pprinter.settlement_script_interface(_garrison:settlement_interface()),
+                ['settlement_interface'] = consul.pprinter.settlement_script_interface(_garrison:settlement_interface(), _opts),
                 ['slot_interface'] = _garrison:slot_interface(),
                 ['unit_count'] = _garrison:unit_count(),
             }
         end,
 
         unit_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:unit_script_interface')
+            log:debug("Unit script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.unit_script_interface_rome
@@ -3492,54 +3518,61 @@ consul.console.write(
             end
             return func(...)
         end,
-        unit_script_interface_rome = function(_unit, _index)
+        unit_script_interface_rome = function(_unit, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_unit) then
                 return {}
             end
             return {
-                --["faction"] = "function: 571787B0",
-                --["force_commander"] = "function: 571786B0",
-                --["has_force_commander"] = "function: 571785B0",
-                --["has_unit_commander"] = "function: 57178550",
-                --["is_land_unit"] = "function: 57178590",
-                --["is_naval_unit"] = "function: 571785D0",
-                --["military_force"] = "function: 57178690",
-                --["model"] = "function: 57178670",
-                --["new"] = "function: 57145580",
-                --["unit_commander"] = "function: 571786F0",
+                ["faction"] = _unit:faction(),
+                ["force_commander"] = _unit:force_commander(),
+                ["has_force_commander"] = _unit:has_force_commander(),
+                ["has_unit_commander"] = _unit:has_unit_commander(),
+                ["is_land_unit"] = _unit:is_land_unit(),
+                ["is_naval_unit"] = _unit:is_naval_unit(),
+                ["military_force"] = _unit:military_force(),
+                ["unit_commander"] = _unit:unit_commander(),
                 ['unit_key'] = _unit:unit_key(),
                 ['unit_category'] = _unit:unit_category(),
                 ['unit_class'] = _unit:unit_class(),
-                --['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
+                ['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
             }
         end,
-
-        unit_script_interface_attila = function(_unit, _index)
+        unit_script_interface_attila = function(_unit, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_unit) then
                 return {}
             end
             return {
-                --["faction"] = "function: 571787B0",
-                --["force_commander"] = "function: 571786B0",
-                --["has_force_commander"] = "function: 571785B0",
-                --["has_unit_commander"] = "function: 57178550",
-                --["is_land_unit"] = "function: 57178590",
-                --["is_naval_unit"] = "function: 571785D0",
-                --["military_force"] = "function: 57178690",
-                --["model"] = "function: 57178670",
-                --["new"] = "function: 57145580",
-                --["unit_commander"] = "function: 571786F0",
+                ["faction"] = _unit:faction(),
+                ["force_commander"] = _unit:force_commander(),
+                ["has_force_commander"] = _unit:has_force_commander(),
+                ["has_unit_commander"] = _unit:has_unit_commander(),
+                ["is_land_unit"] = _unit:is_land_unit(),
+                ["is_naval_unit"] = _unit:is_naval_unit(),
+                ["military_force"] = _unit:military_force(),
+                ["unit_commander"] = _unit:unit_commander(),
                 ['unit_key'] = _unit:unit_key(),
                 ['unit_category'] = _unit:unit_category(),
                 ['unit_class'] = _unit:unit_class(),
                 ['can_upgrade_unit'] = _unit:can_upgrade_unit(),
                 ['can_upgrade_unit_equipment'] = _unit:can_upgrade_unit_equipment(),
                 ['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
-                --['percentage_proportion_of_full_strength'] = _unit:percentage_proportion_of_full_strength(),
             }
         end,
 
-        unit_list_script_interface = function(_unitlist)
+        unit_list_script_interface = function(_unitlist, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
+
+            local log = consul.new_log('consul:pprinter:unit_list_script_interface')
+            log:debug("Unit list script interface called")
+
             if consul.pprinter._is_null(_unitlist) then
                 return {}
             end
@@ -3552,6 +3585,9 @@ consul.console.write(
         end,
 
         military_force_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:military_force_script_interface')
+            log:debug("Military force script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.military_force_script_interface_rome
@@ -3560,40 +3596,45 @@ consul.console.write(
             end
             return func(...)
         end,
-        military_force_script_interface_rome = function(_force)
+        military_force_script_interface_rome = function(_force, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_force) then
                 return {}
             end
             return {
-                ["character_list"] = consul.pprinter._wont_print,
-                ["faction"] = consul.pprinter._wont_print,
-                ["garrison_residence"] = consul.pprinter._wont_print,
-                ["general_character"] = consul.pprinter._wont_print,
+                ["character_list"] = _force:character_list(),
+                ["faction"] = _force:faction(),
+                ["garrison_residence"] = _force:garrison_residence(),
+                ["general_character"] = _force:general_character(),
                 ["contains_mercenaries"] = _force:contains_mercenaries(),
                 ["has_garrison_residence"] = _force:has_garrison_residence(),
                 ["has_general"] = _force:has_general(),
                 ["is_army"] = _force:is_army(),
                 ["is_navy"] = _force:is_navy(),
-                --["model"] = "function: 57178350",
                 ["upkeep"] = _force:upkeep(),
                 ['unit_list'] = consul.pprinter.unit_list_script_interface(_force:unit_list())
             }
         end,
-        military_force_script_interface_attila = function(_force)
+        military_force_script_interface_attila = function(_force, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_force) then
                 return {}
             end
             return {
                 ["active_stance"] = _force:active_stance(),
                 ["building_exists"] = _force:building_exists(),
-                ["buildings"] = consul.pprinter._wont_print,
+                ["buildings"] = "?",
                 ["can_activate_stance"] = _force:can_activate_stance(),
-                ["character_list"] = consul.pprinter._wont_print,
+                ["character_list"] = _force:character_list(),
                 ["command_queue_index"] = _force:command_queue_index(),
                 ["contains_mercenaries"] = _force:contains_mercenaries(),
-                ["faction"] = consul.pprinter._wont_print,
-                ["garrison_residence"] = consul.pprinter._wont_print,
-                ["general_character"] = consul.pprinter._wont_print,
+                ["faction"] = _force:faction(),
+                ["garrison_residence"] = _force:garrison_residence(),
+                ["general_character"] = _force:general_character(),
                 ["has_garrison_residence"] = _force:has_garrison_residence(),
                 ["has_general"] = _force:has_general(),
                 ["is_army"] = _force:is_army(),
@@ -3605,6 +3646,9 @@ consul.console.write(
         end,
 
         character_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:character_script_interface')
+            log:debug("Character script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.character_script_interface_rome
@@ -3613,7 +3657,10 @@ consul.console.write(
             end
             return func(...)
         end,
-        character_script_interface_rome = function(_char)
+        character_script_interface_rome = function(_char, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_char) then
                 return {}
             end
@@ -3641,7 +3688,7 @@ consul.console.write(
                 ['faction'] = consul.pprinter.faction_script_interface(_char:faction()),
                 ['forename'] = _char:forename(),
                 ['fought_in_battle'] = _char:fought_in_battle(),
-                ['garrison_residence'] = consul.pprinter.garrison_script_interface(_char:garrison_residence()),
+                ['garrison_residence'] = _char:garrison_residence(),
                 ['get_forename'] = _char:get_forename(),
                 ['get_political_party_id'] = _char:get_political_party_id(),
                 ['get_surname'] = _char:get_surname(),
@@ -3692,7 +3739,10 @@ consul.console.write(
                 ['won_battle'] = _char:won_battle(),
             }
         end,
-        character_script_interface_attila = function(_char)
+        character_script_interface_attila = function(_char, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_char) then
                 return {}
             end
@@ -3723,7 +3773,7 @@ consul.console.write(
                 ['father'] = _char:father(),
                 ['forename'] = _char:forename(),
                 ['fought_in_battle'] = _char:fought_in_battle(),
-                ['garrison_residence'] = consul.pprinter.garrison_script_interface(_char:garrison_residence()),
+                ['garrison_residence'] = _char:garrison_residence(),
                 ['get_forename'] = _char:get_forename(),
                 ['get_surname'] = _char:get_surname(),
                 ['gravitas'] = _char:gravitas(),
@@ -3776,6 +3826,9 @@ consul.console.write(
         end,
 
         faction_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:faction_script_interface')
+            log:debug("Faction script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.faction_script_interface_rome
@@ -3784,7 +3837,10 @@ consul.console.write(
             end
             return func(...)
         end,
-        faction_script_interface_rome = function(_fac)
+        faction_script_interface_rome = function(_fac, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_fac) then
                 return {}
             end
@@ -3858,7 +3914,10 @@ consul.console.write(
                 ["upkeep_expenditure_percent"] = _fac:upkeep_expenditure_percent(),
             }
         end,
-        faction_script_interface_attila = function(_fac)
+        faction_script_interface_attila = function(_fac, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_fac) then
                 return {}
             end
@@ -3928,6 +3987,9 @@ consul.console.write(
         end,
 
         settlement_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:settlement_script_interface')
+            log:debug("Settlement script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.settlement_script_interface_rome
@@ -3936,7 +3998,12 @@ consul.console.write(
             end
             return func(...)
         end,
-        settlement_script_interface_rome = function(_settl)
+        settlement_script_interface_rome = function(_settl, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
+            _opts._dont_print__slot_list = true
+
             if consul.pprinter._is_null(_settl) then
                 return {}
             end
@@ -3947,18 +4014,19 @@ consul.console.write(
                 ["display_position_y"] = _settl:display_position_y(),
                 ["logical_position_x"] = _settl:logical_position_x(),
                 ["logical_position_y"] = _settl:logical_position_y(),
-                ["faction"] = _settl:faction(),
+                ["faction"] = consul.pprinter.faction_script_interface(_settl:faction(), _opts),
                 ["has_castle_slot"] = _settl:has_castle_slot(),
                 ["has_commander"] = _settl:has_commander(),
-                ["region"] = consul.pprinter.region_script_interface(_settl:region(), {
-                    -- do not print slot list
-                    -- it is printed in `slot_list_interface` below
-                    _print__slot_list = false,
-                }),
+                ["region"] = consul.pprinter.region_script_interface(_settl:region(), _opts),
                 ["slot_list"] = consul.pprinter.slot_list_interface(_settl:slot_list())
             }
         end,
-        settlement_script_interface_attila = function(_settl)
+        settlement_script_interface_attila = function(_settl, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
+            _opts._dont_print__slot_list = true
+
             if consul.pprinter._is_null(_settl) then
                 return {}
             end
@@ -3971,16 +4039,15 @@ consul.console.write(
                 ["faction"] = _settl:faction(),
                 ["has_commander"] = _settl:has_commander(),
                 ["is_null_interface"] = _settl:is_null_interface(),
-                ["region"] = consul.pprinter.region_script_interface(_settl:region(), {
-                    -- do not print slot list
-                    -- it is printed in `slot_list_interface` below
-                    _print__slot_list = false,
-                }),
+                ["region"] = consul.pprinter.region_script_interface(_settl:region(), _opts),
                 ["slot_list"] = consul.pprinter.slot_list_interface(_settl:slot_list())
             }
         end,
 
         region_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:region_script_interface')
+            log:debug("Region script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.region_script_interface_rome
@@ -3990,6 +4057,9 @@ consul.console.write(
             return func(...)
         end,
         region_script_interface_rome = function(_region, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_region) then
                 return {}
             end
@@ -3997,7 +4067,12 @@ consul.console.write(
                 ["adjacent_region_list"] = _region:adjacent_region_list(),
                 ["building_exists"] = _region:building_exists(),
                 ["building_superchain_exists"] = _region:building_superchain_exists(),
-                ["garrison_residence"] = _region:garrison_residence(),
+                ["garrison_residence"] = (function()
+                    if (_opts and _opts._dont_print__garrison_residence) then
+                       return _region:garrison_residence()
+                    end
+                    return consul.pprinter.garrison_script_interface(_region:garrison_residence())
+                end)(),
                 ["last_building_constructed_key"] = _region:last_building_constructed_key(),
                 ["majority_religion"] = _region:majority_religion(),
                 ["name"] = _region:name(),
@@ -4011,10 +4086,10 @@ consul.console.write(
                 ["sanitation"] = _region:sanitation(),
                 ["settlement"] = _region:settlement(),
                 ["slot_list"] = (function()
-                    if (_opts and _opts._print__slot_list) then
-                        return consul.pprinter.slot_list_interface(_region:slot_list())
+                    if (_opts and _opts._dont_print__slot_list) then
+                        return _region:slot_list()
                     end
-                    return consul.pprinter._wont_print
+                    return consul.pprinter.slot_list_interface(_region:slot_list())
                 end)(),
                 ["slot_type_exists"] = _region:slot_type_exists(),
                 ["squalor"] = _region:squalor(),
@@ -4023,41 +4098,52 @@ consul.console.write(
             }
         end,
         region_script_interface_attila = function(_region, _opts)
-        if consul.pprinter._is_null(_region) then
-            return {}
-        end
-        return {
-            ["adjacent_region_list"] = _region:adjacent_region_list(),
-            ["building_exists"] = _region:building_exists(),
-            ["building_superchain_exists"] = _region:building_superchain_exists(),
-            ["garrison_residence"] = _region:garrison_residence(),
-            ["governor"] = _region:governor(),
-            ["has_governor"] = _region:has_governor(),
-            ["is_null_interface"] = _region:is_null_interface(),
-            ["last_building_constructed_key"] = _region:last_building_constructed_key(),
-            ["majority_religion"] = _region:majority_religion(),
-            ["majority_religion_percentage"] = _region:majority_religion_percentage(),
-            ["name"] = _region:name(),
-            ["num_buildings"] = _region:num_buildings(),
-            ["owning_faction"] = _region:owning_faction(),
-            ["public_order"] = _region:public_order(),
-            ["region_wealth_change_percent"] = _region:region_wealth_change_percent(),
-            ["resource_exists"] = _region:resource_exists(),
-            ["sanitation"] = _region:sanitation(),
-            ["settlement"] = _region:settlement(),
-            ["slot_list"] = (function()
-                if (_opts and _opts._print__slot_list) then
+            if _opts == nil then
+                _opts = {}
+            end
+            if consul.pprinter._is_null(_region) then
+                return {}
+            end
+            return {
+                ["adjacent_region_list"] = _region:adjacent_region_list(),
+                ["building_exists"] = _region:building_exists(),
+                ["building_superchain_exists"] = _region:building_superchain_exists(),
+                ["garrison_residence"] = (function()
+                    if (_opts and _opts._dont_print__garrison_residence) then
+                       return _region:garrison_residence()
+                    end
+                    return consul.pprinter.garrison_script_interface(_region:garrison_residence())
+                end)(),
+                ["governor"] = _region:governor(),
+                ["has_governor"] = _region:has_governor(),
+                ["is_null_interface"] = _region:is_null_interface(),
+                ["last_building_constructed_key"] = _region:last_building_constructed_key(),
+                ["majority_religion"] = _region:majority_religion(),
+                ["majority_religion_percentage"] = _region:majority_religion_percentage(),
+                ["name"] = _region:name(),
+                ["num_buildings"] = _region:num_buildings(),
+                ["owning_faction"] = _region:owning_faction(),
+                ["public_order"] = _region:public_order(),
+                ["region_wealth_change_percent"] = _region:region_wealth_change_percent(),
+                ["resource_exists"] = _region:resource_exists(),
+                ["sanitation"] = _region:sanitation(),
+                ["settlement"] = _region:settlement(),
+                ["slot_list"] = (function()
+                    if (_opts and _opts._dont_print__slot_list) then
+                        return _region:slot_list()
+                    end
                     return consul.pprinter.slot_list_interface(_region:slot_list())
-                end
-                return consul.pprinter._wont_print
-            end)(),
-            ["slot_type_exists"] = _region:slot_type_exists(),
-            ["squalor"] = _region:squalor(),
-            ["town_wealth_growth"] = _region:town_wealth_growth()
-        }
-        end,
+                end)(),
+                ["slot_type_exists"] = _region:slot_type_exists(),
+                ["squalor"] = _region:squalor(),
+                ["town_wealth_growth"] = _region:town_wealth_growth()
+            }
+            end,
 
         building_script_interface = function(...)
+            local log = consul.new_log('consul:pprinter:building_script_interface')
+            log:debug("Building script interface called")
+
             local func = nil
             if consul_build == "Rome2" then
                 func = consul.pprinter.building_script_interface_rome
@@ -4066,7 +4152,10 @@ consul.console.write(
             end
             return func(...)
         end,
-        building_script_interface_rome = function(_build)
+        building_script_interface_rome = function(_build, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_build) then
                 return {}
             end
@@ -4079,7 +4168,10 @@ consul.console.write(
                 ["superchain"] = _build:superchain()
             }
         end,
-        building_script_interface_attila = function(_build)
+        building_script_interface_attila = function(_build, _opts)
+            if _opts == nil then
+                _opts = {}
+            end
             if consul.pprinter._is_null(_build) then
                 return {}
             end
@@ -4094,7 +4186,14 @@ consul.console.write(
             }
         end,
 
-        slot_script_interface = function(_slot)
+        slot_script_interface = function(_slot, _opts)
+            local log = consul.new_log('consul:pprinter:slot_script_interface')
+            log:debug("Slot script interface called")
+
+            if _opts == nil then
+                _opts = {}
+            end
+
             if consul.pprinter._is_null(_slot) then
                 return {}
             end
@@ -4108,7 +4207,14 @@ consul.console.write(
             }
         end,
 
-        slot_list_interface = function(_slotlist)
+        slot_list_interface = function(_slotlist, _opts)
+            local log = consul.new_log('consul:pprinter:slot_list_interface')
+            log:debug("Slot list script interface called")
+
+            if _opts == nil then
+                _opts = {}
+            end
+
             if consul.pprinter._is_null(_slotlist) then
                 return {}
             end
@@ -4116,7 +4222,7 @@ consul.console.write(
             local slots = {}
 
             for i = 0, _slotlist:num_items() - 1 do
-                slots[tostring(i)] = consul.pprinter.slot_script_interface(_slotlist:item_at(i))
+                slots[tostring(i)] = consul.pprinter.slot_script_interface(_slotlist:item_at(i), _opts)
             end
 
             return {

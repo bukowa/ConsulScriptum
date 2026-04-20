@@ -66,6 +66,13 @@ TextDimensions:              0, 0, 0
 --------------------------------------------------------------------------------
 ```
 
+> [!TIP]
+> You can also rely on built-in Consul variable that caches the last clicked object when `/debug_onclick` is active, which is `consul.debug.component`. This variable holds a reference to the last clicked component, allowing you to interact with it directly in the console:
+>```lua
+>-- in the console, this will print the ID of the last clicked component
+>/p consul.debug.component:Id()
+> ```
+
 This trace tells you exactly how the component is nested within the UI tree. 
 <br>This is useful for:
 

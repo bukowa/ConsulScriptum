@@ -1,8 +1,11 @@
 ## vUnreleased
 **Common:**
 - Added: New 'Debugging The World' section to the official manual.
+- Added: New 'Debugging The UI' section to the official manual.
+- Added: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy
 - Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila).
 - Fixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).
+- Fixed: various /debug fixes and improvements
 
 **Attila specific:**
 - Fixed: prevent multiple creations of consul UI in battle mode.
