@@ -150,8 +150,16 @@ CONTRIB_TARGETS := \
 	$(BUILD_DIR)/consul/profi/profi.lua \
 	$(BUILD_DIR)/consul/profile/profile.lua
 
+LICENSE_TARGETS := \
+	$(BUILD_DIR)/consul/LICENSE \
+	$(BUILD_DIR)/consul/inspect/LICENSE \
+	$(BUILD_DIR)/consul/serpent/LICENSE \
+	$(BUILD_DIR)/consul/penlight/LICENSE \
+	$(BUILD_DIR)/consul/profi/LICENSE \
+	$(BUILD_DIR)/consul/profile/LICENSE
+
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS) $(LICENSE_TARGETS)
 	@{ \
 	  ${RPFM_CLI_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
@@ -327,6 +335,30 @@ $(BUILD_DIR)/consul/penlight/utils.lua: \
 #	src/ui/skins/default/consul_v_slider_end.png
 	#$(create_dir)
 	@#cp "$<" "$@"
+
+$(BUILD_DIR)/consul/LICENSE: LICENSE
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/inspect/LICENSE: src/inspect/LICENSE
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/serpent/LICENSE: src/serpent/LICENSE
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/penlight/LICENSE: src/penlight/LICENSE
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/profi/LICENSE: src/profi/LICENSE
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/profile/LICENSE: src/profile/LICENSE
+	$(create_dir)
+	@cp "$<" "$@"
 
 
 # ============================================================

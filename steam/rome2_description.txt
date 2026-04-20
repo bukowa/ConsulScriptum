@@ -76,8 +76,6 @@ Save game compatible.
 [h3]Source code[/h3]
 - https://github.com/bukowa/ConsulScriptum
 
-If you reuse or redistribute, please leave a link to this Workshop page.
-
 [h3]Bugs[/h3]
 Please report any bugs in the GitHub repository — it is much easier to track them there than in Steam comments.
 - https://github.com/bukowa/ConsulScriptum/issues

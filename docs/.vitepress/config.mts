@@ -135,7 +135,7 @@ export default withMermaid(defineConfig({
         ],
 
         footer: {
-            message: 'Released under the MIT License.',
+            message: 'Released under the GPL-3.0 license.',
             copyright: 'Copyright © 2026 Mateusz Kurowski'
         },
 
