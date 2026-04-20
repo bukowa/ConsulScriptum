@@ -47,6 +47,7 @@ consul = {
 		component = nil,
 
 		_units = {},
+		_units_to_write = {},
 		--- A function that logs every environment in all of the game's Lua registries.
 		--- Uses consul.pretty to format the output into the consul.log file.
 		--- Very useful if you want to see what the game makes available to Lua.
@@ -1893,16 +1894,20 @@ consul = {
 							end
 
 							local unit_list = context:character():military_force():unit_list()
-							local debug_units = {}
-
+							local units = {}
+							local units_to_write = {}
 							for i = 0, unit_list:num_items() - 1 do
 								local unit = unit_list:item_at(i)
 								-- build it here, so nothing breaks later
 								local unit_key = "LandUnit " .. tostring(i)
-								debug_units[unit_key] = unit
+								units[unit_key] = unit
+								-- this tries to fix the annoying Rome2 bug that causes a crash
+								-- just save the formatted output while we hold a fresh ref to the object
+								units_to_write[unit_key] = command.pretty(consul.pprinter.unit_script_interface(unit))
 							end
 
-							consul.debug._units = debug_units
+						    consul.debug._units_to_write = units_to_write
+							consul.debug._units = units
 						end,
 
 						ComponentMouseOn = function(context)
@@ -1916,9 +1921,8 @@ consul = {
 								local debug_unit = consul.debug._units[context.string]
 								if debug_unit then
 									consul.console.clear()
-									consul.console.write(
-										command.pretty(consul.pprinter.unit_script_interface(debug_unit))
-									)
+									-- here is the workaround for Rome2...
+									consul.console.write(consul.debug._units_to_write[context.string])
 									consul.debug.unit = debug_unit
 								end
 								return
