@@ -37,12 +37,16 @@ consul = {
         --    consul.log:info("")
         --    return consul._game():unhide_character(cqi, x, y, queue)
         --end,
-        character = nil,
+        garrison_residence = nil,
         settlement = nil,
+        character = nil,
         faction = nil,
-        units = {},
         unit = nil,
+        unit_list = nil,
+        military_force = nil,
         component = nil,
+
+        _units = {},
         --- A function that logs every environment in all of the game's Lua registries.
         --- Uses consul.pretty to format the output into the consul.log file.
         --- Very useful if you want to see what the game makes available to Lua.
@@ -1795,15 +1799,16 @@ consul = {
                 ['/debug'] = {
                     _is_running = false,
 
-                pretty = function(_tbl)
-                    return consul.serpent.block(_tbl, {
-                        indent = consul.tab,
-                        sortkeys = false,
-                        comment = false,
-                        nocode = true,
-                        compact = false,
-                    })
-                end,
+                    pretty = function(_tbl)
+                        return consul.serpent.block(_tbl, {
+                            indent = consul.tab,
+                            sortkeys = false,
+                            comment = false,
+                            nocode = true,
+                            compact = false,
+                        })
+                    end,
+
                     help = function()
                         return 'Prints debug information about characters,settlements,etc.'
                     end,
@@ -1812,7 +1817,6 @@ consul = {
                     -- the game uses a callback, so each unit you mouse over
                     -- is just a 'LandUnit i' component string - we need to parse it
                     -- and then map to the actual unit index to the character unit list
-
                     _debug_character_unit_list = {
 
                         OnCharacterSelected = function(context)
@@ -1831,7 +1835,7 @@ consul = {
                                 debug_units[unit_key] = unit
                             end
 
-                            consul.debug.units = debug_units
+                            consul.debug._units = debug_units
                         end,
 
                         ComponentMouseOn = function(context)
@@ -1842,7 +1846,7 @@ consul = {
 
                             -- make sure mouseover was on a unit
                             if string.sub(context.string, 1, 9) == "LandUnit " then
-                                local debug_unit = consul.debug.units[context.string]
+                                local debug_unit = consul.debug._units[context.string]
                                 if debug_unit then
                                     consul.console.clear()
                                     consul.console.write(command.pretty(consul.pprinter.unit_script_interface(debug_unit)))
@@ -1906,7 +1910,8 @@ consul = {
 
                         table.insert(events.SettlementSelected, wrap({ clean = true }, function(context)
                             console.write(command.pretty(pprinter.garrison_script_interface(context:garrison_residence())))
-                            consul.debug.settlement = context:garrison_residence()
+                            consul.debug.garrison_residence = context:garrison_residence()
+                            consul.debug.settlement = context:garrison_residence():settlement_interface()
                             consul.debug.faction = context:garrison_residence():faction()
                         end))
 
@@ -1914,6 +1919,8 @@ consul = {
                             console.write(command.pretty(pprinter.character_script_interface(context:character())))
                             consul.debug.character = context:character()
                             consul.debug.faction = context:character():faction()
+                            consul.debug.military_force = context:character():military_force()
+                            consul.debug.unit_list = context:character():military_force():unit_list()
                         end))
 
                         local game_mappings = {
