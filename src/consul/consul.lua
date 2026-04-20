@@ -375,7 +375,19 @@ consul = {
 	--- consul.console.write(pretty_table)
 	--- -- or into the log file
 	--- consul.log:info(pretty_table)
-	pretty = require("penlight.pretty").write,
+	pretty = function(...)
+		-- here's a trick, we have to extract first argument
+		-- and if it comes not nil from consul.pprinter.print then we use it instead
+		-- extract the first argument
+		local first_arg = select(1, ...)
+		if first_arg ~= nil then
+			local formatted = consul.pprinter.format(first_arg)
+			if formatted ~= nil then
+				return formatted
+			end
+		end
+		return require("penlight.pretty").write(...)
+	end,
 
 	--- A function that pretty-prints a Lua value using 'inspect.lua'.
 	--- @function consul.pretty_inspect
@@ -3518,7 +3530,7 @@ consul.console.write(
 
 		-- a shortcut function that will route to the correct
 		-- function based on the string representation of the object
-		print = function(_any, _opts)
+		format = function(_any, _opts)
 			local log = consul.new_log("consul:pprinter:print")
 			log:debug("print called")
 
@@ -3531,7 +3543,7 @@ consul.console.write(
 			end
 
 			local map = {
-				GARRISON_SCRIPT_INTERFACE = consul.pprinter.garrison_script_interface,
+				GARRISON_RESIDENCE_SCRIPT_INTERFACE = consul.pprinter.garrison_script_interface,
 				UNIT_SCRIPT_INTERFACE = consul.pprinter.unit_script_interface,
 				UNIT_LIST_SCRIPT_INTERFACE = consul.pprinter.unit_list_script_interface,
 				MILITARY_FORCE_SCRIPT_INTERFACE = consul.pprinter.military_force_script_interface,
@@ -3556,7 +3568,7 @@ consul.console.write(
 				log:debug("No function found for type: " .. type_str)
 				return nil
 			end
-			consul.console.write(consul.pprinter.pretty(func(_any, _opts)))
+			return consul.pprinter.pretty(func(_any, _opts))
 		end,
 
 		_is_null = function(_any)
