@@ -2448,7 +2448,7 @@ consul.console.write(
 		-- and added to the list
 		setup = function()
 			local log = consul.new_log("scriptum:setup")
-			log:debug("Setting up scriptum")
+			log:trace("Setting up scriptum")
 
 			local ui = consul.ui
 			local path = consul.scriptum.path
@@ -2504,7 +2504,7 @@ consul.console.write(
 				end
 			end
 
-			log:debug("Loading scriptum scripts from: " .. path)
+			log:trace("Loading scriptum scripts from: " .. path)
 			-- now we can open the file and read its lines
 			-- each line is a path to a script that can be executed
 			-- it will be added to the listview by toggling visibility flag
@@ -2523,12 +2523,12 @@ consul.console.write(
 			end
 			f:close()
 
-			log:debug("Loaded scriptum scripts: " .. consul.inspect(lines))
+			log:trace("Loaded scriptum scripts: " .. consul.inspect(lines))
 
 			-- now we can iterate over the lines
 			local i = 1
 			for _, line in pairs(lines) do
-				log:debug("Adding script to the listview: " .. line)
+				log:trace("Adding script to the listview: " .. line)
 
 				-- if we are over the limit notify and break
 				if i > max then
@@ -2551,7 +2551,7 @@ consul.console.write(
 
 						-- and switch the flags
 						if ui_root then
-							log:debug("Setting scriptum entries: " .. ui_root_name .. " " .. ui_state_name)
+							log:trace("Setting scriptum entries: " .. ui_root_name .. " " .. ui_state_name)
 							ui_root:SetVisible(true)
 
 							-- HACK: The friends_list UI tends to overwrite text when state changes.
