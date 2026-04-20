@@ -2,12 +2,13 @@ local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
         ["Unreleased"] = {
-            common = "Added: New 'Debugging The World' section to the official manual."..
+            common = "\nThis update is focused on debugging the world and ui, it brings another set of improvements for the Attila too!\n"..
+            "\nAdded: New 'Debugging The World' section to the official manual."..
             "\nAdded: New 'Debugging The UI' section to the official manual."..
             "\nAdded: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy"..
             "\nFixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila)."..
-            "\nFixed: increased priority of consul UI to ensure it loads on top (especially important for Attila)."..
-            "\nFixed: various /debug fixes and improvements",
+            "\nFixed: /debug fixes and improvements, theres a lot, overall everything should be more readable"..
+            "\nFixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).",
             Attila = "Fixed: prevent multiple creations of consul UI in battle mode.",
         },
         ["0.7.2"] = {
