@@ -12,18 +12,18 @@ export default withMermaid(defineConfig({
     title: 'Consul Scriptum',
     titleTemplate: 'Total War Console - Consul Scriptum',
     description: 'An in-game Lua console and script runner for Total War: Rome II and Attila.',
-    base: '/ConsulScriptum/',
+    base: '/',
     appearance: 'force-dark',
 
     // SEO Optimization
     lastUpdated: true,
     cleanUrls: true,
     sitemap: {
-        hostname: 'https://bukowa.github.io/ConsulScriptum/'
+        hostname: 'https://consulscriptum.com/'
     },
 
     head: [
-        ['link', {rel: 'icon', type: 'image/png', href: '/ConsulScriptum/logo.png'}],
+        ['link', {rel: 'icon', type: 'image/png', href: '//logo.png'}],
         ['link', {rel: 'preconnect', href: 'https://fonts.googleapis.com'}],
         ['link', {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: ''}],
         ['link', {
@@ -39,8 +39,8 @@ export default withMermaid(defineConfig({
             property: 'og:description',
             content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.'
         }],
-        ['meta', {property: 'og:image', content: 'https://bukowa.github.io/ConsulScriptum/logo.png'}],
-        ['meta', {property: 'og:url', content: 'https://bukowa.github.io/ConsulScriptum/'}],
+        ['meta', {property: 'og:image', content: 'https://consulscriptum.com/logo.png'}],
+        ['meta', {property: 'og:url', content: 'https://consulscriptum.com/'}],
 
         // Twitter
         ['meta', {name: 'twitter:card', content: 'summary'}],
@@ -49,11 +49,11 @@ export default withMermaid(defineConfig({
             name: 'twitter:description',
             content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.'
         }],
-        ['meta', {name: 'twitter:image', content: 'https://bukowa.github.io/ConsulScriptum/logo.png'}],
+        ['meta', {name: 'twitter:image', content: 'https://consulscriptum.com/logo.png'}],
     ],
 
     themeConfig: {
-        logo: '/ConsulScriptum/logo.png',
+        logo: '/logo.png',
         siteTitle: 'Consul Scriptum',
 
         nav: [

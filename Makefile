@@ -664,6 +664,7 @@ docs-deploy: docs-build
 	@echo "Deploying to GitHub Pages..."
 	rm -rf docs/.vitepress/dist/.git
 	cd docs/.vitepress/dist && \
+	echo "consulscriptum.com" > CNAME && \
 	git init && \
 	git add . && \
 	git commit -m "Deploy documentation" && \
