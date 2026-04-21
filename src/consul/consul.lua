@@ -382,7 +382,7 @@ consul = {
 		-- extract the first argument
 		local first_arg = select(1, ...)
 		if first_arg ~= nil then
-			local formatted = consul.pprinter.format(first_arg)
+			local formatted = consul.pprinter.format(...)
 			if formatted ~= nil then
 				return formatted
 			end
@@ -1867,16 +1867,6 @@ consul = {
 				["/debug"] = {
 					_is_running = false,
 
-					pretty = function(_tbl)
-						return consul.serpent.block(_tbl, {
-							indent = consul.tab,
-							sortkeys = false,
-							comment = false,
-							nocode = true,
-							compact = false,
-						})
-					end,
-
 					help = function()
 						return "Prints debug information about characters,settlements,etc."
 					end,
@@ -1903,10 +1893,10 @@ consul = {
 								units[unit_key] = unit
 								-- this tries to fix the annoying Rome2 bug that causes a crash
 								-- just save the formatted output while we hold a fresh ref to the object
-								units_to_write[unit_key] = command.pretty(consul.pprinter.unit_script_interface(unit))
+								units_to_write[unit_key] = consul.pretty(unit)
 							end
 
-						    consul.debug._units_to_write = units_to_write
+							consul.debug._units_to_write = units_to_write
 							consul.debug._units = units
 						end,
 
@@ -1930,9 +1920,8 @@ consul = {
 
 							-- Check if string ends with '_recruitable'
 							if context.string:match("_recruitable$") then
-								consul.log:info(consul.pretty(debug.getmetatable(context)))
 								consul.console.clear()
-								consul.console.write(command.pretty({
+								consul.console.write(consul.pretty({
 									["unit_key"] = context.string:sub(1, -#"_recruitable" - 1),
 								}))
 								return
@@ -1940,9 +1929,8 @@ consul = {
 
 							-- Check if string ends with '_mercenary'
 							if context.string:match("_mercenary$") then
-								consul.log:info(consul.pretty(debug.getmetatable(context)))
 								consul.console.clear()
-								consul.console.write(command.pretty({
+								consul.console.write(consul.pretty({
 									["unit_key"] = context.string:sub(1, -#"_mercenary" - 1),
 								}))
 								return
@@ -1984,9 +1972,7 @@ consul = {
 						table.insert(
 							events.SettlementSelected,
 							wrap({ clean = true }, function(context)
-								console.write(
-									command.pretty(pprinter.garrison_script_interface(context:garrison_residence()))
-								)
+								console.write(consul.pretty(context:garrison_residence()))
 								consul.debug.garrison_residence = context:garrison_residence()
 								consul.debug.settlement = context:garrison_residence():settlement_interface()
 								consul.debug.faction = context:garrison_residence():faction()
@@ -1996,7 +1982,7 @@ consul = {
 						table.insert(
 							events.CharacterSelected,
 							wrap({ clean = true }, function(context)
-								console.write(command.pretty(pprinter.character_script_interface(context:character())))
+								console.write(consul.pretty(context:character()))
 								consul.debug.character = context:character()
 								consul.debug.faction = context:character():faction()
 								consul.debug.military_force = context:character():military_force()
@@ -2125,7 +2111,7 @@ consul = {
 								end
 
 								console.clear()
-								console.write(command.pretty(config["f"](name)))
+								console.write(consul.pretty(config["f"](name)))
 							end)
 						)
 
@@ -3523,9 +3509,56 @@ consul.console.write(
 
 		-- formatting for all pprints
 		pretty = function(_tbl)
+			local table_sorter = function(keys, original_table)
+				local sizes = {}
+
+				local function get_size(k, v)
+					if type(v) ~= "table" then
+						return -1
+					end
+
+					if sizes[k] == nil then
+						local count = 0
+						for _ in pairs(v) do
+							count = count + 1
+						end
+						sizes[k] = count
+					end
+					return sizes[k]
+				end
+
+				table.sort(keys, function(a, b)
+					local val_a = original_table[a]
+					local val_b = original_table[b]
+
+					local size_a = get_size(a, val_a)
+					local size_b = get_size(b, val_b)
+
+					if size_a ~= size_b then
+						return size_a < size_b
+					end
+
+					local type_a, type_b = type(a), type(b)
+					if type_a ~= type_b then
+						if type_a == "number" then
+							return true
+						end
+						if type_b == "number" then
+							return false
+						end
+						return type_a < type_b
+					end
+
+					if type_a == "number" then
+						return a < b
+					end
+					return tostring(a) < tostring(b)
+				end)
+			end
+
 			return consul.serpent.block(_tbl, {
 				indent = consul.tab,
-				sortkeys = false,
+				sortkeys = table_sorter,
 				comment = false,
 				nocode = true,
 				compact = false,
@@ -3601,17 +3634,11 @@ consul.console.write(
 			if consul.pprinter._is_null(_garrison) then
 				return {}
 			end
-			-- return faction only if army is null
-			-- otherwise we will loop too much
-			local faction = {}
-			if consul.pprinter._is_null(_garrison:army()) then
-				faction = consul.pprinter.faction_script_interface(_garrison:faction(), _opts)
-			end
 
 			return {
 				["army"] = _garrison:army(),
 				["buildings"] = _garrison:buildings(),
-				["faction"] = faction,
+				["faction"] = _garrison:faction(),
 				["has_army"] = _garrison:has_army(),
 				["has_navy"] = _garrison:has_navy(),
 				["is_settlement"] = _garrison:is_settlement(),
@@ -3639,18 +3666,11 @@ consul.console.write(
 				return {}
 			end
 
-			-- return faction only if army is null
-			-- otherwise we will loop too much
-			local faction = {}
-			if consul.pprinter._is_null(_garrison:army()) then
-				faction = consul.pprinter.faction_script_interface(_garrison:faction(), _opts)
-			end
-
 			return {
 				["army"] = _garrison:army(),
 				["buildings"] = _garrison:buildings(),
 				["can_assault"] = _garrison:can_assault(),
-				["faction"] = faction,
+				["faction"] = _garrison:faction(),
 				["has_army"] = _garrison:has_army(),
 				["has_navy"] = _garrison:has_navy(),
 				["is_settlement"] = _garrison:is_settlement(),
@@ -4198,7 +4218,7 @@ consul.console.write(
 				["display_position_y"] = _settl:display_position_y(),
 				["logical_position_x"] = _settl:logical_position_x(),
 				["logical_position_y"] = _settl:logical_position_y(),
-				["faction"] = _settl:faction(),
+				["faction"] = consul.pprinter.faction_script_interface(_settl:faction(), _opts),
 				["has_commander"] = _settl:has_commander(),
 				["is_null_interface"] = _settl:is_null_interface(),
 				["region"] = consul.pprinter.region_script_interface(_settl:region(), _opts),
