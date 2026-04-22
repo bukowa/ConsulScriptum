@@ -1,7 +1,7 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["Unreleased"] = {
+        ["0.8.0-alpha.1"] = {
             common = "\nThis update is focused on debugging the world and ui, it brings another set of improvements for the Attila too!\n"..
             "\nAdded: New 'Debugging The World' section to the official manual."..
             "\nAdded: New 'Debugging The UI' section to the official manual."..
