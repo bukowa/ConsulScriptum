@@ -234,6 +234,15 @@ consul = {
 		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
 		table.insert(events.UICreated, consul.changelog.OnUICreated)
 
+		-- UI Debugger automatic dump
+		table.insert(events.ComponentMouseOn, function(context)
+			local c = UIComponent(context.component)
+			if c then
+				local address = tostring(c:Address())
+				consul.uidebug.dump_tree(consul.ui._UIRoot, address)
+			end
+		end)
+
 		-- persistent debug logging
 		local cfg = consul.config.read()
 		if cfg.debug then
@@ -364,6 +373,9 @@ consul = {
 	-- contrib
 	serpent = require("serpent.serpent"),
 	inspect = require("inspect.inspect"),
+	-- ui debugger
+	uidebug = require("consul_uidebug"),
+
 	--- A function that pretty-prints a Lua value using 'penlight'.
 	--- @function consul.pretty
 	--- @param _obj Any Lua value to pretty-print.
@@ -1638,6 +1650,17 @@ consul = {
 				},
 			},
 			exact = {
+				["/uidump"] = {
+					help = function()
+						return "Dumps the UI tree from the root component to consul_debug_ui_state.txt."
+					end,
+					func = function()
+						consul.uidebug.dump_tree(consul.ui._UIRoot)
+						return "Dumped UI tree to consul_debug_ui_state.txt."
+					end,
+					exec = false,
+					returns = true,
+				},
 				["/reload_custom_commands"] = {
 					help = function()
 						return "Reload commands from consul_custom_commands.lua"

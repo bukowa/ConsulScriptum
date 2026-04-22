@@ -132,7 +132,8 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_changelog.lua \
 	$(BUILD_DIR)/consul/consul_game_events.lua \
 	$(BUILD_DIR)/consul/consul_commands.lua \
-	$(BUILD_DIR)/consul/consul_commands_dei.lua
+	$(BUILD_DIR)/consul/consul_commands_dei.lua \
+	$(BUILD_DIR)/consul/consul_uidebug.lua
 
 IMAGE_TARGETS := \
 	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
@@ -272,6 +273,11 @@ $(BUILD_DIR)/consul/consul_commands.lua: \
 
 $(BUILD_DIR)/consul/consul_commands_dei.lua: \
 	src/consul/consul_commands_dei.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_uidebug.lua: \
+	src/consul/consul_uidebug.lua
 	$(create_dir)
 	@cp "$<" "$@"
 

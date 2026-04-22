@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consul UI Debugger</title>
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --text-color: #a6accd;
+            --text-highlight: #ffffff;
+            --accent: #82aaff;
+            --accent-glow: rgba(130, 170, 255, 0.2);
+            --border: #1f2233;
+            --tree-hover: rgba(255, 255, 255, 0.05);
+            --selected: rgba(130, 170, 255, 0.15);
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        /* Layout */
+        .sidebar {
+            width: 400px;
+            min-width: 300px;
+            background: var(--panel-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top Bar */
+        .controls {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-highlight);
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: var(--font-family);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px rgba(130, 170, 255, 0.4);
+            background: #fff;
+        }
+
+        /* Tree View */
+        .tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .tree-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tree-container::-webkit-scrollbar-thumb {
+            background-color: var(--border);
+            border-radius: 3px;
+        }
+
+        details {
+            margin-left: 12px;
+        }
+
+        summary {
+            padding: 6px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            list-style: none; /* Hide default arrow */
+            transition: background 0.15s ease;
+            color: var(--text-color);
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary:hover {
+            background: var(--tree-hover);
+        }
+
+        summary.selected {
+            background: var(--selected);
+            color: var(--text-highlight);
+            border-left: 2px solid var(--accent);
+        }
+
+        /* Custom Arrow */
+        summary::before {
+            content: '▶';
+            font-size: 9px;
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.2s ease;
+            color: #5b6287;
+        }
+
+        details[open] > summary::before {
+            transform: rotate(90deg);
+        }
+        
+        .leaf-node > summary::before {
+            opacity: 0;
+        }
+
+        .tag {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .id {
+            color: #c3e88d;
+            margin-left: 8px;
+        }
+
+        /* Property Panel (Glassmorphism) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .glass-panel.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .glass-panel h2 {
+            margin: 0 0 20px 0;
+            color: var(--text-highlight);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .glass-panel h2 span.addr {
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #f07178;
+            font-family: monospace;
+        }
+
+        .prop-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 12px;
+            align-items: baseline;
+        }
+
+        .prop-label {
+            color: #89ddff;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .prop-value {
+            color: var(--text-highlight);
+            background: rgba(0,0,0,0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #5b6287;
+        }
+
+        .status.active {
+            color: #c3e88d;
+        }
+
+        /* Empty State */
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #5b6287;
+            pointer-events: none;
+        }
+
+        .empty-state h3 {
+            color: var(--text-highlight);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="controls">
+            <h1>UI Explorer</h1>
+            <button id="connectBtn" class="btn">Connect</button>
+        </div>
+        <div class="tree-container" id="treeContainer">
+            <!-- Tree dynamically injected -->
+            <div style="padding:20px; text-align:center; color:#5b6287;">Waiting for connection...</div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="controls" style="width: 100%; max-width: 600px; padding: 0 0 20px 0; border: none; background: transparent;">
+            <div id="statusIndicator" class="status">Disconnected</div>
+            <div style="font-size: 12px; color: #5b6287;">Polling: 250ms</div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <h3>No Component Selected</h3>
+            <p>Select a node from the tree to inspect its properties.</p>
+        </div>
+
+        <div class="glass-panel" id="propPanel">
+            <h2 id="insTitle">root_component <span class="addr" id="insAddr">0x00000</span></h2>
+            <div class="prop-grid">
+                <div class="prop-label">Visible</div>
+                <div class="prop-value" id="insVis">true</div>
+                
+                <div class="prop-label">Interactive</div>
+                <div class="prop-value" id="insInt">false</div>
+
+                <div class="prop-label">Priority</div>
+                <div class="prop-value" id="insPri">50</div>
+
+                <div class="prop-label">Position (X, Y)</div>
+                <div class="prop-value" id="insPos">0, 0</div>
+
+                <div class="prop-label">Dimensions</div>
+                <div class="prop-value" id="insDim">1920 x 1080</div>
+
+                <div class="prop-label">Bounds</div>
+                <div class="prop-value" id="insBnd">[0, 0, 1920, 1080]</div>
+
+                <div class="prop-label">State Text</div>
+                <div class="prop-value" id="insTxt" style="white-space: pre-wrap;"></div>
+
+                <div class="prop-label">Tooltip</div>
+                <div class="prop-value" id="insTip" style="white-space: pre-wrap;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let fileHandle;
+        let intervalId;
+        let isPolling = false;
+        
+        let loadedComponents = {}; // Keyed by address
+        let selectedAddress = null;
+        let openStates = {}; // Persist folder states
+
+        const SEPARATOR = "==============================[CONSUL_UI_NODE]==============================";
+
+        document.getElementById('connectBtn').addEventListener('click', async () => {
+            try {
+                [fileHandle] = await window.showOpenFilePicker({
+                    types: [{
+                        description: 'Text Files',
+                        accept: {'text/plain': ['.txt']},
+                    }],
+                });
+                
+                document.getElementById('connectBtn').innerText = "Connected";
+                document.getElementById('statusIndicator').innerText = "Live Sync";
+                document.getElementById('statusIndicator').className = "status active";
+
+                if (!isPolling) {
+                    isPolling = true;
+                    intervalId = setInterval(pollFile, 250);
+                    pollFile(); // instant first poll
+                }
+            } catch (err) {
+                console.error("Failed to acquire file:", err);
+            }
+        });
+
+        async function pollFile() {
+            if (!fileHandle) return;
+            try {
+                const file = await fileHandle.getFile();
+                const text = await file.text();
+                parseData(text);
+            } catch (err) {
+                console.error("Poll read error:", err);
+            }
+        }
+
+        function parseData(text) {
+            const lines = text.split('\n');
+            let flatList = [];
+            
+            let i = 0;
+            while(i < lines.length) {
+                if(lines[i].trim() === SEPARATOR && i + 12 < lines.length) {
+                    let comp = {
+                        depth: parseInt(lines[i+1].trim()),
+                        id: lines[i+2].trim(),
+                        address: lines[i+3].trim(),
+                        priority: lines[i+4].trim(),
+                        visible: lines[i+5].trim(),
+                        interactive: lines[i+6].trim(),
+                        position: lines[i+7].trim(),
+                        bounds: lines[i+8].trim(),
+                        dimensions: lines[i+9].trim(),
+                        stateText: lines[i+10].replace(/\\n/g, '\n'),
+                        tooltip: lines[i+11].replace(/\\n/g, '\n'),
+                        isHovered: lines[i+12].trim() === 'true'
+                    };
+                    flatList.push(comp);
+                    i += 13;
+                } else {
+                    i++;
+                }
+            }
+
+            if (flatList.length > 0) {
+                buildAndRenderTree(flatList);
+            }
+        }
+
+        function buildAndRenderTree(flatList) {
+            // Save current open states
+            document.querySelectorAll('details').forEach(el => {
+                const addr = el.getAttribute('data-addr');
+                if(addr) openStates[addr] = el.open;
+            });
+
+            // Rebuild tree structure from depths
+            let root = [];
+            let stack = [];
+            loadedComponents = {}; // refresh dictionary
+            let hoveredAddr = null;
+
+            flatList.forEach(comp => {
+                comp.children = [];
+                loadedComponents[comp.address] = comp;
+                if(comp.isHovered) hoveredAddr = comp.address;
+
+                if (comp.depth === 0) {
+                    root.push(comp);
+                    stack[0] = comp;
+                } else {
+                    let parent = stack[comp.depth - 1];
+                    if (parent) {
+                        parent.children.push(comp);
+                        comp.parentAddr = parent.address;
+                    } else {
+                        root.push(comp);
+                    }
+                    stack[comp.depth] = comp;
+                }
+            });
+
+            // If a node is hovered in game, auto-select it in HTML
+            if (hoveredAddr) {
+                selectedAddress = hoveredAddr;
+                
+                // Auto-expand parents for hovered node
+                let cur = loadedComponents[hoveredAddr];
+                openStates[cur.address] = true; // Expand the node itself
+                while(cur && cur.parentAddr) {
+                    openStates[cur.parentAddr] = true;
+                    cur = loadedComponents[cur.parentAddr];
+                }
+            }
+
+            // Generate HTML string
+            let htmlStr = '';
+            root.forEach(c => {
+                htmlStr += generateHTMLRec(c);
+            });
+
+            const container = document.getElementById('treeContainer');
+            container.innerHTML = htmlStr;
+
+            // Restore states and attach events
+            document.querySelectorAll('details').forEach(el => {
+                const addr = el.getAttribute('data-addr');
+                if(addr && openStates[addr]) {
+                    el.open = true;
+                }
+            });
+
+            // Always expand root
+            const rootEl = container.querySelector('details');
+            if(rootEl) rootEl.open = true;
+
+            document.querySelectorAll('summary').forEach(sum => {
+                sum.addEventListener('click', (e) => {
+                    const addr = sum.getAttribute('data-addr');
+                    selectNode(addr, sum);
+                });
+            });
+
+            // Re-highlight if still exists
+            if (selectedAddress && loadedComponents[selectedAddress]) {
+                const el = container.querySelector(`summary[data-addr="${selectedAddress}"]`);
+                if(el) {
+                    el.classList.add('selected');
+                    // Scroll into view if it was an automatic selection from hover
+                    if (hoveredAddr === selectedAddress) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+                updateInspector(selectedAddress);
+            } else if (selectedAddress && !loadedComponents[selectedAddress]) {
+               document.getElementById('propPanel').classList.remove('visible');
+               document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function generateHTMLRec(comp) {
+            const hasChildren = comp.children && comp.children.length > 0;
+            const detailsClass = hasChildren ? '' : 'leaf-node';
+            
+            let html = `<details class="${detailsClass}" data-addr="${comp.address}">`;
+            // Note: onclick event handled after render
+            html += `<summary data-addr="${comp.address}">
+                        <span class="tag">UI</span>
+                        <span class="id">${comp.id}</span>
+                     </summary>`;
+            
+            if (hasChildren) {
+                comp.children.forEach(child => {
+                    html += generateHTMLRec(child);
+                });
+            }
+            html += `</details>`;
+            return html;
+        }
+
+        function selectNode(addr, summaryElement) {
+            document.querySelectorAll('summary').forEach(el => el.classList.remove('selected'));
+            summaryElement.classList.add('selected');
+            selectedAddress = addr;
+            
+            updateInspector(addr);
+        }
+
+        function updateInspector(addr) {
+            const comp = loadedComponents[addr];
+            if (!comp) return;
+
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('propPanel').classList.add('visible');
+
+            document.getElementById('insTitle').innerHTML = `${comp.id} <span class="addr">${comp.address}</span>`;
+            document.getElementById('insVis').innerText = comp.visible;
+            document.getElementById('insInt').innerText = comp.interactive;
+            document.getElementById('insPri').innerText = comp.priority;
+            document.getElementById('insPos').innerText = comp.position;
+            document.getElementById('insBnd').innerText = `[${comp.bounds}]`;
+            document.getElementById('insDim').innerText = comp.dimensions.replace(',', ' x ');
+            document.getElementById('insTxt').innerText = comp.stateText === "nil" ? "" : comp.stateText;
+            document.getElementById('insTip').innerText = comp.tooltip === "nil" ? "" : comp.tooltip;
+        }
+
+    </script>
+</body>
+</html>
