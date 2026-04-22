@@ -28,9 +28,7 @@ consul = {
 		setup = function()
 			setmetatable(consul.env, {
 				__index = function(self, key)
-
 					if key == "mode" then
-
 						if __game_mode then
 							return __game_mode
 						end
@@ -283,7 +281,6 @@ consul = {
 		end)
 
 		consul.env.setup()
-
 	end,
 
 	-- logging
@@ -393,6 +390,9 @@ consul = {
 	-- contrib
 	serpent = require("serpent.serpent"),
 	inspect = require("inspect.inspect"),
+	-- ui debugger
+	uidebug = require("consul_uidebug"),
+
 	--- A function that pretty-prints a Lua value using 'penlight'.
 	--- @function consul.pretty
 	--- @param _obj Any Lua value to pretty-print.
@@ -1077,7 +1077,7 @@ consul = {
 			OnUICreated = function()
 				local ui = consul.ui
 				local log = consul.new_log("ui.attila:OnUICreated")
-				log:debug("Attila specific OnUICreated start")
+				log:trace("Attila specific OnUICreated start")
 
 				if consul.ui.attila.created then
 					log:debug("Consul already created, skipping...")
@@ -1092,12 +1092,12 @@ consul = {
 				ui.find(ui.scriptum_minimize):SimulateLClick()
 
 				consul.ui.attila.created = true
-				log:debug("Attila specific OnUICreated end")
+				log:trace("Attila specific OnUICreated end")
 			end,
 
 			OnComponentMoved = function(context)
 				local log = consul.new_log("ui.attila:OnComponentMoved")
-				log:debug("Attila specific OnComponentMoved start")
+				log:trace("Attila specific OnComponentMoved start")
 
 				if context.string ~= consul.ui.root then
 					return
@@ -1119,12 +1119,12 @@ consul = {
 				attila.should_move = true
 				c:SetVisible(false)
 
-				log:debug("Attila specific OnComponentMoved end")
+				log:trace("Attila specific OnComponentMoved end")
 			end,
 
 			TimeTrigger = function()
 				local log = consul.new_log("ui.attila:TimeTrigger")
-				log:debug("Attila specific TimeTrigger start")
+				log:trace("Attila specific TimeTrigger start")
 
 				local ui, attila = consul.ui, consul.ui.attila
 				local c = ui.find(ui.root)
@@ -1137,7 +1137,7 @@ consul = {
 					attila.should_move = false
 				end
 
-				log:debug("Attila specific TimeTrigger end")
+				log:trace("Attila specific TimeTrigger end")
 			end,
 		},
 
@@ -1705,6 +1705,75 @@ consul = {
 				},
 			},
 			exact = {
+				["/uidump"] = {
+					help = function()
+						return "Dumps the UI tree from the root component to consul_debug_ui_state.txt."
+					end,
+					func = function()
+						consul.uidebug.dump_tree(consul.ui._UIRoot)
+						return "Dumped UI tree to consul_debug_ui_state.txt."
+					end,
+					exec = false,
+					returns = true,
+				},
+				["/debug_html"] = {
+					setup = function()
+						if not __consul_uidebug_hooked then
+							table.insert(events.ComponentMouseOn, function(context)
+								if not consul.uidebug.is_active then
+									return
+								end
+								if consul.ui.is_consul(context.string) then
+									return
+								end
+								local c = UIComponent(context.component)
+								if c then
+									local address = tostring(c:Address())
+									consul.uidebug.dump_tree(consul.ui._UIRoot, address)
+								end
+							end)
+							table.insert(events.ShortcutTriggered, function(context)
+								local shortcut = context.string
+								if shortcut == "standard_ping" then
+									consul.uidebug.is_active = not consul.uidebug.is_active
+									consul.uidebug.dump_tree(consul.ui._UIRoot, consul.uidebug.last_hovered_address)
+								end
+							end)
+
+							table.insert(events.TimeTrigger, function(context)
+								-- frontend just keeps going
+								if consul.env.mode == 2 then
+									consul.uidebug.process_commands()
+									return
+								end
+
+								-- campaign needs a trigger
+								if consul.env.mode == 1 then
+									if context.string == "uidebug_command_poll" then
+										consul.uidebug.process_commands()
+										consul._game():add_time_trigger("uidebug_command_poll", 0.5)
+									end
+								end
+
+								-- todo battle nothing yet
+							end)
+
+							__consul_uidebug_hooked = true
+							consul.log:debug("/debug_html UI Debugger hooks initialized!")
+						end
+					end,
+					help = function()
+						return "Launch the UI Debugger in your default browser."
+					end,
+					func = function()
+						if consul.env.mode == 1 then
+							consul._game():add_time_trigger("uidebug_command_poll", 0.5)
+						end
+						return consul.uidebug.launch()
+					end,
+					exec = false,
+					returns = true,
+				},
 				["/reload_custom_commands"] = {
 					help = function()
 						return "Reload commands from consul_custom_commands.lua"

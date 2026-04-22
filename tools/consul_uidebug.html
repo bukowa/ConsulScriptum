@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consul UI Debugger</title>
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --text-color: #a6accd;
+            --text-highlight: #ffffff;
+            --accent: #82aaff;
+            --accent-glow: rgba(130, 170, 255, 0.2);
+            --border: #1f2233;
+            --tree-hover: rgba(255, 255, 255, 0.05);
+            --selected: rgba(130, 170, 255, 0.15);
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        /* Layout */
+        .sidebar {
+            width: 400px;
+            min-width: 300px;
+            background: var(--panel-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top Bar */
+        .controls {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-highlight);
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: var(--font-family);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px rgba(130, 170, 255, 0.4);
+            background: #fff;
+        }
+
+        /* Tree View */
+        .tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .tree-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tree-container::-webkit-scrollbar-thumb {
+            background-color: var(--border);
+            border-radius: 3px;
+        }
+
+        details {
+            margin-left: 12px;
+        }
+
+        summary {
+            padding: 6px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            list-style: none;
+            transition: background 0.15s ease;
+            color: var(--text-color);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary:hover {
+            background: var(--tree-hover);
+        }
+
+        summary.selected {
+            background: var(--selected);
+            color: var(--text-highlight);
+            border-left: 2px solid var(--accent);
+        }
+
+        summary::before {
+            content: '▶';
+            font-size: 9px;
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.2s ease;
+            color: #5b6287;
+        }
+
+        details[open]>summary::before {
+            transform: rotate(90deg);
+        }
+
+        .leaf-node>summary::before {
+            opacity: 0;
+        }
+
+        .tag {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .id {
+            color: #c3e88d;
+            margin-left: 8px;
+        }
+
+        /* Property Panel (Glassmorphism) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .glass-panel.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .glass-panel h2 {
+            margin: 0 0 20px 0;
+            color: var(--text-highlight);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .glass-panel h2 span.addr {
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #f07178;
+            font-family: monospace;
+        }
+
+        .prop-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 12px;
+            align-items: baseline;
+        }
+
+        .prop-label {
+            color: #89ddff;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .prop-value {
+            color: var(--text-highlight);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .prop-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-highlight);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .prop-input:focus {
+            border-color: var(--accent);
+        }
+
+        select.prop-input {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #5b6287;
+        }
+
+        .status.paused {
+            color: #f07178;
+        }
+
+        .capture-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #5b6287;
+        }
+
+        .capture-toggle .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5b6287;
+        }
+
+        .capture-toggle.active .indicator {
+            background: #c3e88d;
+            box-shadow: 0 0 8px rgba(195, 232, 141, 0.5);
+        }
+
+        .capture-toggle.paused .indicator {
+            background: #f07178;
+        }
+
+        /* Empty State */
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #5b6287;
+            pointer-events: none;
+        }
+
+        .empty-state h3 {
+            color: var(--text-highlight);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="controls">
+            <h1>UI Explorer</h1>
+            <button id="connectBtn" class="btn">Connect</button>
+        </div>
+        <div class="tree-container" id="treeContainer">
+            <div style="padding:20px; text-align:center; color:#5b6287;">Waiting for connection...</div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="controls"
+            style="width: 100%; max-width: 600px; padding: 0 0 20px 0; border: none; background: transparent;">
+            <div id="statusIndicator" class="status">Disconnected</div>
+            <div id="captureStatus" class="capture-toggle">
+                <div class="indicator"></div>
+                <span class="label">Capture: Unknown</span>
+            </div>
+            <div style="font-size: 12px; color: #5b6287;">Polling: 250ms</div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <h3>No Component Selected</h3>
+            <p>Select a node from the tree to inspect its properties.</p>
+        </div>
+
+        <div class="glass-panel" id="propPanel">
+            <h2 id="insTitle">root_component <span class="addr" id="insAddr">0x00000</span></h2>
+            <div class="prop-grid" id="propGrid">
+                <!-- Dynamically populated based on schema -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // PROTOCOL & SCHEMA
+        // ----------------------------------------------------
+        const SEPARATOR = "<||_CONSUL_SEP_||>";
+
+        // Must exactly match the UI_PROPERTIES order in consul_uidebug.lua
+        const UI_PROPERTIES = [
+            "Id", "Address", "Priority", "Visible", "IsInteractive", 
+            "Position", "Bounds", "Dimensions", "GetStateText", 
+            "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
+            "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
+            "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
+            "GetStateTextDetails", "CallbackId", "NumStates", "IsDisabled", "VisibleFromRoot"
+        ];
+
+        // Defines rendering types, getters, and functional setters
+        const UI_SCHEMA = {
+            // Read-only
+            "Id": { type: "readonly" },
+            "Address": { type: "readonly" },
+            "ChildCount": { type: "readonly" },
+            "Bounds": { type: "readonly" },
+            "TextDimensions": { type: "readonly" },
+            "Layout": { type: "readonly" },
+            "GetStateTextDetails": { type: "readonly" },
+            "CurrentAnimationId": { type: "readonly" },
+            "Height": { type: "readonly" },
+            "Width": { type: "readonly" },
+            "IsMouseOverChildren": { type: "readonly" },
+            "CallbackId": { type: "readonly" },
+            "NumStates": { type: "readonly" },
+            "VisibleFromRoot": { type: "readonly" },
+
+            // Booleans
+            "Visible": { type: "boolean", setter: (v) => `c:SetVisible(${v === 'true'})` },
+            "IsInteractive": { type: "boolean", setter: (v) => `c:SetInteractive(${v === 'true'})` },
+            "IsDragged": { type: "boolean", setter: (v) => `c:SetDragged(${v === 'true'})` },
+            "IsMoveable": { type: "boolean", setter: (v) => `c:SetMoveable(${v === 'true'})` },
+            "IsDisabled": { type: "boolean", setter: (v) => `c:SetDisabled(${v === 'true'})` },
+
+            // Numbers
+            "Priority": { type: "number", setter: (v) => `c:PropagatePriority(${v})` }, 
+            "Opacity": { type: "number", setter: (v) => `c:SetOpacity(${v})` },
+            "DockingPoint": { type: "number", setter: (v) => `c:SetDockingPoint(${v})` },
+
+            // Vectors
+            "Position": { type: "vector2", setter: (v) => { 
+                const p = v.split(','); 
+                return `c:MoveTo(${p[0]||0}, ${p[1]||0})`; 
+            }},
+            "Dimensions": { type: "vector2", setter: (v) => { 
+                const p = v.split(/[,xX]/); 
+                return `c:Resize(${p[0]||0}, ${p[1]||0})`; 
+            }},
+            
+            // Strings
+            "GetStateText": { type: "string", setter: (v) => {
+                // If it contains commas, take everything or extract first?
+                // For safety, let's just use what user inputs. 
+                return `c:SetStateText("${v.replace(/"/g, '\\"')}")`;
+            }},
+            "GetTooltipText": { type: "string", setter: (v) => `c:SetTooltipText("${v.replace(/"/g, '\\"')}")` },
+            "CurrentState": { type: "string", setter: (v) => `c:SetState("${v.replace(/"/g, '\\"')}")` },
+
+            // Actions (No getter needed, rendered as buttons)
+            "SimulateClick": { type: "action", setter: () => `c:SimulateClick()` },
+            "SimulateLClick": { type: "action", setter: () => `c:SimulateLClick()`, games: ["Attila"] },
+            "SimulateRClick": { type: "action", setter: () => `c:SimulateRClick()`, games: ["Attila"] },
+            "SimulateMouseOn": { type: "action", setter: () => `c:SimulateMouseOn()`, games: ["Attila"] },
+            "SimulateMouseOff": { type: "action", setter: () => `c:SimulateMouseOff()`, games: ["Attila"] },
+            "ClearSound": { type: "action", setter: () => `c:ClearSound()`, games: ["Attila"] },
+            "DestroyChildren": { type: "action", setter: () => `c:DestroyChildren()` }
+        };
+
+        // ----------------------------------------------------
+        // APP STATE
+        // ----------------------------------------------------
+        let dirHandle;
+        let fileHandle;
+        let commandFileHandle;
+        let intervalId;
+        let isPolling = false;
+        let isCaptureActive = true;
+        let currentGame = "Unknown";
+        let lastModifiedTime = 0;
+
+        let loadedComponents = {}; // Keyed by address
+        let selectedAddress = null;
+        let openStates = {}; // Persist folder states
+
+        // ----------------------------------------------------
+        // FILE SYSTEM COMMS
+        // ----------------------------------------------------
+        async function getCommandFile() {
+            if (!commandFileHandle && dirHandle) {
+                try {
+                    commandFileHandle = await dirHandle.getFileHandle('consul_debug_ui_command.txt', { create: true });
+                } catch (e) {
+                    console.error("Could not create command file", e);
+                }
+            }
+            return commandFileHandle;
+        }
+
+        async function writeCommand(luaCode) {
+            const handle = await getCommandFile();
+            if (!handle) return;
+            try {
+                const writable = await handle.createWritable();
+                await writable.write(luaCode);
+                await writable.close();
+            } catch (e) {
+                console.error("Error writing command", e);
+            }
+        }
+
+        document.getElementById('connectBtn').addEventListener('click', async () => {
+            try {
+                dirHandle = await window.showDirectoryPicker({ id: "consul_debug_dir", mode: "readwrite" });
+                await getCommandFile();
+
+                document.getElementById('connectBtn').innerText = "Connected";
+                document.getElementById('statusIndicator').innerText = "Live Sync";
+                document.getElementById('statusIndicator').className = "status active";
+
+                if (!isPolling) {
+                    isPolling = true;
+                    intervalId = setInterval(pollFile, 250);
+                    pollFile(); 
+                }
+            } catch (err) {
+                console.error("Failed to acquire directory:", err);
+            }
+        });
+
+        async function pollFile() {
+            if (!dirHandle) return;
+
+            if (!fileHandle) {
+                try {
+                    fileHandle = await dirHandle.getFileHandle('consul_debug_ui_state.txt', { create: false });
+                } catch (e) {
+                    return;
+                }
+            }
+
+            try {
+                const file = await fileHandle.getFile();
+                if (file.lastModified <= lastModifiedTime) return;
+                lastModifiedTime = file.lastModified;
+
+                const text = await file.text();
+                parseData(text);
+            } catch (err) {
+                console.error("Poll read error:", err);
+                fileHandle = null; 
+            }
+        }
+
+        // ----------------------------------------------------
+        // PARSER & TREE BUILDER
+        // ----------------------------------------------------
+        function parseData(text) {
+            const lines = text.split('\n');
+            let flatList = [];
+            let i = 0;
+
+            if (lines[0].startsWith("IS_ACTIVE:")) {
+                const isActive = lines[0].split(':')[1].trim() === 'true';
+                updateCaptureStatus(isActive);
+                i++;
+            }
+            
+            if (i < lines.length && lines[i].startsWith("GAME:")) {
+                currentGame = lines[i].split(':')[1].trim();
+                i++;
+            }
+
+            for (; i < lines.length; i++) {
+                if (lines[i].trim() === "") continue;
+                
+                const parts = lines[i].split(SEPARATOR);
+                if (parts.length >= 2) { 
+                    let comp = {
+                        depth: parseInt(parts[0]),
+                        isHovered: parts[1] === 'true',
+                        children: []
+                    };
+                    
+                    // Map indexed parts to property keys
+                    for(let p = 0; p < UI_PROPERTIES.length; p++) {
+                        comp[UI_PROPERTIES[p]] = parts[p + 2] ? parts[p + 2].replace(/\\n/g, '\n') : "nil";
+                    }
+                    
+                    flatList.push(comp);
+                }
+            }
+
+            if (flatList.length > 0) {
+                buildAndRenderTree(flatList);
+            }
+        }
+
+        function buildAndRenderTree(flatList) {
+            document.querySelectorAll('details').forEach(el => {
+                const addr = el.getAttribute('data-addr');
+                if (addr) openStates[addr] = el.open;
+            });
+
+            let root = [];
+            let stack = [];
+            loadedComponents = {}; 
+            let hoveredAddr = null;
+
+            flatList.forEach(comp => {
+                comp.children = [];
+                loadedComponents[comp.Address] = comp;
+                if (comp.isHovered) hoveredAddr = comp.Address;
+
+                if (comp.depth === 0) {
+                    root.push(comp);
+                    stack[0] = comp;
+                } else {
+                    let parent = stack[comp.depth - 1];
+                    if (parent) {
+                        parent.children.push(comp);
+                        comp.parentAddr = parent.Address;
+                    } else {
+                        root.push(comp);
+                    }
+                    stack[comp.depth] = comp;
+                }
+            });
+
+            if (hoveredAddr && isCaptureActive) {
+                selectedAddress = hoveredAddr;
+                let cur = loadedComponents[hoveredAddr];
+                openStates[cur.Address] = true; 
+                while (cur && cur.parentAddr) {
+                    openStates[cur.parentAddr] = true;
+                    cur = loadedComponents[cur.parentAddr];
+                }
+            }
+
+            let htmlStr = '';
+            root.forEach(c => {
+                htmlStr += generateHTMLRec(c);
+            });
+
+            const container = document.getElementById('treeContainer');
+            container.innerHTML = htmlStr;
+
+            document.querySelectorAll('details').forEach(el => {
+                const addr = el.getAttribute('data-addr');
+                if (addr && openStates[addr]) el.open = true;
+            });
+
+            const rootEl = container.querySelector('details');
+            if (rootEl) rootEl.open = true;
+
+            document.querySelectorAll('summary').forEach(sum => {
+                sum.addEventListener('click', (e) => {
+                    const addr = sum.getAttribute('data-addr');
+                    selectNode(addr, sum);
+                });
+            });
+
+            if (selectedAddress && loadedComponents[selectedAddress]) {
+                const el = container.querySelector(`summary[data-addr="${selectedAddress}"]`);
+                if (el) {
+                    el.classList.add('selected');
+                    if (hoveredAddr === selectedAddress && isCaptureActive) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+                updateInspector(selectedAddress);
+            } else if (selectedAddress && !loadedComponents[selectedAddress]) {
+                document.getElementById('propPanel').classList.remove('visible');
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function generateHTMLRec(comp) {
+            const hasChildren = comp.children && comp.children.length > 0;
+            const detailsClass = hasChildren ? '' : 'leaf-node';
+
+            let html = `<details class="${detailsClass}" data-addr="${comp.Address}">`;
+            html += `<summary data-addr="${comp.Address}">
+                        <span class="tag">UI</span>
+                        <span class="id">${escapeHtml(comp.Id)}</span>
+                     </summary>`;
+
+            if (hasChildren) {
+                comp.children.forEach(child => {
+                    html += generateHTMLRec(child);
+                });
+            }
+            html += `</details>`;
+            return html;
+        }
+
+        function selectNode(addr, summaryElement) {
+            document.querySelectorAll('summary').forEach(el => el.classList.remove('selected'));
+            summaryElement.classList.add('selected');
+            selectedAddress = addr;
+            updateInspector(addr);
+        }
+
+        function updateCaptureStatus(isActive) {
+            isCaptureActive = isActive;
+            const el = document.getElementById('captureStatus');
+            const label = el.querySelector('.label');
+            if (isActive) {
+                el.classList.add('active');
+                el.classList.remove('paused');
+                label.innerText = "Capture: Active";
+            } else {
+                el.classList.remove('active');
+                el.classList.add('paused');
+                label.innerText = "Capture: Paused (Shortcut: standard_ping (F5 by default))";
+            }
+        }
+
+        // ----------------------------------------------------
+        // DYNAMIC INSPECTOR RENDERING
+        // ----------------------------------------------------
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        function updateInspector(addr) {
+            const comp = loadedComponents[addr];
+            if (!comp) return;
+
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('propPanel').classList.add('visible');
+            document.getElementById('insTitle').innerHTML = `${escapeHtml(comp.Id)} <span class="addr">${comp.Address}</span>`;
+            
+            let html = '';
+            
+            // Render mapped properties
+            for(const propName of UI_PROPERTIES) {
+                if (!UI_SCHEMA[propName]) continue;
+                const schema = UI_SCHEMA[propName];
+                if (schema.games && !schema.games.includes("All") && !schema.games.includes(currentGame)) continue;
+                
+                const val = comp[propName];
+                html += renderProp(propName, val, schema);
+            }
+            
+            // Render actions
+            html += '<div style="grid-column: 1 / -1; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; display: flex; flex-wrap: wrap; gap: 8px;">';
+            for(const [propName, schema] of Object.entries(UI_SCHEMA)) {
+                if (schema.type === 'action') {
+                    if (schema.games && !schema.games.includes("All") && !schema.games.includes(currentGame)) continue;
+                    html += `<button class="btn" style="font-size: 11px; padding: 4px 8px;" onclick="executeAction('${propName}')">${propName}</button>`;
+                }
+            }
+            html += '</div>';
+
+            document.getElementById('propGrid').innerHTML = html;
+        }
+
+        function renderProp(name, value, schema) {
+            let inputHtml = '';
+            const labelHtml = `<div class="prop-label">${name}</div>`;
+            const cleanVal = value === 'nil' || value === 'error' ? '' : value;
+            
+            if (schema.type === 'readonly') {
+                inputHtml = `<div class="prop-value">${escapeHtml(value)}</div>`;
+            } else if (schema.type === 'boolean') {
+                const isTrue = cleanVal === 'true';
+                inputHtml = `<select class="prop-input" onchange="dispatchCommand('${name}', this.value)">
+                    <option value="true" ${isTrue ? 'selected' : ''}>true</option>
+                    <option value="false" ${!isTrue ? 'selected' : ''}>false</option>
+                </select>`;
+            } else if (schema.type === 'string') {
+                const lines = cleanVal.split('\n').length;
+                const height = Math.max(30, lines * 18);
+                inputHtml = `<textarea class="prop-input" style="resize: vertical; min-height: ${height}px;" onchange="dispatchCommand('${name}', this.value)">${escapeHtml(cleanVal)}</textarea>`;
+            } else {
+                // Vector or Number (standard text input)
+                inputHtml = `<input type="text" class="prop-input" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
+            }
+            
+            return labelHtml + inputHtml;
+        }
+
+        window.dispatchCommand = function(propName, value) {
+            if (!selectedAddress) return;
+            const schema = UI_SCHEMA[propName];
+            if (schema && schema.setter) {
+                const cmdStr = schema.setter(value);
+                if (cmdStr) {
+                    const luaCode = `local c = consul.uidebug.cache["${selectedAddress}"]; if c then ${cmdStr} end`;
+                    writeCommand(luaCode);
+                }
+            }
+        }
+
+        window.executeAction = function(propName) {
+            if (!selectedAddress) return;
+            const schema = UI_SCHEMA[propName];
+            if (schema && schema.setter) {
+                const cmdStr = schema.setter();
+                if (cmdStr) {
+                    const luaCode = `local c = consul.uidebug.cache["${selectedAddress}"]; if c then ${cmdStr} end`;
+                    writeCommand(luaCode);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
