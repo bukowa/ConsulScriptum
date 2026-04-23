@@ -1787,6 +1787,7 @@ consul = {
 						end
 
 						table.insert(events.ComponentLClickUp, function(context)
+						    if (context.string == consul.ui.console_input) then return end
 							if command._is_running then
 								console.clear()
 								local component = UIComponent(context.component)
@@ -1816,6 +1817,7 @@ consul = {
 						end
 
 						table.insert(events.ComponentMouseOn, function(context)
+						    if (context.string == consul.ui.console_input) then return end
 							if command._is_running then
 								console.clear()
 								local component = UIComponent(context.component)
