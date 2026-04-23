@@ -35,8 +35,10 @@ The primary development platform. Most features, scripts, and commands are teste
 - **Battle Mode**: Experimental workaround available. Run `/use_in_battle` in a campaign session, then start a battle (**Campaign only**).
 
 ### Total War: Attila
-Currently in an experimental/early access phase. While core features (Consul Scripts, Scriptum, Lua Console) are functional, some engine-level differences apply.
+Currently in a **General Alpha** phase. While core features (Consul Scripts, Scriptum, Lua Console) are functional, some engine-level differences apply.
 
-- **Status**: Experimental
+- **Status**: Alpha / Experimental
+- **Legacy UI**: The Attila version reuses the UI framework and files from the Rome II version. While bugs are to be expected, the core functionality is remarkably stable.
 - **Commands**: **Partial Support**. Many built-in slash commands from Rome II have been ported, but certain Attila-specific engine calls are still being investigated.
 - **Battle Mode**: **Experimental**. The Rome II workaround has been successfully adapted for Attila. Run `/use_in_battle` in a campaign session to enable.
+

@@ -63,5 +63,20 @@ If you run out of slots, you can create a "Master Script" that uses dofile() to 
 
 <!-- @include: ./parts/battle-mode.md -->
 
+## Total War: Attila
+
+The Attila implementation is currently considered **Alpha**. 
+
+**Legacy UI Files.**
+To maintain a unified experience and ensure stability, the Attila version reuses several core UI components and layout logic from the Rome II version. Because of this "frankenstein" approach, minor visual glitches or alignment issues in the console may occur.
+
+**Experimental Status.**
+While the core features (Consul Scripts, Scriptum, and Lua Console) are functional, the engine differences between the two games mean that Attila is inherently more experimental. That said, the fact that the Rome II logic "just works" in Attila is a testament to the underlying engine similarities.
+
+::: warning Bug Reports
+If you encounter a UI crash or a script that behaves differently in Attila than in Rome II, please [open an issue](https://github.com/bukowa/ConsulScriptum/issues).
+:::
+
 ---
+
 
