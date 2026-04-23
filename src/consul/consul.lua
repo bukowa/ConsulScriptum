@@ -857,7 +857,10 @@ consul = {
 				table.insert(output, "Hierarchy:  " .. tostring(report.Hierarchy))
 
 				if #report.children > 0 then
-					table.insert(output, "--------------------------------------------------------------------------------")
+					table.insert(
+						output,
+						"--------------------------------------------------------------------------------"
+					)
 					table.insert(output, "Children: ")
 					for _, child_id in ipairs(report.children) do
 						table.insert(output, "  " .. child_id)
@@ -1787,7 +1790,9 @@ consul = {
 						end
 
 						table.insert(events.ComponentLClickUp, function(context)
-						    if (context.string == consul.ui.console_input) then return end
+							if context.string == consul.ui.console_input then
+								return
+							end
 							if command._is_running then
 								console.clear()
 								local component = UIComponent(context.component)
@@ -1817,7 +1822,9 @@ consul = {
 						end
 
 						table.insert(events.ComponentMouseOn, function(context)
-						    if (context.string == consul.ui.console_input) then return end
+							if context.string == consul.ui.console_input then
+								return
+							end
 							if command._is_running then
 								console.clear()
 								local component = UIComponent(context.component)
@@ -1927,6 +1934,21 @@ consul = {
 									["unit_key"] = context.string:sub(1, -#"_mercenary" - 1),
 								}))
 								return
+							end
+
+							-- Attila garrison units
+							if consul_build == "Attila" then
+								local element = consul.ui._UIComponent(context.component)
+								local parent = element:Parent()
+								if parent ~= nil then
+									parent = consul.ui._UIComponent(parent)
+									if tostring(parent:Id()) == "land_units_frame" then
+										consul.console.clear()
+										consul.console.write(consul.pretty({
+											["unit_key"] = context.string,
+										}))
+									end
+								end
 							end
 						end,
 					},
