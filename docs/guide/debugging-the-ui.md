@@ -49,20 +49,21 @@ component you are currently interacting with.
 ### Example Output
 
 ```text
-Hierarchy:  root > battle_setup > dock_area > main
 --------------------------------------------------------------------------------
-Id:                          listview_army
-Address:                     Pointer<Component> (0x009ba318c)
-Visible:                     true
-IsInteractive:               true
-CurrentState:                NewState
-Priority:                    10
-Position:                    61, 438
-Bounds:                      344, 628
-Dimensions:                  328, 628
-Width:                       328
-Height:                      628
-TextDimensions:              0, 0, 0
+Id:                               Text
+CallbackId:                   TextviewText
+Visible:                         true
+ChildCount:                  0
+IsInteractive:                 true
+CurrentState:                 MainState
+Priority:                       60
+Position:                      123, 606
+Bounds, Dimensions:     327, 298, 327, 298
+Width, Height:             327, 298
+GetStateText:           The aura of terror surrounding the Huns is so great that their enemies are barely able to conceive that they are also human beings. In truth, the Huns’ equine expertise is what makes them such formidable foes. In battle, their combination of ranged attacks and the speed with which they can cover ground is breath-taking – and terrifying - to behold. In this way, the Huns have swept into Europe, and now threaten Rome itself. However, they must act swiftly to turn this chaos into an empire. Whilst their leaders’ arguments rage the horde waits, paralysed, for the arrival of a man - a man powerful enough to unite the Hunnic peoples and bind them to his singular will…, 325, 298, 16
+GetTooltipText:         
+--------------------------------------------------------------------------------
+Hierarchy:  root > sp_grand_campaign > docker > details_panel > faction_details_parent > party_description > TextView > Text
 --------------------------------------------------------------------------------
 ```
 
@@ -222,8 +223,7 @@ Once you have a wrapped UIComponent, these are the most commonly used methods fo
 
 Under the hood, these commands register listeners for the `ComponentMouseOn` and `ComponentLClickUp` engine events. When
 an event fires, Consul retrieves `UIComponent` and recursively traverses its `Parent()` property to build the ID
-chain. It then safe-calls a suite of UI methods (using `pcall`) to gather the component's state without risking a game
-crash. The resulting unified report is then pretty-printed to both the visual console and the log file.
+chain. The resulting unified report is then pretty-printed to both the visual console and the output file.
 
 ## Further Reading: UIComponent API
 

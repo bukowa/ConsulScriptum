@@ -801,11 +801,9 @@ consul = {
 					Id = safe_call(component, "Id"),
 					Hierarchy = table.concat(consul.ui.debug.get_id_chains(component), " > "),
 					properties = {
-						Address = safe_call(component, "Address"),
 						Id = safe_call(component, "Id"),
 						IsInteractive = safe_call(component, "IsInteractive"),
 						Priority = safe_call(component, "Priority"),
-						TextDimensions = safe_call(component, "TextDimensions"),
 						ChildCount = safe_call(component, "ChildCount"),
 						-- positions & dimensions
 						Bounds = safe_call(component, "Bounds"),
@@ -815,63 +813,56 @@ consul = {
 						Height = safe_call(component, "Height"),
 						CurrentState = safe_call(component, "CurrentState"),
 						Visible = safe_call(component, "Visible"),
+						GetStateText = safe_call(component, "GetStateText"),
+						GetTooltipText = safe_call(component, "GetTooltipText"),
+						CallbackId = safe_call(component, "CallbackId"),
 					},
-				}
-				return report
-			end,
-
-			format_report = function(report)
-				local output = {}
-
-				local spaces_map = {
-					["Address"] = 25,
-					["ChildCount"] = 20,
-					["Bounds"] = 26,
-					["CurrentState"] = 19,
-					["Dimensions"] = 20,
-					["Height"] = 27,
-					["Id"] = 33,
-					["IsInteractive"] = 19,
-					["Position"] = 25,
-					["Priority"] = 25,
-					["TextDimensions"] = 14,
-					["Visible"] = 27,
-					["Width"] = 27,
+					children = {},
 				}
 
-				local property_order = {
-					"Id",
-					"Address",
-					"Visible",
-					"ChildCount",
-					"IsInteractive",
-					"CurrentState",
-					"Priority",
-					"Position",
-					"Bounds",
-					"Dimensions",
-					"Width",
-					"Height",
-					"TextDimensions",
-				}
-
-				table.insert(output, "--------------------------------------------------------------------------------")
-
-				if report.properties then
-					for _, k in ipairs(property_order) do
-						local val = report.properties[k]
-
-						if val ~= nil then
-							local val_str = (type(val) == "table") and table.concat(val, ", ") or tostring(val)
-							local num_spaces = spaces_map[k] or 10
-
-							table.insert(output, k .. ":" .. string.rep(" ", num_spaces) .. val_str)
+				local count = safe_call(component, "ChildCount")
+				if type(count) == "number" and count > 0 then
+					for i = 0, count - 1 do
+						local child = component:Find(i)
+						if child then
+							table.insert(report.children, tostring(consul.ui._UIComponent(child):Id()))
 						end
 					end
 				end
 
+				return report
+			end,
+
+			format_report = function(report)
+				local p = report.properties
+				local output = {}
+				local f = function(v)
+					return (type(v) == "table") and table.concat(v, ", ") or tostring(v)
+				end
+
+				table.insert(output, "--------------------------------------------------------------------------------")
+				table.insert(output, "Id:                               " .. f(p.Id))
+				table.insert(output, "CallbackId:                   " .. f(p.CallbackId))
+				table.insert(output, "Visible:                         " .. f(p.Visible))
+				table.insert(output, "ChildCount:                  " .. f(p.ChildCount))
+				table.insert(output, "IsInteractive:                 " .. f(p.IsInteractive))
+				table.insert(output, "CurrentState:                 " .. f(p.CurrentState))
+				table.insert(output, "Priority:                       " .. f(p.Priority))
+				table.insert(output, "Position:                      " .. f(p.Position))
+				table.insert(output, "Bounds, Dimensions:     " .. f(p.Bounds) .. ", " .. f(p.Dimensions))
+				table.insert(output, "Width, Height:             " .. f(p.Width) .. ", " .. f(p.Height))
+				table.insert(output, "GetStateText:           " .. f(p.GetStateText))
+				table.insert(output, "GetTooltipText:         " .. f(p.GetTooltipText))
 				table.insert(output, "--------------------------------------------------------------------------------")
 				table.insert(output, "Hierarchy:  " .. tostring(report.Hierarchy))
+
+				if #report.children > 0 then
+					table.insert(output, "--------------------------------------------------------------------------------")
+					table.insert(output, "Children: ")
+					for _, child_id in ipairs(report.children) do
+						table.insert(output, "  " .. child_id)
+					end
+				end
 
 				return table.concat(output, "\n")
 			end,
