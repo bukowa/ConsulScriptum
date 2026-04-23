@@ -1955,8 +1955,8 @@ consul = {
 
 					func = function()
 						local command = consul.console.commands.exact["/debug"]
-						local pprinter = consul.pprinter
 						local console = consul.console
+
 						-- if already running, stop
 						if command._is_running then
 							command._is_running = false
@@ -2014,7 +2014,7 @@ consul = {
 									f = function(name)
 										local settlement = consul.game.region(name):settlement()
 										consul.debug.settlement = settlement
-										return pprinter.settlement_script_interface(settlement)
+										return consul.pretty(settlement)
 									end,
 								},
 								button_icon = {
@@ -2024,7 +2024,7 @@ consul = {
 									f = function(name)
 										local faction = consul.game.faction(name)
 										consul.debug.faction = faction
-										return pprinter.faction_script_interface(faction)
+										return consul.pretty(faction)
 									end,
 								},
 								faction_row_entry_ = {
@@ -2034,7 +2034,7 @@ consul = {
 									f = function(name)
 										local faction = consul.game.faction(name)
 										consul.debug.faction = faction
-										return pprinter.faction_script_interface(faction)
+										return consul.pretty(faction)
 									end,
 								},
 							},
@@ -2050,7 +2050,7 @@ consul = {
 										end
 										local settlement = consul.game.region(parts[1]):settlement()
 										consul.debug.settlement = settlement
-										return pprinter.settlement_script_interface(settlement)
+										return consul.pretty(settlement)
 									end,
 								},
 								["faction_icon_"] = {
@@ -2060,7 +2060,7 @@ consul = {
 									f = function(name)
 										local faction = consul.game.faction(name)
 										consul.debug.faction = faction
-										return pprinter.faction_script_interface(faction)
+										return consul.pretty(faction)
 									end,
 								},
 								faction_row_entry_ = {
@@ -2070,7 +2070,7 @@ consul = {
 									f = function(name)
 										local faction = consul.game.faction(name)
 										consul.debug.faction = faction
-										return pprinter.faction_script_interface(faction)
+										return consul.pretty(faction)
 									end,
 								},
 							},
@@ -2126,7 +2126,7 @@ consul = {
 								end
 
 								console.clear()
-								console.write(consul.pretty(config["f"](name)))
+								console.write(config["f"](name))
 							end)
 						)
 
