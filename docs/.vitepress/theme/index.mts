@@ -8,6 +8,7 @@ import HeroDemo from './components/HeroDemo.vue'
 import MediaModal from './components/MediaModal.vue'
 import GameSwitcher from './components/GameSwitcher.vue'
 import GameLink from './components/GameLink.vue'
+import PackExplorer from './components/PackExplorer.vue'
 
 // Home page playlist for the hero section
 export const HOME_PLAYLIST = [
@@ -98,6 +99,7 @@ export default {
   enhanceApp({ app }: { app: App }) {
     app.config.globalProperties.$withBase = withBase
     app.component('GameLink', GameLink)
+    app.component('PackExplorer', PackExplorer)
     enhanceAppWithTabs(app)
 
     if (typeof window !== 'undefined') {

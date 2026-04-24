@@ -93,6 +93,7 @@ export default withMermaid(defineConfig({
                     {text: 'Debugging The World', link: '/guide/debugging-the-world'},
                     {text: 'Debugging The UI', link: '/guide/debugging-the-ui'},
                     {text: 'Scripting Manual', link: '/guide/scripting-manual'},
+                    {text: 'Writing Your First Mod', link: '/guide/writing-your-first-mod'},
                     {text: 'Battle mode', link: '/guide/battle-mode-scripting'},
                 ]
             },

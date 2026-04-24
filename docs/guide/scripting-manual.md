@@ -9,7 +9,7 @@ outline: deep
 This manual is for anyone who wants to move beyond the built-in commands and start writing their own Lua scripts for Total War. You don't need to be a programmer to start; you just need to understand the engine's scripting architecture.
 
 > [!IMPORTANT]
-> To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual.<br> 
+> To get the most out of this manual, we recommend following the [Suggested Workflow](./scriptum-manual#suggested-workflow) in the Scriptum Manual. 
 > It allows you to write code in your text editor and see results live in-game without restarts.
 
 > [!IMPORTANT]
@@ -725,10 +725,13 @@ for k, v in pairs(debug.getregistry()) do
 end
 ```
 
-## 7. Putting it All Together:
-```lua
-to be done
-```
+## 7. Putting It All Together: Writing Your First Mod
+
+Now that you understand the engine hierarchy, how to find objects, and how to use events to trigger your logic, it's time to build a real script.
+
+We've created a dedicated tutorial that guides you step-by-step through writing a mod with tangible effects on the game—specifically, assigning effect bundles to factions, regions, and forces based on varied events.
+
+➡️ **[Continue to the Tutorial: Writing Your First Mod](./writing-your-first-mod)**
 
 ## 8. Further Reading: Official Wikis
 
