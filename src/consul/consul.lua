@@ -751,6 +751,38 @@ consul = {
 		_UIContext = nil, -- context
 		_UIContextComponent = nil, -- context.component
 
+		is_consul = function(str)
+			local component = consul.ui.find(str)
+
+			-- Keep track of visited components to prevent infinite loops
+			local visited = {}
+
+			while component ~= nil do
+				local addr = tostring(component:Address())
+
+				-- If we've seen this memory address before, we are in an infinite loop
+				if visited[addr] then
+					break
+				end
+				visited[addr] = true
+
+				-- Check if this is the root
+				if component:Id() == consul.ui.root then
+					return true
+				end
+
+				-- Move to parent
+				local parent = component:Parent()
+				if parent ~= nil then
+					component = consul.ui._UIComponent(parent)
+				else
+					-- No more parents, end the loop
+					break
+				end
+			end
+			return false
+		end,
+
 		debug = {
 			get_id_chains = function(component)
 				local chain = {}
@@ -1790,7 +1822,7 @@ consul = {
 						end
 
 						table.insert(events.ComponentLClickUp, function(context)
-							if context.string == consul.ui.console_input then
+							if consul.ui.is_consul(context.string) then
 								return
 							end
 							if command._is_running then
@@ -1822,7 +1854,7 @@ consul = {
 						end
 
 						table.insert(events.ComponentMouseOn, function(context)
-							if context.string == consul.ui.console_input then
+							if consul.ui.is_consul(context.string) then
 								return
 							end
 							if command._is_running then
@@ -1830,6 +1862,7 @@ consul = {
 								local component = UIComponent(context.component)
 								local report = consul.ui.debug.get_component_report(component)
 								console.write(consul.ui.debug.format_report(report))
+								consul.debug.component = component
 							end
 						end)
 
