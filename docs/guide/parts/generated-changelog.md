@@ -1,4 +1,4 @@
-## v0.8.0-alpha.2
+## v0.8.0-alpha.3
 **Common:**
 - This update is focused on debugging the world and ui, it brings another set of improvements for the Attila too!
 - Added: New 'Debugging The World' section to the official manual.

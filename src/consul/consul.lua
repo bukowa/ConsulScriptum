@@ -4,7 +4,7 @@ consul_build = "Attila" -- or "Rome2"
 
 consul = {
 
-	VERSION = "0.8.0-alpha.2",
+	VERSION = "0.8.0-alpha.3",
 	URL = "http://github.com/bukowa/ConsulScriptum",
 	AUTHOR = "Mateusz Kurowski",
 	CONTACT = "gitbukowa@gmail.com",
