@@ -1717,7 +1717,10 @@ consul = {
 					returns = true,
 				},
 				["/debug_html"] = {
-					setup = function()
+					help = function()
+						return "Launch the UI Debugger in your default browser."
+					end,
+					func = function()
 						if not __consul_uidebug_hooked then
 							table.insert(events.ComponentMouseOn, function(context)
 								if not consul.uidebug.is_active then
@@ -1761,11 +1764,7 @@ consul = {
 							__consul_uidebug_hooked = true
 							consul.log:debug("/debug_html UI Debugger hooks initialized!")
 						end
-					end,
-					help = function()
-						return "Launch the UI Debugger in your default browser."
-					end,
-					func = function()
+
 						if consul.env.mode == 1 then
 							consul._game():add_time_trigger("uidebug_command_poll", 0.5)
 						end
