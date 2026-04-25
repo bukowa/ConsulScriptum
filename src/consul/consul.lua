@@ -18,25 +18,51 @@ consul = {
 	is_in_battle_script = false,
 	bm = nil,
 
+	env = {
+
+		-- 0 == battle
+		-- 1 == campaign
+		-- 2 == frontend
+		mode = nil,
+
+		setup = function()
+			setmetatable(consul.env, {
+				__index = function(self, key)
+
+					if key == "mode" then
+
+						if __game_mode then
+							return __game_mode
+						end
+
+						-- if game obj is not nil we are in campaign
+						-- this is important because the base game script
+						-- don't always import the campaign script header...
+						if consul._game() then
+							return 1
+						end
+
+						-- we are 99% in battle
+						if consul.is_in_battle_script then
+							return 0
+						end
+
+						return consul.utils.get_from_registry("__game_mode")
+					else
+						return rawget(self, key)
+					end
+				end,
+			})
+		end,
+	},
+
 	-- attribute holding stuff selected by debug
 	debug = {
 		-- return a cqi for lookups
 		character_cqi = function()
 			return "character_cqi:" .. consul.debug.character:cqi()
 		end,
-		-- hide the character
-		character_hide = function(queue)
-			queue = (queue == nil) and true or queue
-			return consul._game():hide_character(consul.debug.character_cqi(), queue)
-		end,
-		--character_unhide = function(queue, x, y, cqi)
-		--    queue = (queue == nil) and true or queue
-		--    x   = x   or consul.debug.character:logical_position_x()
-		--    y   = y   or consul.debug.character:logical_position_y()
-		--    cqi = cqi or consul.debug.character_cqi()
-		--    consul.log:info("")
-		--    return consul._game():unhide_character(cqi, x, y, queue)
-		--end,
+
 		garrison_residence = nil,
 		settlement = nil,
 		character = nil,
@@ -255,6 +281,9 @@ consul = {
 				consul.debug._measuring_turn = false
 			end
 		end)
+
+		consul.env.setup()
+
 	end,
 
 	-- logging
@@ -501,6 +530,18 @@ consul = {
 			table.sort(unique_items)
 
 			return unique_items
+		end,
+
+		get_from_registry = function(key)
+			for k, v in pairs(debug.getregistry()) do
+				local status, env = pcall(debug.getfenv, v)
+
+				if status and type(env) == "table" then
+					if env[key] ~= nil then
+						return env[key]
+					end
+				end
+			end
 		end,
 	},
 
