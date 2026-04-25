@@ -117,7 +117,6 @@
             display: flex;
             align-items: center;
             list-style: none;
-            /* Hide default arrow */
             transition: background 0.15s ease;
             color: var(--text-color);
         }
@@ -136,7 +135,6 @@
             border-left: 2px solid var(--accent);
         }
 
-        /* Custom Arrow */
         summary::before {
             content: '▶';
             font-size: 9px;
@@ -204,7 +202,7 @@
 
         .prop-grid {
             display: grid;
-            grid-template-columns: 140px 1fr;
+            grid-template-columns: 180px 1fr;
             gap: 12px;
             align-items: baseline;
         }
@@ -310,7 +308,6 @@
             <button id="connectBtn" class="btn">Connect</button>
         </div>
         <div class="tree-container" id="treeContainer">
-            <!-- Tree dynamically injected -->
             <div style="padding:20px; text-align:center; color:#5b6287;">Waiting for connection...</div>
         </div>
     </div>
@@ -333,72 +330,106 @@
 
         <div class="glass-panel" id="propPanel">
             <h2 id="insTitle">root_component <span class="addr" id="insAddr">0x00000</span></h2>
-            <div class="prop-grid">
-                <div class="prop-label">Visible</div>
-                <select class="prop-input" id="insVis" onchange="editPropInput('SetVisible', 'boolean', this.value)">
-                    <option value="true">true</option>
-                    <option value="false">false</option>
-                </select>
-
-                <div class="prop-label">Interactive</div>
-                <select class="prop-input" id="insInt"
-                    onchange="editPropInput('SetInteractive', 'boolean', this.value)">
-                    <option value="true">true</option>
-                    <option value="false">false</option>
-                </select>
-
-                <div class="prop-label">Priority</div>
-                <div class="prop-value" id="insPri">50</div>
-
-                <div class="prop-label">Position (X, Y)</div>
-                <input type="text" class="prop-input" id="insPos"
-                    onchange="editPropInput('MoveTo', 'position', this.value)" placeholder="0, 0">
-
-                <div class="prop-label">Dimensions</div>
-                <input type="text" class="prop-input" id="insDim"
-                    onchange="editPropInput('Resize', 'dimensions', this.value)" placeholder="1920 x 1080">
-
-                <div class="prop-label">Bounds</div>
-                <div class="prop-value" id="insBnd">[0, 0, 1920, 1080]</div>
-
-                <div class="prop-label">State Text</div>
-                <textarea class="prop-input" id="insTxt" style="resize: vertical; min-height: 40px;"
-                    onchange="editPropInput('SetStateText', 'string', this.value)"></textarea>
-
-                <div class="prop-label">Tooltip</div>
-                <textarea class="prop-input" id="insTip" style="resize: vertical; min-height: 40px;"
-                    onchange="editPropInput('SetTooltipText', 'string', this.value)"></textarea>
-
-                <div class="prop-label">Opacity</div>
-                <input type="number" class="prop-input" id="insOpa"
-                    onchange="editPropInput('SetOpacity', 'number', this.value)">
-
-                <div class="prop-label">Current State</div>
-                <input type="text" class="prop-input" id="insSta"
-                    onchange="editPropInput('SetState', 'string', this.value)">
-
-                <div class="prop-label">Docking Point</div>
-                <input type="number" class="prop-input" id="insDoc"
-                    onchange="editPropInput('SetDockingPoint', 'number', this.value)">
+            <div class="prop-grid" id="propGrid">
+                <!-- Dynamically populated based on schema -->
             </div>
         </div>
     </div>
 
     <script>
+        // ----------------------------------------------------
+        // PROTOCOL & SCHEMA
+        // ----------------------------------------------------
+        const SEPARATOR = "<||_CONSUL_SEP_||>";
+
+        // Must exactly match the UI_PROPERTIES order in consul_uidebug.lua
+        const UI_PROPERTIES = [
+            "Id", "Address", "Priority", "Visible", "IsInteractive", 
+            "Position", "Bounds", "Dimensions", "GetStateText", 
+            "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
+            "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
+            "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
+            "GetStateTextDetails", "CallbackId", "NumStates", "IsDisabled", "VisibleFromRoot"
+        ];
+
+        // Defines rendering types, getters, and functional setters
+        const UI_SCHEMA = {
+            // Read-only
+            "Id": { type: "readonly" },
+            "Address": { type: "readonly" },
+            "ChildCount": { type: "readonly" },
+            "Bounds": { type: "readonly" },
+            "TextDimensions": { type: "readonly" },
+            "Layout": { type: "readonly" },
+            "GetStateTextDetails": { type: "readonly" },
+            "CurrentAnimationId": { type: "readonly" },
+            "Height": { type: "readonly" },
+            "Width": { type: "readonly" },
+            "IsMouseOverChildren": { type: "readonly" },
+            "CallbackId": { type: "readonly" },
+            "NumStates": { type: "readonly" },
+            "VisibleFromRoot": { type: "readonly" },
+
+            // Booleans
+            "Visible": { type: "boolean", setter: (v) => `c:SetVisible(${v === 'true'})` },
+            "IsInteractive": { type: "boolean", setter: (v) => `c:SetInteractive(${v === 'true'})` },
+            "IsDragged": { type: "boolean", setter: (v) => `c:SetDragged(${v === 'true'})` },
+            "IsMoveable": { type: "boolean", setter: (v) => `c:SetMoveable(${v === 'true'})` },
+            "IsDisabled": { type: "boolean", setter: (v) => `c:SetDisabled(${v === 'true'})` },
+
+            // Numbers
+            "Priority": { type: "number", setter: (v) => `c:PropagatePriority(${v})` }, 
+            "Opacity": { type: "number", setter: (v) => `c:SetOpacity(${v})` },
+            "DockingPoint": { type: "number", setter: (v) => `c:SetDockingPoint(${v})` },
+
+            // Vectors
+            "Position": { type: "vector2", setter: (v) => { 
+                const p = v.split(','); 
+                return `c:MoveTo(${p[0]||0}, ${p[1]||0})`; 
+            }},
+            "Dimensions": { type: "vector2", setter: (v) => { 
+                const p = v.split(/[,xX]/); 
+                return `c:Resize(${p[0]||0}, ${p[1]||0})`; 
+            }},
+            
+            // Strings
+            "GetStateText": { type: "string", setter: (v) => {
+                // If it contains commas, take everything or extract first?
+                // For safety, let's just use what user inputs. 
+                return `c:SetStateText("${v.replace(/"/g, '\\"')}")`;
+            }},
+            "GetTooltipText": { type: "string", setter: (v) => `c:SetTooltipText("${v.replace(/"/g, '\\"')}")` },
+            "CurrentState": { type: "string", setter: (v) => `c:SetState("${v.replace(/"/g, '\\"')}")` },
+
+            // Actions (No getter needed, rendered as buttons)
+            "SimulateClick": { type: "action", setter: () => `c:SimulateClick()` },
+            "SimulateLClick": { type: "action", setter: () => `c:SimulateLClick()`, games: ["Attila"] },
+            "SimulateRClick": { type: "action", setter: () => `c:SimulateRClick()`, games: ["Attila"] },
+            "SimulateMouseOn": { type: "action", setter: () => `c:SimulateMouseOn()`, games: ["Attila"] },
+            "SimulateMouseOff": { type: "action", setter: () => `c:SimulateMouseOff()`, games: ["Attila"] },
+            "ClearSound": { type: "action", setter: () => `c:ClearSound()`, games: ["Attila"] },
+            "DestroyChildren": { type: "action", setter: () => `c:DestroyChildren()` }
+        };
+
+        // ----------------------------------------------------
+        // APP STATE
+        // ----------------------------------------------------
         let dirHandle;
         let fileHandle;
         let commandFileHandle;
         let intervalId;
         let isPolling = false;
         let isCaptureActive = true;
+        let currentGame = "Unknown";
         let lastModifiedTime = 0;
 
         let loadedComponents = {}; // Keyed by address
         let selectedAddress = null;
         let openStates = {}; // Persist folder states
 
-        const SEPARATOR = "==============================[CONSUL_UI_NODE]==============================";
-
+        // ----------------------------------------------------
+        // FILE SYSTEM COMMS
+        // ----------------------------------------------------
         async function getCommandFile() {
             if (!commandFileHandle && dirHandle) {
                 try {
@@ -422,43 +453,9 @@
             }
         }
 
-        function editPropInput(methodName, type, val) {
-            if (!selectedAddress || !loadedComponents[selectedAddress]) return;
-
-            let luaCode = `local c = consul.uidebug.cache["${selectedAddress}"]; if c then `;
-            if (type === 'boolean') {
-                val = val.toLowerCase() === 'true';
-                luaCode += `c:${methodName}(${val})`;
-            } else if (type === 'string') {
-                const escaped = val.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
-                luaCode += `c:${methodName}("${escaped}")`;
-            } else if (type === 'number') {
-                luaCode += `c:${methodName}(${Number(val)})`;
-            } else if (type === 'position') {
-                let parts = val.split(',');
-                if (parts.length === 2) {
-                    luaCode += `c:MoveTo(${Number(parts[0])}, ${Number(parts[1])})`;
-                }
-            } else if (type === 'dimensions') {
-                let parts = val.split('x'); // w x h
-                if (parts.length < 2) parts = val.split(','); // w, h
-                if (parts.length === 2) {
-                    luaCode += `c:Resize(${Number(parts[0])}, ${Number(parts[1])})`;
-                }
-            }
-            luaCode += ` end`;
-
-            writeCommand(luaCode);
-        }
-
         document.getElementById('connectBtn').addEventListener('click', async () => {
             try {
-                dirHandle = await window.showDirectoryPicker({
-                    id: "consul_debug_dir",
-                    mode: "readwrite"
-                });
-
-                // pre-fetch command handle to ensure creation
+                dirHandle = await window.showDirectoryPicker({ id: "consul_debug_dir", mode: "readwrite" });
                 await getCommandFile();
 
                 document.getElementById('connectBtn').innerText = "Connected";
@@ -468,7 +465,7 @@
                 if (!isPolling) {
                     isPolling = true;
                     intervalId = setInterval(pollFile, 250);
-                    pollFile(); // instant first poll
+                    pollFile(); 
                 }
             } catch (err) {
                 console.error("Failed to acquire directory:", err);
@@ -482,15 +479,12 @@
                 try {
                     fileHandle = await dirHandle.getFileHandle('consul_debug_ui_state.txt', { create: false });
                 } catch (e) {
-                    // file might not exist yet
                     return;
                 }
             }
 
             try {
                 const file = await fileHandle.getFile();
-                
-                // Only parse if the file has been modified since last poll
                 if (file.lastModified <= lastModifiedTime) return;
                 lastModifiedTime = file.lastModified;
 
@@ -498,46 +492,46 @@
                 parseData(text);
             } catch (err) {
                 console.error("Poll read error:", err);
-                fileHandle = null; // Attempt to re-acquire handle if something went wrong
+                fileHandle = null; 
             }
         }
 
+        // ----------------------------------------------------
+        // PARSER & TREE BUILDER
+        // ----------------------------------------------------
         function parseData(text) {
             const lines = text.split('\n');
             let flatList = [];
-
             let i = 0;
 
-            // Check for global state header
             if (lines[0].startsWith("IS_ACTIVE:")) {
                 const isActive = lines[0].split(':')[1].trim() === 'true';
                 updateCaptureStatus(isActive);
-                i = 1; // Start parsing nodes from second line
+                i++;
+            }
+            
+            if (i < lines.length && lines[i].startsWith("GAME:")) {
+                currentGame = lines[i].split(':')[1].trim();
+                i++;
             }
 
-            while (i < lines.length) {
-                if (lines[i].trim() === SEPARATOR && i + 15 < lines.length) {
+            for (; i < lines.length; i++) {
+                if (lines[i].trim() === "") continue;
+                
+                const parts = lines[i].split(SEPARATOR);
+                if (parts.length >= 2) { 
                     let comp = {
-                        depth: parseInt(lines[i + 1].trim()),
-                        id: lines[i + 2].trim(),
-                        address: lines[i + 3].trim(),
-                        priority: lines[i + 4].trim(),
-                        visible: lines[i + 5].trim(),
-                        interactive: lines[i + 6].trim(),
-                        position: lines[i + 7].trim(),
-                        bounds: lines[i + 8].trim(),
-                        dimensions: lines[i + 9].trim(),
-                        stateText: lines[i + 10].replace(/\\n/g, '\n'),
-                        tooltip: lines[i + 11].replace(/\\n/g, '\n'),
-                        opacity: lines[i + 12].trim(),
-                        currentState: lines[i + 13].trim(),
-                        dockingPoint: lines[i + 14].trim(),
-                        isHovered: lines[i + 15].trim() === 'true'
+                        depth: parseInt(parts[0]),
+                        isHovered: parts[1] === 'true',
+                        children: []
                     };
+                    
+                    // Map indexed parts to property keys
+                    for(let p = 0; p < UI_PROPERTIES.length; p++) {
+                        comp[UI_PROPERTIES[p]] = parts[p + 2] ? parts[p + 2].replace(/\\n/g, '\n') : "nil";
+                    }
+                    
                     flatList.push(comp);
-                    i += 16;
-                } else {
-                    i++;
                 }
             }
 
@@ -547,22 +541,20 @@
         }
 
         function buildAndRenderTree(flatList) {
-            // Save current open states
             document.querySelectorAll('details').forEach(el => {
                 const addr = el.getAttribute('data-addr');
                 if (addr) openStates[addr] = el.open;
             });
 
-            // Rebuild tree structure from depths
             let root = [];
             let stack = [];
-            loadedComponents = {}; // refresh dictionary
+            loadedComponents = {}; 
             let hoveredAddr = null;
 
             flatList.forEach(comp => {
                 comp.children = [];
-                loadedComponents[comp.address] = comp;
-                if (comp.isHovered) hoveredAddr = comp.address;
+                loadedComponents[comp.Address] = comp;
+                if (comp.isHovered) hoveredAddr = comp.Address;
 
                 if (comp.depth === 0) {
                     root.push(comp);
@@ -571,7 +563,7 @@
                     let parent = stack[comp.depth - 1];
                     if (parent) {
                         parent.children.push(comp);
-                        comp.parentAddr = parent.address;
+                        comp.parentAddr = parent.Address;
                     } else {
                         root.push(comp);
                     }
@@ -579,20 +571,16 @@
                 }
             });
 
-            // If a node is hovered in game, auto-select it in HTML (only if capture is active)
             if (hoveredAddr && isCaptureActive) {
                 selectedAddress = hoveredAddr;
-
-                // Auto-expand parents for hovered node
                 let cur = loadedComponents[hoveredAddr];
-                openStates[cur.address] = true; // Expand the node itself
+                openStates[cur.Address] = true; 
                 while (cur && cur.parentAddr) {
                     openStates[cur.parentAddr] = true;
                     cur = loadedComponents[cur.parentAddr];
                 }
             }
 
-            // Generate HTML string
             let htmlStr = '';
             root.forEach(c => {
                 htmlStr += generateHTMLRec(c);
@@ -601,15 +589,11 @@
             const container = document.getElementById('treeContainer');
             container.innerHTML = htmlStr;
 
-            // Restore states and attach events
             document.querySelectorAll('details').forEach(el => {
                 const addr = el.getAttribute('data-addr');
-                if (addr && openStates[addr]) {
-                    el.open = true;
-                }
+                if (addr && openStates[addr]) el.open = true;
             });
 
-            // Always expand root
             const rootEl = container.querySelector('details');
             if (rootEl) rootEl.open = true;
 
@@ -620,12 +604,10 @@
                 });
             });
 
-            // Re-highlight if still exists
             if (selectedAddress && loadedComponents[selectedAddress]) {
                 const el = container.querySelector(`summary[data-addr="${selectedAddress}"]`);
                 if (el) {
                     el.classList.add('selected');
-                    // Scroll into view if it was an automatic selection from hover
                     if (hoveredAddr === selectedAddress && isCaptureActive) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     }
@@ -641,11 +623,10 @@
             const hasChildren = comp.children && comp.children.length > 0;
             const detailsClass = hasChildren ? '' : 'leaf-node';
 
-            let html = `<details class="${detailsClass}" data-addr="${comp.address}">`;
-            // Note: onclick event handled after render
-            html += `<summary data-addr="${comp.address}">
+            let html = `<details class="${detailsClass}" data-addr="${comp.Address}">`;
+            html += `<summary data-addr="${comp.Address}">
                         <span class="tag">UI</span>
-                        <span class="id">${comp.id}</span>
+                        <span class="id">${escapeHtml(comp.Id)}</span>
                      </summary>`;
 
             if (hasChildren) {
@@ -661,36 +642,13 @@
             document.querySelectorAll('summary').forEach(el => el.classList.remove('selected'));
             summaryElement.classList.add('selected');
             selectedAddress = addr;
-
             updateInspector(addr);
-        }
-
-        function updateInspector(addr) {
-            const comp = loadedComponents[addr];
-            if (!comp) return;
-
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('propPanel').classList.add('visible');
-
-            document.getElementById('insTitle').innerHTML = `${comp.id} <span class="addr">${comp.address}</span>`;
-            document.getElementById('insVis').value = comp.visible;
-            document.getElementById('insInt').value = comp.interactive;
-            document.getElementById('insPri').innerText = comp.priority;
-            document.getElementById('insPos').value = comp.position;
-            document.getElementById('insBnd').innerText = `[${comp.bounds}]`;
-            document.getElementById('insDim').value = comp.dimensions.replace(',', ' x ');
-            document.getElementById('insTxt').value = comp.stateText === "nil" ? "" : comp.stateText;
-            document.getElementById('insTip').value = comp.tooltip === "nil" ? "" : comp.tooltip;
-            document.getElementById('insOpa').value = comp.opacity === "nil" ? "" : comp.opacity;
-            document.getElementById('insSta').value = comp.currentState === "nil" ? "" : comp.currentState;
-            document.getElementById('insDoc').value = comp.dockingPoint === "nil" ? "" : comp.dockingPoint;
         }
 
         function updateCaptureStatus(isActive) {
             isCaptureActive = isActive;
             const el = document.getElementById('captureStatus');
             const label = el.querySelector('.label');
-
             if (isActive) {
                 el.classList.add('active');
                 el.classList.remove('paused');
@@ -702,7 +660,100 @@
             }
         }
 
+        // ----------------------------------------------------
+        // DYNAMIC INSPECTOR RENDERING
+        // ----------------------------------------------------
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        function updateInspector(addr) {
+            const comp = loadedComponents[addr];
+            if (!comp) return;
+
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('propPanel').classList.add('visible');
+            document.getElementById('insTitle').innerHTML = `${escapeHtml(comp.Id)} <span class="addr">${comp.Address}</span>`;
+            
+            let html = '';
+            
+            // Render mapped properties
+            for(const propName of UI_PROPERTIES) {
+                if (!UI_SCHEMA[propName]) continue;
+                const schema = UI_SCHEMA[propName];
+                if (schema.games && !schema.games.includes("All") && !schema.games.includes(currentGame)) continue;
+                
+                const val = comp[propName];
+                html += renderProp(propName, val, schema);
+            }
+            
+            // Render actions
+            html += '<div style="grid-column: 1 / -1; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; display: flex; flex-wrap: wrap; gap: 8px;">';
+            for(const [propName, schema] of Object.entries(UI_SCHEMA)) {
+                if (schema.type === 'action') {
+                    if (schema.games && !schema.games.includes("All") && !schema.games.includes(currentGame)) continue;
+                    html += `<button class="btn" style="font-size: 11px; padding: 4px 8px;" onclick="executeAction('${propName}')">${propName}</button>`;
+                }
+            }
+            html += '</div>';
+
+            document.getElementById('propGrid').innerHTML = html;
+        }
+
+        function renderProp(name, value, schema) {
+            let inputHtml = '';
+            const labelHtml = `<div class="prop-label">${name}</div>`;
+            const cleanVal = value === 'nil' || value === 'error' ? '' : value;
+            
+            if (schema.type === 'readonly') {
+                inputHtml = `<div class="prop-value">${escapeHtml(value)}</div>`;
+            } else if (schema.type === 'boolean') {
+                const isTrue = cleanVal === 'true';
+                inputHtml = `<select class="prop-input" onchange="dispatchCommand('${name}', this.value)">
+                    <option value="true" ${isTrue ? 'selected' : ''}>true</option>
+                    <option value="false" ${!isTrue ? 'selected' : ''}>false</option>
+                </select>`;
+            } else if (schema.type === 'string') {
+                const lines = cleanVal.split('\n').length;
+                const height = Math.max(30, lines * 18);
+                inputHtml = `<textarea class="prop-input" style="resize: vertical; min-height: ${height}px;" onchange="dispatchCommand('${name}', this.value)">${escapeHtml(cleanVal)}</textarea>`;
+            } else {
+                // Vector or Number (standard text input)
+                inputHtml = `<input type="text" class="prop-input" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
+            }
+            
+            return labelHtml + inputHtml;
+        }
+
+        window.dispatchCommand = function(propName, value) {
+            if (!selectedAddress) return;
+            const schema = UI_SCHEMA[propName];
+            if (schema && schema.setter) {
+                const cmdStr = schema.setter(value);
+                if (cmdStr) {
+                    const luaCode = `local c = consul.uidebug.cache["${selectedAddress}"]; if c then ${cmdStr} end`;
+                    writeCommand(luaCode);
+                }
+            }
+        }
+
+        window.executeAction = function(propName) {
+            if (!selectedAddress) return;
+            const schema = UI_SCHEMA[propName];
+            if (schema && schema.setter) {
+                const cmdStr = schema.setter();
+                if (cmdStr) {
+                    const luaCode = `local c = consul.uidebug.cache["${selectedAddress}"]; if c then ${cmdStr} end`;
+                    writeCommand(luaCode);
+                }
+            }
+        }
     </script>
 </body>
-
 </html>
