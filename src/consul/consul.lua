@@ -267,6 +267,11 @@ consul = {
 			if cfg.debug.log_events then
 				consul.log:log_events_all()
 			end
+			if cfg.debug.debug_ui then
+				-- We call the same logic that /debug_html uses
+				-- But we need to make sure the uidebug module is ready
+				consul.uidebug.init_hooks()
+			end
 		end
 
 		-- turn time measurement
@@ -628,6 +633,7 @@ consul = {
 				debug = {
 					log_events = false,
 					log_level = 2,
+					debug_ui = false,
 				},
 			}
 		end,
@@ -651,6 +657,7 @@ consul = {
 				and type(_config.debug) == "table"
 				and type(_config.debug.log_events) == "boolean"
 				and type(_config.debug.log_level) == "number"
+				and type(_config.debug.debug_ui) == "boolean"
 		end,
 
 		--- A function that reads the config file and writes it back to the file.
@@ -1721,54 +1728,28 @@ consul = {
 						return "Launch the UI Debugger in your default browser."
 					end,
 					func = function()
-						if not __consul_uidebug_hooked then
-							table.insert(events.ComponentMouseOn, function(context)
-								if not consul.uidebug.is_active then
-									return
-								end
-								if consul.ui.is_consul(context.string) then
-									return
-								end
-								local c = UIComponent(context.component)
-								if c then
-									local address = tostring(c:Address())
-									consul.uidebug.dump_tree(consul.ui._UIRoot, address)
-								end
-							end)
-							table.insert(events.ShortcutTriggered, function(context)
-								local shortcut = context.string
-								if shortcut == "standard_ping" then
-									consul.uidebug.is_active = not consul.uidebug.is_active
-									consul.uidebug.dump_tree(consul.ui._UIRoot, consul.uidebug.last_hovered_address)
-								end
-							end)
-
-							table.insert(events.TimeTrigger, function(context)
-								-- frontend just keeps going
-								if consul.env.mode == 2 then
-									consul.uidebug.process_commands()
-									return
-								end
-
-								-- campaign needs a trigger
-								if consul.env.mode == 1 then
-									if context.string == "uidebug_command_poll" then
-										consul.uidebug.process_commands()
-										consul._game():add_time_trigger("uidebug_command_poll", 0.5)
-									end
-								end
-
-								-- todo battle nothing yet
-							end)
-
-							__consul_uidebug_hooked = true
-							consul.log:debug("/debug_html UI Debugger hooks initialized!")
-						end
-
-						if consul.env.mode == 1 then
-							consul._game():add_time_trigger("uidebug_command_poll", 0.5)
-						end
+						consul.uidebug.init_hooks()
 						return consul.uidebug.launch()
+					end,
+					exec = false,
+					returns = true,
+				},
+				["/debug_html_on"] = {
+					help = function()
+						return "Toggle persistent UI Debugger (active across restarts)."
+					end,
+					func = function()
+						local current = false
+						consul.config.process(function(cfg)
+							cfg.debug.debug_ui = not cfg.debug.debug_ui
+							current = cfg.debug.debug_ui
+						end)
+						if current then
+							consul.uidebug.init_hooks()
+							return "Persistent UI Debugger ENABLED."
+						else
+							return "Persistent UI Debugger DISABLED. (Requires restart to fully unhook)"
+						end
 					end,
 					exec = false,
 					returns = true,

@@ -165,4 +165,53 @@ uidebug.process_commands = function()
     end
 end
 
+uidebug.init_hooks = function()
+    if uidebug.is_hooked then
+        return
+    end
+
+    table.insert(events.ComponentMouseOn, function(context)
+        if not uidebug.is_active then
+            return
+        end
+        if consul.ui.is_consul(context.string) then
+            return
+        end
+        local c = UIComponent(context.component)
+        if c then
+            local address = tostring(c:Address())
+            uidebug.dump_tree(consul.ui._UIRoot, address)
+        end
+    end)
+
+    table.insert(events.ShortcutTriggered, function(context)
+        local shortcut = context.string
+        if shortcut == "standard_ping" then
+            uidebug.is_active = not uidebug.is_active
+            uidebug.dump_tree(consul.ui._UIRoot, uidebug.last_hovered_address)
+        end
+    end)
+
+    table.insert(events.TimeTrigger, function(context)
+        -- frontend just keeps going
+        if consul.env.mode == 2 then
+            uidebug.process_commands()
+            return
+        end
+
+        -- campaign needs a trigger
+        if consul.env.mode == 1 then
+            if context.string == "uidebug_command_poll" then
+                uidebug.process_commands()
+                consul._game():add_time_trigger("uidebug_command_poll", 0.5)
+            end
+        end
+
+        -- todo battle nothing yet
+    end)
+
+    uidebug.is_hooked = true
+    consul.log:debug("UI Debugger hooks initialized!")
+end
+
 return uidebug

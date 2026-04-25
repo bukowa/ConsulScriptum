@@ -33,6 +33,9 @@ Prints debug information about characters,settlements,etc.
 #### `/debug_html`
 Launch the UI Debugger in your default browser.
 
+#### `/debug_html_on`
+Toggle persistent UI Debugger (active across restarts).
+
 #### `/debug_mouseover`
 Prints debug information of the mouseover component.
 
