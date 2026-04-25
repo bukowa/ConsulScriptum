@@ -1,6 +1,7 @@
-## v0.8.0-alpha.3
+## v0.8.0-alpha.4
 **Common:**
-- This update is focused on debugging the world and ui, it brings another set of improvements for the Attila too!
+- This update is focused on debugging the world and ui, it brings another set of improvements for the Attila.
+- Added: New /debug_html command that opens a HTML page in browser for epic UI debugging
 - Added: New 'Debugging The World' section to the official manual.
 - Added: New 'Debugging The UI' section to the official manual.
 - Added: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy

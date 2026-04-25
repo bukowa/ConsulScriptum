@@ -30,6 +30,9 @@ Set consul log level. Levels: -2 DISABLED -1 TRACE 0 INTERNAL 1 DEBUG 2 INFO 3 W
 #### `/debug`
 Prints debug information about characters,settlements,etc.
 
+#### `/debug_html`
+Launch the UI Debugger in your default browser.
+
 #### `/debug_mouseover`
 Prints debug information of the mouseover component.
 
@@ -89,6 +92,9 @@ Shows/Hides the shroud on the map.
 
 #### `/start_trace`
 Starts/stops the lua trace log. Saves into consul.log file.
+
+#### `/uidump`
+Dumps the UI tree from the root component to consul_debug_ui_state.txt.
 
 #### `/use_in_battle`
 Toggles use of Consul in campaign battles.

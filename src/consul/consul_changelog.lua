@@ -1,8 +1,9 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["0.8.0-alpha.3"] = {
-            common = "\nThis update is focused on debugging the world and ui, it brings another set of improvements for the Attila too!\n"..
+        ["0.8.0-alpha.4"] = {
+            common = "\nThis update is focused on debugging the world and ui, it brings another set of improvements for the Attila.\n"..
+            "\nAdded: New /debug_html command that opens a HTML page in browser for epic UI debugging"..
             "\nAdded: New 'Debugging The World' section to the official manual."..
             "\nAdded: New 'Debugging The UI' section to the official manual."..
             "\nAdded: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy"..
