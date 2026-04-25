@@ -16,6 +16,9 @@ UIComponent
 docs/.vitepress/dist
 docs/.vitepress/cache
 
+# Release
+release/
+
 # Node
 node_modules
 package-lock.json
