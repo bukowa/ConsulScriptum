@@ -234,24 +234,6 @@ consul = {
 		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
 		table.insert(events.UICreated, consul.changelog.OnUICreated)
 
-		-- UI Debugger automatic dump
-		table.insert(events.ComponentMouseOn, function(context)
-			if not consul.uidebug.is_active then return end
-			local c = UIComponent(context.component)
-			if c then
-				local address = tostring(c:Address())
-				consul.uidebug.dump_tree(consul.ui._UIRoot, address)
-			end
-		end)
-
-		table.insert(events.ShortcutTriggered, function(context)
-			if context.string == "toggle_move_speed" then
-				consul.uidebug.is_active = not consul.uidebug.is_active
-				-- Force a dump to update the HTML state (even if inactive, so the HTML knows it's paused)
-				consul.uidebug.dump_tree(consul.ui._UIRoot)
-			end
-		end)
-
 		-- persistent debug logging
 		local cfg = consul.config.read()
 		if cfg.debug then
@@ -1031,7 +1013,7 @@ consul = {
 			OnUICreated = function()
 				local ui = consul.ui
 				local log = consul.new_log("ui.attila:OnUICreated")
-				log:debug("Attila specific OnUICreated start")
+				log:trace("Attila specific OnUICreated start")
 
 				if consul.ui.attila.created then
 					log:debug("Consul already created, skipping...")
@@ -1046,12 +1028,12 @@ consul = {
 				ui.find(ui.scriptum_minimize):SimulateLClick()
 
 				consul.ui.attila.created = true
-				log:debug("Attila specific OnUICreated end")
+				log:trace("Attila specific OnUICreated end")
 			end,
 
 			OnComponentMoved = function(context)
 				local log = consul.new_log("ui.attila:OnComponentMoved")
-				log:debug("Attila specific OnComponentMoved start")
+				log:trace("Attila specific OnComponentMoved start")
 
 				if context.string ~= consul.ui.root then
 					return
@@ -1073,12 +1055,12 @@ consul = {
 				attila.should_move = true
 				c:SetVisible(false)
 
-				log:debug("Attila specific OnComponentMoved end")
+				log:trace("Attila specific OnComponentMoved end")
 			end,
 
 			TimeTrigger = function()
 				local log = consul.new_log("ui.attila:TimeTrigger")
-				log:debug("Attila specific TimeTrigger start")
+				log:trace("Attila specific TimeTrigger start")
 
 				local ui, attila = consul.ui, consul.ui.attila
 				local c = ui.find(ui.root)
@@ -1091,7 +1073,7 @@ consul = {
 					attila.should_move = false
 				end
 
-				log:debug("Attila specific TimeTrigger end")
+				log:trace("Attila specific TimeTrigger end")
 			end,
 		},
 
@@ -1666,6 +1648,38 @@ consul = {
 					func = function()
 						consul.uidebug.dump_tree(consul.ui._UIRoot)
 						return "Dumped UI tree to consul_debug_ui_state.txt."
+					end,
+					exec = false,
+					returns = true,
+				},
+				["/debug_html"] = {
+					setup = function(cfg)
+						if not __consul_uidebug_hooked then
+							table.insert(events.ComponentMouseOn, function(context)
+								if not consul.uidebug.is_active then return end
+								local c = UIComponent(context.component)
+								if c then
+									local address = tostring(c:Address())
+									consul.uidebug.dump_tree(consul.ui._UIRoot, address)
+								end
+							end)
+
+							table.insert(events.ShortcutTriggered, function(context)
+								if context.string == "standard_ping" then
+									consul.uidebug.is_active = not consul.uidebug.is_active
+									-- Force a dump to update the HTML state
+									consul.uidebug.dump_tree(consul.ui._UIRoot)
+								end
+							end)
+							__consul_uidebug_hooked = true
+							consul.log:debug("/debug_html UI Debugger hooks initialized!")
+						end
+					end,
+					help = function()
+						return "Launch the UI Debugger in your default browser."
+					end,
+					func = function()
+						return consul.uidebug.launch()
 					end,
 					exec = false,
 					returns = true,

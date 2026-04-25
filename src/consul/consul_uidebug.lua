@@ -115,4 +115,28 @@ uidebug.dump_tree = function(root_component, hovered_address)
     -- consul.log:info("uidebug: UI tree dump completed (" .. tostring(#output) .. " lines written).")
 end
 
+--- Launches the UI debugger by copying the template to the game root and opening it.
+--- @function uidebug.launch
+--- @treturn string Status message.
+uidebug.launch = function()
+    local output_path = "consul_uidebug.html"
+    
+    -- Load template from embedded Lua string
+    local ok, content = pcall(require, "consul_uidebug_template")
+    if not ok then
+        return "Error: Could not load UI template from consul_uidebug_template.lua"
+    end
+    
+    local f_out = io.open(output_path, "w")
+    if not f_out then
+        return "Error: Could not write to " .. output_path
+    end
+    f_out:write(content)
+    f_out:close()
+    
+    os.execute("start " .. output_path)
+    
+    return "UI Debugger launched! (File: " .. output_path .. ")"
+end
+
 return uidebug

@@ -48,7 +48,7 @@ MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 ifeq ($(GAME),Rome2)
     RPFM_GAME_ID := rome_2
     RPFM_SCHEMA_FILE := schema_rom2.ron
-    INSTALL_ALONE_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
+    INSTALL_ALONE_DIR := D:\Games\Total War - Rome 2 Steam
     INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
     GAME_EXE := Rome2.exe
@@ -133,7 +133,8 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_game_events.lua \
 	$(BUILD_DIR)/consul/consul_commands.lua \
 	$(BUILD_DIR)/consul/consul_commands_dei.lua \
-	$(BUILD_DIR)/consul/consul_uidebug.lua
+	$(BUILD_DIR)/consul/consul_uidebug.lua \
+	$(BUILD_DIR)/consul/consul_uidebug_template.lua
 
 IMAGE_TARGETS := \
 	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
@@ -280,6 +281,17 @@ $(BUILD_DIR)/consul/consul_uidebug.lua: \
 	src/consul/consul_uidebug.lua
 	$(create_dir)
 	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_uidebug_template.lua: \
+	src/consul/consul_uidebug_template.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+src/consul/consul_uidebug_template.lua: tools/consul_uidebug.html
+	@echo "Generating UI template: $@ ..."
+	@echo "return [=[" > $@
+	@cat "$<" >> $@
+	@printf "]=]" >> $@
 
 $(BUILD_DIR)/consul/consul_battle.lua: \
 	src/consul/consul_battle.lua

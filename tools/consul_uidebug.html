@@ -115,11 +115,12 @@
             border-radius: 4px;
             display: flex;
             align-items: center;
-            list-style: none; /* Hide default arrow */
+            list-style: none;
+            /* Hide default arrow */
             transition: background 0.15s ease;
             color: var(--text-color);
         }
-        
+
         summary::-webkit-details-marker {
             display: none;
         }
@@ -144,11 +145,11 @@
             color: #5b6287;
         }
 
-        details[open] > summary::before {
+        details[open]>summary::before {
             transform: rotate(90deg);
         }
-        
-        .leaf-node > summary::before {
+
+        .leaf-node>summary::before {
             opacity: 0;
         }
 
@@ -193,7 +194,7 @@
 
         .glass-panel h2 span.addr {
             font-size: 12px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             padding: 4px 8px;
             border-radius: 4px;
             color: #f07178;
@@ -216,7 +217,7 @@
 
         .prop-value {
             color: var(--text-highlight);
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid var(--border);
@@ -276,6 +277,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="sidebar">
@@ -290,7 +292,8 @@
     </div>
 
     <div class="main">
-        <div class="controls" style="width: 100%; max-width: 600px; padding: 0 0 20px 0; border: none; background: transparent;">
+        <div class="controls"
+            style="width: 100%; max-width: 600px; padding: 0 0 20px 0; border: none; background: transparent;">
             <div id="statusIndicator" class="status">Disconnected</div>
             <div id="captureStatus" class="capture-toggle">
                 <div class="indicator"></div>
@@ -309,7 +312,7 @@
             <div class="prop-grid">
                 <div class="prop-label">Visible</div>
                 <div class="prop-value" id="insVis">true</div>
-                
+
                 <div class="prop-label">Interactive</div>
                 <div class="prop-value" id="insInt">false</div>
 
@@ -338,7 +341,8 @@
         let fileHandle;
         let intervalId;
         let isPolling = false;
-        
+        let isCaptureActive = true;
+
         let loadedComponents = {}; // Keyed by address
         let selectedAddress = null;
         let openStates = {}; // Persist folder states
@@ -350,10 +354,10 @@
                 [fileHandle] = await window.showOpenFilePicker({
                     types: [{
                         description: 'Text Files',
-                        accept: {'text/plain': ['.txt']},
+                        accept: { 'text/plain': ['.txt'] },
                     }],
                 });
-                
+
                 document.getElementById('connectBtn').innerText = "Connected";
                 document.getElementById('statusIndicator').innerText = "Live Sync";
                 document.getElementById('statusIndicator').className = "status active";
@@ -382,9 +386,9 @@
         function parseData(text) {
             const lines = text.split('\n');
             let flatList = [];
-            
+
             let i = 0;
-            
+
             // Check for global state header
             if (lines[0].startsWith("IS_ACTIVE:")) {
                 const isActive = lines[0].split(':')[1].trim() === 'true';
@@ -392,21 +396,21 @@
                 i = 1; // Start parsing nodes from second line
             }
 
-            while(i < lines.length) {
-                if(lines[i].trim() === SEPARATOR && i + 12 < lines.length) {
+            while (i < lines.length) {
+                if (lines[i].trim() === SEPARATOR && i + 12 < lines.length) {
                     let comp = {
-                        depth: parseInt(lines[i+1].trim()),
-                        id: lines[i+2].trim(),
-                        address: lines[i+3].trim(),
-                        priority: lines[i+4].trim(),
-                        visible: lines[i+5].trim(),
-                        interactive: lines[i+6].trim(),
-                        position: lines[i+7].trim(),
-                        bounds: lines[i+8].trim(),
-                        dimensions: lines[i+9].trim(),
-                        stateText: lines[i+10].replace(/\\n/g, '\n'),
-                        tooltip: lines[i+11].replace(/\\n/g, '\n'),
-                        isHovered: lines[i+12].trim() === 'true'
+                        depth: parseInt(lines[i + 1].trim()),
+                        id: lines[i + 2].trim(),
+                        address: lines[i + 3].trim(),
+                        priority: lines[i + 4].trim(),
+                        visible: lines[i + 5].trim(),
+                        interactive: lines[i + 6].trim(),
+                        position: lines[i + 7].trim(),
+                        bounds: lines[i + 8].trim(),
+                        dimensions: lines[i + 9].trim(),
+                        stateText: lines[i + 10].replace(/\\n/g, '\n'),
+                        tooltip: lines[i + 11].replace(/\\n/g, '\n'),
+                        isHovered: lines[i + 12].trim() === 'true'
                     };
                     flatList.push(comp);
                     i += 13;
@@ -424,7 +428,7 @@
             // Save current open states
             document.querySelectorAll('details').forEach(el => {
                 const addr = el.getAttribute('data-addr');
-                if(addr) openStates[addr] = el.open;
+                if (addr) openStates[addr] = el.open;
             });
 
             // Rebuild tree structure from depths
@@ -436,7 +440,7 @@
             flatList.forEach(comp => {
                 comp.children = [];
                 loadedComponents[comp.address] = comp;
-                if(comp.isHovered) hoveredAddr = comp.address;
+                if (comp.isHovered) hoveredAddr = comp.address;
 
                 if (comp.depth === 0) {
                     root.push(comp);
@@ -453,14 +457,14 @@
                 }
             });
 
-            // If a node is hovered in game, auto-select it in HTML
-            if (hoveredAddr) {
+            // If a node is hovered in game, auto-select it in HTML (only if capture is active)
+            if (hoveredAddr && isCaptureActive) {
                 selectedAddress = hoveredAddr;
-                
+
                 // Auto-expand parents for hovered node
                 let cur = loadedComponents[hoveredAddr];
                 openStates[cur.address] = true; // Expand the node itself
-                while(cur && cur.parentAddr) {
+                while (cur && cur.parentAddr) {
                     openStates[cur.parentAddr] = true;
                     cur = loadedComponents[cur.parentAddr];
                 }
@@ -478,14 +482,14 @@
             // Restore states and attach events
             document.querySelectorAll('details').forEach(el => {
                 const addr = el.getAttribute('data-addr');
-                if(addr && openStates[addr]) {
+                if (addr && openStates[addr]) {
                     el.open = true;
                 }
             });
 
             // Always expand root
             const rootEl = container.querySelector('details');
-            if(rootEl) rootEl.open = true;
+            if (rootEl) rootEl.open = true;
 
             document.querySelectorAll('summary').forEach(sum => {
                 sum.addEventListener('click', (e) => {
@@ -497,31 +501,31 @@
             // Re-highlight if still exists
             if (selectedAddress && loadedComponents[selectedAddress]) {
                 const el = container.querySelector(`summary[data-addr="${selectedAddress}"]`);
-                if(el) {
+                if (el) {
                     el.classList.add('selected');
                     // Scroll into view if it was an automatic selection from hover
-                    if (hoveredAddr === selectedAddress) {
+                    if (hoveredAddr === selectedAddress && isCaptureActive) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     }
                 }
                 updateInspector(selectedAddress);
             } else if (selectedAddress && !loadedComponents[selectedAddress]) {
-               document.getElementById('propPanel').classList.remove('visible');
-               document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('propPanel').classList.remove('visible');
+                document.getElementById('emptyState').style.display = 'block';
             }
         }
 
         function generateHTMLRec(comp) {
             const hasChildren = comp.children && comp.children.length > 0;
             const detailsClass = hasChildren ? '' : 'leaf-node';
-            
+
             let html = `<details class="${detailsClass}" data-addr="${comp.address}">`;
             // Note: onclick event handled after render
             html += `<summary data-addr="${comp.address}">
                         <span class="tag">UI</span>
                         <span class="id">${comp.id}</span>
                      </summary>`;
-            
+
             if (hasChildren) {
                 comp.children.forEach(child => {
                     html += generateHTMLRec(child);
@@ -535,7 +539,7 @@
             document.querySelectorAll('summary').forEach(el => el.classList.remove('selected'));
             summaryElement.classList.add('selected');
             selectedAddress = addr;
-            
+
             updateInspector(addr);
         }
 
@@ -558,9 +562,10 @@
         }
 
         function updateCaptureStatus(isActive) {
+            isCaptureActive = isActive;
             const el = document.getElementById('captureStatus');
             const label = el.querySelector('.label');
-            
+
             if (isActive) {
                 el.classList.add('active');
                 el.classList.remove('paused');
@@ -568,10 +573,11 @@
             } else {
                 el.classList.remove('active');
                 el.classList.add('paused');
-                label.innerText = "Capture: Paused (Shortcut: toggle_move_speed)";
+                label.innerText = "Capture: Paused (Shortcut: standard_ping (F5 by default))";
             }
         }
 
     </script>
 </body>
+
 </html>
