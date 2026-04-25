@@ -1,6 +1,9 @@
 ---@module consul_uidebug
 
-local uidebug = {}
+local uidebug = {
+    is_active = true,
+    last_hovered_address = nil
+}
 
 local SEPARATOR = "==============================[CONSUL_UI_NODE]=============================="
 
@@ -83,11 +86,15 @@ uidebug.dump_tree = function(root_component, hovered_address)
         return
     end
 
+    if hovered_address then
+        uidebug.last_hovered_address = hovered_address
+    end
+
     local output = {}
     -- consul.log:info("uidebug: Starting UI tree dump...")
     
     local ok, err = pcall(function()
-        traverse_ui(root_component, 0, output, hovered_address)
+        traverse_ui(root_component, 0, output, uidebug.last_hovered_address)
     end)
     
     if not ok then
@@ -101,6 +108,7 @@ uidebug.dump_tree = function(root_component, hovered_address)
         return
     end
 
+    file:write("IS_ACTIVE:" .. (uidebug.is_active and "true" or "false") .. "\n")
     file:write(table.concat(output, "\n"))
     file:close()
     

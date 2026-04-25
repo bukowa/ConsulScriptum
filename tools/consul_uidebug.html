@@ -230,8 +230,32 @@
             color: #5b6287;
         }
 
-        .status.active {
-            color: #c3e88d;
+        .status.paused {
+            color: #f07178;
+        }
+
+        .capture-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #5b6287;
+        }
+
+        .capture-toggle .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5b6287;
+        }
+
+        .capture-toggle.active .indicator {
+            background: #c3e88d;
+            box-shadow: 0 0 8px rgba(195, 232, 141, 0.5);
+        }
+
+        .capture-toggle.paused .indicator {
+            background: #f07178;
         }
 
         /* Empty State */
@@ -268,6 +292,10 @@
     <div class="main">
         <div class="controls" style="width: 100%; max-width: 600px; padding: 0 0 20px 0; border: none; background: transparent;">
             <div id="statusIndicator" class="status">Disconnected</div>
+            <div id="captureStatus" class="capture-toggle">
+                <div class="indicator"></div>
+                <span class="label">Capture: Unknown</span>
+            </div>
             <div style="font-size: 12px; color: #5b6287;">Polling: 250ms</div>
         </div>
 
@@ -356,6 +384,14 @@
             let flatList = [];
             
             let i = 0;
+            
+            // Check for global state header
+            if (lines[0].startsWith("IS_ACTIVE:")) {
+                const isActive = lines[0].split(':')[1].trim() === 'true';
+                updateCaptureStatus(isActive);
+                i = 1; // Start parsing nodes from second line
+            }
+
             while(i < lines.length) {
                 if(lines[i].trim() === SEPARATOR && i + 12 < lines.length) {
                     let comp = {
@@ -519,6 +555,21 @@
             document.getElementById('insDim').innerText = comp.dimensions.replace(',', ' x ');
             document.getElementById('insTxt').innerText = comp.stateText === "nil" ? "" : comp.stateText;
             document.getElementById('insTip').innerText = comp.tooltip === "nil" ? "" : comp.tooltip;
+        }
+
+        function updateCaptureStatus(isActive) {
+            const el = document.getElementById('captureStatus');
+            const label = el.querySelector('.label');
+            
+            if (isActive) {
+                el.classList.add('active');
+                el.classList.remove('paused');
+                label.innerText = "Capture: Active";
+            } else {
+                el.classList.remove('active');
+                el.classList.add('paused');
+                label.innerText = "Capture: Paused (Shortcut: toggle_move_speed)";
+            }
         }
 
     </script>

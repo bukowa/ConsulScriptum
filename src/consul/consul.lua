@@ -236,10 +236,19 @@ consul = {
 
 		-- UI Debugger automatic dump
 		table.insert(events.ComponentMouseOn, function(context)
+			if not consul.uidebug.is_active then return end
 			local c = UIComponent(context.component)
 			if c then
 				local address = tostring(c:Address())
 				consul.uidebug.dump_tree(consul.ui._UIRoot, address)
+			end
+		end)
+
+		table.insert(events.ShortcutTriggered, function(context)
+			if context.string == "toggle_move_speed" then
+				consul.uidebug.is_active = not consul.uidebug.is_active
+				-- Force a dump to update the HTML state (even if inactive, so the HTML knows it's paused)
+				consul.uidebug.dump_tree(consul.ui._UIRoot)
 			end
 		end)
 
