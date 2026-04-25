@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -226,6 +227,29 @@
             word-break: break-all;
         }
 
+        .prop-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-highlight);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .prop-input:focus {
+            border-color: var(--accent);
+        }
+
+        select.prop-input {
+            appearance: none;
+            cursor: pointer;
+        }
+
         .status {
             font-size: 12px;
             color: #5b6287;
@@ -311,37 +335,63 @@
             <h2 id="insTitle">root_component <span class="addr" id="insAddr">0x00000</span></h2>
             <div class="prop-grid">
                 <div class="prop-label">Visible</div>
-                <div class="prop-value" id="insVis">true</div>
+                <select class="prop-input" id="insVis" onchange="editPropInput('SetVisible', 'boolean', this.value)">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
 
                 <div class="prop-label">Interactive</div>
-                <div class="prop-value" id="insInt">false</div>
+                <select class="prop-input" id="insInt"
+                    onchange="editPropInput('SetInteractive', 'boolean', this.value)">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
 
                 <div class="prop-label">Priority</div>
                 <div class="prop-value" id="insPri">50</div>
 
                 <div class="prop-label">Position (X, Y)</div>
-                <div class="prop-value" id="insPos">0, 0</div>
+                <input type="text" class="prop-input" id="insPos"
+                    onchange="editPropInput('MoveTo', 'position', this.value)" placeholder="0, 0">
 
                 <div class="prop-label">Dimensions</div>
-                <div class="prop-value" id="insDim">1920 x 1080</div>
+                <input type="text" class="prop-input" id="insDim"
+                    onchange="editPropInput('Resize', 'dimensions', this.value)" placeholder="1920 x 1080">
 
                 <div class="prop-label">Bounds</div>
                 <div class="prop-value" id="insBnd">[0, 0, 1920, 1080]</div>
 
                 <div class="prop-label">State Text</div>
-                <div class="prop-value" id="insTxt" style="white-space: pre-wrap;"></div>
+                <textarea class="prop-input" id="insTxt" style="resize: vertical; min-height: 40px;"
+                    onchange="editPropInput('SetStateText', 'string', this.value)"></textarea>
 
                 <div class="prop-label">Tooltip</div>
-                <div class="prop-value" id="insTip" style="white-space: pre-wrap;"></div>
+                <textarea class="prop-input" id="insTip" style="resize: vertical; min-height: 40px;"
+                    onchange="editPropInput('SetTooltipText', 'string', this.value)"></textarea>
+
+                <div class="prop-label">Opacity</div>
+                <input type="number" class="prop-input" id="insOpa"
+                    onchange="editPropInput('SetOpacity', 'number', this.value)">
+
+                <div class="prop-label">Current State</div>
+                <input type="text" class="prop-input" id="insSta"
+                    onchange="editPropInput('SetState', 'string', this.value)">
+
+                <div class="prop-label">Docking Point</div>
+                <input type="number" class="prop-input" id="insDoc"
+                    onchange="editPropInput('SetDockingPoint', 'number', this.value)">
             </div>
         </div>
     </div>
 
     <script>
+        let dirHandle;
         let fileHandle;
+        let commandFileHandle;
         let intervalId;
         let isPolling = false;
         let isCaptureActive = true;
+        let lastModifiedTime = 0;
 
         let loadedComponents = {}; // Keyed by address
         let selectedAddress = null;
@@ -349,14 +399,67 @@
 
         const SEPARATOR = "==============================[CONSUL_UI_NODE]==============================";
 
+        async function getCommandFile() {
+            if (!commandFileHandle && dirHandle) {
+                try {
+                    commandFileHandle = await dirHandle.getFileHandle('consul_debug_ui_command.txt', { create: true });
+                } catch (e) {
+                    console.error("Could not create command file", e);
+                }
+            }
+            return commandFileHandle;
+        }
+
+        async function writeCommand(luaCode) {
+            const handle = await getCommandFile();
+            if (!handle) return;
+            try {
+                const writable = await handle.createWritable();
+                await writable.write(luaCode);
+                await writable.close();
+            } catch (e) {
+                console.error("Error writing command", e);
+            }
+        }
+
+        function editPropInput(methodName, type, val) {
+            if (!selectedAddress || !loadedComponents[selectedAddress]) return;
+
+            let luaCode = `local c = consul.uidebug.cache["${selectedAddress}"]; if c then `;
+            if (type === 'boolean') {
+                val = val.toLowerCase() === 'true';
+                luaCode += `c:${methodName}(${val})`;
+            } else if (type === 'string') {
+                const escaped = val.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+                luaCode += `c:${methodName}("${escaped}")`;
+            } else if (type === 'number') {
+                luaCode += `c:${methodName}(${Number(val)})`;
+            } else if (type === 'position') {
+                let parts = val.split(',');
+                if (parts.length === 2) {
+                    luaCode += `c:MoveTo(${Number(parts[0])}, ${Number(parts[1])})`;
+                }
+            } else if (type === 'dimensions') {
+                let parts = val.split('x'); // w x h
+                if (parts.length < 2) parts = val.split(','); // w, h
+                if (parts.length === 2) {
+                    luaCode += `c:Resize(${Number(parts[0])}, ${Number(parts[1])})`;
+                }
+            }
+            luaCode += ` end`;
+
+            writeCommand(luaCode);
+        }
+
         document.getElementById('connectBtn').addEventListener('click', async () => {
             try {
-                [fileHandle] = await window.showOpenFilePicker({
-                    types: [{
-                        description: 'Text Files',
-                        accept: { 'text/plain': ['.txt'] },
-                    }],
+                dirHandle = await window.showDirectoryPicker({
+                    id: "consul_debug_dir",
+                    mode: "readwrite"
                 });
+
+                // pre-fetch command handle to ensure creation
+                await getCommandFile();
 
                 document.getElementById('connectBtn').innerText = "Connected";
                 document.getElementById('statusIndicator').innerText = "Live Sync";
@@ -368,18 +471,34 @@
                     pollFile(); // instant first poll
                 }
             } catch (err) {
-                console.error("Failed to acquire file:", err);
+                console.error("Failed to acquire directory:", err);
             }
         });
 
         async function pollFile() {
-            if (!fileHandle) return;
+            if (!dirHandle) return;
+
+            if (!fileHandle) {
+                try {
+                    fileHandle = await dirHandle.getFileHandle('consul_debug_ui_state.txt', { create: false });
+                } catch (e) {
+                    // file might not exist yet
+                    return;
+                }
+            }
+
             try {
                 const file = await fileHandle.getFile();
+                
+                // Only parse if the file has been modified since last poll
+                if (file.lastModified <= lastModifiedTime) return;
+                lastModifiedTime = file.lastModified;
+
                 const text = await file.text();
                 parseData(text);
             } catch (err) {
                 console.error("Poll read error:", err);
+                fileHandle = null; // Attempt to re-acquire handle if something went wrong
             }
         }
 
@@ -397,7 +516,7 @@
             }
 
             while (i < lines.length) {
-                if (lines[i].trim() === SEPARATOR && i + 12 < lines.length) {
+                if (lines[i].trim() === SEPARATOR && i + 15 < lines.length) {
                     let comp = {
                         depth: parseInt(lines[i + 1].trim()),
                         id: lines[i + 2].trim(),
@@ -410,10 +529,13 @@
                         dimensions: lines[i + 9].trim(),
                         stateText: lines[i + 10].replace(/\\n/g, '\n'),
                         tooltip: lines[i + 11].replace(/\\n/g, '\n'),
-                        isHovered: lines[i + 12].trim() === 'true'
+                        opacity: lines[i + 12].trim(),
+                        currentState: lines[i + 13].trim(),
+                        dockingPoint: lines[i + 14].trim(),
+                        isHovered: lines[i + 15].trim() === 'true'
                     };
                     flatList.push(comp);
-                    i += 13;
+                    i += 16;
                 } else {
                     i++;
                 }
@@ -551,14 +673,17 @@
             document.getElementById('propPanel').classList.add('visible');
 
             document.getElementById('insTitle').innerHTML = `${comp.id} <span class="addr">${comp.address}</span>`;
-            document.getElementById('insVis').innerText = comp.visible;
-            document.getElementById('insInt').innerText = comp.interactive;
+            document.getElementById('insVis').value = comp.visible;
+            document.getElementById('insInt').value = comp.interactive;
             document.getElementById('insPri').innerText = comp.priority;
-            document.getElementById('insPos').innerText = comp.position;
+            document.getElementById('insPos').value = comp.position;
             document.getElementById('insBnd').innerText = `[${comp.bounds}]`;
-            document.getElementById('insDim').innerText = comp.dimensions.replace(',', ' x ');
-            document.getElementById('insTxt').innerText = comp.stateText === "nil" ? "" : comp.stateText;
-            document.getElementById('insTip').innerText = comp.tooltip === "nil" ? "" : comp.tooltip;
+            document.getElementById('insDim').value = comp.dimensions.replace(',', ' x ');
+            document.getElementById('insTxt').value = comp.stateText === "nil" ? "" : comp.stateText;
+            document.getElementById('insTip').value = comp.tooltip === "nil" ? "" : comp.tooltip;
+            document.getElementById('insOpa').value = comp.opacity === "nil" ? "" : comp.opacity;
+            document.getElementById('insSta').value = comp.currentState === "nil" ? "" : comp.currentState;
+            document.getElementById('insDoc').value = comp.dockingPoint === "nil" ? "" : comp.dockingPoint;
         }
 
         function updateCaptureStatus(isActive) {

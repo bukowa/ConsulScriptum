@@ -28,9 +28,7 @@ consul = {
 		setup = function()
 			setmetatable(consul.env, {
 				__index = function(self, key)
-
 					if key == "mode" then
-
 						if __game_mode then
 							return __game_mode
 						end
@@ -283,7 +281,6 @@ consul = {
 		end)
 
 		consul.env.setup()
-
 	end,
 
 	-- logging
@@ -1697,21 +1694,41 @@ consul = {
 					setup = function(cfg)
 						if not __consul_uidebug_hooked then
 							table.insert(events.ComponentMouseOn, function(context)
-								if not consul.uidebug.is_active then return end
+								if not consul.uidebug.is_active then
+									return
+								end
 								local c = UIComponent(context.component)
 								if c then
 									local address = tostring(c:Address())
 									consul.uidebug.dump_tree(consul.ui._UIRoot, address)
 								end
 							end)
-
 							table.insert(events.ShortcutTriggered, function(context)
-								if context.string == "standard_ping" then
+								local shortcut = context.string
+								if shortcut == "standard_ping" then
 									consul.uidebug.is_active = not consul.uidebug.is_active
-									-- Force a dump to update the HTML state
-									consul.uidebug.dump_tree(consul.ui._UIRoot)
+									consul.uidebug.dump_tree(consul.ui._UIRoot, consul.uidebug.last_hovered_address)
 								end
 							end)
+
+							table.insert(events.TimeTrigger, function(context)
+								-- frontend just keeps going
+								if consul.env.mode == 2 then
+									consul.uidebug.process_commands()
+									return
+								end
+
+								-- campaign needs a trigger
+								if consul.env.mode == 1 then
+									if context.string == "uidebug_command_poll" then
+										consul.uidebug.process_commands()
+										consul._game():add_time_trigger("uidebug_command_poll", 0.5)
+									end
+								end
+
+								-- todo battle nothing yet
+							end)
+
 							__consul_uidebug_hooked = true
 							consul.log:debug("/debug_html UI Debugger hooks initialized!")
 						end
@@ -1720,6 +1737,9 @@ consul = {
 						return "Launch the UI Debugger in your default browser."
 					end,
 					func = function()
+						if consul.env.mode == 1 then
+							consul._game():add_time_trigger("uidebug_command_poll", 0.5)
+						end
 						return consul.uidebug.launch()
 					end,
 					exec = false,

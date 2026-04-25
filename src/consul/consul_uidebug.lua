@@ -2,7 +2,8 @@
 
 local uidebug = {
     is_active = true,
-    last_hovered_address = nil
+    last_hovered_address = nil,
+    cache = {}
 }
 
 local SEPARATOR = "==============================[CONSUL_UI_NODE]=============================="
@@ -44,9 +45,16 @@ local function traverse_ui(component, depth, output, hovered_address)
     local dimensions = safe_call(component, "Dimensions")
     local text = sanitize_text(safe_call(component, "GetStateText"))
     local tooltip = sanitize_text(safe_call(component, "GetTooltipText"))
+    local opacity = safe_call(component, "Opacity")
+    local current_state = safe_call(component, "CurrentState")
+    local docking_point = safe_call(component, "DockingPoint")
     local is_hovered = (address == hovered_address) and "true" or "false"
 
-    -- Output block (13 lines exactly per component)
+    if address and address ~= "nil" and address ~= "error" then
+        uidebug.cache[address] = component
+    end
+
+    -- Output block (16 lines exactly per component)
     table.insert(output, SEPARATOR)
     table.insert(output, tostring(depth))
     table.insert(output, id)
@@ -59,6 +67,9 @@ local function traverse_ui(component, depth, output, hovered_address)
     table.insert(output, dimensions)
     table.insert(output, text)
     table.insert(output, tooltip)
+    table.insert(output, opacity)
+    table.insert(output, current_state)
+    table.insert(output, docking_point)
     table.insert(output, is_hovered)
 
     -- Recurse children
@@ -94,6 +105,7 @@ uidebug.dump_tree = function(root_component, hovered_address)
     -- consul.log:info("uidebug: Starting UI tree dump...")
     
     local ok, err = pcall(function()
+        uidebug.cache = {} -- clear cache on new dump
         traverse_ui(root_component, 0, output, uidebug.last_hovered_address)
     end)
     
@@ -137,6 +149,36 @@ uidebug.launch = function()
     os.execute("start " .. output_path)
     
     return "UI Debugger launched! (File: " .. output_path .. ")"
+end
+
+uidebug.process_commands = function()
+    local f = io.open("consul_debug_ui_command.txt", "r")
+    if not f then return end
+
+    local content = f:read("*a")
+    f:close()
+
+    if content and content ~= "" then
+        -- clear the file immediately
+        local fw = io.open("consul_debug_ui_command.txt", "w")
+        if fw then fw:close() end
+        
+        -- execute the command
+        local func, err = loadstring(content)
+        if func then
+            local ok, run_err = pcall(func)
+            if not ok then
+                consul.log:error("uidebug: Error running ui command: " .. tostring(run_err))
+            end
+        else
+            consul.log:error("uidebug: Error parsing ui command: " .. tostring(err))
+        end
+        
+        -- refresh the UI to reflect changes
+        if consul.ui and consul.ui._UIRoot then
+            uidebug.dump_tree(consul.ui._UIRoot, uidebug.last_hovered_address)
+        end
+    end
 end
 
 return uidebug

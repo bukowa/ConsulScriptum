@@ -282,13 +282,9 @@ $(BUILD_DIR)/consul/consul_uidebug.lua: \
 	$(create_dir)
 	@cp "$<" "$@"
 
-$(BUILD_DIR)/consul/consul_uidebug_template.lua: \
-	src/consul/consul_uidebug_template.lua
-	$(create_dir)
-	@cp "$<" "$@"
-
-src/consul/consul_uidebug_template.lua: tools/consul_uidebug.html
+$(BUILD_DIR)/consul/consul_uidebug_template.lua: tools/consul_uidebug.html
 	@echo "Generating UI template: $@ ..."
+	$(create_dir)
 	@echo "return [=[" > $@
 	@cat "$<" >> $@
 	@printf "]=]" >> $@
