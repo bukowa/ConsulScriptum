@@ -3649,6 +3649,12 @@ consul.console.write(
 		pretty = function(_tbl)
 			local table_sorter = function(keys, original_table)
 				local sizes = {}
+				local priority = {
+					Id = 1,
+					name = 2,
+					cqi = 3,
+					command_queue_index = 4,
+				}
 
 				local function get_size(k, v)
 					if type(v) ~= "table" then
@@ -3666,6 +3672,13 @@ consul.console.write(
 				end
 
 				table.sort(keys, function(a, b)
+					local prio_a = priority[a] or 999
+					local prio_b = priority[b] or 999
+
+					if prio_a ~= prio_b then
+						return prio_a < prio_b
+					end
+
 					local val_a = original_table[a]
 					local val_b = original_table[b]
 
