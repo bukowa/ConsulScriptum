@@ -7,14 +7,14 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 
 | Property | Rome II | Attila | Status | Tested | Note |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| `Id` | ✅ | ✅ | ✅ | ❌ | Primary identifier |
-| `Address` | ✅ | ✅ | ✅ | ❌ | Memory address (hex) |
-| `Priority` | ✅ | ✅ | ✅ | ❌ | Z-order priority |
-| `Visible` | ✅ | ✅ | ✅ | ❌ | Visibility state |
-| `IsInteractive` | ✅ | ✅ | ✅ | ❌ | Responds to mouse/keys |
-| `Position` | ✅ | ✅ | ✅ | ❌ | X,Y screen coordinates |
-| `Bounds` | ✅ | ✅ | ✅ | ❌ | Full bounding box |
-| `Dimensions` | ✅ | ✅ | ✅ | ❌ | Width x Height |
+| `Id` | ✅ | ✅ | ✅ | ✅ | Primary identifier |
+| `Address` | ✅ | ✅ | ✅ | ✅ | Memory address (hex) |
+| `Priority` | ✅ | ✅ | ✅ | ✅ | Z-order priority |
+| `Visible` | ✅ | ✅ | ✅ | ✅ | Visibility state |
+| `IsInteractive` | ✅ | ✅ | ✅ | ✅ | Responds to mouse/keys |
+| `Position` | ✅ | ✅ | ✅ | ✅ | X,Y screen coordinates |
+| `Bounds` | ✅ | ✅ | ✅ | ✅ | Full bounding box |
+| `Dimensions` | ✅ | ✅ | ✅ | ✅ | Width x Height |
 | `GetStateText` | ✅ | ✅ | ✅ | ❌ | Localized text content |
 | `GetTooltipText` | ✅ | ✅ | ✅ | ❌ | Hover tooltip text |
 | `Opacity` | 🚫 | ✅ | ⚠️ | ❌ | Getter exists in Attila only |
