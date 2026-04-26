@@ -17,20 +17,35 @@ uidebug.PROPERTIES = {
     "GetStateTextDetails", "CallbackId"
 }
 
+-- Methods that return multiple values but we only want the first one (usually text)
+local SINGLE_RETURN_METHODS = {
+    ["GetStateText"] = true,
+    ["GetTooltipText"] = true,
+}
+
 -- Safe call wrapper logic similar to the one in consul.ui.debug
 local function safe_call(obj, method)
     if not obj or not obj[method] then return "nil" end
     if type(obj[method]) ~= "function" then return tostring(obj[method]) end
 
-    local ok, val1, val2, val3, val4 = pcall(function() return obj[method](obj) end)
+    local ok, results = pcall(function()
+        local function capture(...) return {n = select("#", ...), ...} end
+        return capture(obj[method](obj))
+    end)
+
     if not ok then return "error" end
     
-    local res
-    if val4 ~= nil then res = string.format("%s,%s,%s,%s", tostring(val1), tostring(val2), tostring(val3), tostring(val4))
-    elseif val3 ~= nil then res = string.format("%s,%s,%s", tostring(val1), tostring(val2), tostring(val3))
-    elseif val2 ~= nil then res = string.format("%s,%s", tostring(val1), tostring(val2))
-    elseif val1 == nil then res = "nil"
-    else res = tostring(val1) end
+    if SINGLE_RETURN_METHODS[method] then
+        return tostring(results[1] or "nil")
+    end
+
+    if results.n == 0 then return "nil" end
+    
+    local str_vals = {}
+    for i = 1, results.n do
+        table.insert(str_vals, tostring(results[i]))
+    end
+    local res = table.concat(str_vals, ",")
 
     -- sanitize newlines to keep everything on one line
     res = string.gsub(res, "\n", "\\n")
