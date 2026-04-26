@@ -389,12 +389,6 @@ clean:
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
 	@echo "Cleaned up build directory and mod package for $(GAME)."
 
-# Cleaning up everything for all games
-clean-all:
-	@rm -rf ./build
-	@rm -f consulscriptum.pack consulscriptum_attila.pack
-	@echo "Cleaned up all build directories and packs."
-
 # Setup target to prepare all necessary dependencies
 setup: \
 	setup-rpfm_cli \
@@ -671,14 +665,15 @@ else
 endif
 
 # ============================================================
-# Documentation Targets
+# Release Targets
 # ============================================================
 
-# Target to ensure the release directory exists and contains the current pack
 $(RELEASE_DIR)/$(MOD_PACKAGE): $(MOD_PACKAGE)
 	@mkdir -p $(RELEASE_DIR)
 	@cp $(MOD_PACKAGE) $@
 	@echo "Updated $@ in release directory."
+
+release: $(RELEASE_DIR)/$(MOD_PACKAGE)
 
 install_release: $(RELEASE_DIR)/$(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
@@ -692,19 +687,9 @@ endif
 run_release: kill-game install_release
 	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
-build_for_release:
-	@mkdir -p $(RELEASE_DIR)
-	@echo "----------------------------------------"
-	@echo "Building for Rome2..."
-	@echo "----------------------------------------"
-	@"$(MAKE)" $(RELEASE_DIR)/consulscriptum.pack GAME=Rome2
-	@echo "----------------------------------------"
-	@echo "Building for Attila..."
-	@echo "----------------------------------------"
-	@"$(MAKE)" $(RELEASE_DIR)/consulscriptum_attila.pack GAME=Attila
-	@echo "----------------------------------------"
-	@echo "Release builds completed in '$(RELEASE_DIR)' directory."
-	@ls -l $(RELEASE_DIR)
+# ============================================================
+# Documentation Targets
+# ============================================================
 
 docs-gen: generate-docs
 	py scripts/generate_commands_docs.py
