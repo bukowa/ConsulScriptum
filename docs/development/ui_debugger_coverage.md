@@ -29,15 +29,12 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `Layout` | ✅ | ✅ | ✅ | Current layout type |
 | `GetStateTextDetails` | ✅ | ✅ | ✅ | Extended text info |
 | `CallbackId` | ✅ | ✅ | ✅ | Internal engine callback |
-| `NumStates` | 🚫 | 🚫 | 👻 | **GHOST**: Not in API docs |
-| `IsDisabled` | 🚫 | 🚫 | 👻 | **GHOST**: Use `SetDisabled` only |
-| `VisibleFromRoot` | 🚫 | 🚫 | 👻 | **GHOST**: Not in API docs |
 | `IsCharPrintable` | ✅ | ✅ | ❌ | Missing from debugger |
 | `CurrentStateUI` | ✅ | ✅ | ❌ | Returns state UIComponent |
 | `HasInterface` | ✅ | ✅ | ❌ | Checks component interface |
 | `WidthOfTextLine` | ✅ | ✅ | ❌ | Requires line index param |
 | `Parent` | ✅ | ✅ | ⚠️ | Tracked in Lua, missing in UI |
-| `DockingPoint` | ✅ | ✅ | ❌ | Component anchor point |
+| `DockingPoint` | ✅ | ✅ | ✅ | Component anchor point |
 | `GlobalExists` | ✅ | ✅ | ❌ | Check engine global |
 | `InterfaceFunction` | ✅ | ✅ | ❌ | Call internal interface |
 | `ShaderTechniqueGet` | ✅ | ✅ | ❌ | Get rendering technique |
@@ -54,7 +51,7 @@ These are triggered via `dispatchCommand` from the HTML property grid.
 | `SetInteractive` | ✅ | ✅ | ✅ | Toggle interaction |
 | `SetDragged` | ✅ | ✅ | ✅ | Force drag state |
 | `SetMoveable` | ✅ | ✅ | ✅ | Toggle moveability |
-| `SetDisabled` | ✅ | ✅ | ✅ | Toggle disabled state |
+| `SetDisabled` | ✅ | ✅ | ✅ | Toggle disabled state (Buttons) |
 | `PropagatePriority` | ✅ | ✅ | ✅ | Set priority (recursive) |
 | `SetOpacity` | ✅ | ✅ | ✅ | Set alpha transparency |
 | `SetDockingPoint` | ✅ | ✅ | ✅ | Anchor point control |
@@ -122,5 +119,4 @@ One-shot functions triggered by buttons in the "Actions" section of the debugger
 2.  **Parent Navigation**: Display the Parent Address and allow "jumping" to it.
 3.  **Search/Filter**: Filter the tree by ID or StateText.
 4.  **Custom Property Fetcher**: Input box to call `GetProperty(key)` on the selected component.
-5.  **Clean up Ghosts**: Remove `NumStates`, `IsDisabled`, and `VisibleFromRoot` from the Lua properties list to reduce log noise.
 

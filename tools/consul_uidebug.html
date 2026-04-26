@@ -349,7 +349,7 @@
             "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
             "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
             "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
-            "GetStateTextDetails", "CallbackId", "NumStates", "IsDisabled", "VisibleFromRoot"
+            "GetStateTextDetails", "CallbackId"
         ];
 
         // Defines rendering types, getters, and functional setters
@@ -367,15 +367,12 @@
             "Width": { type: "readonly" },
             "IsMouseOverChildren": { type: "readonly" },
             "CallbackId": { type: "readonly" },
-            "NumStates": { type: "readonly" },
-            "VisibleFromRoot": { type: "readonly" },
 
             // Booleans
             "Visible": { type: "boolean", setter: (v) => `c:SetVisible(${v === 'true'})` },
             "IsInteractive": { type: "boolean", setter: (v) => `c:SetInteractive(${v === 'true'})` },
             "IsDragged": { type: "boolean", setter: (v) => `c:SetDragged(${v === 'true'})` },
             "IsMoveable": { type: "boolean", setter: (v) => `c:SetMoveable(${v === 'true'})` },
-            "IsDisabled": { type: "boolean", setter: (v) => `c:SetDisabled(${v === 'true'})` },
 
             // Numbers
             "Priority": { type: "number", setter: (v) => `c:PropagatePriority(${v})` }, 
@@ -408,6 +405,8 @@
             "SimulateMouseOn": { type: "action", setter: () => `c:SimulateMouseOn()`, games: ["Attila"] },
             "SimulateMouseOff": { type: "action", setter: () => `c:SimulateMouseOff()`, games: ["Attila"] },
             "ClearSound": { type: "action", setter: () => `c:ClearSound()`, games: ["Attila"] },
+            "SetDisabled": { type: "action", setter: () => `c:SetDisabled(true)` },
+            "SetEnabled": { type: "action", setter: () => `c:SetDisabled(false)` },
             "DestroyChildren": { type: "action", setter: () => `c:DestroyChildren()` }
         };
 

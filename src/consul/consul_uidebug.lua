@@ -14,7 +14,7 @@ uidebug.PROPERTIES = {
     "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
     "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
     "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
-    "GetStateTextDetails", "CallbackId", "NumStates", "IsDisabled", "VisibleFromRoot"
+    "GetStateTextDetails", "CallbackId"
 }
 
 -- Safe call wrapper logic similar to the one in consul.ui.debug
