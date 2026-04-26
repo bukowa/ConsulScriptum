@@ -18,6 +18,60 @@ consul = {
 	is_in_battle_script = false,
 	bm = nil,
 
+	-- setup consul
+	setup = function()
+		table.insert(events.UICreated, consul.console.commands.setup)
+		table.insert(events.UICreated, consul.ui.OnUICreated)
+		table.insert(events.UICreated, consul.compat.setup)
+		table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
+		if consul_build == "Attila" then
+			table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
+			table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
+			table.insert(events.UICreated, consul.ui.attila.OnUICreated)
+		end
+		table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
+		table.insert(events.UICreated, consul.history.OnUICreated)
+		table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
+		table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
+		-- access to 'EpisodicScripting' may be required
+		-- load later to avoid any issues with the game
+		table.insert(events.UICreated, consul.consul_scripts.setup)
+		table.insert(events.UICreated, consul.battle.setup)
+		table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
+		table.insert(events.UICreated, consul.scriptum.setup)
+		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
+		table.insert(events.UICreated, consul.changelog.OnUICreated)
+
+		-- persistent debug logging
+		local cfg = consul.config.read()
+		if cfg.debug then
+			if cfg.debug.log_level then
+				consul.log:set_level(cfg.debug.log_level)
+			end
+			if cfg.debug.log_events then
+				consul.log:log_events_all()
+			end
+			if cfg.debug.debug_ui then
+				-- We call the same logic that /debug_html uses
+				-- But we need to make sure the uidebug module is ready
+				consul.uidebug.init_hooks()
+			end
+		end
+
+		-- turn time measurement
+		table.insert(events.FactionTurnStart, function(context)
+			if consul.debug._measuring_turn and context:faction():is_human() then
+				local duration = os.clock() - consul.debug._turn_start_time
+				local msg = "Turn cycle completed in " .. string.format("%.2f", duration) .. " seconds."
+				consul.console.write(msg)
+				consul.log:info(msg)
+				consul.debug._measuring_turn = false
+			end
+		end)
+
+		consul.env.setup()
+	end,
+
 	env = {
 
 		-- 0 == battle
@@ -233,60 +287,6 @@ consul = {
 		_turn_start_time = 0,
 		_measuring_turn = false,
 	},
-
-	-- setup consul
-	setup = function()
-		table.insert(events.UICreated, consul.console.commands.setup)
-		table.insert(events.UICreated, consul.ui.OnUICreated)
-		table.insert(events.UICreated, consul.compat.setup)
-		table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
-		if consul_build == "Attila" then
-			table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
-			table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
-			table.insert(events.UICreated, consul.ui.attila.OnUICreated)
-		end
-		table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
-		table.insert(events.UICreated, consul.history.OnUICreated)
-		table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
-		table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
-		-- access to 'EpisodicScripting' may be required
-		-- load later to avoid any issues with the game
-		table.insert(events.UICreated, consul.consul_scripts.setup)
-		table.insert(events.UICreated, consul.battle.setup)
-		table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
-		table.insert(events.UICreated, consul.scriptum.setup)
-		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
-		table.insert(events.UICreated, consul.changelog.OnUICreated)
-
-		-- persistent debug logging
-		local cfg = consul.config.read()
-		if cfg.debug then
-			if cfg.debug.log_level then
-				consul.log:set_level(cfg.debug.log_level)
-			end
-			if cfg.debug.log_events then
-				consul.log:log_events_all()
-			end
-			if cfg.debug.debug_ui then
-				-- We call the same logic that /debug_html uses
-				-- But we need to make sure the uidebug module is ready
-				consul.uidebug.init_hooks()
-			end
-		end
-
-		-- turn time measurement
-		table.insert(events.FactionTurnStart, function(context)
-			if consul.debug._measuring_turn and context:faction():is_human() then
-				local duration = os.clock() - consul.debug._turn_start_time
-				local msg = "Turn cycle completed in " .. string.format("%.2f", duration) .. " seconds."
-				consul.console.write(msg)
-				consul.log:info(msg)
-				consul.debug._measuring_turn = false
-			end
-		end)
-
-		consul.env.setup()
-	end,
 
 	-- logging
 	log = require("consul_logging").Logger.new("consul"),
