@@ -344,8 +344,8 @@
 
         // Must exactly match the UI_PROPERTIES order in consul_uidebug.lua
         const UI_PROPERTIES = [
-            "Id", "Address", "Priority", "Visible", "IsInteractive", 
-            "Position", "Bounds", "Dimensions", "GetStateText", 
+            "Id", "Address", "Priority", "Visible", "IsInteractive",
+            "Position", "Bounds", "Dimensions", "GetStateText",
             "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
             "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
             "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
@@ -363,8 +363,8 @@
             "Layout": { type: "readonly" },
             "GetStateTextDetails": { type: "readonly" },
             "CurrentAnimationId": { type: "readonly" },
-            "Height": { type: "readonly" },
-            "Width": { type: "readonly" },
+            "Height": { type: "number", setter: (v) => `c:Resize(c:Width(), ${v})` },
+            "Width": { type: "number", setter: (v) => `c:Resize(${v}, c:Height())` },
             "IsMouseOverChildren": { type: "readonly" },
             "CallbackId": { type: "readonly" },
 
@@ -375,9 +375,9 @@
             "IsMoveable": { type: "boolean", setter: (v) => `c:SetMoveable(${v === 'true'})` },
 
             // Numbers
-            "Priority": { type: "number", setter: (v) => `c:PropagatePriority(${v})` }, 
-            "Opacity": { 
-                type: "number", 
+            "Priority": { type: "number", setter: (v) => `c:PropagatePriority(${v})` },
+            "Opacity": {
+                type: "number",
                 setter: (v) => `c:SetOpacity(${v})`,
                 readGames: ["Attila"], // Getter only in Attila
                 writeGames: ["Rome2", "Attila"] // Setter in both
@@ -385,21 +385,27 @@
             "DockingPoint": { type: "number", setter: (v) => `c:SetDockingPoint(${v})` },
 
             // Vectors
-            "Position": { type: "vector2", setter: (v) => { 
-                const p = v.split(','); 
-                return `c:MoveTo(${p[0]||0}, ${p[1]||0})`; 
-            }},
-            "Dimensions": { type: "vector2", setter: (v) => { 
-                const p = v.split(/[,xX]/); 
-                return `c:Resize(${p[0]||0}, ${p[1]||0})`; 
-            }},
-            
+            "Position": {
+                type: "vector2", setter: (v) => {
+                    const p = v.split(',');
+                    return `c:MoveTo(${p[0] || 0}, ${p[1] || 0})`;
+                }
+            },
+            "Dimensions": {
+                type: "vector2", setter: (v) => {
+                    const p = v.split(/[,xX]/);
+                    return `c:Resize(${p[0] || 0}, ${p[1] || 0})`;
+                }
+            },
+
             // Strings
-            "GetStateText": { type: "string", setter: (v) => {
-                // If it contains commas, take everything or extract first?
-                // For safety, let's just use what user inputs. 
-                return `c:SetStateText("${v.replace(/"/g, '\\"')}")`;
-            }},
+            "GetStateText": {
+                type: "string", setter: (v) => {
+                    // If it contains commas, take everything or extract first?
+                    // For safety, let's just use what user inputs. 
+                    return `c:SetStateText("${v.replace(/"/g, '\\"')}")`;
+                }
+            },
             "GetTooltipText": { type: "string", setter: (v) => `c:SetTooltipText("${v.replace(/"/g, '\\"')}")` },
             "CurrentState": { type: "string", setter: (v) => `c:SetState("${v.replace(/"/g, '\\"')}")` },
 
@@ -469,7 +475,7 @@
                 if (!isPolling) {
                     isPolling = true;
                     intervalId = setInterval(pollFile, 250);
-                    pollFile(); 
+                    pollFile();
                 }
             } catch (err) {
                 console.error("Failed to acquire directory:", err);
@@ -496,7 +502,7 @@
                 parseData(text);
             } catch (err) {
                 console.error("Poll read error:", err);
-                fileHandle = null; 
+                fileHandle = null;
             }
         }
 
@@ -513,7 +519,7 @@
                 updateCaptureStatus(isActive);
                 i++;
             }
-            
+
             if (i < lines.length && lines[i].startsWith("GAME:")) {
                 currentGame = lines[i].split(':')[1].trim();
                 i++;
@@ -521,20 +527,20 @@
 
             for (; i < lines.length; i++) {
                 if (lines[i].trim() === "") continue;
-                
+
                 const parts = lines[i].split(SEPARATOR);
-                if (parts.length >= 2) { 
+                if (parts.length >= 2) {
                     let comp = {
                         depth: parseInt(parts[0]),
                         isHovered: parts[1] === 'true',
                         children: []
                     };
-                    
+
                     // Map indexed parts to property keys
-                    for(let p = 0; p < UI_PROPERTIES.length; p++) {
+                    for (let p = 0; p < UI_PROPERTIES.length; p++) {
                         comp[UI_PROPERTIES[p]] = parts[p + 2] ? parts[p + 2].replace(/\\n/g, '\n') : "nil";
                     }
-                    
+
                     flatList.push(comp);
                 }
             }
@@ -552,7 +558,7 @@
 
             let root = [];
             let stack = [];
-            loadedComponents = {}; 
+            loadedComponents = {};
             let hoveredAddr = null;
 
             flatList.forEach(comp => {
@@ -578,7 +584,7 @@
             if (hoveredAddr && isCaptureActive) {
                 selectedAddress = hoveredAddr;
                 let cur = loadedComponents[hoveredAddr];
-                openStates[cur.Address] = true; 
+                openStates[cur.Address] = true;
                 while (cur && cur.parentAddr) {
                     openStates[cur.parentAddr] = true;
                     cur = loadedComponents[cur.parentAddr];
@@ -670,11 +676,11 @@
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
             return String(unsafe)
-                 .replace(/&/g, "&amp;")
-                 .replace(/</g, "&lt;")
-                 .replace(/>/g, "&gt;")
-                 .replace(/"/g, "&quot;")
-                 .replace(/'/g, "&#039;");
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
         function updateInspector(addr) {
@@ -684,11 +690,11 @@
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('propPanel').classList.add('visible');
             document.getElementById('insTitle').innerHTML = `${escapeHtml(comp.Id)} <span class="addr">${comp.Address}</span>`;
-            
+
             let html = '';
-            
+
             // Render mapped properties
-            for(const propName of UI_PROPERTIES) {
+            for (const propName of UI_PROPERTIES) {
                 if (!UI_SCHEMA[propName]) continue;
                 const schema = UI_SCHEMA[propName];
 
@@ -698,14 +704,14 @@
                 const isGeneralVisible = !schema.games || schema.games.includes(currentGame);
 
                 if (!isGeneralVisible || (!canRead && !canWrite)) continue;
-                
+
                 const val = comp[propName];
                 html += renderProp(propName, val, schema, canRead, canWrite);
             }
-            
+
             // Render actions
             html += '<div style="grid-column: 1 / -1; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; display: flex; flex-wrap: wrap; gap: 8px;">';
-            for(const [propName, schema] of Object.entries(UI_SCHEMA)) {
+            for (const [propName, schema] of Object.entries(UI_SCHEMA)) {
                 if (schema.type === 'action') {
                     if (schema.games && !schema.games.includes("All") && !schema.games.includes(currentGame)) continue;
                     html += `<button class="btn" style="font-size: 11px; padding: 4px 8px;" onclick="executeAction('${propName}')">${propName}</button>`;
@@ -719,12 +725,12 @@
         function renderProp(name, value, schema, canRead, canWrite) {
             let inputHtml = '';
             const labelHtml = `<div class="prop-label">${name}</div>`;
-            
+
             // If we can't read, we don't have a value to show
             const displayValue = canRead ? value : "Write-only (No Getter)";
             const cleanVal = (value === 'nil' || value === 'error' || !canRead) ? '' : value;
             const readOnlyClass = !canRead ? 'style="color: #5b6287; font-style: italic;"' : '';
-            
+
             if (schema.type === 'readonly' || !canWrite) {
                 inputHtml = `<div class="prop-value" ${readOnlyClass}>${escapeHtml(displayValue)}</div>`;
             } else if (schema.type === 'boolean') {
@@ -744,11 +750,11 @@
                 const placeholder = canRead ? "" : "Enter value to set...";
                 inputHtml = `<input type="text" class="prop-input" placeholder="${placeholder}" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
             }
-            
+
             return labelHtml + inputHtml;
         }
 
-        window.dispatchCommand = function(propName, value) {
+        window.dispatchCommand = function (propName, value) {
             if (!selectedAddress) return;
             const schema = UI_SCHEMA[propName];
             if (schema && schema.setter) {
@@ -760,7 +766,7 @@
             }
         }
 
-        window.executeAction = function(propName) {
+        window.executeAction = function (propName) {
             if (!selectedAddress) return;
             const schema = UI_SCHEMA[propName];
             if (schema && schema.setter) {
@@ -773,4 +779,5 @@
         }
     </script>
 </body>
+
 </html>

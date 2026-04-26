@@ -17,10 +17,10 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `Dimensions` | ✅ | ✅ | ✅ | ✅ | Width x Height |
 | `GetStateText` | ✅ | ✅ | ✅ | ✅ | Localized text content |
 | `GetTooltipText` | ✅ | ✅ | ✅ | ✅ | Hover tooltip text |
-| `Opacity` | 🚫 | ✅ | ⚠️ | ❌ | Getter exists in Attila only |
-| `CurrentState` | ✅ | ✅ | ✅ | ❌ | Current active state name |
-| `ChildCount` | ✅ | ✅ | ✅ | ❌ | Number of direct children |
-| `Height` / `Width` | ✅ | ✅ | ✅ | ❌ | Individual dimensions |
+| `Opacity` | 🚫 | ✅ | ⚠️ | ✅ | Getter exists in Attila only |
+| `CurrentState` | ✅ | ✅ | ✅ | ✅ | Current active state name |
+| `ChildCount` | ✅ | ✅ | ✅ | ✅ | Number of direct children |
+| `Height` / `Width` | ✅ | ✅ | ✅ | ✅ | Individual dimensions |
 | `TextDimensions` | ✅ | ✅ | ✅ | ❌ | Area occupied by text |
 | `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation |
 | `IsDragged` | ✅ | ✅ | ✅ | ❌ | Drag state |
