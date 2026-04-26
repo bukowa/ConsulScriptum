@@ -376,7 +376,12 @@
 
             // Numbers
             "Priority": { type: "number", setter: (v) => `c:PropagatePriority(${v})` }, 
-            "Opacity": { type: "number", setter: (v) => `c:SetOpacity(${v})` },
+            "Opacity": { 
+                type: "number", 
+                setter: (v) => `c:SetOpacity(${v})`,
+                readGames: ["Attila"], // Getter only in Attila
+                writeGames: ["Rome2", "Attila"] // Setter in both
+            },
             "DockingPoint": { type: "number", setter: (v) => `c:SetDockingPoint(${v})` },
 
             // Vectors
@@ -686,10 +691,16 @@
             for(const propName of UI_PROPERTIES) {
                 if (!UI_SCHEMA[propName]) continue;
                 const schema = UI_SCHEMA[propName];
-                if (schema.games && !schema.games.includes("All") && !schema.games.includes(currentGame)) continue;
+
+                // Visibility logic
+                const canRead = !schema.readGames || schema.readGames.includes(currentGame);
+                const canWrite = !schema.writeGames || schema.writeGames.includes(currentGame);
+                const isGeneralVisible = !schema.games || schema.games.includes(currentGame);
+
+                if (!isGeneralVisible || (!canRead && !canWrite)) continue;
                 
                 const val = comp[propName];
-                html += renderProp(propName, val, schema);
+                html += renderProp(propName, val, schema, canRead, canWrite);
             }
             
             // Render actions
@@ -705,26 +716,33 @@
             document.getElementById('propGrid').innerHTML = html;
         }
 
-        function renderProp(name, value, schema) {
+        function renderProp(name, value, schema, canRead, canWrite) {
             let inputHtml = '';
             const labelHtml = `<div class="prop-label">${name}</div>`;
-            const cleanVal = value === 'nil' || value === 'error' ? '' : value;
             
-            if (schema.type === 'readonly') {
-                inputHtml = `<div class="prop-value">${escapeHtml(value)}</div>`;
+            // If we can't read, we don't have a value to show
+            const displayValue = canRead ? value : "Write-only (No Getter)";
+            const cleanVal = (value === 'nil' || value === 'error' || !canRead) ? '' : value;
+            const readOnlyClass = !canRead ? 'style="color: #5b6287; font-style: italic;"' : '';
+            
+            if (schema.type === 'readonly' || !canWrite) {
+                inputHtml = `<div class="prop-value" ${readOnlyClass}>${escapeHtml(displayValue)}</div>`;
             } else if (schema.type === 'boolean') {
                 const isTrue = cleanVal === 'true';
                 inputHtml = `<select class="prop-input" onchange="dispatchCommand('${name}', this.value)">
+                    <option value="" ${!canRead ? 'selected' : ''} disabled>Select...</option>
                     <option value="true" ${isTrue ? 'selected' : ''}>true</option>
-                    <option value="false" ${!isTrue ? 'selected' : ''}>false</option>
+                    <option value="false" ${cleanVal === 'false' ? 'selected' : ''}>false</option>
                 </select>`;
             } else if (schema.type === 'string') {
                 const lines = cleanVal.split('\n').length;
                 const height = Math.max(30, lines * 18);
-                inputHtml = `<textarea class="prop-input" style="resize: vertical; min-height: ${height}px;" onchange="dispatchCommand('${name}', this.value)">${escapeHtml(cleanVal)}</textarea>`;
+                const placeholder = canRead ? "" : "Enter value to set...";
+                inputHtml = `<textarea class="prop-input" placeholder="${placeholder}" style="resize: vertical; min-height: ${height}px;" onchange="dispatchCommand('${name}', this.value)">${escapeHtml(cleanVal)}</textarea>`;
             } else {
                 // Vector or Number (standard text input)
-                inputHtml = `<input type="text" class="prop-input" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
+                const placeholder = canRead ? "" : "Enter value to set...";
+                inputHtml = `<input type="text" class="prop-input" placeholder="${placeholder}" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
             }
             
             return labelHtml + inputHtml;
