@@ -297,6 +297,55 @@
             font-weight: 500;
             margin-bottom: 10px;
         }
+
+        /* Property Hiding */
+        .prop-row {
+            display: contents;
+        }
+
+        .prop-label {
+            display: flex !important;
+            justify-content: space-between;
+            align-items: center;
+            padding-right: 10px;
+        }
+
+        .hide-btn {
+            opacity: 0.3;
+            cursor: pointer;
+            color: #f07178;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.2s;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .prop-row:hover .hide-btn {
+            opacity: 0.7;
+        }
+
+        .hide-btn:hover {
+            opacity: 1 !important;
+            background: rgba(240, 113, 120, 0.1);
+        }
+
+        .restore-btn {
+            font-size: 11px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .restore-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
     </style>
 </head>
 
@@ -329,7 +378,10 @@
         </div>
 
         <div class="glass-panel" id="propPanel">
-            <h2 id="insTitle">root_component <span class="addr" id="insAddr">0x00000</span></h2>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <h2 id="insTitle" style="margin: 0;">root_component <span class="addr" id="insAddr">0x00000</span></h2>
+                <button id="restoreBtn" class="restore-btn" style="display: none;" onclick="resetHiddenProps()">Restore Hidden</button>
+            </div>
             <div class="prop-grid" id="propGrid">
                 <!-- Dynamically populated based on schema -->
             </div>
@@ -436,6 +488,27 @@
         let loadedComponents = {}; // Keyed by address
         let selectedAddress = null;
         let openStates = {}; // Persist folder states
+        let hiddenProps = new Set(JSON.parse(localStorage.getItem('consul_uidebug_hidden') || '[]'));
+
+        function saveHiddenProps() {
+            localStorage.setItem('consul_uidebug_hidden', JSON.stringify(Array.from(hiddenProps)));
+        }
+
+        window.togglePropVisibility = function(propName) {
+            if (hiddenProps.has(propName)) {
+                hiddenProps.delete(propName);
+            } else {
+                hiddenProps.add(propName);
+            }
+            saveHiddenProps();
+            if (selectedAddress) updateInspector(selectedAddress);
+        }
+
+        window.resetHiddenProps = function() {
+            hiddenProps.clear();
+            saveHiddenProps();
+            if (selectedAddress) updateInspector(selectedAddress);
+        }
 
         // ----------------------------------------------------
         // FILE SYSTEM COMMS
@@ -695,7 +768,7 @@
 
             // Render mapped properties
             for (const propName of UI_PROPERTIES) {
-                if (!UI_SCHEMA[propName]) continue;
+                if (!UI_SCHEMA[propName] || hiddenProps.has(propName)) continue;
                 const schema = UI_SCHEMA[propName];
 
                 // Visibility logic
@@ -707,6 +780,15 @@
 
                 const val = comp[propName];
                 html += renderProp(propName, val, schema, canRead, canWrite);
+            }
+
+            // Update restore button visibility
+            const restoreBtn = document.getElementById('restoreBtn');
+            if (hiddenProps.size > 0) {
+                restoreBtn.style.display = 'block';
+                restoreBtn.innerText = `Restore Hidden (${hiddenProps.size})`;
+            } else {
+                restoreBtn.style.display = 'none';
             }
 
             // Render actions
@@ -724,13 +806,16 @@
 
         function renderProp(name, value, schema, canRead, canWrite) {
             let inputHtml = '';
-            const labelHtml = `<div class="prop-label">${name}</div>`;
-
+            const labelHtml = `<div class="prop-label">
+                <span>${name}</span>
+                <span class="hide-btn" title="Hide property" onclick="togglePropVisibility('${name}')">×</span>
+            </div>`;
+            
             // If we can't read, we don't have a value to show
             const displayValue = canRead ? value : "Write-only (No Getter)";
             const cleanVal = (value === 'nil' || value === 'error' || !canRead) ? '' : value;
             const readOnlyClass = !canRead ? 'style="color: #5b6287; font-style: italic;"' : '';
-
+            
             if (schema.type === 'readonly' || !canWrite) {
                 inputHtml = `<div class="prop-value" ${readOnlyClass}>${escapeHtml(displayValue)}</div>`;
             } else if (schema.type === 'boolean') {
@@ -750,8 +835,8 @@
                 const placeholder = canRead ? "" : "Enter value to set...";
                 inputHtml = `<input type="text" class="prop-input" placeholder="${placeholder}" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
             }
-
-            return labelHtml + inputHtml;
+            
+            return `<div class="prop-row">${labelHtml}${inputHtml}</div>`;
         }
 
         window.dispatchCommand = function (propName, value) {
