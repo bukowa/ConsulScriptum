@@ -385,6 +385,7 @@ $(BUILD_DIR)/consul/profile/LICENSE: src/profile/LICENSE
 clean:
 	@rm -rf $(BUILD_DIR)
 	@rm -f $(MOD_PACKAGE)
+	@rm -f $(RELEASE_DIR)/$(MOD_PACKAGE)
 	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
 	@echo "Cleaned up build directory and mod package for $(GAME)."
@@ -684,7 +685,7 @@ endif
 	@cp "$(RELEASE_DIR)/$(MOD_PACKAGE)" "$(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)"
 	@echo "Installed $(MOD_PACKAGE) from release directory to $(INSTALL_ALONE_DIR)/data"
 
-run_release: kill-game install_release
+run_release: clean kill-game install_release
 	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
 # ============================================================
