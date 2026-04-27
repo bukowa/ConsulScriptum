@@ -6,7 +6,8 @@ local changelog = {
             "\nAdded: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt)."..
             "\nAdded: UI Debugger tree improvements: Auto-expand folders when hovering during drag operations."..
             "\nAdded: Component Factory (Attila): Dynamically instantiate new UI components using layout templates directly from the inspector."..
-            "\nAdded: Divorce Action: Detach a component from its parent without destroying it (orphaning)."
+            "\nAdded: Divorce Action: Detach a component from its parent without destroying it (orphaning)."..
+            "\nFixed: HTML debugger not works in campaign lol."
         },
         ["0.8.0-alpha.6"] = {
             common = "\nAdded: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.)."..

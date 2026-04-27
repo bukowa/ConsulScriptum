@@ -226,6 +226,10 @@ uidebug.init_hooks = function()
         -- todo battle nothing yet
     end)
 
+    if consul.env.mode == 1 then
+        consul._game():add_time_trigger("uidebug_command_poll", 0.5)
+    end
+
     uidebug.is_hooked = true
     consul.log:debug("UI Debugger hooks initialized!")
 end
