@@ -1,4 +1,4 @@
-## Unreleased
+## v0.8.0
 **Common:**
 - Added: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically.
 - Added: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt).

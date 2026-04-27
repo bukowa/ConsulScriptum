@@ -1,7 +1,7 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
+        ["0.8.0"] = {
             common = "\nAdded: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically."..
             "\nAdded: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt)."..
             "\nAdded: UI Debugger tree improvements: Auto-expand folders when hovering during drag operations."..
