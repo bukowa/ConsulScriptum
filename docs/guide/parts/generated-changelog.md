@@ -4,6 +4,7 @@
 - Added: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt).
 - Added: UI Debugger tree improvements: Auto-expand folders when hovering during drag operations.
 - Added: Component Factory (Attila): Dynamically instantiate new UI components using layout templates directly from the inspector.
+- Added: Divorce Action: Detach a component from its parent without destroying it (orphaning).
 
 ---
 

@@ -98,7 +98,7 @@ One-shot functions triggered by buttons in the "Actions" section of the debugger
 | `RunScript` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `Adopt` | ✅ | ✅ | ✅ | ✅ | Powers Drag & Drop           |
 | `AttachCustomControl` | ✅ | ✅ | ❌ | ❌ | ?                            |
-| `Divorce` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `Divorce` | ✅ | ✅ | ✅ | ✅ | Orphan child from parent      |
 | `FindPositionIntoCurrentText` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `FindTextSnapPosition` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `ForceEvent` | ✅ | ✅ | ❌ | ❌ | ?                            |
