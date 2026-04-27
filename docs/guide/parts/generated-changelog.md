@@ -6,6 +6,7 @@
 - Fixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila).
 - Fixed: Various stability fixes and parsing improvements for UI inspection and event tracking.
 - Fixed: Changelog priority display fix.
+- Changed: /debug_html is now a unified toggle for both launching and persistent state, replacing /debug_html_on.
 
 **Attila specific:**
 - Fixed: Prevent multiple creations of consul UI in battle mode.

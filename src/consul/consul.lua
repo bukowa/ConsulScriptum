@@ -41,6 +41,7 @@ consul = {
 		table.insert(events.UICreated, consul.scriptum.setup)
 		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
 		table.insert(events.UICreated, consul.changelog.OnUICreated)
+		table.insert(events.UICreated, consul.uidebug.OnUICreated)
 
 		-- persistent debug logging
 		local cfg = consul.config.read()
@@ -50,11 +51,6 @@ consul = {
 			end
 			if cfg.debug.log_events then
 				consul.log:log_events_all()
-			end
-			if cfg.debug.debug_ui then
-				-- We call the same logic that /debug_html uses
-				-- But we need to make sure the uidebug module is ready
-				consul.uidebug.init_hooks()
 			end
 		end
 
@@ -1745,18 +1741,7 @@ consul = {
 				},
 				["/debug_html"] = {
 					help = function()
-						return "Launch the UI Debugger in your default browser."
-					end,
-					func = function()
-						consul.uidebug.init_hooks()
-						return consul.uidebug.launch()
-					end,
-					exec = false,
-					returns = true,
-				},
-				["/debug_html_on"] = {
-					help = function()
-						return "Toggle persistent UI Debugger (active across restarts)."
+						return "Toggle HTML UI Debugger persistence and launch in browser."
 					end,
 					func = function()
 						local current = false
@@ -1766,9 +1751,10 @@ consul = {
 						end)
 						if current then
 							consul.uidebug.init_hooks()
-							return "Persistent UI Debugger ENABLED."
+							consul.uidebug.launch()
+							return "HTML UI Debugger ENABLED (persistent) and launched. "
 						else
-							return "Persistent UI Debugger DISABLED. (Requires restart to fully unhook)"
+							return "HTML UI Debugger DISABLED (persistence removed, will unhook on restart)."
 						end
 					end,
 					exec = false,

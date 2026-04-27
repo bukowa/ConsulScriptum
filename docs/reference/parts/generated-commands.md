@@ -31,10 +31,7 @@ Set consul log level. Levels: -2 DISABLED -1 TRACE 0 INTERNAL 1 DEBUG 2 INFO 3 W
 Prints debug information about characters,settlements,etc.
 
 #### `/debug_html`
-Launch the UI Debugger in your default browser.
-
-#### `/debug_html_on`
-Toggle persistent UI Debugger (active across restarts).
+Toggle HTML UI Debugger persistence and launch in browser.
 
 #### `/debug_mouseover`
 Prints debug information of the mouseover component.

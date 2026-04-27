@@ -234,4 +234,12 @@ uidebug.init_hooks = function()
     consul.log:debug("UI Debugger hooks initialized!")
 end
 
+uidebug.OnUICreated = function(context)
+    local cfg = consul.config.read()
+    if cfg.debug and cfg.debug.debug_ui then
+        uidebug.init_hooks()
+        consul.console.write("HTML UI Debugger is active. It may impact performance. Disable via /debug_html")
+    end
+end
+
 return uidebug

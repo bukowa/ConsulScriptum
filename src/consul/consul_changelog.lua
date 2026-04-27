@@ -7,7 +7,8 @@ local changelog = {
             "\nAdded: Improved /debug, /debug_mouseover and /debug_onclick with better information and support for diplomacy/strategic map elements."..
             "\nFixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila)."..
             "\nFixed: Various stability fixes and parsing improvements for UI inspection and event tracking."..
-            "\nFixed: Changelog priority display fix.",
+            "\nFixed: Changelog priority display fix."..
+            "\nChanged: /debug_html is now a unified toggle for both launching and persistent state, replacing /debug_html_on.",
             Attila = "Fixed: Prevent multiple creations of consul UI in battle mode."
         },
         ["0.8.0-alpha.6"] = {
