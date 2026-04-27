@@ -81,7 +81,7 @@ local function traverse_ui(component, depth, output, hovered_address)
     for i = 0, child_count - 1 do
         local ok, child_ptr = pcall(function() return component:Find(i) end)
         if ok and child_ptr then
-            local child = UIComponent(child_ptr)
+            local child = consul.ui._UIComponent(child_ptr)
             if child then
                 traverse_ui(child, depth + 1, output, hovered_address)
             end
@@ -193,7 +193,7 @@ uidebug.init_hooks = function()
         if consul.ui.is_consul(context.string) then
             return
         end
-        local c = UIComponent(context.component)
+        local c = consul.ui._UIComponent(context.component)
         if c then
             local address = tostring(c:Address())
             uidebug.dump_tree(consul.ui._UIRoot, address)
