@@ -3654,6 +3654,7 @@ consul.console.write(
 					name = 2,
 					cqi = 3,
 					command_queue_index = 4,
+					region = 5,
 				}
 
 				local function get_size(k, v)
