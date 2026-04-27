@@ -6,6 +6,7 @@
 - Added: Component Factory (Attila): Dynamically instantiate new UI components using layout templates directly from the inspector.
 - Added: Divorce Action: Detach a component from its parent without destroying it (orphaning).
 - Fixed: HTML debugger not works in campaign lol.
+- Fixed: Changelog priority display fix.
 
 ---
 

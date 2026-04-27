@@ -305,7 +305,27 @@ consul = {
 				table.insert(versions, k)
 			end
 			table.sort(versions, function(a, b)
-				return a > b
+				local function parse(v)
+					local core, pre = v:match("^([%d%.]+)%-?(.*)$")
+					return core or v, pre or ""
+				end
+				local function pad(v)
+					return (v:gsub("%d+", function(num)
+						return string.format("%05d", tonumber(num))
+					end))
+				end
+
+				local core_a, pre_a = parse(a)
+				local core_b, pre_b = parse(b)
+
+				if core_a == core_b then
+					if pre_a == pre_b then return false end
+					if pre_a == "" then return true end
+					if pre_b == "" then return false end
+					return pad(pre_a) > pad(pre_b)
+				end
+
+				return pad(core_a) > pad(core_b)
 			end)
 
 			local sep = ""
