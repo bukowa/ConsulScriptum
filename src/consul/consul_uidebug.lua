@@ -201,7 +201,7 @@ uidebug.init_hooks = function()
 
     table.insert(events.ShortcutTriggered, function(context)
         local shortcut = context.string
-        if shortcut == "standard_ping" then
+        if shortcut == "toggle_stream_pause" then
             uidebug.is_active = not uidebug.is_active
             uidebug.dump_tree(consul.ui._UIRoot, uidebug.last_hovered_address)
         end

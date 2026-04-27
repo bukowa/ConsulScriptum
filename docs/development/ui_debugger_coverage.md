@@ -23,8 +23,8 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `Height` / `Width` | ✅ | ✅ | ✅ | ✅ | Individual dimensions |
 | `TextDimensions` | ✅ | ✅ | ✅ | ✅ | Area occupied by text |
 | `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation |
-| `IsDragged` | ✅ | ✅ | ✅ | ❌ | Drag state |
-| `IsMoveable` | ✅ | ✅ | ✅ | ❌ | Can be moved by user |
+| `IsDragged` | ✅ | ✅ | ✅ | ✅ | Drag state |
+| `IsMoveable` | ✅ | ✅ | ✅ | ✅ | Can be moved by user |
 | `IsMouseOverChildren` | ✅ | ✅ | ✅ | ❌ | Hover state propagation |
 | `Layout` | ✅ | ✅ | ✅ | ❌ | Current layout type |
 | `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | Extended text info |
@@ -47,18 +47,18 @@ These are triggered via `dispatchCommand` from the HTML property grid.
 
 | Action / Setter | Rome II | Attila | Status | Tested | Note |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| `SetVisible` | ✅ | ✅ | ✅ | ❌ | Toggle visibility |
-| `SetInteractive` | ✅ | ✅ | ✅ | ❌ | Toggle interaction |
-| `SetDragged` | ✅ | ✅ | ✅ | ❌ | Force drag state |
-| `SetMoveable` | ✅ | ✅ | ✅ | ❌ | Toggle moveability |
+| `SetVisible` | ✅ | ✅ | ✅ | ✅ | Toggle visibility |
+| `SetInteractive` | ✅ | ✅ | ✅ | ✅ | Toggle interaction |
+| `SetDragged` | ✅ | ✅ | ✅ | ✅ | Force drag state |
+| `SetMoveable` | ✅ | ✅ | ✅ | ✅ | Toggle moveability |
 | `SetDisabled` | ✅ | ✅ | ✅ | ❌ | Toggle disabled state (Buttons) |
-| `PropagatePriority` | ✅ | ✅ | ✅ | ❌ | Set priority (recursive) |
-| `SetOpacity` | ✅ | ✅ | ✅ | ❌ | Set alpha transparency |
+| `PropagatePriority` | ✅ | ✅ | ✅ | ✅ | Set priority (recursive) |
+| `SetOpacity` | ✅ | ✅ | ✅ | ✅ | Set alpha transparency |
 | `SetDockingPoint` | ✅ | ✅ | ✅ | ❌ | Anchor point control |
-| `MoveTo` | ✅ | ✅ | ✅ | ❌ | Manual positioning |
-| `Resize` | ✅ | ✅ | ✅ | ❌ | Manual sizing |
-| `SetStateText` | ✅ | ✅ | ✅ | ❌ | Update text content |
-| `SetTooltipText` | ✅ | ✅ | ✅ | ❌ | Update tooltip |
+| `MoveTo` | ✅ | ✅ | ✅ | ✅ | Manual positioning |
+| `Resize` | ✅ | ✅ | ✅ | ✅ | Manual sizing |
+| `SetStateText` | ✅ | ✅ | ✅ | ✅ | Update text content |
+| `SetTooltipText` | ✅ | ✅ | ✅ | ✅ | Update tooltip |
 | `SetState` | ✅ | ✅ | ✅ | ❌ | Switch component state |
 | `SetImageColour` | ✅ | ✅ | ❌ | ❌ | Needs RGBA picker |
 | `SetImageRotation` | ✅ | ✅ | ❌ | ❌ | Needs degree input |
