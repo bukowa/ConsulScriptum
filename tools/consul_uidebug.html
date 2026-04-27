@@ -135,6 +135,16 @@
             border-left: 2px solid var(--accent);
         }
 
+        summary.drag-over {
+            background: rgba(255, 203, 107, 0.2) !important;
+            outline: 1px dashed #ffcb6b;
+        }
+
+        summary.drag-over-top {
+            border-top: 2px solid #ffcb6b !important;
+            background: rgba(255, 203, 107, 0.1) !important;
+        }
+
         summary::before {
             content: '▶';
             font-size: 9px;
@@ -766,19 +776,28 @@
             handleSearch(true);
         }
 
-        function generateHTMLRec(comp) {
+        function generateHTMLRec(comp, parentAddr = '', index = 0) {
             const hasChildren = comp.children && comp.children.length > 0;
             const detailsClass = hasChildren ? '' : 'leaf-node';
 
             let html = `<details class="${detailsClass}" data-addr="${comp.Address}">`;
-            html += `<summary data-addr="${comp.Address}">
+            html += `<summary 
+                        data-addr="${comp.Address}" 
+                        data-parent-addr="${parentAddr}"
+                        data-index="${index}"
+                        draggable="true"
+                        ondragstart="handleDragStart(event)"
+                        ondragover="handleDragOver(event)"
+                        ondragleave="handleDragLeave(event)"
+                        ondrop="handleDrop(event)"
+                        onclick="selectNode('${comp.Address}', this)">
                         <span class="tag">UI</span>
                         <span class="id">${escapeHtml(comp.Id)}</span>
                      </summary>`;
 
             if (hasChildren) {
-                comp.children.forEach(child => {
-                    html += generateHTMLRec(child);
+                comp.children.forEach((child, i) => {
+                    html += generateHTMLRec(child, comp.Address, i);
                 });
             }
             html += `</details>`;
@@ -938,6 +957,7 @@
         }
         let searchResults = [];
         let searchIndex = -1;
+        let dragHoverTimeout = null;
 
         function handleSearch(isRefresh) {
             const query = document.getElementById('searchInput').value.toLowerCase();
@@ -1054,6 +1074,98 @@
                 parent = parent.parentElement;
                 if (parent && parent.id === 'treeContainer') break;
             }
+        }
+
+        window.handleSearch = handleSearch;
+        // ----------------------------------------------------
+        // DRAG & DROP LOGIC
+        // ----------------------------------------------------
+        window.handleDragStart = function (e) {
+            const addr = e.currentTarget.getAttribute('data-addr');
+            e.dataTransfer.setData('text/plain', addr);
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        window.handleDragOver = function (e) {
+            e.preventDefault();
+            const summary = e.currentTarget;
+            e.dataTransfer.dropEffect = 'move';
+
+            const rect = summary.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+            
+            summary.classList.remove('drag-over', 'drag-over-top');
+            if (e.clientY < midpoint) {
+                summary.classList.add('drag-over-top');
+            } else {
+                summary.classList.add('drag-over');
+            }
+
+            // Auto-expand on hover
+            const details = summary.parentElement;
+            if (details && details.tagName === 'DETAILS' && !details.open) {
+                if (!dragHoverTimeout) {
+                    dragHoverTimeout = setTimeout(() => {
+                        details.open = true;
+                        dragHoverTimeout = null;
+                    }, 500);
+                }
+            }
+        }
+
+        window.handleDragLeave = function (e) {
+            e.currentTarget.classList.remove('drag-over', 'drag-over-top');
+            if (dragHoverTimeout) {
+                clearTimeout(dragHoverTimeout);
+                dragHoverTimeout = null;
+            }
+        }
+
+        window.handleDrop = function (e) {
+            e.preventDefault();
+            const summary = e.currentTarget;
+            summary.classList.remove('drag-over', 'drag-over-top');
+            if (dragHoverTimeout) {
+                clearTimeout(dragHoverTimeout);
+                dragHoverTimeout = null;
+            }
+            
+            const childAddr = e.dataTransfer.getData('text/plain');
+            const targetAddr = summary.getAttribute('data-addr');
+            const parentAddr = summary.getAttribute('data-parent-addr');
+            const index = summary.getAttribute('data-index');
+
+            if (!childAddr || !targetAddr || childAddr === targetAddr) return;
+
+            const rect = summary.getBoundingClientRect();
+            const isTopHalf = e.clientY < (rect.top + rect.height / 2);
+
+            let luaCode = '';
+            if (isTopHalf && parentAddr) {
+                // Insert BEFORE target (Adopt into target's parent at target's index)
+                console.log(`Inserting ${childAddr} before ${targetAddr} (into ${parentAddr} at index ${index})`);
+                luaCode = `
+                    local p = consul.uidebug.cache["${parentAddr}"];
+                    local c = consul.uidebug.cache["${childAddr}"];
+                    if p and c then
+                        p:Adopt(c:Address(), ${index});
+                        p:Layout();
+                    end
+                `;
+            } else {
+                // Adopt AS CHILD of target (at the end)
+                console.log(`Adopting ${childAddr} into ${targetAddr} (last child)`);
+                luaCode = `
+                    local p = consul.uidebug.cache["${targetAddr}"];
+                    local c = consul.uidebug.cache["${childAddr}"];
+                    if p and c then
+                        p:Adopt(c:Address());
+                        p:Layout();
+                    end
+                `;
+            }
+
+            writeCommand(luaCode.replace(/\s+/g, ' ').trim());
         }
 
         window.handleSearch = handleSearch;

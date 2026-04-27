@@ -93,10 +93,10 @@ One-shot functions triggered by buttons in the "Actions" section of the debugger
 | `Layout` | ✅ | ✅ | ✅ | ❌ | Force UI refresh/layout call |
 | `SimulateMouseMove` | 🚫 | ✅ | ❌ | ❌ | Mouse movement simulation    |
 | `CreateComponent` | 🚫 | ✅ | ❌ | ❌ | Dynamic UI creation          |
-| `Highlight` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `Highlight` | ✅ | ✅ | ✅ | ✅ | Used for selection sync      |
 | `TriggerAnimation` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `RunScript` | ✅ | ✅ | ❌ | ❌ | ?                            |
-| `Adopt` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `Adopt` | ✅ | ✅ | ✅ | ✅ | Powers Drag & Drop           |
 | `AttachCustomControl` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `Divorce` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `FindPositionIntoCurrentText` | ✅ | ✅ | ❌ | ❌ | ?                            |
@@ -114,9 +114,22 @@ One-shot functions triggered by buttons in the "Actions" section of the debugger
 | `TriggerShortcut` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `UnLockPriority` | ✅ | ✅ | ❌ | ❌ | ?                            |
 
-## 4. Planned Improvements
-1.  **Visual Highlight**: Add a button to call `c:Highlight(true)` to see the component flicker in-game.
-2.  **Parent Navigation**: Display the Parent Address and allow "jumping" to it.
-3.  **Search/Filter**: Filter the tree by ID or StateText.
-4.  **Custom Property Fetcher**: Input box to call `GetProperty(key)` on the selected component.
+## 4. Integrated Debugger Features
+These are high-level features built into the UI Explorer tool that combine multiple engine methods and JavaScript logic.
+
+| Feature | Status | Note |
+| :--- | :---: | :--- |
+| `Global Search` | ✅ | Real-time filtering across ID, Address, Text, Tooltip, State, Width, Height, etc. |
+| `Drag & Drop` | ✅ | Restructure hierarchy using `Adopt` method with index-aware sibling reordering. |
+| `In-game Selection Sync` | ✅ | Visual feedback using `Highlight(true/false)` when clicking nodes in the tree. |
+| `Auto-Expand` | ✅ | Automatic folder opening during search navigation and drag operations. |
+| `Multi-line Parsing` | ✅ | Robust sanitization of `GetStateText` to prevent tree corruption. |
+| `Property Hiding` | ✅ | Persistent toggle for individual property boxes (saves to localStorage). |
+| `Capture Pause` | ✅ | F7 toggle to freeze the UI tree for deep investigation. |
+
+## 5. Planned Improvements
+1.  **Custom Property Fetcher**: Input box to call `GetProperty(key)` on the selected component for hidden engine variables.
+2.  **Animation Trigger**: Interface to browse and call `TriggerAnimation(id)`.
+3.  **Script Runner**: Ability to execute a Lua string with `c` as the selected component (e.g., `c:SetVisible(false)`).
+4.  **Advanced Layout Tools**: Direct buttons for `PropagatePriority`, `PropagateVisibility`, etc.
 
