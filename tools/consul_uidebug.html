@@ -407,6 +407,41 @@
             background: rgba(255, 203, 107, 0.4) !important;
             border-left: 2px solid #ffcb6b !important;
         }
+
+        /* Factory Section */
+        .factory-section {
+            margin-top: 20px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(137, 221, 255, 0.03);
+        }
+
+        .factory-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 13px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .factory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .factory-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .factory-label {
+            font-size: 10px;
+            color: #5b6287;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 
@@ -458,6 +493,21 @@
             </div>
             <div class="prop-grid" id="propGrid">
                 <!-- Dynamically populated based on schema -->
+            </div>
+
+            <div class="factory-section" id="factorySection" style="display: none;">
+                <h3>Component Factory (Attila)</h3>
+                <div class="factory-grid">
+                    <div class="factory-input-group">
+                        <span class="factory-label">Name</span>
+                        <input type="text" id="factoryName" class="prop-input" placeholder="e.g. my_button">
+                    </div>
+                    <div class="factory-input-group">
+                        <span class="factory-label">Layout Path</span>
+                        <input type="text" id="factoryPath" class="prop-input" placeholder="UI/Campaign UI/button_template">
+                    </div>
+                    <button class="btn" onclick="handleCreateComponent()" style="height: 33px;">Create</button>
+                </div>
             </div>
         </div>
     </div>
@@ -895,6 +945,10 @@
             html += '</div>';
 
             document.getElementById('propGrid').innerHTML = html;
+
+            // Show/Hide Factory (Attila only)
+            const factory = document.getElementById('factorySection');
+            factory.style.display = currentGame === 'Attila' ? 'block' : 'none';
         }
 
         function renderProp(name, value, schema, canRead, canWrite) {
@@ -1168,8 +1222,33 @@
             writeCommand(luaCode.replace(/\s+/g, ' ').trim());
         }
 
+        window.handleCreateComponent = function() {
+            if (!selectedAddress) return;
+            const name = document.getElementById('factoryName').value.trim();
+            const path = document.getElementById('factoryPath').value.trim();
+
+            if (!name || !path) {
+                alert("Both Name and Layout Path are required.");
+                return;
+            }
+
+            const luaCode = `
+                local p = consul.uidebug.cache["${selectedAddress}"];
+                if p then
+                    local new_uic = UIComponent(p:CreateComponent("${name}", "${path}"));
+                    if new_uic then
+                        p:Layout();
+                    end
+                end
+            `.replace(/\s+/g, ' ').trim();
+
+            writeCommand(luaCode);
+        }
+
         window.handleSearch = handleSearch;
     </script>
 </body>
+
+</html>
 
 </html>

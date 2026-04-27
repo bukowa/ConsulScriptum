@@ -3,6 +3,7 @@
 - Added: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically.
 - Added: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt).
 - Added: UI Debugger tree improvements: Auto-expand folders when hovering during drag operations.
+- Added: Component Factory (Attila): Dynamically instantiate new UI components using layout templates directly from the inspector.
 
 ---
 

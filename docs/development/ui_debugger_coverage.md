@@ -92,7 +92,7 @@ One-shot functions triggered by buttons in the "Actions" section of the debugger
 | `DestroyChildren` | ✅ | ✅ | ✅ | ❌ | Wipe child hierarchy         |
 | `Layout` | ✅ | ✅ | ✅ | ❌ | Force UI refresh/layout call |
 | `SimulateMouseMove` | 🚫 | ✅ | ❌ | ❌ | Mouse movement simulation    |
-| `CreateComponent` | 🚫 | ✅ | ❌ | ❌ | Dynamic UI creation          |
+| `CreateComponent` | 🚫 | ✅ | ✅ | ✅ | Dynamic UI creation (Attila only) |
 | `Highlight` | ✅ | ✅ | ✅ | ✅ | Used for selection sync      |
 | `TriggerAnimation` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `RunScript` | ✅ | ✅ | ❌ | ❌ | ?                            |
@@ -126,6 +126,7 @@ These are high-level features built into the UI Explorer tool that combine multi
 | `Multi-line Parsing` | ✅ | Robust sanitization of `GetStateText` to prevent tree corruption. |
 | `Property Hiding` | ✅ | Persistent toggle for individual property boxes (saves to localStorage). |
 | `Capture Pause` | ✅ | F7 toggle to freeze the UI tree for deep investigation. |
+| `Component Factory` | ✅ | Dynamically instantiate components from templates (Attila only). |
 
 ## 5. Planned Improvements
 1.  **Custom Property Fetcher**: Input box to call `GetProperty(key)` on the selected component for hidden engine variables.
