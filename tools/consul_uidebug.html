@@ -400,7 +400,7 @@
             "Position", "Bounds", "Dimensions", "GetStateText",
             "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
             "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
-            "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
+            "IsDragged", "IsMoveable", "IsMouseOverChildren",
             "GetStateTextDetails", "CallbackId"
         ];
 
@@ -412,7 +412,6 @@
             "ChildCount": { type: "readonly" },
             "Bounds": { type: "readonly" },
             "TextDimensions": { type: "readonly" },
-            "Layout": { type: "readonly" },
             "GetStateTextDetails": { type: "readonly" },
             "CurrentAnimationId": { type: "readonly" },
             "Height": { type: "number", setter: (v) => `c:Resize(c:Width(), ${v})` },
@@ -470,7 +469,8 @@
             "ClearSound": { type: "action", setter: () => `c:ClearSound()`, games: ["Attila"] },
             "SetDisabled": { type: "action", setter: () => `c:SetDisabled(true)` },
             "SetEnabled": { type: "action", setter: () => `c:SetDisabled(false)` },
-            "DestroyChildren": { type: "action", setter: () => `c:DestroyChildren()` }
+            "DestroyChildren": { type: "action", setter: () => `c:DestroyChildren()` },
+            "Layout": { type: "action", setter: () => `c:Layout()` }
         };
 
         // ----------------------------------------------------

@@ -13,7 +13,7 @@ uidebug.PROPERTIES = {
     "Position", "Bounds", "Dimensions", "GetStateText", 
     "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
     "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
-    "IsDragged", "IsMoveable", "IsMouseOverChildren", "Layout",
+    "IsDragged", "IsMoveable", "IsMouseOverChildren",
     "GetStateTextDetails", "CallbackId"
 }
 

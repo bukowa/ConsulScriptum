@@ -6,6 +6,7 @@
 - Added: Granular read/write game-specific property availability (e.g. Opacity is now write-only in Rome II).
 - Changed: UI Debugger toggle shortcut changed from F5 to F7 (toggle_stream_pause).
 - Fixed: UI Debugger now correctly handles methods returning multiple values (like GetStateText).
+- Changed: UI Debugger 'Layout' moved from a readable property to an interactive Action (trigger only).
 
 ---
 

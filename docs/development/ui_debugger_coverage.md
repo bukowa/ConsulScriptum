@@ -26,7 +26,6 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `IsDragged` | ✅ | ✅ | ✅ | ✅ | Drag state |
 | `IsMoveable` | ✅ | ✅ | ✅ | ✅ | Can be moved by user |
 | `IsMouseOverChildren` | ✅ | ✅ | ✅ | ✅ | Hover state propagation |
-| `Layout` | ✅ | ✅ | ✅ | ❌ | Current layout type |
 | `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | Extended text info |
 | `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback |
 | `IsCharPrintable` | ✅ | ✅ | ❌ | ❌ | Missing from debugger |
@@ -90,6 +89,7 @@ One-shot functions triggered by buttons in the "Actions" section of the debugger
 | `SimulateMouseOff` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
 | `ClearSound` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
 | `DestroyChildren` | ✅ | ✅ | ✅ | ❌ | Wipe child hierarchy |
+| `Layout` | ✅ | ✅ | ✅ | ❌ | Force UI refresh/layout call |
 | `Highlight` | ✅ | ✅ | ❌ | ❌ | **PRIORITY**: Visual ID |
 | `TriggerAnimation` | ✅ | ✅ | ❌ | ❌ | Needs animation ID input |
 | `SimulateMouseMove` | 🚫 | ✅ | ❌ | ❌ | Mouse movement simulation |
