@@ -25,7 +25,7 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation |
 | `IsDragged` | ✅ | ✅ | ✅ | ✅ | Drag state |
 | `IsMoveable` | ✅ | ✅ | ✅ | ✅ | Can be moved by user |
-| `IsMouseOverChildren` | ✅ | ✅ | ✅ | ❌ | Hover state propagation |
+| `IsMouseOverChildren` | ✅ | ✅ | ✅ | ✅ | Hover state propagation |
 | `Layout` | ✅ | ✅ | ✅ | ❌ | Current layout type |
 | `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | Extended text info |
 | `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback |
