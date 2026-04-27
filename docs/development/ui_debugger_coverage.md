@@ -5,41 +5,41 @@ This document tracks the implementation status of `UIComponent` methods within t
 ## 1. Core Properties (Getters)
 These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 
-| Property | Rome II | Attila | Status | Tested | Note |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| `Id` | ✅ | ✅ | ✅ | ✅ | Primary identifier |
-| `Address` | ✅ | ✅ | ✅ | ✅ | Memory address (hex) |
-| `Priority` | ✅ | ✅ | ✅ | ✅ | Z-order priority |
-| `Visible` | ✅ | ✅ | ✅ | ✅ | Visibility state |
-| `IsInteractive` | ✅ | ✅ | ✅ | ✅ | Responds to mouse/keys |
-| `Position` | ✅ | ✅ | ✅ | ✅ | X,Y screen coordinates |
-| `Bounds` | ✅ | ✅ | ✅ | ✅ | Full bounding box |
-| `Dimensions` | ✅ | ✅ | ✅ | ✅ | Width x Height |
-| `GetStateText` | ✅ | ✅ | ✅ | ✅ | Localized text content |
-| `GetTooltipText` | ✅ | ✅ | ✅ | ✅ | Hover tooltip text |
-| `Opacity` | 🚫 | ✅ | ⚠️ | ✅ | Getter exists in Attila only |
-| `CurrentState` | ✅ | ✅ | ✅ | ✅ | Current active state name |
-| `ChildCount` | ✅ | ✅ | ✅ | ✅ | Number of direct children |
-| `Height` / `Width` | ✅ | ✅ | ✅ | ✅ | Individual dimensions |
-| `TextDimensions` | ✅ | ✅ | ✅ | ✅ | Area occupied by text |
-| `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation |
-| `IsDragged` | ✅ | ✅ | ✅ | ✅ | Drag state |
-| `IsMoveable` | ✅ | ✅ | ✅ | ✅ | Can be moved by user |
-| `IsMouseOverChildren` | ✅ | ✅ | ✅ | ✅ | Hover state propagation |
-| `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | Extended text info |
-| `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback |
-| `IsCharPrintable` | ✅ | ✅ | ❌ | ❌ | Missing from debugger |
-| `CurrentStateUI` | ✅ | ✅ | ❌ | ❌ | Returns state UIComponent |
-| `HasInterface` | ✅ | ✅ | ❌ | ❌ | Checks component interface |
-| `WidthOfTextLine` | ✅ | ✅ | ❌ | ❌ | Requires line index param |
+| Property | Rome II | Attila | Status | Tested | Note                          |
+| :--- | :---: | :---: | :---: | :---: |:------------------------------|
+| `Id` | ✅ | ✅ | ✅ | ✅ | Primary identifier            |
+| `Address` | ✅ | ✅ | ✅ | ✅ | Memory address (hex)          |
+| `Priority` | ✅ | ✅ | ✅ | ✅ | Z-order priority              |
+| `Visible` | ✅ | ✅ | ✅ | ✅ | Visibility state              |
+| `IsInteractive` | ✅ | ✅ | ✅ | ✅ | Responds to mouse/keys        |
+| `Position` | ✅ | ✅ | ✅ | ✅ | X,Y screen coordinates        |
+| `Bounds` | ✅ | ✅ | ✅ | ✅ | Full bounding box             |
+| `Dimensions` | ✅ | ✅ | ✅ | ✅ | Width x Height                |
+| `GetStateText` | ✅ | ✅ | ✅ | ✅ | Localized text content        |
+| `GetTooltipText` | ✅ | ✅ | ✅ | ✅ | Hover tooltip text            |
+| `Opacity` | 🚫 | ✅ | ⚠️ | ✅ | Getter exists in Attila only  |
+| `CurrentState` | ✅ | ✅ | ✅ | ✅ | Current active state name     |
+| `ChildCount` | ✅ | ✅ | ✅ | ✅ | Number of direct children     |
+| `Height` / `Width` | ✅ | ✅ | ✅ | ✅ | Individual dimensions         |
+| `TextDimensions` | ✅ | ✅ | ✅ | ✅ | Area occupied by text         |
+| `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation             |
+| `IsDragged` | ✅ | ✅ | ✅ | ✅ | Drag state                    |
+| `IsMoveable` | ✅ | ✅ | ✅ | ✅ | Can be moved by user          |
+| `IsMouseOverChildren` | ✅ | ✅ | ✅ | ✅ | Hover state propagation       |
+| `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | Extended text info            |
+| `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback      |
+| `IsCharPrintable` | ✅ | ✅ | ❌ | ❌ | ?                             |
+| `CurrentStateUI` | ✅ | ✅ | ❌ | ❌ | ?                             |
+| `HasInterface` | ✅ | ✅ | ❌ | ❌ | Checks component interface    |
+| `WidthOfTextLine` | ✅ | ✅ | ❌ | ❌ | Requires line index param     |
 | `Parent` | ✅ | ✅ | ⚠️ | ❌ | Tracked in Lua, missing in UI |
-| `DockingPoint` | ✅ | ✅ | ✅ | ❌ | Component anchor point |
-| `GlobalExists` | ✅ | ✅ | ❌ | ❌ | Check engine global |
-| `InterfaceFunction` | ✅ | ✅ | ❌ | ❌ | Call internal interface |
-| `ShaderTechniqueGet` | ✅ | ✅ | ❌ | ❌ | Get rendering technique |
-| `ShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get shader parameters |
-| `TextShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get text shader params |
-| `GetProperty` | ✅ | ✅ | ❌ | ❌ | Dynamic property access |
+| `DockingPoint` | ✅ | ✅ | ✅ | ❌ | Component anchor point        |
+| `GlobalExists` | ✅ | ✅ | ❌ | ❌ | Check engine global           |
+| `InterfaceFunction` | ✅ | ✅ | ❌ | ❌ | Call internal interface       |
+| `ShaderTechniqueGet` | ✅ | ✅ | ❌ | ❌ | Get rendering technique       |
+| `ShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get shader parameters         |
+| `TextShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get text shader params        |
+| `GetProperty` | ✅ | ✅ | ❌ | ❌ | Dynamic property access       |
 
 ## 2. State Modifiers (Setters)
 These are triggered via `dispatchCommand` from the HTML property grid.
@@ -50,7 +50,7 @@ These are triggered via `dispatchCommand` from the HTML property grid.
 | `SetInteractive` | ✅ | ✅ | ✅ | ✅ | Toggle interaction |
 | `SetDragged` | ✅ | ✅ | ✅ | ✅ | Force drag state |
 | `SetMoveable` | ✅ | ✅ | ✅ | ✅ | Toggle moveability |
-| `SetDisabled` | ✅ | ✅ | ✅ | ❌ | Toggle disabled state (Buttons) |
+| `SetDisabled` | ✅ | ✅ | ✅ | ✅ | Toggle disabled state (Buttons) |
 | `PropagatePriority` | ✅ | ✅ | ✅ | ✅ | Set priority (recursive) |
 | `SetOpacity` | ✅ | ✅ | ✅ | ✅ | Set alpha transparency |
 | `SetDockingPoint` | ✅ | ✅ | ✅ | ❌ | Anchor point control |
@@ -58,7 +58,7 @@ These are triggered via `dispatchCommand` from the HTML property grid.
 | `Resize` | ✅ | ✅ | ✅ | ✅ | Manual sizing |
 | `SetStateText` | ✅ | ✅ | ✅ | ✅ | Update text content |
 | `SetTooltipText` | ✅ | ✅ | ✅ | ✅ | Update tooltip |
-| `SetState` | ✅ | ✅ | ✅ | ❌ | Switch component state |
+| `SetState` | ✅ | ✅ | ✅ | ✅ | Switch component state |
 | `SetImageColour` | ✅ | ✅ | ❌ | ❌ | Needs RGBA picker |
 | `SetImageRotation` | ✅ | ✅ | ❌ | ❌ | Needs degree input |
 | `SetStateColours` | ✅ | ✅ | ❌ | ❌ | Advanced styling |
