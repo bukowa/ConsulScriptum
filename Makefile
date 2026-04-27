@@ -593,6 +593,22 @@ ifneq ($(SAVE),)
 endif
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
+# Install with TDD
+install-tdd: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack0_patch_1.0.3.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack1_main_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack2_battles_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack3_campaign_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack4_models_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack5_buildings_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack6_weather_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
+	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
+
 copy_alone: $(MOD_PACKAGE)
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
@@ -632,6 +648,12 @@ run-alone-dei: \
 	kill-game \
 	install-dei
 	@$(disable_outdated_mods_popup)
+	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
+
+# Launch the alone with TDD
+run-alone-tdd: \
+	kill-game \
+	install-tdd
 	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
 # Launch the Steam version of the game using its Steam app ID
