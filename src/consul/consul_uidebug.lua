@@ -9,12 +9,12 @@ local uidebug = {
 local SEPARATOR = "<||_CONSUL_SEP_||>"
 
 uidebug.PROPERTIES = {
-    "Id", "Address", "Priority", "Visible", "IsInteractive", 
-    "Position", "Bounds", "Dimensions", "GetStateText", 
-    "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
-    "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
+    "Id", "Address", "GetStateText", "GetTooltipText", "CurrentState", 
+    "CallbackId", "HasInterface", "Width", "Height",
+    "Priority", "Visible", "IsInteractive", "Position", "Bounds", "Dimensions",
+    "Opacity", "DockingPoint", "ChildCount", "TextDimensions", "CurrentAnimationId",
     "IsDragged", "IsMoveable", "IsMouseOverChildren",
-    "GetStateTextDetails", "CallbackId", "HasInterface", "ShaderTechniqueGet", "ShaderVarsGet"
+    "GetStateTextDetails", "ShaderTechniqueGet", "ShaderVarsGet"
 }
 
 -- Methods that return multiple values but we only want the first one (usually text)
@@ -35,17 +35,18 @@ local function safe_call(obj, method)
 
     if not ok then return "error" end
     
+    local res
     if SINGLE_RETURN_METHODS[method] then
-        return tostring(results[1] or "nil")
+        res = tostring(results[1] or "nil")
+    elseif results.n == 0 then 
+        return "nil" 
+    else
+        local str_vals = {}
+        for i = 1, results.n do
+            table.insert(str_vals, tostring(results[i]))
+        end
+        res = table.concat(str_vals, ",")
     end
-
-    if results.n == 0 then return "nil" end
-    
-    local str_vals = {}
-    for i = 1, results.n do
-        table.insert(str_vals, tostring(results[i]))
-    end
-    local res = table.concat(str_vals, ",")
 
     -- sanitize newlines to keep everything on one line
     res = string.gsub(res, "\n", "\\n")

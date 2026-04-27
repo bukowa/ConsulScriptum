@@ -346,6 +346,57 @@
             color: #000;
             border-color: var(--accent);
         }
+        /* Search */
+        .search-container {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 5px;
+            align-items: center;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            flex-grow: 1;
+            padding: 5px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .search-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #5b6287;
+        }
+
+        .search-nav {
+            display: flex;
+            gap: 4px;
+        }
+
+        summary.search-match {
+            background: rgba(255, 203, 107, 0.2);
+            border-left: 2px solid #ffcb6b;
+        }
+
+        summary.search-current {
+            background: rgba(255, 203, 107, 0.4) !important;
+            border-left: 2px solid #ffcb6b !important;
+        }
     </style>
 </head>
 
@@ -355,6 +406,19 @@
         <div class="controls">
             <h1>UI Explorer</h1>
             <button id="connectBtn" class="btn">Connect</button>
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search ID, Text, Tooltip..." oninput="handleSearch()">
+                <span id="searchClear" style="cursor: pointer; opacity: 0.5; padding: 0 5px;" onclick="clearSearch()">×</span>
+            </div>
+            <div class="search-controls" id="searchControls" style="display: none;">
+                <span id="searchStats">0 of 0</span>
+                <div class="search-nav">
+                    <button class="btn" style="padding: 2px 6px;" onclick="navigateSearch(-1)">↑</button>
+                    <button class="btn" style="padding: 2px 6px;" onclick="navigateSearch(1)">↓</button>
+                </div>
+            </div>
         </div>
         <div class="tree-container" id="treeContainer">
             <div style="padding:20px; text-align:center; color:#5b6287;">Waiting for connection...</div>
@@ -396,12 +460,12 @@
 
         // Must exactly match the UI_PROPERTIES order in consul_uidebug.lua
         const UI_PROPERTIES = [
-            "Id", "Address", "Priority", "Visible", "IsInteractive",
-            "Position", "Bounds", "Dimensions", "GetStateText",
-            "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
-            "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
+            "Id", "Address", "GetStateText", "GetTooltipText", "CurrentState",
+            "CallbackId", "HasInterface", "Width", "Height",
+            "Priority", "Visible", "IsInteractive", "Position", "Bounds", "Dimensions",
+            "Opacity", "DockingPoint", "ChildCount", "TextDimensions", "CurrentAnimationId",
             "IsDragged", "IsMoveable", "IsMouseOverChildren",
-            "GetStateTextDetails", "CallbackId", "HasInterface", "ShaderTechniqueGet", "ShaderVarsGet"
+            "GetStateTextDetails", "ShaderTechniqueGet", "ShaderVarsGet"
         ];
 
         // Defines rendering types, getters, and functional setters
@@ -694,15 +758,12 @@
                 const el = container.querySelector(`summary[data-addr="${selectedAddress}"]`);
                 if (el) {
                     el.classList.add('selected');
-                    if (hoveredAddr === selectedAddress && isCaptureActive) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
                 }
                 updateInspector(selectedAddress);
-            } else if (selectedAddress && !loadedComponents[selectedAddress]) {
-                document.getElementById('propPanel').classList.remove('visible');
-                document.getElementById('emptyState').style.display = 'block';
             }
+
+            // Refresh search results to match new tree state
+            handleSearch(true);
         }
 
         function generateHTMLRec(comp) {
@@ -865,6 +926,127 @@
                 }
             }
         }
+        let searchResults = [];
+        let searchIndex = -1;
+
+        function handleSearch(isRefresh) {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const stats = document.getElementById('searchStats');
+            const controls = document.getElementById('searchControls');
+            
+            const currentSelectedAddr = searchIndex >= 0 ? searchResults[searchIndex] : null;
+
+            // Clear existing highlights
+            document.querySelectorAll('summary.search-match, summary.search-current').forEach(el => {
+                el.classList.remove('search-match', 'search-current');
+            });
+
+            if (!query) {
+                searchResults = [];
+                searchIndex = -1;
+                controls.style.display = 'none';
+                return;
+            }
+
+            searchResults = [];
+            for (const addr in loadedComponents) {
+                const comp = loadedComponents[addr];
+                const matches = (
+                    (comp.Id && comp.Id.toLowerCase().includes(query)) ||
+                    (comp.Address && comp.Address.toLowerCase().includes(query)) ||
+                    (comp.GetStateText && comp.GetStateText.toLowerCase().includes(query)) ||
+                    (comp.GetTooltipText && comp.GetTooltipText.toLowerCase().includes(query)) ||
+                    (comp.CurrentState && comp.CurrentState.toLowerCase().includes(query)) ||
+                    (comp.CallbackId && comp.CallbackId.toLowerCase().includes(query)) ||
+                    (comp.HasInterface && comp.HasInterface.toLowerCase().includes(query)) ||
+                    (comp.Width && comp.Width.toLowerCase().includes(query)) ||
+                    (comp.Height && comp.Height.toLowerCase().includes(query))
+                );
+
+                if (matches) {
+                    searchResults.push(addr);
+                    const el = document.querySelector(`summary[data-addr="${addr}"]`);
+                    if (el) el.classList.add('search-match');
+                }
+            }
+
+            if (searchResults.length > 0) {
+                controls.style.display = 'flex';
+                
+                if (!isRefresh) {
+                    searchIndex = 0;
+                    navigateSearch(0); // Jump to first only on manual search
+                } else {
+                    // Try to restore previous index if it still exists in results
+                    if (currentSelectedAddr) {
+                        searchIndex = searchResults.indexOf(currentSelectedAddr);
+                    }
+                }
+                
+                // Re-apply current selection highlight
+                if (searchIndex >= 0) {
+                    const el = document.querySelector(`summary[data-addr="${searchResults[searchIndex]}"]`);
+                    if (el) el.classList.add('search-current');
+                }
+                
+                updateSearchUI();
+            } else {
+                controls.style.display = 'flex';
+                searchIndex = -1;
+                stats.innerText = "No results";
+            }
+        }
+
+        window.clearSearch = function() {
+            document.getElementById('searchInput').value = '';
+            handleSearch();
+        }
+
+        window.navigateSearch = function(dir) {
+            if (searchResults.length === 0) return;
+
+            // Remove current highlight
+            if (searchIndex >= 0) {
+                const prevEl = document.querySelector(`summary[data-addr="${searchResults[searchIndex]}"]`);
+                if (prevEl) prevEl.classList.remove('search-current');
+            }
+
+            searchIndex = (searchIndex + dir + searchResults.length) % searchResults.length;
+            
+            const addr = searchResults[searchIndex];
+            const el = document.querySelector(`summary[data-addr="${addr}"]`);
+            
+            if (el) {
+                el.classList.add('search-current');
+                openParents(el);
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                selectNode(addr, el);
+            }
+
+            updateSearchUI();
+        }
+
+        function updateSearchUI() {
+            const stats = document.getElementById('searchStats');
+            if (searchResults.length > 0) {
+                stats.innerText = `${searchIndex + 1} of ${searchResults.length}`;
+            } else {
+                stats.innerText = "0 of 0";
+            }
+        }
+
+        function openParents(element) {
+            let parent = element.parentElement;
+            while (parent) {
+                if (parent.tagName === 'DETAILS') {
+                    parent.open = true;
+                }
+                parent = parent.parentElement;
+                if (parent && parent.id === 'treeContainer') break;
+            }
+        }
+
+        window.handleSearch = handleSearch;
     </script>
 </body>
 
