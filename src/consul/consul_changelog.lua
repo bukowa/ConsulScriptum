@@ -1,7 +1,7 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["0.8.0"] = {
+        ["0.8.0-alpha.7"] = {
             common = "\nAdded: UI Debugger (Technical Preview) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching. See official documentation for details."..
             "\nAdded: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections."..
             "\nAdded: Improved /debug, /debug_mouseover and /debug_onclick with better information and support for diplomacy/strategic map elements."..

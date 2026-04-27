@@ -1,4 +1,4 @@
-## v0.8.0
+## v0.8.0-alpha.7
 **Common:**
 - Added: UI Debugger (Technical Preview) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching. See official documentation for details.
 - Added: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections.
