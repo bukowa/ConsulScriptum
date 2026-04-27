@@ -36,8 +36,8 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `DockingPoint` | ✅ | ✅ | ✅ | ❌ | Component anchor point       |
 | `GlobalExists` | ✅ | ✅ | ❌ | ❌ | ?                            |
 | `InterfaceFunction` | ✅ | ✅ | ❌ | ❌ | Call internal interface      |
-| `ShaderTechniqueGet` | ✅ | ✅ | ❌ | ❌ | Get rendering technique      |
-| `ShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get shader parameters        |
+| `ShaderTechniqueGet` | ✅ | ✅ | ✅ | ❌ | Get rendering technique      |
+| `ShaderVarsGet` | ✅ | ✅ | ✅ | ❌ | Get shader parameters        |
 | `TextShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get text shader params       |
 | `GetProperty` | ✅ | ✅ | ❌ | ❌ | Dynamic property access      |
 

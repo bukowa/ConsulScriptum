@@ -401,7 +401,7 @@
             "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
             "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
             "IsDragged", "IsMoveable", "IsMouseOverChildren",
-            "GetStateTextDetails", "CallbackId", "HasInterface"
+            "GetStateTextDetails", "CallbackId", "HasInterface", "ShaderTechniqueGet", "ShaderVarsGet"
         ];
 
         // Defines rendering types, getters, and functional setters
@@ -419,6 +419,8 @@
             "IsMouseOverChildren": { type: "readonly" },
             "CallbackId": { type: "readonly" },
             "HasInterface": { type: "readonly" },
+            "ShaderTechniqueGet": { type: "readonly" },
+            "ShaderVarsGet": { type: "readonly" },
 
             // Booleans
             "Visible": { type: "boolean", setter: (v) => `c:SetVisible(${v === 'true'})` },
