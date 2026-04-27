@@ -597,7 +597,7 @@
             "SetDisabled": { type: "action", setter: () => `c:SetDisabled(true)` },
             "SetEnabled": { type: "action", setter: () => `c:SetDisabled(false)` },
             "DestroyChildren": { type: "action", setter: () => `c:DestroyChildren()` },
-            "Divorce": { type: "action", setter: () => `local p = c:Parent(); if p then p:Divorce(c:Address()) end` },
+            "Divorce": { type: "action", setter: () => `local p = UIComponent(c:Parent()); if p then p:Divorce(c:Address()); p:Layout() end` },
             "Layout": { type: "action", setter: () => `c:Layout()` }
         };
 
