@@ -14,7 +14,7 @@ uidebug.PROPERTIES = {
     "GetTooltipText", "Opacity", "CurrentState", "DockingPoint",
     "ChildCount", "Height", "Width", "TextDimensions", "CurrentAnimationId",
     "IsDragged", "IsMoveable", "IsMouseOverChildren",
-    "GetStateTextDetails", "CallbackId"
+    "GetStateTextDetails", "CallbackId", "HasInterface"
 }
 
 -- Methods that return multiple values but we only want the first one (usually text)

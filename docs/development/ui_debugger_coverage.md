@@ -30,7 +30,7 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback      |
 | `IsCharPrintable` | ✅ | ✅ | ❌ | ❌ | ?                             |
 | `CurrentStateUI` | ✅ | ✅ | ❌ | ❌ | ?                             |
-| `HasInterface` | ✅ | ✅ | ❌ | ❌ | Checks component interface    |
+| `HasInterface` | ✅ | ✅ | ✅ | ❌ | Checks component interface    |
 | `WidthOfTextLine` | ✅ | ✅ | ❌ | ❌ | Requires line index param     |
 | `Parent` | ✅ | ✅ | ⚠️ | ❌ | Tracked in Lua, missing in UI |
 | `DockingPoint` | ✅ | ✅ | ✅ | ❌ | Component anchor point        |
