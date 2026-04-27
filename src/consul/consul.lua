@@ -758,6 +758,8 @@ consul = {
 		end)(),
 		-- path to the consul template for Attila
 		template_attila = "ui/common ui/consul",
+		-- path to the consul button toggle template for Attila
+		template_attila_toggle = "ui/common ui/consul_button_toggle",
 		-- contains the consul listview
 		consul = "room_list",
 		-- contains the scriptum listview
@@ -1091,6 +1093,7 @@ consul = {
 			xx = 0,
 			yy = 0,
 			should_move = false,
+            visible = false,
 
 			-- to avoid creating consul multiple times in battle, as the UI is recreated multiple times
 			-- this is strange behavior because the UICreated event is not "called"; it is called but does not
@@ -1107,7 +1110,10 @@ consul = {
 					return
 				end
 
-				ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+			    local menu = ui.find('menu_bar')
+			    menu:CreateComponent(ui.button_toggle, ui.template_attila_toggle)
+			    ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+
 				ui.MoveToConfigPosition()
 				--ui.find(ui.consul):TriggerAnimation('move_up')
 				ui.find(ui.scriptum):TriggerAnimation("move_up")
@@ -1126,6 +1132,9 @@ consul = {
 					return
 				end
 				local ui, attila = consul.ui, consul.ui.attila
+
+                if not attila.visible then return end
+
 				-- in campaign
 				if consul._game() ~= nil then
 					consul._game():add_time_trigger("consul_move_trigger", 0)
@@ -1153,7 +1162,9 @@ consul = {
 				local c = ui.find(ui.root)
 				local x, y = c:Position()
 				local xx, yy = attila.xx, attila.yy
+
 				-- always set visible, the component may be moved without changing position
+				if not attila.visible then return end
 				c:SetVisible(true)
 				if (x ~= xx or y ~= yy) and attila.should_move == true then
 					c:MoveTo(xx, yy)
@@ -1217,6 +1228,7 @@ consul = {
 
 				-- toggle visibility
 				r:SetVisible(not r:Visible())
+				consul.ui.attila.visible = r:Visible()
 
 				-- save to config
 				consul.config.process(function(_cfg)

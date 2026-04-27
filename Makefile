@@ -117,6 +117,7 @@ PENLIGHT_REVISION = 1c85dd5418ee9aef71b4dc527fedf6714c139a6b
 UI_TARGETS :=
 ifeq ($(GAME),Attila)
 UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul
+UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul_button_toggle
 ifeq ($(DEV),1)
 UI_TARGETS += $(BUILD_DIR)/ui/frontend\ ui/layout
 endif
@@ -201,6 +202,11 @@ $(BUILD_DIR)/ui/common\ ui/options_mods: \
 
 $(BUILD_DIR)/ui/common\ ui/consul: \
 	src/ui/common\ ui/consul.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/common\ ui/consul_button_toggle: \
+	src/ui/common\ ui/consul_button_toggle.xml
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
