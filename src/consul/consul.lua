@@ -315,9 +315,15 @@ consul = {
 				local core_b, pre_b = parse(b)
 
 				if core_a == core_b then
-					if pre_a == pre_b then return false end
-					if pre_a == "" then return true end
-					if pre_b == "" then return false end
+					if pre_a == pre_b then
+						return false
+					end
+					if pre_a == "" then
+						return true
+					end
+					if pre_b == "" then
+						return false
+					end
 					return pad(pre_a) > pad(pre_b)
 				end
 
@@ -1093,7 +1099,7 @@ consul = {
 			xx = 0,
 			yy = 0,
 			should_move = false,
-            visible = false,
+			visible = false,
 
 			-- to avoid creating consul multiple times in battle, as the UI is recreated multiple times
 			-- this is strange behavior because the UICreated event is not "called"; it is called but does not
@@ -1110,9 +1116,9 @@ consul = {
 					return
 				end
 
-			    local menu = ui.find('menu_bar')
-			    menu:CreateComponent(ui.button_toggle, ui.template_attila_toggle)
-			    ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+				local menu = ui.find("menu_bar")
+				menu:CreateComponent(ui.button_toggle, ui.template_attila_toggle)
+				ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
 
 				ui.MoveToConfigPosition()
 				--ui.find(ui.consul):TriggerAnimation('move_up')
@@ -1133,7 +1139,9 @@ consul = {
 				end
 				local ui, attila = consul.ui, consul.ui.attila
 
-                if not attila.visible then return end
+				if not attila.visible then
+					return
+				end
 
 				-- in campaign
 				if consul._game() ~= nil then
@@ -1164,7 +1172,9 @@ consul = {
 				local xx, yy = attila.xx, attila.yy
 
 				-- always set visible, the component may be moved without changing position
-				if not attila.visible then return end
+				if not attila.visible then
+					return
+				end
 				c:SetVisible(true)
 				if (x ~= xx or y ~= yy) and attila.should_move == true then
 					c:MoveTo(xx, yy)
