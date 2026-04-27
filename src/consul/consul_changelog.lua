@@ -2,13 +2,13 @@ local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
         ["0.8.0"] = {
-            common = "\nAdded: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically."..
-            "\nAdded: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt)."..
-            "\nAdded: UI Debugger tree improvements: Auto-expand folders when hovering during drag operations."..
-            "\nAdded: Component Factory (Attila): Dynamically instantiate new UI components using layout templates directly from the inspector."..
-            "\nAdded: Divorce Action: Detach a component from its parent without destroying it (orphaning)."..
-            "\nFixed: HTML debugger not works in campaign lol."..
-            "\nFixed: Changelog priority display fix."
+            common = "\nAdded: UI Debugger (Technical Preview) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching. See official documentation for details."..
+            "\nAdded: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections."..
+            "\nAdded: Improved /debug, /debug_mouseover and /debug_onclick with better information and support for diplomacy/strategic map elements."..
+            "\nFixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila)."..
+            "\nFixed: Various stability fixes and parsing improvements for UI inspection and event tracking."..
+            "\nFixed: Changelog priority display fix.",
+            Attila = "Fixed: Prevent multiple creations of consul UI in battle mode."
         },
         ["0.8.0-alpha.6"] = {
             common = "\nAdded: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.)."..

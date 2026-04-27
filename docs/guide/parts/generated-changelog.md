@@ -1,12 +1,14 @@
 ## v0.8.0
 **Common:**
-- Added: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically.
-- Added: Drag & Drop hierarchy restructuring (move components in the tree to call :Adopt).
-- Added: UI Debugger tree improvements: Auto-expand folders when hovering during drag operations.
-- Added: Component Factory (Attila): Dynamically instantiate new UI components using layout templates directly from the inspector.
-- Added: Divorce Action: Detach a component from its parent without destroying it (orphaning).
-- Fixed: HTML debugger not works in campaign lol.
+- Added: UI Debugger (Technical Preview) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching. See official documentation for details.
+- Added: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections.
+- Added: Improved /debug, /debug_mouseover and /debug_onclick with better information and support for diplomacy/strategic map elements.
+- Fixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila).
+- Fixed: Various stability fixes and parsing improvements for UI inspection and event tracking.
 - Fixed: Changelog priority display fix.
+
+**Attila specific:**
+- Fixed: Prevent multiple creations of consul UI in battle mode.
 
 ---
 
