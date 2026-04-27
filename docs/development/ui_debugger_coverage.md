@@ -22,97 +22,97 @@ These are properties extracted during the UI tree crawl in `consul_uidebug.lua`.
 | `ChildCount` | ✅ | ✅ | ✅ | ✅ | Number of direct children    |
 | `Height` / `Width` | ✅ | ✅ | ✅ | ✅ | Individual dimensions        |
 | `TextDimensions` | ✅ | ✅ | ✅ | ✅ | Area occupied by text        |
-| `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation            |
 | `IsDragged` | ✅ | ✅ | ✅ | ✅ | Drag state                   |
 | `IsMoveable` | ✅ | ✅ | ✅ | ✅ | Can be moved by user         |
-| `IsMouseOverChildren` | ✅ | ✅ | ✅ | ✅ | Hover state propagation      |
-| `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | Extended text info           |
-| `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback     |
-| `IsCharPrintable` | ✅ | ✅ | ❌ | ❌ | ?                            |
-| `CurrentStateUI` | ✅ | ✅ | ❌ | ❌ | ?                            |
-| `HasInterface` | ✅ | ✅ | ✅ | ✅ | Checks component interface   |
-| `WidthOfTextLine` | ✅ | ✅ | ❌ | ❌ | Requires text string param   |
 | `Parent` | ✅ | ✅ | ✅ | ✅ | Already known from the tree. |
-| `DockingPoint` | ✅ | ✅ | ✅ | ❌ | Component anchor point       |
-| `GlobalExists` | ✅ | ✅ | ❌ | ❌ | ?                            |
-| `InterfaceFunction` | ✅ | ✅ | ❌ | ❌ | Call internal interface      |
+| `IsMouseOverChildren` | ✅ | ✅ | ✅ | ✅ | Hover state propagation      |
+| `HasInterface` | ✅ | ✅ | ✅ | ✅ | Checks component interface   |
+| `DockingPoint` | ✅ | ✅ | ✅ | ✅ | Component anchor point       |
+| `CurrentAnimationId` | ✅ | ✅ | ✅ | ❌ | Running animation            |
 | `ShaderTechniqueGet` | ✅ | ✅ | ✅ | ❌ | Get rendering technique      |
 | `ShaderVarsGet` | ✅ | ✅ | ✅ | ❌ | Get shader parameters        |
+| `CallbackId` | ✅ | ✅ | ✅ | ❌ | Internal engine callback     |
+| `GetStateTextDetails` | ✅ | ✅ | ✅ | ❌ | ?                            |
+| `IsCharPrintable` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `CurrentStateUI` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `WidthOfTextLine` | ✅ | ✅ | ❌ | ❌ | Requires text string param   |
+| `GlobalExists` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `InterfaceFunction` | ✅ | ✅ | ❌ | ❌ | Call internal interface      |
 | `TextShaderVarsGet` | ✅ | ✅ | ❌ | ❌ | Get text shader params       |
 | `GetProperty` | ✅ | ✅ | ❌ | ❌ | Dynamic property access      |
 
 ## 2. State Modifiers (Setters)
 These are triggered via `dispatchCommand` from the HTML property grid.
 
-| Action / Setter | Rome II | Attila | Status | Tested | Note |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| `SetVisible` | ✅ | ✅ | ✅ | ✅ | Toggle visibility |
-| `SetInteractive` | ✅ | ✅ | ✅ | ✅ | Toggle interaction |
-| `SetDragged` | ✅ | ✅ | ✅ | ✅ | Force drag state |
-| `SetMoveable` | ✅ | ✅ | ✅ | ✅ | Toggle moveability |
-| `SetDisabled` | ✅ | ✅ | ✅ | ✅ | Toggle disabled state (Buttons) |
-| `PropagatePriority` | ✅ | ✅ | ✅ | ✅ | Set priority (recursive) |
-| `SetOpacity` | ✅ | ✅ | ✅ | ✅ | Set alpha transparency |
-| `SetDockingPoint` | ✅ | ✅ | ✅ | ❌ | Anchor point control |
-| `MoveTo` | ✅ | ✅ | ✅ | ✅ | Manual positioning |
-| `Resize` | ✅ | ✅ | ✅ | ✅ | Manual sizing |
-| `SetStateText` | ✅ | ✅ | ✅ | ✅ | Update text content |
-| `SetTooltipText` | ✅ | ✅ | ✅ | ✅ | Update tooltip |
-| `SetState` | ✅ | ✅ | ✅ | ✅ | Switch component state |
-| `SetImageColour` | ✅ | ✅ | ❌ | ❌ | Needs RGBA picker |
-| `SetImageRotation` | ✅ | ✅ | ❌ | ❌ | Needs degree input |
-| `SetStateColours` | ✅ | ✅ | ❌ | ❌ | Advanced styling |
-| `SetStateTextXOffset` | ✅ | ✅ | ❌ | ❌ | Text positioning tweak |
-| `StealInputFocus` | ✅ | ✅ | ❌ | ❌ | Force input capture |
-| `SetGlobal` | ✅ | ✅ | ❌ | ❌ | Set component global var |
-| `PropagateImageColour` | ✅ | ✅ | ❌ | ❌ | Recursive colour set |
-| `PropagateOpacity` | ✅ | ✅ | ❌ | ❌ | Recursive alpha set |
-| `PropagateVisibility` | ✅ | ✅ | ❌ | ❌ | Recursive visibility |
-| `SetEventCallback` | ✅ | ✅ | ❌ | ❌ | Scripted event hook |
-| `SetProperty` | ✅ | ✅ | ❌ | ❌ | Set engine property |
-| `SetStateTextDetails` | ✅ | ✅ | ❌ | ❌ | Advanced text formatting |
-| `SetTooltipTextWithRLSKey` | 🚫 | ✅ | ❌ | ❌ | Localized tooltip (RLS) |
-| `ShaderTechniqueSet` | ✅ | ✅ | ❌ | ❌ | Set rendering technique |
-| `ShaderVarsSet` | ✅ | ✅ | ❌ | ❌ | Set shader parameters |
-| `TextShaderTechniqueSet` | ✅ | ✅ | ❌ | ❌ | Set text shader tech |
-| `TextShaderVarsSet` | ✅ | ✅ | ❌ | ❌ | Set text shader params |
+| Action / Setter | Rome II | Attila | Status | Tested | Note                                        |
+| :--- | :---: | :---: | :---: | :---: |:--------------------------------------------|
+| `SetVisible` | ✅ | ✅ | ✅ | ✅ | Toggle visibility                           |
+| `SetInteractive` | ✅ | ✅ | ✅ | ✅ | Toggle interaction                          |
+| `SetDragged` | ✅ | ✅ | ✅ | ✅ | Force drag state                            |
+| `SetMoveable` | ✅ | ✅ | ✅ | ✅ | Toggle moveability                          |
+| `SetDisabled` | ✅ | ✅ | ✅ | ✅ | Toggle disabled state (Buttons)             |
+| `PropagatePriority` | ✅ | ✅ | ✅ | ✅ | Set priority (recursive)                    |
+| `SetOpacity` | ✅ | ✅ | ✅ | ✅ | Set alpha transparency                      |
+| `MoveTo` | ✅ | ✅ | ✅ | ✅ | Manual positioning                          |
+| `Resize` | ✅ | ✅ | ✅ | ✅ | Manual sizing                               |
+| `SetStateText` | ✅ | ✅ | ✅ | ✅ | Update text content                         |
+| `SetTooltipText` | ✅ | ✅ | ✅ | ✅ | Update tooltip                              |
+| `SetState` | ✅ | ✅ | ✅ | ✅ | Switch component state                      |
+| `SetDockingPoint` | ✅ | ✅ | ✅ | ✅ | Anchor point control                        |
+| `StealInputFocus` | ✅ | ✅ | ❌ | ❌ | Steal all keyboard input (true/false param) |
+| `TextShaderTechniqueSet` | ✅ | ✅ | ❌ | ❌ | Set text shader tech                        |
+| `TextShaderVarsSet` | ✅ | ✅ | ❌ | ❌ | Set text shader params                      |
+| `ShaderTechniqueSet` | ✅ | ✅ | ❌ | ❌ | Set rendering technique                     |
+| `ShaderVarsSet` | ✅ | ✅ | ❌ | ❌ | Set shader parameters                       |
+| `SetImageColour` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetImageRotation` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetStateColours` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetStateTextXOffset` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetGlobal` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `PropagateImageColour` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetEventCallback` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetProperty` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetStateTextDetails` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `SetTooltipTextWithRLSKey` | 🚫 | ✅ | ❌ | ❌ | ?                                           |
+| `PropagateOpacity` | ✅ | ✅ | ❌ | ❌ | ?                                           |
+| `PropagateVisibility` | ✅ | ✅ | ❌ | ❌ | ?                                           |
 
 ## 3. Interactive Actions
 One-shot functions triggered by buttons in the "Actions" section of the debugger.
 
-| Method | Rome II | Attila | Status | Tested | Note |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| `SimulateClick` | ✅ | ✅ | ✅ | ❌ | Generic click |
-| `SimulateLClick` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
-| `SimulateRClick` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
-| `SimulateMouseOn` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
-| `SimulateMouseOff` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
-| `ClearSound` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only |
-| `DestroyChildren` | ✅ | ✅ | ✅ | ❌ | Wipe child hierarchy |
+| Method | Rome II | Attila | Status | Tested | Note                         |
+| :--- | :---: | :---: | :---: | :---: |:-----------------------------|
+| `Find` | ✅ | ✅ | ❌ | ❌ | Search for child             |
+| `SimulateClick` | ✅ | ✅ | ✅ | ❌ | Generic click                |
+| `SimulateLClick` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only                  |
+| `SimulateRClick` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only                  |
+| `SimulateMouseOn` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only                  |
+| `SimulateMouseOff` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only                  |
+| `ClearSound` | 🚫 | ✅ | ⚠️ | ❌ | Attila-only                  |
+| `DestroyChildren` | ✅ | ✅ | ✅ | ❌ | Wipe child hierarchy         |
 | `Layout` | ✅ | ✅ | ✅ | ❌ | Force UI refresh/layout call |
-| `Highlight` | ✅ | ✅ | ❌ | ❌ | **PRIORITY**: Visual ID |
-| `TriggerAnimation` | ✅ | ✅ | ❌ | ❌ | Needs animation ID input |
-| `SimulateMouseMove` | 🚫 | ✅ | ❌ | ❌ | Mouse movement simulation |
-| `CreateComponent` | 🚫 | ✅ | ❌ | ❌ | Dynamic UI creation |
-| `RunScript` | ✅ | ✅ | ❌ | ❌ | Run script on component |
-| `Adopt` | ✅ | ✅ | ❌ | ❌ | Reparent component |
-| `AttachCustomControl` | ✅ | ✅ | ❌ | ❌ | Custom engine control |
-| `Divorce` | ✅ | ✅ | ❌ | ❌ | Remove from parent |
-| `Find` | ✅ | ✅ | ❌ | ❌ | Search for child |
-| `FindPositionIntoCurrentText` | ✅ | ✅ | ❌ | ❌ | Text cursor positioning |
-| `FindTextSnapPosition` | ✅ | ✅ | ❌ | ❌ | UI snap to text |
-| `ForceEvent` | ✅ | ✅ | ❌ | ❌ | Manually trigger event |
-| `LockPriority` | ✅ | ✅ | ❌ | ❌ | Freeze Z-order |
-| `LuaCall` | ✅ | ✅ | ❌ | ❌ | Script-to-UI callback |
-| `PopulateTextures` | ✅ | ✅ | ❌ | ❌ | Force texture load |
-| `ReorderChildren` | ✅ | ✅ | ❌ | ❌ | Adjust child Z-order |
-| `RestoreUIHeirarchy` | ✅ | ✅ | ❌ | ❌ | Reset structure |
-| `SaveUIHeirarchy` | ✅ | ✅ | ❌ | ❌ | Persist structure |
-| `SequentialFind` | ✅ | ✅ | ❌ | ❌ | Ordered child search |
-| `SimulateKey` | ✅ | ✅ | ❌ | ❌ | Keyboard simulation |
-| `StealShortcutKey` | ✅ | ✅ | ❌ | ❌ | Override engine keys |
-| `TriggerShortcut` | ✅ | ✅ | ❌ | ❌ | Fire shortcut event |
-| `UnLockPriority` | ✅ | ✅ | ❌ | ❌ | Unfreeze Z-order |
+| `SimulateMouseMove` | 🚫 | ✅ | ❌ | ❌ | Mouse movement simulation    |
+| `CreateComponent` | 🚫 | ✅ | ❌ | ❌ | Dynamic UI creation          |
+| `Highlight` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `TriggerAnimation` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `RunScript` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `Adopt` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `AttachCustomControl` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `Divorce` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `FindPositionIntoCurrentText` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `FindTextSnapPosition` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `ForceEvent` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `LockPriority` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `LuaCall` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `PopulateTextures` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `ReorderChildren` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `RestoreUIHeirarchy` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `SaveUIHeirarchy` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `SequentialFind` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `SimulateKey` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `StealShortcutKey` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `TriggerShortcut` | ✅ | ✅ | ❌ | ❌ | ?                            |
+| `UnLockPriority` | ✅ | ✅ | ❌ | ❌ | ?                            |
 
 ## 4. Planned Improvements
 1.  **Visual Highlight**: Add a button to call `c:Highlight(true)` to see the component flicker in-game.
