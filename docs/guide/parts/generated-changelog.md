@@ -1,3 +1,11 @@
+## v0.8.0-alpha.6
+**Common:**
+- Added: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.).
+- Added: UI Debugger search features: Highlighting, Auto-expand folders, Auto-scroll, and Live Refresh during polling.
+- Fixed: Critical bug in UI Debugger parsing where multi-line text (GetStateText) would break the tree structure.
+
+---
+
 ## v0.8.0-alpha.5
 **Common:**
 - Refactored UI Debugger core logic for improved reliability.

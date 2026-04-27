@@ -1,7 +1,7 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
+        ["0.8.0-alpha.6"] = {
             common = "\nAdded: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.)."..
             "\nAdded: UI Debugger search features: Highlighting, Auto-expand folders, Auto-scroll, and Live Refresh during polling."..
             "\nFixed: Critical bug in UI Debugger parsing where multi-line text (GetStateText) would break the tree structure."
