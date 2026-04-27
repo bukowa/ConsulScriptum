@@ -786,6 +786,16 @@
         }
 
         function selectNode(addr, summaryElement) {
+            if (selectedAddress === addr) return;
+
+            // Sync highlighting to the game
+            let luaCode = '';
+            if (selectedAddress) {
+                luaCode += `local old = consul.uidebug.cache["${selectedAddress}"]; if old then old:Highlight(false) end; `;
+            }
+            luaCode += `local new = consul.uidebug.cache["${addr}"]; if new then new:Highlight(true) end;`;
+            writeCommand(luaCode);
+
             document.querySelectorAll('summary').forEach(el => el.classList.remove('selected'));
             summaryElement.classList.add('selected');
             selectedAddress = addr;

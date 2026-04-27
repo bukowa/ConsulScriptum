@@ -1,6 +1,9 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
+        ["unreleased"] = {
+            common = "\nAdded: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically."
+        },
         ["0.8.0-alpha.6"] = {
             common = "\nAdded: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.)."..
             "\nAdded: UI Debugger search features: Highlighting, Auto-expand folders, Auto-scroll, and Live Refresh during polling."..

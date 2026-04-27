@@ -1,3 +1,9 @@
+## Unreleased
+**Common:**
+- Added: In-game highlighting sync: Selecting a component in the tree now highlights it in the game automatically.
+
+---
+
 ## v0.8.0-alpha.6
 **Common:**
 - Added: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.).
