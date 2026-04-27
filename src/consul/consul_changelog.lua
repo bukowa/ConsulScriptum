@@ -1,14 +1,11 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
+        ["0.8.0-alpha.5"] = {
             common = "\nRefactored UI Debugger core logic for improved reliability."..
             "\nAdded: Ability to hide individual property boxes in UI Debugger with persistence (saves to local storage)."..
-            "\nAdded: Smart 'Width' and 'Height' setters that use 'c:Resize' while preserving the other dimension."..
-            "\nAdded: Granular read/write game-specific property availability (e.g. Opacity is now write-only in Rome II)."..
             "\nChanged: UI Debugger toggle shortcut changed from F5 to F7 (toggle_stream_pause)."..
-            "\nFixed: UI Debugger now correctly handles methods returning multiple values (like GetStateText)."..
-            "\nChanged: UI Debugger 'Layout' moved from a readable property to an interactive Action (trigger only)."
+            "\nFixed: UI Debugger now correctly handles methods returning multiple values (like GetStateText)."
         },
         ["0.8.0-alpha.4"] = {
             common = "\nThis update is focused on debugging the world and ui, it brings another set of improvements for the Attila.\n"..
