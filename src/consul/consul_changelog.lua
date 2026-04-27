@@ -9,7 +9,8 @@ local changelog = {
             "\nFixed: Various stability fixes and parsing improvements for UI inspection and event tracking."..
             "\nFixed: Changelog priority display fix."..
             "\nChanged: /debug_html is now a unified toggle for both launching and persistent state, replacing /debug_html_on.",
-            Attila = "Fixed: Prevent multiple creations of consul UI in battle mode."
+            Attila = "Fixed: Prevent multiple creations of consul UI in battle mode."..
+            "\nAdded: Consul visibility can be toggled on/off via top left button like in Rome2."
         },
         ["0.8.0-alpha.6"] = {
             common = "\nAdded: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.)."..

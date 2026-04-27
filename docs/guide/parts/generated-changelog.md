@@ -10,6 +10,7 @@
 
 **Attila specific:**
 - Fixed: Prevent multiple creations of consul UI in battle mode.
+- Added: Consul visibility can be toggled on/off via top left button like in Rome2.
 
 ---
 
