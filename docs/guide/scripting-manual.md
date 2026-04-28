@@ -738,6 +738,7 @@ We've created a dedicated tutorial that guides you step-by-step through writing 
 For a deeper look at the mechanics of Total War scripting, refer to the official Creative Assembly documentation. These guides cover the "Official" toolkit in extreme detail:
 
 - [Total War: ATTILA Kit Scripting](https://wiki.totalwar.com/w/Total_War:_ATTILA_Kit_Scripting.html)
+- [Total War: TROY Scripting Documentation](https://chadvandy.github.io/tw_modding_resources/Troy/)
 - [Collection of Official Total War Docs](https://chadvandy.github.io/tw_modding_resources/)
 
 > [!TIP]
