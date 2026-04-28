@@ -6,6 +6,10 @@ next:
 
 # Debugging The UI
 
+::: tip Recommended Tool
+The **[HTML UI Debugger](./html-ui-debugger)** (added in version **0.8.0**) is the standard tool for inspecting the UI. it provides an interactive tree view and real-time property editing in your browser.
+:::
+
 Consul Scriptum includes tools to inspect the game's User Interface hierarchy directly. By using the UI debugging
 commands, you can identify component IDs, understand nested structures, and find exactly what you need to target in your
 scripts.
