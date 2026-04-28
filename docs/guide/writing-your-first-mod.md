@@ -190,7 +190,7 @@ As you can see in the video above we succesfully applied the effect bundles to t
 This is a great start and confirms our findings.
 
 
-## NExt Steps...
+## Step 4: Researching the Events
 Below is how your `.pack` file structure should look in RPFM once you've added your custom script:
 
 
