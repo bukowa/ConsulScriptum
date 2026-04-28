@@ -57,7 +57,7 @@ For this tutorial, we will use the following vanilla keys:
 
 :::
 
-## Step 5: Researching the API
+## Step 2: Researching the API
 
 Before writing any logic, you need to know which functions are available and how they behave. In Total War modding, documentation is notoriously fragmented, often incomplete, or flat-out incorrect. 
 
@@ -112,12 +112,15 @@ For this tutorial, we will use the following functions:
 > faction_name,number_of_turns
 == Rome II
 - **Character's Force Effect Bundle**: `apply_effect_bundle_to_characters_force`
-- > effect_bundle_key,character_cqi,number_of_turns
+> effect_bundle_key,character_cqi,number_of_turns
 - **Faction Effect Bundle**: `apply_effect_bundle`
-- > faction_name,number_of_turns
+> faction_name,number_of_turns
 :::
 
-#### Using /debug flag 
+## Step 3: Using Consul to test the API
+
+#### Using Console
+
 Based on our research we determined what parameters the functions take.
 Now we will utilize Consul and the /debug flag to quickly test it.
 
@@ -133,6 +136,10 @@ Now we will utilize Consul and the /debug flag to quickly test it.
 After performing these steps consul with populate the `consul.debug.character` and `consul.debug.faction` variables.
 This is a great shortcut to quickly test our functions. Because testing our script can take more space than a single line of code
 lets now utilize the Scriptum module to write it.
+
+1. Create new file, paste there the following script and save it as `tutorial.lua`
+2. Open `scriptum.lua` and add the name of your file after a new line.
+3. Click on `scriptum.lua` in the game.
 
 :::tabs key:game
 
