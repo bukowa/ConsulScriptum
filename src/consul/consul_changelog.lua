@@ -1,38 +1,15 @@
 local changelog = {
-    header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n--------------------------------------------------------------------------------\n\n",
+    header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
-        ["0.8.0-alpha.7"] = {
-            common = "\nAdded: UI Debugger (Technical Preview) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching. See official documentation for details."..
+        ["0.8.0"] = {
+            common = "\nAdded: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching."..
+            "\nAdded: Console minimized state is now remembered across sessions."..
             "\nAdded: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections."..
-            "\nAdded: Improved /debug, /debug_mouseover and /debug_onclick with better information and support for diplomacy/strategic map elements."..
+            "\nAdded: Improved /debug, /debug_mouseover and /debug_onclick with more detailed information."..
             "\nFixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila)."..
-            "\nFixed: Various stability fixes and parsing improvements for UI inspection and event tracking."..
-            "\nFixed: Changelog priority display fix."..
-            "\nChanged: /debug_html is now a unified toggle for both launching and persistent state, replacing /debug_html_on.",
+            "\nFixed: /debug command now works properly for factions and settlements in diplomacy and strategic map.",
             Attila = "Fixed: Prevent multiple creations of consul UI in battle mode."..
             "\nAdded: Consul visibility can be toggled on/off via top left button like in Rome2."
-        },
-        ["0.8.0-alpha.6"] = {
-            common = "\nAdded: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.)."..
-            "\nAdded: UI Debugger search features: Highlighting, Auto-expand folders, Auto-scroll, and Live Refresh during polling."..
-            "\nFixed: Critical bug in UI Debugger parsing where multi-line text (GetStateText) would break the tree structure."
-        },
-        ["0.8.0-alpha.5"] = {
-            common = "\nRefactored UI Debugger core logic for improved reliability."..
-            "\nAdded: Ability to hide individual property boxes in UI Debugger with persistence (saves to local storage)."..
-            "\nChanged: UI Debugger toggle shortcut changed from F5 to F7 (toggle_stream_pause)."..
-            "\nFixed: UI Debugger now correctly handles methods returning multiple values (like GetStateText)."
-        },
-        ["0.8.0-alpha.4"] = {
-            common = "\nThis update is focused on debugging the world and ui, it brings another set of improvements for the Attila.\n"..
-            "\nAdded: New /debug_html command that opens a HTML page in browser for epic UI debugging (and /debug_html_on as a toggle for persistence across restarts)"..
-            "\nAdded: New 'Debugging The World' section to the official manual."..
-            "\nAdded: New 'Debugging The UI' section to the official manual."..
-            "\nAdded: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy"..
-            "\nFixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila)."..
-            "\nFixed: /debug fixes and improvements, theres a lot, overall everything should be more readable"..
-            "\nFixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).",
-            Attila = "Fixed: prevent multiple creations of consul UI in battle mode.",
         },
         ["0.7.2"] = {
             common = "Added: Command `/consul_log_level <integer>` to set the consul log level persistently (e.g. 1=DEBUG, 2=INFO, 3=WARN).",

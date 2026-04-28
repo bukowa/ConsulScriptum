@@ -1,49 +1,15 @@
-## v0.8.0-alpha.7
+## v0.8.0
 **Common:**
-- Added: UI Debugger (Technical Preview) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching. See official documentation for details.
+- Added: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching.
+- Added: Console minimized state is now remembered across sessions.
 - Added: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections.
-- Added: Improved /debug, /debug_mouseover and /debug_onclick with better information and support for diplomacy/strategic map elements.
+- Added: Improved /debug, /debug_mouseover and /debug_onclick with more detailed information.
 - Fixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila).
-- Fixed: Various stability fixes and parsing improvements for UI inspection and event tracking.
-- Fixed: Changelog priority display fix.
-- Changed: /debug_html is now a unified toggle for both launching and persistent state, replacing /debug_html_on.
+- Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map.
 
 **Attila specific:**
 - Fixed: Prevent multiple creations of consul UI in battle mode.
 - Added: Consul visibility can be toggled on/off via top left button like in Rome2.
-
----
-
-## v0.8.0-alpha.6
-**Common:**
-- Added: New Global Search in UI Debugger sidebar (search by ID, Address, Text, Tooltip, State, etc.).
-- Added: UI Debugger search features: Highlighting, Auto-expand folders, Auto-scroll, and Live Refresh during polling.
-- Fixed: Critical bug in UI Debugger parsing where multi-line text (GetStateText) would break the tree structure.
-
----
-
-## v0.8.0-alpha.5
-**Common:**
-- Refactored UI Debugger core logic for improved reliability.
-- Added: Ability to hide individual property boxes in UI Debugger with persistence (saves to local storage).
-- Changed: UI Debugger toggle shortcut changed from F5 to F7 (toggle_stream_pause).
-- Fixed: UI Debugger now correctly handles methods returning multiple values (like GetStateText).
-
----
-
-## v0.8.0-alpha.4
-**Common:**
-- This update is focused on debugging the world and ui, it brings another set of improvements for the Attila.
-- Added: New /debug_html command that opens a HTML page in browser for epic UI debugging (and /debug_html_on as a toggle for persistence across restarts)
-- Added: New 'Debugging The World' section to the official manual.
-- Added: New 'Debugging The UI' section to the official manual.
-- Added: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy
-- Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila).
-- Fixed: /debug fixes and improvements, theres a lot, overall everything should be more readable
-- Fixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).
-
-**Attila specific:**
-- Fixed: prevent multiple creations of consul UI in battle mode.
 
 ---
 
