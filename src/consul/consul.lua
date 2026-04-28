@@ -42,6 +42,7 @@ consul = {
 		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
 		table.insert(events.UICreated, consul.changelog.OnUICreated)
 		table.insert(events.UICreated, consul.uidebug.OnUICreated)
+		table.insert(events.UICreated, consul.ui.OnUICreated_HandleInitialVisibility)
 
 		-- persistent debug logging
 		local cfg = consul.config.read()
@@ -855,6 +856,18 @@ consul = {
 			return false
 		end,
 
+		-- this function should be one of the last to run
+		OnUICreated_HandleInitialVisibility = function()
+			local ui = consul.ui
+			consul.config.process(function(_cfg)
+				if _cfg.ui.visibility.scriptum == 0 then
+					ui.find(ui.scriptum_minimize):SimulateClick()
+				end
+				if _cfg.ui.visibility.consul == 0 then
+					--ui.find(ui.consul_minimize):SimulateLClick()
+				end
+			end)
+		end,
 		debug = {
 			get_id_chains = function(component)
 				local chain = {}
@@ -1122,9 +1135,9 @@ consul = {
 
 				ui.MoveToConfigPosition()
 				--ui.find(ui.consul):TriggerAnimation('move_up')
-				ui.find(ui.scriptum):TriggerAnimation("move_up")
-				ui.find(ui.consul_minimize):SimulateLClick()
-				ui.find(ui.scriptum_minimize):SimulateLClick()
+				--ui.find(ui.scriptum):TriggerAnimation("move_up")
+				--ui.find(ui.consul_minimize):SimulateLClick()
+				--ui.find(ui.scriptum_minimize):SimulateLClick()
 
 				consul.ui.attila.created = true
 				log:trace("Attila specific OnUICreated end")
@@ -1266,9 +1279,17 @@ consul = {
 				consul.config.process(function(cfg)
 					cfg.ui.visibility.scriptum = c:Visible() and 1 or 0
 				end)
-
 				return
 			end
+
+			-- consul listview minimized
+			if context.string == ui.consul_minimize then
+				log:debug("Toggled visibility of: consul listview")
+				consul.config.process(function(cfg)
+					cfg.ui.visibility.consul = c:Visible()
+				end)
+			end
+			return
 		end,
 
 		-- event handler to be set in the main script
