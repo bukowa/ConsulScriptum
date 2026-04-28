@@ -222,7 +222,7 @@ uidebug.init_hooks = function()
 		return
 	end
 
-	table.insert(events.ComponentMouseOn, function(context)
+	local function on_component_event(context)
 		if not uidebug.is_active then
 			return
 		end
@@ -234,7 +234,15 @@ uidebug.init_hooks = function()
 			local address = tostring(c:Address())
 			uidebug.dump_tree(consul.ui._UIRoot, address)
 		end
-	end)
+	end
+
+	table.insert(events.ComponentMouseOn, on_component_event)
+	if events.ComponentLClickUp then
+		table.insert(events.ComponentLClickUp, on_component_event)
+	end
+	if events.ComponentMoved then
+		table.insert(events.ComponentMoved, on_component_event)
+	end
 
 	table.insert(events.ShortcutTriggered, function(context)
 		local shortcut = context.string

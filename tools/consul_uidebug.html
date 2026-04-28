@@ -442,6 +442,37 @@
             color: #5b6287;
             text-transform: uppercase;
         }
+
+        /* Lock Toggle */
+        .lock-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            margin-right: 12px;
+        }
+
+        .lock-btn.unlocked {
+            background: rgba(195, 232, 141, 0.1);
+            color: #c3e88d;
+            border-color: rgba(195, 232, 141, 0.2);
+        }
+
+        .lock-btn.locked {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .lock-btn:hover {
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -615,6 +646,7 @@
 
         let loadedComponents = {}; // Keyed by address
         let selectedAddress = null;
+        let isLocked = false;
         let openStates = {}; // Persist folder states
         let hiddenProps = new Set(JSON.parse(localStorage.getItem('consul_uidebug_hidden') || '[]'));
 
@@ -635,6 +667,11 @@
         window.resetHiddenProps = function() {
             hiddenProps.clear();
             saveHiddenProps();
+            if (selectedAddress) updateInspector(selectedAddress);
+        }
+
+        window.toggleLock = function() {
+            isLocked = !isLocked;
             if (selectedAddress) updateInspector(selectedAddress);
         }
 
@@ -782,13 +819,15 @@
                 }
             });
 
-            if (hoveredAddr && isCaptureActive) {
+            if (hoveredAddr && isCaptureActive && !isLocked) {
                 selectedAddress = hoveredAddr;
                 let cur = loadedComponents[hoveredAddr];
-                openStates[cur.Address] = true;
-                while (cur && cur.parentAddr) {
-                    openStates[cur.parentAddr] = true;
-                    cur = loadedComponents[cur.parentAddr];
+                if (cur) {
+                    openStates[cur.Address] = true;
+                    while (cur && cur.parentAddr) {
+                        openStates[cur.parentAddr] = true;
+                        cur = loadedComponents[cur.parentAddr];
+                    }
                 }
             }
 
@@ -869,6 +908,7 @@
             document.querySelectorAll('summary').forEach(el => el.classList.remove('selected'));
             summaryElement.classList.add('selected');
             selectedAddress = addr;
+            isLocked = true; // Auto-lock on manual selection
             updateInspector(addr);
         }
 
@@ -906,7 +946,20 @@
 
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('propPanel').classList.add('visible');
-            document.getElementById('insTitle').innerHTML = `${escapeHtml(comp.Id)} <span class="addr">${comp.Address}</span>`;
+            
+            const lockLabel = isLocked ? 'LOCKED' : 'FOLLOWING MOUSE';
+            const lockClass = isLocked ? 'locked' : 'unlocked';
+            const lockIcon = isLocked ? '🔒' : '🖱️';
+            
+            document.getElementById('insTitle').innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                    <button class="lock-btn ${lockClass}" onclick="toggleLock()" title="Click to toggle between following mouse and locking to this component">
+                        <span>${lockIcon}</span> ${lockLabel}
+                    </button>
+                    <span class="addr">${comp.Address}</span>
+                </div>
+                <div style="font-size: 20px; font-weight: 600; color: var(--text-highlight);">${escapeHtml(comp.Id)}</div>
+            `;
 
             let html = '';
 
