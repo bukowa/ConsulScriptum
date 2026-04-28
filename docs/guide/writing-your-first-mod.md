@@ -173,6 +173,10 @@ consul._game():apply_effect_bundle(faction_effect_bundle, faction, 1)
   <video :src="$withBase('/videos/writing_your_first_mod_2_debug.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
 </div>
 
+#### Confirming the results
+As you can see in the video above we succesfully applied the effect bundles to the force and to the faction.
+This is a great start and confirms our findings.
+
 
 ## NExt Steps...
 Below is how your `.pack` file structure should look in RPFM once you've added your custom script:
