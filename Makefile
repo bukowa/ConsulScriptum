@@ -1,11 +1,34 @@
 # Mod package information
-MOD_PACKAGE = consulscriptum.pack
-MOD_VERSION = 0.1.0
-
 # Game selection (Rome2 or Attila)
 GAME ?= Attila
 # Development mode (1 to enable)
 DEV ?= 0
+
+# Game-specific settings
+ifeq ($(GAME),Rome2)
+    MOD_PACKAGE := consulscriptum.pack
+    RPFM_GAME_ID := rome_2
+    RPFM_SCHEMA_FILE := schema_rom2.ron
+    INSTALL_ALONE_DIR := D:\Games\Total War - Rome 2 Steam
+    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
+    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
+    GAME_EXE := Rome2.exe
+    STEAM_APP_ID := 214950
+    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_rome2.lua
+else
+    # Default is Attila
+    MOD_PACKAGE := consulscriptum_attila.pack
+    RPFM_GAME_ID := attila
+    RPFM_SCHEMA_FILE := schema_att.ron
+    INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
+    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Attila
+    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
+    GAME_EXE := Attila.exe
+    STEAM_APP_ID := 325610
+    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_attila.lua
+endif
+
+MOD_VERSION = 0.1.0
 
 # ============================================================
 # Instructions for Executing This Makefile on Windows
@@ -33,7 +56,8 @@ DEV ?= 0
 # ============================================================
 
 # Directories for dependencies and build files
-BUILD_DIR         := ./build
+BUILD_DIR         := ./build/$(GAME)
+RELEASE_DIR       := ./release
 DEPS_DIR		  := ./.deps
 RPFM_SCHEMA_DIR   := $(DEPS_DIR)/rpfm_schema
 RPFM_CLI_DIR      := $(DEPS_DIR)/rpfm_cli
@@ -43,28 +67,6 @@ LDOC_DIR 		  := $(DEPS_DIR)/ldoc
 LUA_DIR           := $(DEPS_DIR)/lua
 PENLIGHT_DIR      := $(DEPS_DIR)/penlight
 MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-
-# Game-specific settings
-ifeq ($(GAME),Rome2)
-    RPFM_GAME_ID := rome_2
-    RPFM_SCHEMA_FILE := schema_rom2.ron
-    INSTALL_ALONE_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
-    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
-    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
-    GAME_EXE := Rome2.exe
-    STEAM_APP_ID := 214950
-    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_rome2.lua
-else
-    # Default is Attila
-    RPFM_GAME_ID := attila
-    RPFM_SCHEMA_FILE := schema_att.ron
-    INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
-    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Attila
-    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
-    GAME_EXE := Attila.exe
-    STEAM_APP_ID := 325610
-    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_attila.lua
-endif
 
 # Binaries and paths
 RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
@@ -115,6 +117,7 @@ PENLIGHT_REVISION = 1c85dd5418ee9aef71b4dc527fedf6714c139a6b
 UI_TARGETS :=
 ifeq ($(GAME),Attila)
 UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul
+UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul_button_toggle
 ifeq ($(DEV),1)
 UI_TARGETS += $(BUILD_DIR)/ui/frontend\ ui/layout
 endif
@@ -132,7 +135,9 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_changelog.lua \
 	$(BUILD_DIR)/consul/consul_game_events.lua \
 	$(BUILD_DIR)/consul/consul_commands.lua \
-	$(BUILD_DIR)/consul/consul_commands_dei.lua
+	$(BUILD_DIR)/consul/consul_commands_dei.lua \
+	$(BUILD_DIR)/consul/consul_uidebug.lua \
+	$(BUILD_DIR)/consul/consul_uidebug_template.lua
 
 IMAGE_TARGETS := \
 	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
@@ -163,7 +168,7 @@ $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
 	@{ \
 	  ${RPFM_CLI_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
-	  echo "Pack file built successfully." ; \
+	  echo "Pack file $@ built successfully." ; \
 	} || { rm $@; exit 1; }
 
 define create_dir
@@ -197,6 +202,11 @@ $(BUILD_DIR)/ui/common\ ui/options_mods: \
 
 $(BUILD_DIR)/ui/common\ ui/consul: \
 	src/ui/common\ ui/consul.xml
+	$(create_dir)
+	$(XML2UI_BIN) "$<" "$@"
+
+$(BUILD_DIR)/ui/common\ ui/consul_button_toggle: \
+	src/ui/common\ ui/consul_button_toggle.xml
 	$(create_dir)
 	$(XML2UI_BIN) "$<" "$@"
 
@@ -274,6 +284,18 @@ $(BUILD_DIR)/consul/consul_commands_dei.lua: \
 	src/consul/consul_commands_dei.lua
 	$(create_dir)
 	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_uidebug.lua: \
+	src/consul/consul_uidebug.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_uidebug_template.lua: tools/consul_uidebug.html
+	@echo "Generating UI template: $@ ..."
+	$(create_dir)
+	@echo "return [=[" > $@
+	@cat "$<" >> $@
+	@printf "]=]" >> $@
 
 $(BUILD_DIR)/consul/consul_battle.lua: \
 	src/consul/consul_battle.lua
@@ -365,13 +387,14 @@ $(BUILD_DIR)/consul/profile/LICENSE: src/profile/LICENSE
 # End Source Files
 # ============================================================
 
-# Cleaning up all build artifacts and generated mod packages
+# Cleaning up current game build artifacts
 clean:
 	@rm -rf $(BUILD_DIR)
 	@rm -f $(MOD_PACKAGE)
+	@rm -f $(RELEASE_DIR)/$(MOD_PACKAGE)
 	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
-	@echo "Cleaned up build directory and mod package."
+	@echo "Cleaned up build directory and mod package for $(GAME)."
 
 # Setup target to prepare all necessary dependencies
 setup: \
@@ -570,6 +593,22 @@ ifneq ($(SAVE),)
 endif
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
+# Install with TDD
+install-tdd: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack0_patch_1.0.3.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack1_main_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack2_battles_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack3_campaign_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack4_models_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack5_buildings_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "tdd_pack6_weather_1.0.0.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
+	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
+
 copy_alone: $(MOD_PACKAGE)
 	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
 
@@ -611,6 +650,12 @@ run-alone-dei: \
 	@$(disable_outdated_mods_popup)
 	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
+# Launch the alone with TDD
+run-alone-tdd: \
+	kill-game \
+	install-tdd
+	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
+
 # Launch the Steam version of the game using its Steam app ID
 run-steam: \
 	kill-game \
@@ -647,6 +692,29 @@ else
 	$(UI2XML_BIN) ./src/ui/common\ ui/consul ./src/ui/common\ ui/consul.xml
 	rm ./src/ui/common\ ui/consul
 endif
+
+# ============================================================
+# Release Targets
+# ============================================================
+
+$(RELEASE_DIR)/$(MOD_PACKAGE): $(MOD_PACKAGE)
+	@mkdir -p $(RELEASE_DIR)
+	@cp $(MOD_PACKAGE) $@
+	@echo "Updated $@ in release directory."
+
+release: $(RELEASE_DIR)/$(MOD_PACKAGE)
+
+install_release: $(RELEASE_DIR)/$(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
+	@cp "$(RELEASE_DIR)/$(MOD_PACKAGE)" "$(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)"
+	@echo "Installed $(MOD_PACKAGE) from release directory to $(INSTALL_ALONE_DIR)/data"
+
+run_release: clean kill-game install_release
+	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
 
 # ============================================================
 # Documentation Targets
@@ -689,6 +757,8 @@ docs-deploy: docs-build
 		steam \
 		alone \
 		clean \
+		clean-all \
+		build_for_release \
 		generate-docs \
 		docs-gen \
 		docs-build \

@@ -1,15 +1,15 @@
-## v0.8.0-alpha.3
+## v0.8.0
 **Common:**
-- This update is focused on debugging the world and ui, it brings another set of improvements for the Attila too!
-- Added: New 'Debugging The World' section to the official manual.
-- Added: New 'Debugging The UI' section to the official manual.
-- Added: /debug_mouseover and /debug_onclick displays more information about the UI component alongside the hierarchy
-- Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map (Rome 2 and Attila).
-- Fixed: /debug fixes and improvements, theres a lot, overall everything should be more readable
-- Fixed: increased priority of consul UI to ensure it loads on top (especially important for Attila).
+- Added: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching.
+- Added: Console minimized state is now remembered across sessions.
+- Added: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections.
+- Added: Improved /debug, /debug_mouseover and /debug_onclick with more detailed information.
+- Fixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila).
+- Fixed: /debug command now works properly for factions and settlements in diplomacy and strategic map.
 
 **Attila specific:**
-- Fixed: prevent multiple creations of consul UI in battle mode.
+- Fixed: Prevent multiple creations of consul UI in battle mode.
+- Added: Consul visibility can be toggled on/off via top left button like in Rome2.
 
 ---
 

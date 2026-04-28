@@ -2,6 +2,7 @@
 .idea
 .cursor
 consulscriptum.pack
+consulscriptum_attila.pack
 .deps
 build
 mod
@@ -15,6 +16,9 @@ UIComponent
 # VitePress
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+# Release
+release/
 
 # Node
 node_modules

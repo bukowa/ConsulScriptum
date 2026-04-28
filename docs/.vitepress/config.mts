@@ -23,7 +23,7 @@ export default withMermaid(defineConfig({
     },
 
     head: [
-        ['link', {rel: 'icon', type: 'image/png', href: '//logo.png'}],
+        ['link', {rel: 'icon', type: 'image/png', href: '/logo.png'}],
         ['link', {rel: 'preconnect', href: 'https://fonts.googleapis.com'}],
         ['link', {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: ''}],
         ['link', {
@@ -60,7 +60,7 @@ export default withMermaid(defineConfig({
             {text: 'Getting started', link: '/guide/getting-started'},
             {text: 'Scripting Manual', link: '/guide/scripting-manual'},
             {
-                text: 'v0.8.0-alpha.3',
+                text: 'v0.8.0',
                 items: [
                     {text: 'Changelog', link: '/guide/changelog'},
                     {text: 'GitHub', link: 'https://github.com/bukowa/ConsulScriptum'},
@@ -92,6 +92,7 @@ export default withMermaid(defineConfig({
                     {text: 'Local files and logs', link: '/guide/consul-scriptum-files'},
                     {text: 'Debugging The World', link: '/guide/debugging-the-world'},
                     {text: 'Debugging The UI', link: '/guide/debugging-the-ui'},
+                    {text: 'HTML UI Debugger', link: '/guide/html-ui-debugger'},
                     {text: 'Scripting Manual', link: '/guide/scripting-manual'},
                     {text: 'Writing Your First Mod', link: '/guide/writing-your-first-mod'},
                     {text: 'Battle mode', link: '/guide/battle-mode-scripting'},

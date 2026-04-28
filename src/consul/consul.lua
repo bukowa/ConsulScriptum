@@ -4,7 +4,7 @@ consul_build = "Attila" -- or "Rome2"
 
 consul = {
 
-	VERSION = "0.8.0-alpha.3",
+	VERSION = "0.8.0",
 	URL = "http://github.com/bukowa/ConsulScriptum",
 	AUTHOR = "Mateusz Kurowski",
 	CONTACT = "gitbukowa@gmail.com",
@@ -18,25 +18,100 @@ consul = {
 	is_in_battle_script = false,
 	bm = nil,
 
+	-- setup consul
+	setup = function()
+		table.insert(events.UICreated, consul.console.commands.setup)
+		table.insert(events.UICreated, consul.ui.OnUICreated)
+		table.insert(events.UICreated, consul.compat.setup)
+		table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
+		if consul_build == "Attila" then
+			table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
+			table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
+			table.insert(events.UICreated, consul.ui.attila.OnUICreated)
+		end
+		table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
+		table.insert(events.UICreated, consul.history.OnUICreated)
+		table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
+		table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
+		-- access to 'EpisodicScripting' may be required
+		-- load later to avoid any issues with the game
+		table.insert(events.UICreated, consul.consul_scripts.setup)
+		table.insert(events.UICreated, consul.battle.setup)
+		table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
+		table.insert(events.UICreated, consul.scriptum.setup)
+		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
+		table.insert(events.UICreated, consul.changelog.OnUICreated)
+		table.insert(events.UICreated, consul.uidebug.OnUICreated)
+		table.insert(events.UICreated, consul.ui.OnUICreated_HandleInitialVisibility)
+
+		-- persistent debug logging
+		local cfg = consul.config.read()
+		if cfg.debug then
+			if cfg.debug.log_level then
+				consul.log:set_level(cfg.debug.log_level)
+			end
+			if cfg.debug.log_events then
+				consul.log:log_events_all()
+			end
+		end
+
+		-- turn time measurement
+		table.insert(events.FactionTurnStart, function(context)
+			if consul.debug._measuring_turn and context:faction():is_human() then
+				local duration = os.clock() - consul.debug._turn_start_time
+				local msg = "Turn cycle completed in " .. string.format("%.2f", duration) .. " seconds."
+				consul.console.write(msg)
+				consul.log:info(msg)
+				consul.debug._measuring_turn = false
+			end
+		end)
+
+		consul.env.setup()
+	end,
+
+	env = {
+
+		-- 0 == battle
+		-- 1 == campaign
+		-- 2 == frontend
+		mode = nil,
+
+		setup = function()
+			setmetatable(consul.env, {
+				__index = function(self, key)
+					if key == "mode" then
+						if __game_mode then
+							return __game_mode
+						end
+
+						-- if game obj is not nil we are in campaign
+						-- this is important because the base game script
+						-- don't always import the campaign script header...
+						if consul._game() then
+							return 1
+						end
+
+						-- we are 99% in battle
+						if consul.is_in_battle_script then
+							return 0
+						end
+
+						return consul.utils.get_from_registry("__game_mode")
+					else
+						return rawget(self, key)
+					end
+				end,
+			})
+		end,
+	},
+
 	-- attribute holding stuff selected by debug
 	debug = {
 		-- return a cqi for lookups
 		character_cqi = function()
 			return "character_cqi:" .. consul.debug.character:cqi()
 		end,
-		-- hide the character
-		character_hide = function(queue)
-			queue = (queue == nil) and true or queue
-			return consul._game():hide_character(consul.debug.character_cqi(), queue)
-		end,
-		--character_unhide = function(queue, x, y, cqi)
-		--    queue = (queue == nil) and true or queue
-		--    x   = x   or consul.debug.character:logical_position_x()
-		--    y   = y   or consul.debug.character:logical_position_y()
-		--    cqi = cqi or consul.debug.character_cqi()
-		--    consul.log:info("")
-		--    return consul._game():unhide_character(cqi, x, y, queue)
-		--end,
+
 		garrison_residence = nil,
 		settlement = nil,
 		character = nil,
@@ -210,53 +285,6 @@ consul = {
 		_measuring_turn = false,
 	},
 
-	-- setup consul
-	setup = function()
-		table.insert(events.UICreated, consul.console.commands.setup)
-		table.insert(events.UICreated, consul.ui.OnUICreated)
-		table.insert(events.UICreated, consul.compat.setup)
-		table.insert(events.ComponentMoved, consul.ui.OnComponentMoved)
-		if consul_build == "Attila" then
-			table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
-			table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
-			table.insert(events.UICreated, consul.ui.attila.OnUICreated)
-		end
-		table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
-		table.insert(events.UICreated, consul.history.OnUICreated)
-		table.insert(events.ComponentLClickUp, consul.history.OnComponentLClickUp)
-		table.insert(events.ComponentLClickUp, consul.console.OnComponentLClickUp)
-		-- access to 'EpisodicScripting' may be required
-		-- load later to avoid any issues with the game
-		table.insert(events.UICreated, consul.consul_scripts.setup)
-		table.insert(events.UICreated, consul.battle.setup)
-		table.insert(events.ComponentLClickUp, consul.consul_scripts.OnComponentLClickUp)
-		table.insert(events.UICreated, consul.scriptum.setup)
-		table.insert(events.ComponentLClickUp, consul.scriptum.OnComponentLClickUp)
-		table.insert(events.UICreated, consul.changelog.OnUICreated)
-
-		-- persistent debug logging
-		local cfg = consul.config.read()
-		if cfg.debug then
-			if cfg.debug.log_level then
-				consul.log:set_level(cfg.debug.log_level)
-			end
-			if cfg.debug.log_events then
-				consul.log:log_events_all()
-			end
-		end
-
-		-- turn time measurement
-		table.insert(events.FactionTurnStart, function(context)
-			if consul.debug._measuring_turn and context:faction():is_human() then
-				local duration = os.clock() - consul.debug._turn_start_time
-				local msg = "Turn cycle completed in " .. string.format("%.2f", duration) .. " seconds."
-				consul.console.write(msg)
-				consul.log:info(msg)
-				consul.debug._measuring_turn = false
-			end
-		end)
-	end,
-
 	-- logging
 	log = require("consul_logging").Logger.new("consul"),
 
@@ -274,7 +302,33 @@ consul = {
 				table.insert(versions, k)
 			end
 			table.sort(versions, function(a, b)
-				return a > b
+				local function parse(v)
+					local core, pre = v:match("^([%d%.]+)%-?(.*)$")
+					return core or v, pre or ""
+				end
+				local function pad(v)
+					return (v:gsub("%d+", function(num)
+						return string.format("%05d", tonumber(num))
+					end))
+				end
+
+				local core_a, pre_a = parse(a)
+				local core_b, pre_b = parse(b)
+
+				if core_a == core_b then
+					if pre_a == pre_b then
+						return false
+					end
+					if pre_a == "" then
+						return true
+					end
+					if pre_b == "" then
+						return false
+					end
+					return pad(pre_a) > pad(pre_b)
+				end
+
+				return pad(core_a) > pad(core_b)
 			end)
 
 			local sep = ""
@@ -364,6 +418,9 @@ consul = {
 	-- contrib
 	serpent = require("serpent.serpent"),
 	inspect = require("inspect.inspect"),
+	-- ui debugger
+	uidebug = require("consul_uidebug"),
+
 	--- A function that pretty-prints a Lua value using 'penlight'.
 	--- @function consul.pretty
 	--- @param _obj Any Lua value to pretty-print.
@@ -499,6 +556,18 @@ consul = {
 
 			return unique_items
 		end,
+
+		get_from_registry = function(key)
+			for k, v in pairs(debug.getregistry()) do
+				local status, env = pcall(debug.getfenv, v)
+
+				if status and type(env) == "table" then
+					if env[key] ~= nil then
+						return env[key]
+					end
+				end
+			end
+		end,
 	},
 
 	battle = {
@@ -587,6 +656,7 @@ consul = {
 				debug = {
 					log_events = false,
 					log_level = 2,
+					debug_ui = false,
 				},
 			}
 		end,
@@ -610,6 +680,7 @@ consul = {
 				and type(_config.debug) == "table"
 				and type(_config.debug.log_events) == "boolean"
 				and type(_config.debug.log_level) == "number"
+				and type(_config.debug.debug_ui) == "boolean"
 		end,
 
 		--- A function that reads the config file and writes it back to the file.
@@ -694,6 +765,8 @@ consul = {
 		end)(),
 		-- path to the consul template for Attila
 		template_attila = "ui/common ui/consul",
+		-- path to the consul button toggle template for Attila
+		template_attila_toggle = "ui/common ui/consul_button_toggle",
 		-- contains the consul listview
 		consul = "room_list",
 		-- contains the scriptum listview
@@ -783,6 +856,18 @@ consul = {
 			return false
 		end,
 
+		-- this function should be one of the last to run
+		OnUICreated_HandleInitialVisibility = function()
+			local ui = consul.ui
+			consul.config.process(function(_cfg)
+				if _cfg.ui.visibility.scriptum == 0 then
+					ui.find(ui.scriptum_minimize):SimulateClick()
+				end
+				if _cfg.ui.visibility.consul == 0 then
+					--ui.find(ui.consul_minimize):SimulateLClick()
+				end
+			end)
+		end,
 		debug = {
 			get_id_chains = function(component)
 				local chain = {}
@@ -1027,6 +1112,7 @@ consul = {
 			xx = 0,
 			yy = 0,
 			should_move = false,
+			visible = false,
 
 			-- to avoid creating consul multiple times in battle, as the UI is recreated multiple times
 			-- this is strange behavior because the UICreated event is not "called"; it is called but does not
@@ -1036,32 +1122,40 @@ consul = {
 			OnUICreated = function()
 				local ui = consul.ui
 				local log = consul.new_log("ui.attila:OnUICreated")
-				log:debug("Attila specific OnUICreated start")
+				log:trace("Attila specific OnUICreated start")
 
 				if consul.ui.attila.created then
 					log:debug("Consul already created, skipping...")
 					return
 				end
 
+				local menu = ui.find("menu_bar")
+				menu:CreateComponent(ui.button_toggle, ui.template_attila_toggle)
 				ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+
 				ui.MoveToConfigPosition()
 				--ui.find(ui.consul):TriggerAnimation('move_up')
-				ui.find(ui.scriptum):TriggerAnimation("move_up")
-				ui.find(ui.consul_minimize):SimulateLClick()
-				ui.find(ui.scriptum_minimize):SimulateLClick()
+				--ui.find(ui.scriptum):TriggerAnimation("move_up")
+				--ui.find(ui.consul_minimize):SimulateLClick()
+				--ui.find(ui.scriptum_minimize):SimulateLClick()
 
 				consul.ui.attila.created = true
-				log:debug("Attila specific OnUICreated end")
+				log:trace("Attila specific OnUICreated end")
 			end,
 
 			OnComponentMoved = function(context)
 				local log = consul.new_log("ui.attila:OnComponentMoved")
-				log:debug("Attila specific OnComponentMoved start")
+				log:trace("Attila specific OnComponentMoved start")
 
 				if context.string ~= consul.ui.root then
 					return
 				end
 				local ui, attila = consul.ui, consul.ui.attila
+
+				if not attila.visible then
+					return
+				end
+
 				-- in campaign
 				if consul._game() ~= nil then
 					consul._game():add_time_trigger("consul_move_trigger", 0)
@@ -1078,25 +1172,29 @@ consul = {
 				attila.should_move = true
 				c:SetVisible(false)
 
-				log:debug("Attila specific OnComponentMoved end")
+				log:trace("Attila specific OnComponentMoved end")
 			end,
 
 			TimeTrigger = function()
 				local log = consul.new_log("ui.attila:TimeTrigger")
-				log:debug("Attila specific TimeTrigger start")
+				log:trace("Attila specific TimeTrigger start")
 
 				local ui, attila = consul.ui, consul.ui.attila
 				local c = ui.find(ui.root)
 				local x, y = c:Position()
 				local xx, yy = attila.xx, attila.yy
+
 				-- always set visible, the component may be moved without changing position
+				if not attila.visible then
+					return
+				end
 				c:SetVisible(true)
 				if (x ~= xx or y ~= yy) and attila.should_move == true then
 					c:MoveTo(xx, yy)
 					attila.should_move = false
 				end
 
-				log:debug("Attila specific TimeTrigger end")
+				log:trace("Attila specific TimeTrigger end")
 			end,
 		},
 
@@ -1153,6 +1251,7 @@ consul = {
 
 				-- toggle visibility
 				r:SetVisible(not r:Visible())
+				consul.ui.attila.visible = r:Visible()
 
 				-- save to config
 				consul.config.process(function(_cfg)
@@ -1180,9 +1279,17 @@ consul = {
 				consul.config.process(function(cfg)
 					cfg.ui.visibility.scriptum = c:Visible() and 1 or 0
 				end)
-
 				return
 			end
+
+			-- consul listview minimized
+			if context.string == ui.consul_minimize then
+				log:debug("Toggled visibility of: consul listview")
+				consul.config.process(function(cfg)
+					cfg.ui.visibility.consul = c:Visible()
+				end)
+			end
+			return
 		end,
 
 		-- event handler to be set in the main script
@@ -1664,6 +1771,38 @@ consul = {
 				},
 			},
 			exact = {
+				["/uidump"] = {
+					help = function()
+						return "Dumps the UI tree from the root component to consul_debug_ui_state.txt."
+					end,
+					func = function()
+						consul.uidebug.dump_tree(consul.ui._UIRoot)
+						return "Dumped UI tree to consul_debug_ui_state.txt."
+					end,
+					exec = false,
+					returns = true,
+				},
+				["/debug_html"] = {
+					help = function()
+						return "Toggle HTML UI Debugger persistence and launch in browser."
+					end,
+					func = function()
+						local current = false
+						consul.config.process(function(cfg)
+							cfg.debug.debug_ui = not cfg.debug.debug_ui
+							current = cfg.debug.debug_ui
+						end)
+						if current then
+							consul.uidebug.init_hooks()
+							consul.uidebug.launch()
+							return "HTML UI Debugger ENABLED (persistent) and launched. "
+						else
+							return "HTML UI Debugger DISABLED (persistence removed, will unhook on restart)."
+						end
+					end,
+					exec = false,
+					returns = true,
+				},
 				["/reload_custom_commands"] = {
 					help = function()
 						return "Reload commands from consul_custom_commands.lua"
@@ -3559,6 +3698,13 @@ consul.console.write(
 		pretty = function(_tbl)
 			local table_sorter = function(keys, original_table)
 				local sizes = {}
+				local priority = {
+					Id = 1,
+					name = 2,
+					cqi = 3,
+					command_queue_index = 4,
+					region = 5,
+				}
 
 				local function get_size(k, v)
 					if type(v) ~= "table" then
@@ -3576,6 +3722,13 @@ consul.console.write(
 				end
 
 				table.sort(keys, function(a, b)
+					local prio_a = priority[a] or 999
+					local prio_b = priority[b] or 999
+
+					if prio_a ~= prio_b then
+						return prio_a < prio_b
+					end
+
 					local val_a = original_table[a]
 					local val_b = original_table[b]
 
