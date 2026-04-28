@@ -19,71 +19,25 @@ We'll use varied **Events** to trigger these assignments, showcasing how event-d
 ## Prerequisites
 
 To follow this tutorial, you will need **RPFM (Rusted Pack File Manager)**, the standard tool for managing Total War pack files.  **RPFM** is an open source project created by Frodo.
-
 1.  Download the latest version from the [RPFM Releases page](https://github.com/Frodo45127/rpfm/releases).
-2.  Launch RPFM and click on **PackFile -> New PackFile**.
-3.  You will be left with an empty file named `unknown.pack`:
+2. Open RPFM by clicking on `rpfm_ui.exe`
 
-> [!TIP]
-> **Interactive Explorer**: The windows below are interactive! You can click on folders to expand them, or use the **📂 button** in the header to hide the explorer and view the scripts in full width.
-
-<PackExplorer packName="unknown.pack" :files="[]" />
-
-## Step 1: Select Your Game
-
+## Step 1: Preparing Database with RPFM
 Before adding any files, you must tell RPFM which game you are modding. This ensures the tool uses the correct database schemas and file structures.
+Simply follow the video tutorial below to quickly setup RPFM with dependencies cache. Remember to select the proper game!
 
-1.  Click on **Game Selected**.
-2.  Select your target game from the list.
-
-:::tabs key:game
-
-== Attila
-Select **Attila** from the menu. RPFM will now be configured for Attila's engine and file paths.
-
-== Rome II
-Select **Rome 2** from the menu. RPFM will now be configured for Rome II's engine and file paths.
-
-:::
-
-## Step 2: Generate Dependencies Cache
-
-To help you find keys and values (like faction names or effect keys), you should generate the dependencies cache. This pulls data from the game's base files and displays it in the **Dependencies** pane.
-
-1.  Click on **Special Stuff** (or **Game Selected** depending on your RPFM version.)
-2.  Navigate to your selected game (e.g., **Attila** or **Rome 2**).
-3.  Click on **Generate Dependencies Cache**.
-
-Once finished, you will see the **Game Files** appear in the bottom-left pane of RPFM.
-
-<div style="text-align: center;">
-  <img src="/media/writing_your_first_mod_rpfm1.png" style="max-width: 400px; border-radius: 8px;" />
-</div>
-
-## Step 3: Saving the PackFile
-
-Before adding any scripts, it is best practice to save your work in the correct location so the game can find it.
-
-1.  Click on **PackFile -> Save PackFile As...** in the top menu.
-2.  Navigate to your game's **data** directory (e.g., `Total War Rome II/data`)
-3.  Name your file `mymod.pack` and click **Save**.
-
-Your explorer will now reflect the new file name:
-
-<PackExplorer packName="mymod.pack" :files="[]" />
-
-## Step 4: Preparing with Database
-
-Editing database tables is not in the scope of this tutorial. To keep things simple, we will reuse **existing effect bundles** that are already in the base game. This is where the dependency cache we generated in Step 2 becomes essential.
+Editing database tables is not in the scope of this tutorial. To keep things simple, we will reuse **existing effect bundles** that are already in the base game. This is where the dependency cache becomes essential.
 We can now freely view all the effect bundles that the base game offers to us.
 
 1.  In the **Dependencies** pane (bottom-left), find the search box.
 2.  Type `effect_bundles_tables`.
 3.  Open the `effect_bundles` table to browse the list of vanilla effects.
 
-<div style="text-align: center;">
-  <img src="/media/writing_your_first_mod_rpfmdeps.png" style="max-width: 400px; border-radius: 8px;" />
+
+<div class="cs-video-prominent">
+  <video :src="$withBase('/videos/writing_your_first_mod_rpfm_1.mp4')" data-title="RPFM Setup" autoplay loop muted playsinline></video>
 </div>
+
 
 For this tutorial, we will use the following vanilla keys:
 
@@ -147,10 +101,91 @@ The most reliable way to confirm a function works is to test it in-game using th
 >
 > By searching the vanilla Attila scripts in RPFM, you would discover that developers actually pass a **4th** undocumented boolean flag at the end. Without this discovery, you might spend hours wondering why your "correct" code is crashing the game.
 
+For this tutorial, we will use the following functions:
+
+:::tabs key:game
+
+== Attila
+- **Character's Force Effect Bundle**: `apply_effect_bundle_to_characters_force`
+> effect_bundle_key,character_cqi,number_of_turns,boolean
+- **Faction Effect Bundle**: `apply_effect_bundle`
+> faction_name,number_of_turns
+== Rome II
+- **Character's Force Effect Bundle**: `apply_effect_bundle_to_characters_force`
+- > effect_bundle_key,character_cqi,number_of_turns
+- **Faction Effect Bundle**: `apply_effect_bundle`
+- > faction_name,number_of_turns
+:::
+
+#### Using /debug flag 
+Based on our research we determined what parameters the functions take.
+Now we will utilize Consul and the /debug flag to quickly test it.
+
+1. Lets turn on the `/debug` command in Consul
+2. Lets click on the character on the campaign map.
+3. Lets turn off the `/debug` flag in Consul.
+
+<div class="cs-video-prominent">
+  <video :src="$withBase('/videos/writing_your_first_mod_1_debug.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
+</div>
+
+#### Using Scriptum 
+After performing these steps consul with populate the `consul.debug.character` and `consul.debug.faction` variables.
+This is a great shortcut to quickly test our functions. Because testing our script can take more space than a single line of code
+lets now utilize the Scriptum module to write it.
+
+:::tabs key:game
+
+== Attila
+```lua
+consul.console.clear()
+
+local cqi = consul.debug.character:cqi()
+local faction = consul.debug.faction:name()
+local force_effect_bundle = "rom_payload_infantry_command"
+local faction_effect_bundle = "rom_payload_call_to_arms_global"
+
+consul._game():apply_effect_bundle_to_characters_force(force_effect_bundle, cqi, 1, false)
+consul._game():apply_effect_bundle(faction_effect_bundle, faction, 1)
+```
+== Rome II
+```lua
+consul.console.clear()
+
+local cqi = consul.debug.character:cqi()
+local faction = consul.debug.faction:name()
+local force_effect_bundle = "rom_payload_infantry_command"
+local faction_effect_bundle = "rom_payload_call_to_arms_global"
+
+consul._game():apply_effect_bundle_to_characters_force(force_effect_bundle, cqi, 1)
+consul._game():apply_effect_bundle(faction_effect_bundle, faction, 1)
+```
+:::
+
+<div class="cs-video-prominent">
+  <video :src="$withBase('/videos/writing_your_first_mod_2_debug.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
+</div>
 
 
 ## NExt Steps...
 Below is how your `.pack` file structure should look in RPFM once you've added your custom script:
+
+
+## Step 3: Saving the PackFile
+
+> [!TIP]
+> **Interactive Explorer**: The windows below are interactive! You can click on folders to expand them, or use the **📂 button** in the header to hide the explorer and view the scripts in full width.
+
+Before adding any scripts, it is best practice to save your work in the correct location so the game can find it.
+
+1.  Click on **PackFile -> Save PackFile As...** in the top menu.
+2.  Navigate to your game's **data** directory (e.g., `Total War Rome II/data`)
+3.  Name your file `mymod.pack` and click **Save**.
+
+Your explorer will now reflect the new file name:
+
+<PackExplorer packName="new_pack.pack" :files="[]" />
+
 
 <script setup>
 const modFiles = [
