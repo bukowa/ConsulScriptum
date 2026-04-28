@@ -128,9 +128,18 @@ Now we will utilize Consul and the /debug flag to quickly test it.
 2. Lets click on the character on the campaign map.
 3. Lets turn off the `/debug` flag in Consul.
 
+:::tabs key:game
+
+== Attila
 <div class="cs-video-prominent">
-  <video :src="$withBase('/videos/writing_your_first_mod_1_debug.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
+  <video :src="$withBase('/videos/writing_your_first_mod_1_debug_attila.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
 </div>
+== Rome II
+<div class="cs-video-prominent">
+  <video :src="$withBase('/videos/writing_your_first_mod_1_debug_rome2.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
+</div>
+:::
+
 
 #### Using Scriptum 
 After performing these steps consul with populate the `consul.debug.character` and `consul.debug.faction` variables.
@@ -155,6 +164,10 @@ local faction_effect_bundle = "rom_payload_call_to_arms_global"
 consul._game():apply_effect_bundle_to_characters_force(force_effect_bundle, cqi, 1, false)
 consul._game():apply_effect_bundle(faction_effect_bundle, faction, 1)
 ```
+<div class="cs-video-prominent">
+  <video :src="$withBase('/videos/writing_your_first_mod_2_debug_attila.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
+</div>
+
 == Rome II
 ```lua
 consul.console.clear()
@@ -167,11 +180,10 @@ local faction_effect_bundle = "rom_payload_call_to_arms_global"
 consul._game():apply_effect_bundle_to_characters_force(force_effect_bundle, cqi, 1)
 consul._game():apply_effect_bundle(faction_effect_bundle, faction, 1)
 ```
-:::
-
 <div class="cs-video-prominent">
-  <video :src="$withBase('/videos/writing_your_first_mod_2_debug.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
+  <video :src="$withBase('/videos/writing_your_first_mod_2_debug_rome2.mp4')" data-title="Debug" autoplay loop muted playsinline></video>
 </div>
+:::
 
 #### Confirming the results
 As you can see in the video above we succesfully applied the effect bundles to the force and to the faction.
