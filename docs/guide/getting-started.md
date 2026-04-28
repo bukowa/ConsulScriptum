@@ -35,7 +35,7 @@ The interface consists of three main panels: **Console**, **Consul**, and **Scri
 == Attila
 <video :src="$withBase('/videos/attila_accessconsole.mp4')" data-title="Accessing the Interface" data-game="Attila" autoplay loop muted playsinline></video>
 
-In Attila, the ConsulScriptum window is visible on screen by default when you load into a campaign. There is no hide/show toggle yet. You can drag it to reposition it.
+Click the **ConsulScriptum toggle button** in the campaign UI top bar. The window will appear. You can drag it anywhere — its position is saved automatically between sessions.
 
 == Rome II
 <video :src="$withBase('/videos/rome2_accessconsole.mp4')" data-title="Accessing the Interface" data-game="Rome II" autoplay loop muted playsinline></video>
