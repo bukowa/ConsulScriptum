@@ -710,11 +710,11 @@ install_release: $(RELEASE_DIR)/$(MOD_PACKAGE)
 ifneq ($(SAVE),)
 	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 endif
-	@cp "$(RELEASE_DIR)/$(MOD_PACKAGE)" "$(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)"
-	@echo "Installed $(MOD_PACKAGE) from release directory to $(INSTALL_ALONE_DIR)/data"
+	@cp "$(RELEASE_DIR)/$(MOD_PACKAGE)" "$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)"
+	@echo "Installed $(MOD_PACKAGE) from release directory to $(INSTALL_STEAM_DIR)/data"
 
 run_release: clean kill-game install_release
-	@powershell -WindowStyle Hidden -Command "Start-Process '$(GAME_EXE)' -WorkingDirectory '$(INSTALL_ALONE_DIR)'"
+	@powershell -Command start steam://rungameid/$(STEAM_APP_ID)
 
 # ============================================================
 # Documentation Targets
