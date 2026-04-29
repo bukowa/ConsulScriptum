@@ -1009,7 +1009,7 @@ consul = {
 			-- try recreating the UIComponent in case something bad happened
 			if not consul.ui._UIRoot then
 				log:warn("Recreating UIComponent: " .. tostring(consul.ui._UIContext))
-				consul.ui._UIRoot = UIComponent(consul.ui._UIContext.component)
+				consul.ui._UIRoot = consul.ui._UIComponent(consul.ui._UIContextComponent)
 			end
 
 			-- if still nil, return error and log it
