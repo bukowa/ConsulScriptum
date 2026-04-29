@@ -3137,6 +3137,8 @@ consul.console.write(
                     local hide_scripts = {
                         consul.ui.consul_force_exchange_garrison_entry,
                         consul.ui.consul_incrementum_regio_entry,
+                        consul.ui.consul_vexatio_provinciae_entry,
+                        consul.ui.consul_sedatio_provinciae_entry,
                     }
                     for _,v in ipairs(hide_scripts) do
                         local el = consul.ui.find(v)
