@@ -22,7 +22,7 @@ else ifeq ($(GAME),TOB)
     INSTALL_ALONE_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Saga Thrones of Britannia 712100
     INSTALL_STEAM_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Saga Thrones of Britannia 712100
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/ThronesofBritannia/scripts
-    GAME_EXE := ThronesofBritannia.exe
+    GAME_EXE := thrones.exe
     STEAM_APP_ID := 712100
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_tob.lua
 else ifeq ($(GAME),Attila)
