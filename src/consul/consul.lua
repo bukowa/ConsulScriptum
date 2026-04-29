@@ -2203,8 +2203,8 @@ consul = {
 								return
 							end
 
-							-- Attila garrison units
-							if consul_build == "Attila" then
+							-- Attila / TOB garrison units
+							if consul_build == "Attila" or consul_build == "TOB" then
 								local element = consul.ui._UIComponent(context.component)
 								local parent = element:Parent()
 								if parent ~= nil then
