@@ -3732,8 +3732,8 @@ consul.console.write(
 			return scripting.game_interface
 		end
 
-		if consul.env.mode == 1 then
-			consul.log:error("Could not find scripting.game_interface, consul will not work properly")
+        if consul.env.mode == 1 then
+		    consul.log:error("Could not find scripting.game_interface, consul will not work properly")
 		end
 		return nil
 	end,
