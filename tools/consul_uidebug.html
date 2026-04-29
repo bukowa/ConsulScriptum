@@ -482,14 +482,29 @@
         <div class="controls">
             <div style="display: flex; flex-direction: column;">
                 <h1>UI Explorer</h1>
-                <a href="https://consulscriptum.com/guide/html-ui-debugger" target="_blank" style="font-size: 11px; color: var(--accent); text-decoration: none; margin-top: 4px; border: 1px solid rgba(255,85,85,0.3); padding: 2px 8px; border-radius: 4px; transition: all 0.2s; background: rgba(255,85,85,0.05); display: inline-block; width: fit-content;">Documentation ↗</a>
+                <a href="https://consulscriptum.com/guide/html-ui-debugger" target="_blank"
+                    style="font-size: 11px; color: var(--accent); text-decoration: none; margin-top: 4px; border: 1px solid rgba(255,85,85,0.3); padding: 2px 8px; border-radius: 4px; transition: all 0.2s; background: rgba(255,85,85,0.05); display: inline-block; width: fit-content;">Documentation
+                    ↗</a>
             </div>
-            <button id="connectBtn" class="btn">Connect</button>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
+                <div id="pathInstruction" style="font-size: 11px; color: var(--text-color); text-align: center; line-height: 1.6;">
+                    <strong style="color: var(--text-highlight); display: block; margin-bottom: 5px;">STEP 1: Copy debug folder path</strong>
+                    <code id="expectedPath" style="background: var(--accent-glow); color: var(--accent); padding: 6px 10px; border-radius: 4px; display: block; margin: 8px 0; cursor: pointer; border: 1px dashed var(--accent); font-family: monospace; font-size: 12px; word-break: break-all;" title="Click to copy path">[[DYNAMIC_PATH]]</code>
+                    <span style="opacity: 0.7;">(Click the box above to copy)</span>
+                </div>
+                
+                <div style="text-align: center; border-top: 1px solid var(--border); padding-top: 10px;">
+                    <strong style="color: var(--text-highlight); display: block; margin-bottom: 10px;">STEP 2: Connect & Paste</strong>
+                    <button id="connectBtn" class="btn" style="width: 100%;">Connect to Folder</button>
+                </div>
+            </div>
         </div>
         <div class="search-container">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Search ID, Text, Tooltip..." oninput="handleSearch()">
-                <span id="searchClear" style="cursor: pointer; opacity: 0.5; padding: 0 5px;" onclick="clearSearch()">×</span>
+                <span id="searchClear" style="cursor: pointer; opacity: 0.5; padding: 0 5px;"
+                    onclick="clearSearch()">×</span>
             </div>
             <div class="search-controls" id="searchControls" style="display: none;">
                 <span id="searchStats">0 of 0</span>
@@ -523,7 +538,8 @@
         <div class="glass-panel" id="propPanel">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                 <h2 id="insTitle" style="margin: 0;">root_component <span class="addr" id="insAddr">0x00000</span></h2>
-                <button id="restoreBtn" class="restore-btn" style="display: none;" onclick="resetHiddenProps()">Restore Hidden</button>
+                <button id="restoreBtn" class="restore-btn" style="display: none;" onclick="resetHiddenProps()">Restore
+                    Hidden</button>
             </div>
             <div class="prop-grid" id="propGrid">
                 <!-- Dynamically populated based on schema -->
@@ -538,7 +554,8 @@
                     </div>
                     <div class="factory-input-group">
                         <span class="factory-label">Layout Path</span>
-                        <input type="text" id="factoryPath" class="prop-input" placeholder="UI/Campaign UI/button_template">
+                        <input type="text" id="factoryPath" class="prop-input"
+                            placeholder="UI/Campaign UI/button_template">
                     </div>
                     <button class="btn" onclick="handleCreateComponent()" style="height: 33px;">Create</button>
                 </div>
@@ -638,6 +655,7 @@
         // ----------------------------------------------------
         // APP STATE
         // ----------------------------------------------------
+        const CURRENT_GAME_ID = "[[GAME_ID]]";
         let dirHandle;
         let fileHandle;
         let commandFileHandle;
@@ -651,13 +669,15 @@
         let selectedAddress = null;
         let isLocked = false;
         let openStates = {}; // Persist folder states
-        let hiddenProps = new Set(JSON.parse(localStorage.getItem('consul_uidebug_hidden') || '[]'));
+        
+        const storageKeyPrefix = 'consul_uidebug_' + CURRENT_GAME_ID + '_';
+        let hiddenProps = new Set(JSON.parse(localStorage.getItem(storageKeyPrefix + 'hidden') || '[]'));
 
         function saveHiddenProps() {
-            localStorage.setItem('consul_uidebug_hidden', JSON.stringify(Array.from(hiddenProps)));
+            localStorage.setItem(storageKeyPrefix + 'hidden', JSON.stringify(Array.from(hiddenProps)));
         }
 
-        window.togglePropVisibility = function(propName) {
+        window.togglePropVisibility = function (propName) {
             if (hiddenProps.has(propName)) {
                 hiddenProps.delete(propName);
             } else {
@@ -667,13 +687,13 @@
             if (selectedAddress) updateInspector(selectedAddress);
         }
 
-        window.resetHiddenProps = function() {
+        window.resetHiddenProps = function () {
             hiddenProps.clear();
             saveHiddenProps();
             if (selectedAddress) updateInspector(selectedAddress);
         }
 
-        window.toggleLock = function() {
+        window.toggleLock = function () {
             isLocked = !isLocked;
             if (selectedAddress) updateInspector(selectedAddress);
         }
@@ -706,10 +726,15 @@
 
         document.getElementById('connectBtn').addEventListener('click', async () => {
             try {
-                dirHandle = await window.showDirectoryPicker({ id: "consul_debug_dir", mode: "readwrite" });
+                dirHandle = await window.showDirectoryPicker({ 
+                    id: "consul_debug_dir", 
+                    mode: "readwrite"
+                });
+                
                 await getCommandFile();
 
                 document.getElementById('connectBtn').innerText = "Connected";
+                document.getElementById('pathInstruction').style.display = "none";
                 document.getElementById('statusIndicator').innerText = "Live Sync";
                 document.getElementById('statusIndicator').className = "status active";
 
@@ -721,6 +746,15 @@
             } catch (err) {
                 console.error("Failed to acquire directory:", err);
             }
+        });
+
+        document.getElementById('expectedPath').addEventListener('click', function() {
+            const path = this.innerText;
+            if (path.includes('[DYNAMIC_PATH]')) return;
+            navigator.clipboard.writeText(path);
+            const oldText = this.innerText;
+            this.innerText = "COPIED!";
+            setTimeout(() => this.innerText = oldText, 1000);
         });
 
         async function pollFile() {
@@ -949,11 +983,11 @@
 
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('propPanel').classList.add('visible');
-            
+
             const lockLabel = isLocked ? 'LOCKED' : 'FOLLOWING MOUSE';
             const lockClass = isLocked ? 'locked' : 'unlocked';
             const lockIcon = isLocked ? '🔒' : '🖱️';
-            
+
             document.getElementById('insTitle').innerHTML = `
                 <div style="display: flex; align-items: center; margin-bottom: 5px;">
                     <button class="lock-btn ${lockClass}" onclick="toggleLock()" title="Click to toggle between following mouse and locking to this component">
@@ -1014,12 +1048,12 @@
                 <span>${name}</span>
                 <span class="hide-btn" title="Hide property" onclick="togglePropVisibility('${name}')">×</span>
             </div>`;
-            
+
             // If we can't read, we don't have a value to show
             const displayValue = canRead ? value : "Write-only (No Getter)";
             const cleanVal = (value === 'nil' || value === 'error' || !canRead) ? '' : value;
             const readOnlyClass = !canRead ? 'style="color: #5b6287; font-style: italic;"' : '';
-            
+
             if (schema.type === 'readonly' || !canWrite) {
                 inputHtml = `<div class="prop-value" ${readOnlyClass}>${escapeHtml(displayValue)}</div>`;
             } else if (schema.type === 'boolean') {
@@ -1039,7 +1073,7 @@
                 const placeholder = canRead ? "" : "Enter value to set...";
                 inputHtml = `<input type="text" class="prop-input" placeholder="${placeholder}" value="${escapeHtml(cleanVal)}" onchange="dispatchCommand('${name}', this.value)">`;
             }
-            
+
             return `<div class="prop-row">${labelHtml}${inputHtml}</div>`;
         }
 
@@ -1074,7 +1108,7 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
             const stats = document.getElementById('searchStats');
             const controls = document.getElementById('searchControls');
-            
+
             const currentSelectedAddr = searchIndex >= 0 ? searchResults[searchIndex] : null;
 
             // Clear existing highlights
@@ -1113,7 +1147,7 @@
 
             if (searchResults.length > 0) {
                 controls.style.display = 'flex';
-                
+
                 if (!isRefresh) {
                     searchIndex = 0;
                     navigateSearch(0); // Jump to first only on manual search
@@ -1123,13 +1157,13 @@
                         searchIndex = searchResults.indexOf(currentSelectedAddr);
                     }
                 }
-                
+
                 // Re-apply current selection highlight
                 if (searchIndex >= 0) {
                     const el = document.querySelector(`summary[data-addr="${searchResults[searchIndex]}"]`);
                     if (el) el.classList.add('search-current');
                 }
-                
+
                 updateSearchUI();
             } else {
                 controls.style.display = 'flex';
@@ -1138,12 +1172,12 @@
             }
         }
 
-        window.clearSearch = function() {
+        window.clearSearch = function () {
             document.getElementById('searchInput').value = '';
             handleSearch();
         }
 
-        window.navigateSearch = function(dir) {
+        window.navigateSearch = function (dir) {
             if (searchResults.length === 0) return;
 
             // Remove current highlight
@@ -1153,10 +1187,10 @@
             }
 
             searchIndex = (searchIndex + dir + searchResults.length) % searchResults.length;
-            
+
             const addr = searchResults[searchIndex];
             const el = document.querySelector(`summary[data-addr="${addr}"]`);
-            
+
             if (el) {
                 el.classList.add('search-current');
                 openParents(el);
@@ -1204,7 +1238,7 @@
 
             const rect = summary.getBoundingClientRect();
             const midpoint = rect.top + rect.height / 2;
-            
+
             summary.classList.remove('drag-over', 'drag-over-top');
             if (e.clientY < midpoint) {
                 summary.classList.add('drag-over-top');
@@ -1240,7 +1274,7 @@
                 clearTimeout(dragHoverTimeout);
                 dragHoverTimeout = null;
             }
-            
+
             const childAddr = e.dataTransfer.getData('text/plain');
             const targetAddr = summary.getAttribute('data-addr');
             const parentAddr = summary.getAttribute('data-parent-addr');
@@ -1279,7 +1313,7 @@
             writeCommand(luaCode.replace(/\s+/g, ' ').trim());
         }
 
-        window.handleCreateComponent = function() {
+        window.handleCreateComponent = function () {
             if (!selectedAddress) return;
             const name = document.getElementById('factoryName').value.trim();
             const path = document.getElementById('factoryPath').value.trim();

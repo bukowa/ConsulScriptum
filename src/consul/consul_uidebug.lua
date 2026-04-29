@@ -6,6 +6,11 @@ local uidebug = {
 	cache = {},
 }
 
+local public_dir = os.getenv("PUBLIC") or "C:\\Users\\Public"
+local game_subfolder = tostring(consul_build or "unknown")
+local UI_DEBUG_DIR_NAME = public_dir .. "\\consul\\" .. game_subfolder .. "\\uidebug"
+local UI_DEBUG_DIR = UI_DEBUG_DIR_NAME:gsub("\\", "/") .. "/"
+
 local SEPARATOR = "<||_CONSUL_SEP_||>"
 
 uidebug.PROPERTIES = {
@@ -147,7 +152,7 @@ uidebug.dump_tree = function(root_component, hovered_address)
 		return
 	end
 
-	local file, err_open = io.open("consul_debug_ui_state.txt", "w+")
+	local file, err_open = io.open(UI_DEBUG_DIR .. "consul_debug_ui_state.txt", "w+")
 	if not file then
 		consul.log:error("uidebug: Could not open output file: " .. tostring(err_open))
 		return
@@ -163,13 +168,18 @@ end
 --- @function uidebug.launch
 --- @treturn string Status message.
 uidebug.launch = function()
-	local output_path = "consul_uidebug.html"
+	os.execute("mkdir " .. UI_DEBUG_DIR_NAME)
+	local output_path = UI_DEBUG_DIR .. "consul_uidebug.html"
 
 	-- Load template from embedded Lua string
 	local ok, content = pcall(require, "consul_uidebug_template")
 	if not ok then
 		return "Error: Could not load UI template from consul_uidebug_template.lua"
 	end
+
+	-- Inject the actual path and game ID into the template for the UI
+	content = content:gsub("%[%[DYNAMIC_PATH%]%]", UI_DEBUG_DIR_NAME)
+	content = content:gsub("%[%[GAME_ID%]%]", game_subfolder)
 
 	local f_out = io.open(output_path, "w")
 	if not f_out then
@@ -184,7 +194,7 @@ uidebug.launch = function()
 end
 
 uidebug.process_commands = function()
-	local f = io.open("consul_debug_ui_command.txt", "r")
+	local f = io.open(UI_DEBUG_DIR .. "consul_debug_ui_command.txt", "r")
 	if not f then
 		return
 	end
@@ -194,7 +204,7 @@ uidebug.process_commands = function()
 
 	if content and content ~= "" then
 		-- clear the file immediately
-		local fw = io.open("consul_debug_ui_command.txt", "w")
+		local fw = io.open(UI_DEBUG_DIR .. "consul_debug_ui_command.txt", "w")
 		if fw then
 			fw:close()
 		end

@@ -1,6 +1,9 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["0.8.1"] = {
+            common = "Fixed: UI Debugger permission issues (Program Files access) by redirecting data to C:\\Users\\Public\\consul."
+        },
         ["0.8.0"] = {
             common = "\nAdded: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching."..
             "\nAdded: Console minimized state is now remembered across sessions."..

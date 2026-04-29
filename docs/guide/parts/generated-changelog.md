@@ -1,3 +1,9 @@
+## v0.8.1
+**Common:**
+- Fixed: UI Debugger permission issues (Program Files access) by redirecting data to C:\\Users\\Public\\consul.
+
+---
+
 ## v0.8.0
 **Common:**
 - Added: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching.
