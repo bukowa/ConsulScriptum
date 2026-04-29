@@ -18,10 +18,13 @@ scripts.
 :::tabs key:game
 
 == Attila
-<video :src="$withBase('/videos/attila_debugging_ui.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/attila_debugging_ui.mp4')" data-title="Debugging UI" data-game="Attila" autoplay loop muted playsinline></video>
+
+== ToB
+<video :src="$withBase('/videos/tob_debugging_ui.mp4')" data-title="Debugging UI" data-game="TOB" autoplay loop muted playsinline></video>
 
 == Rome II
-<video :src="$withBase('/videos/rome2_debugging_ui.mp4')" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/rome2_debugging_ui.mp4')" data-title="Debugging UI" data-game="Rome II" autoplay loop muted playsinline></video>
 
 :::
 
@@ -54,16 +57,16 @@ component you are currently interacting with.
 
 ```text
 --------------------------------------------------------------------------------
-Id:                               Text
-CallbackId:                   TextviewText
-Visible:                         true
-ChildCount:                  0
-IsInteractive:                 true
-CurrentState:                 MainState
-Priority:                       60
-Position:                      123, 606
+Id:                     Text
+CallbackId:             TextviewText
+Visible:                true
+ChildCount:             0
+IsInteractive           true
+CurrentState            MainState
+Priority:               60
+Position:               123, 606
 Bounds, Dimensions:     327, 298, 327, 298
-Width, Height:             327, 298
+Width, Height:          327, 298
 GetStateText:           The aura of terror surrounding the Huns is so great that their enemies are barely able to conceive that they are also human beings. In truth, the Huns’ equine expertise is what makes them such formidable foes. In battle, their combination of ranged attacks and the speed with which they can cover ground is breath-taking – and terrifying - to behold. In this way, the Huns have swept into Europe, and now threaten Rome itself. However, they must act swiftly to turn this chaos into an empire. Whilst their leaders’ arguments rage the horde waits, paralysed, for the arrival of a man - a man powerful enough to unite the Hunnic peoples and bind them to his singular will…, 325, 298, 16
 GetTooltipText:         
 --------------------------------------------------------------------------------
@@ -244,6 +247,10 @@ The UIComponent methods in the ConsulScriptum API reference are **raw engine dum
 
 == Attila
 - **Your game's methods**: [Attila — UIComponent Reference](../reference/attila-api#uicomponent)
+- **Detailed docs (Troy)**: [Troy — UIComponent Documentation](https://chadvandy.github.io/tw_modding_resources/Troy/campaign/uicomponent.html#)
+
+== ToB
+- **Your game's methods**: [ToB — UIComponent Reference](../reference/tob-api#uicomponent)
 - **Detailed docs (Troy)**: [Troy — UIComponent Documentation](https://chadvandy.github.io/tw_modding_resources/Troy/campaign/uicomponent.html#)
 
 :::
