@@ -108,6 +108,10 @@ Use the **Console** tab for manual interaction. It allows you to run slash comma
 == Attila
 <video :src="$withBase('/videos/attila_console.mp4')" data-title="Scripting Console" data-game="Attila" autoplay loop muted playsinline></video>
 
+== ToB
+<video :src="$withBase('/videos/tob_console.mp4')" data-title="Scripting Console" data-game="TOB" autoplay loop muted playsinline></video>
+
+
 == Rome II
 <video :src="$withBase('/videos/rome2_console.mp4')" data-title="Scripting Console" data-game="Rome II" autoplay loop muted playsinline></video>
 
