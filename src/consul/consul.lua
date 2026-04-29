@@ -30,11 +30,7 @@ consul = {
 			table.insert(events.UICreated, consul.ui.attila.OnUICreated)
 		end
 		if consul_build == "TOB" then
-			table.insert(events.ComponentMoved, function(ctx)
-				local ok, err = pcall(consul.ui.tob.OnComponentMoved, ctx)
-				consul.log:error(tostring(err))
-				consul.log:error(ok)
-			end)
+			table.insert(events.ComponentMoved, consul.ui.tob.OnComponentMoved)
 			table.insert(events.TimeTrigger, consul.ui.tob.TimeTrigger)
 			table.insert(events.UICreated, consul.ui.tob.OnUICreated)
 		end
