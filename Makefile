@@ -149,6 +149,10 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_uidebug.lua \
 	$(BUILD_DIR)/consul/consul_uidebug_template.lua
 
+ifeq ($(GAME),TOB)
+LUA_TARGETS += $(BUILD_DIR)/script/default_battle/battle_start.lua
+endif
+
 IMAGE_TARGETS := \
 	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
 	$(BUILD_DIR)/ui/skins/default/arrow_out.png
@@ -309,6 +313,11 @@ $(BUILD_DIR)/consul/consul_uidebug_template.lua: tools/consul_uidebug.html
 
 $(BUILD_DIR)/consul/consul_battle.lua: \
 	src/consul/consul_battle.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/script/default_battle/battle_start.lua: \
+	src/script/default_battle/battle_start.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
