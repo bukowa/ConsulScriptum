@@ -1355,7 +1355,7 @@ consul = {
 
 				local menu = ui.find("menu_bar")
 				menu:CreateComponent(ui.button_toggle, ui.template_attila_toggle)
-                ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+				ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
 
 				ui.MoveToConfigPosition()
 				ui.tob.created = true
@@ -1379,13 +1379,12 @@ consul = {
 				-- in campaign
 				if consul._game() ~= nil then
 					consul._game():add_time_trigger("consul_move_trigger", 0)
-					-- in battle
-					--elseif consul_build == "Attila" and consul.is_in_battle_script then
-					--	function __consul_attila_ui_battle_single_shot_timer()
-					--		consul.ui.attila.TimeTrigger()
-					--	end
-					--
-					--	consul.bm:register_singleshot_timer("__consul_attila_ui_battle_single_shot_timer", 0)
+				elseif consul.is_in_battle_script then
+					function __consul_tob_ui_battle_single_shot_timer()
+						consul.ui.tob.TimeTrigger()
+					end
+
+					consul.bm:register_singleshot_timer("__consul_tob_ui_battle_single_shot_timer", 0)
 				end
 				local c = ui.find(consul.ui.root)
 				tob.xx, tob.yy = c:Position()
@@ -2507,6 +2506,9 @@ This is some information about the CliExecute functions in the base game.
 					end,
 					func = function()
 						local r
+						if consul_build == "TOB" then
+							return "/use_in_battle is not required for TOB"
+						end
 						consul.config.process(function(cfg)
 							cfg.battle.use_in_battle = not cfg.battle.use_in_battle
 							if cfg.battle.use_in_battle then

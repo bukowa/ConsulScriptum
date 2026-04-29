@@ -32,3 +32,16 @@ if ScriptedValueRegistry:new():LoadBool("battle_loaded_from_campaign") or is_twe
 else
 	bm:out("Not loading advice");
 end;
+
+consul.ui._UIComponent = UIComponent
+consul.ui.tob.OnUICreated()
+consul.bm = bm
+consul.is_in_battle_script = true
+
+if consul.uidebug.is_hooked then
+    function __consul_tob_uidebug_battle_single_shot_timer()
+        consul.uidebug.process_commands()
+    end
+
+    consul.bm:register_repeating_timer("__consul_tob_uidebug_battle_single_shot_timer", 0.5)
+end
