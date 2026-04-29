@@ -6,7 +6,7 @@
 
 Literally, *"Consul Scriptum"* translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on context: It could metaphorically imply "the written authority" or "a document issued by a consul." In a creative or modern context, it might be used as a title for a fictional work, legal decree, or diplomatic text.
 
-## In reality, this is a scripting console for Total War: Rome II.
+## In reality, this is a scripting console for Total War: Rome II, Attila, and Thrones of Britannia.
 
 ![Consul Scriptum](.github/extras/consul-scriptum.png)
 
@@ -42,7 +42,7 @@ Few simple scripts are already included:
 - Cannot use the **mouse** to select text from command history.
 - Cannot paste long commands - but you can type them...?! 🤷 (I have no idea how to handle this and this is very annoying. Current workaround: use scripting files via **Scriptum**, as they load dynamically.)
 - **Scriptum** accepts only **10 custom scripts** for now (I can't find a way to dynamically create components - if anyone needs more, just let me know).
-- Doesn't work in battle (I can't find a way to access UIComponent in battle - it’s probably restricted on purpose by CA).
+- **Battle Mode**: Experimental support for Rome II and Attila via a technical workaround, and full native support in Thrones of Britannia. Use the `/use_in_battle` command to enable.
 
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bukowa/ConsulScriptum)
