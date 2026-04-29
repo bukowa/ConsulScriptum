@@ -19,14 +19,13 @@ else ifeq ($(GAME),TOB)
     MOD_PACKAGE := consulscriptum_tob.pack
     RPFM_GAME_ID := thrones_of_britannia
     RPFM_SCHEMA_FILE := schema_tob.ron
-    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Saga Thrones of Britannia 712100
-    INSTALL_ALONE_DIR := $(INSTALL_STEAM_DIR)
+    INSTALL_ALONE_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Saga Thrones of Britannia 712100
+    INSTALL_STEAM_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Saga Thrones of Britannia 712100
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/ThronesofBritannia/scripts
-    GAME_EXE := Thrones.exe
+    GAME_EXE := ThronesofBritannia.exe
     STEAM_APP_ID := 712100
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_tob.lua
-else
-    # Default is Attila
+else ifeq ($(GAME),Attila)
     MOD_PACKAGE := consulscriptum_attila.pack
     RPFM_GAME_ID := attila
     RPFM_SCHEMA_FILE := schema_att.ron
@@ -411,7 +410,7 @@ clean:
 	@rm -rf $(BUILD_DIR)
 	@rm -f $(MOD_PACKAGE)
 	@rm -f $(RELEASE_DIR)/$(MOD_PACKAGE)
-	@rm -f $(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)
+	@rm -f '$(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)'
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
 	@echo "Cleaned up build directory and mod package for $(GAME)."
 

@@ -1,3 +1,10 @@
+## v0.9.0
+**Common:**
+- New: THRONES OF BRITANNIA support for Consul Scriptum (link in Github release page)
+- Fixed: few minor boring bugs (html debug, ui component finding)
+
+---
+
 ## v0.8.1
 **Common:**
 - Fixed: UI Debugger permission issues (Program Files access) by redirecting data to C:\\Users\\Public\\consul.
