@@ -950,17 +950,17 @@
         }
 
         function updateCaptureStatus(isActive) {
+            const shortcutHint = CURRENT_GAME_ID === 'TOB' ? 'F5' : 'toggle_stream_pause (F7)';
             isCaptureActive = isActive;
             const el = document.getElementById('captureStatus');
             const label = el.querySelector('.label');
             if (isActive) {
                 el.classList.add('active');
                 el.classList.remove('paused');
-                label.innerText = "Capture: Active";
+                label.innerText = `Capture: Active (${shortcutHint}) to Pause (in game)`;
             } else {
                 el.classList.remove('active');
                 el.classList.add('paused');
-                const shortcutHint = CURRENT_GAME_ID === 'TOB' ? 'F5' : 'toggle_stream_pause (F7)';
                 label.innerText = `Capture: Paused (Shortcut: ${shortcutHint})`;
             }
         }
