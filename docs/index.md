@@ -2,7 +2,7 @@
 layout: home
 title: "Consul Scriptum"
 titleTemplate: "Scripting Console for Total War Games"
-description: "Open-source scripting console for Rome II and Attila. Kill characters, transfer settlements, run Lua scripts — all live in your campaign."
+description: "Open-source scripting console for Rome II, Attila, and ToB. Kill characters, transfer settlements, run Lua scripts — all live in your campaign."
 
 hero:
   name: "Consul Scriptum"

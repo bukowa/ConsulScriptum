@@ -46,6 +46,12 @@ export const HOME_PLAYLIST = [
     game: "Rome II",
     src: withBase('/videos/rome2_console.mp4'),
     type: 'video'
+  },
+  {
+    title: "ToB: Accessing the Interface",
+    game: "ToB",
+    src: withBase('/videos/tob_accessconsole.mp4'), // Placeholder
+    type: 'video'
   }
 ]
 

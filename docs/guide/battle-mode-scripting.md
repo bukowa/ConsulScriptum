@@ -1,14 +1,15 @@
 # Battle mode
 
-By default, the ConsulScriptum interface is not available in battle because the game does not load the campaign scripting and UI interfaces during tactical sessions. 
+By default, the ConsulScriptum interface is not available in battle in **Rome II** and **Attila** because the game does not load the campaign scripting and UI interfaces during tactical sessions. However, **Total War Saga: ToB** supports the console in battle natively.
 
-However, for both **Total War: Rome II** and **Total War: Attila**, a workaround is available to force the game to load these interfaces via a custom battlefield override.
+:::tabs key:game
+== ToB
+The console works **out of the box** in *Thrones of Britannia*. Because the game makes the battle scripting API available by default in campaign battles, no workarounds are required. Simply open the console as you would in the campaign using your toggle key.
 
-## How to Enable (Rome II & Attila)
+== Rome II & Attila
+In these games, you must use an experimental workaround to force the game to load the console interfaces via a custom battlefield override.
 
-In both games, you can force the campaign UI (and thus the console) to load during a battle using a simple toggle command.
-
-### Setup Instructions
+### How to Enable
 1.  **Go into a Campaign.**
 2.  **Run the Command**:
     ```bash
@@ -17,24 +18,27 @@ In both games, you can force the campaign UI (and thus the console) to load duri
 3.  **Confirm**: You should see a message confirming that battle mode is enabled for **all subsequent campaign battles**.
 4.  **Start Battle**: Enter any campaign battle. The ConsulScriptum window will now be available.
 
-### Toggling Off
-The `/use_in_battle` command is a toggle. If you wish to disable the console in battles (e.g., to restore standard UI performance), simply run the command again from a campaign session.
-
-## Performance Notes
-
-::: warning Performance Impact
-Enabling the console in battle forces the game to load additional scripting and UI interfaces. This triggers a large number of internal events (for example, events linked to every missile particle hit), which **may potentially slow down performance during intense battles**. If you experience lag, it is recommended to toggle battle mode off.
+> [!TIP] Toggling Off
+> The `/use_in_battle` command is a toggle. Run it again from a campaign session to disable the console in battles.
 :::
 
-::: warning Campaign Sessions Only
-The `/use_in_battle` command **only works within an active campaign session**. It cannot be used to enable the console for Custom Battles or Historical Battles launched from the main menu by default.
+## Performance & Constraints
 
-**Modders & Developers**: If your project specifically requires console access in standalone battles, please contact me on [Discord](https://discord.gg/6vm2M94vhX). 
+::: warning Performance Impact (Rome II & Attila)
+For Rome II and Attila, using the `/use_in_battle` workaround forces the game to load additional scripting and UI interfaces. This triggers a large number of internal events (e.g., events for every missile particle hit), which **may potentially slow down performance during intense battles**. If you experience lag, it is recommended to toggle battle mode off.
+
+**Note for ToB**: This warning does not apply to *Thrones of Britannia*, as the console is native and does not require the workaround overhead.
 :::
 
-## Example Script: Battle Mode (Rome II & Attila)
+::: warning Campaign Sessions Only (Rome II & Attila)
+The `/use_in_battle` workaround for Rome II/Attila **only works within an active campaign session**. It cannot be used to enable the console for Custom Battles or Historical Battles launched from the main menu.
 
-The `bm` (Battle Manager) object is globally available when running scripts in battle. The following script is compatible with both **Rome II** and **Attila** and showcases how to iterate through all alliances and units currently on the field:
+For more technical details on why these restrictions exist, see [Technical Limitations](./technical-limitations#battle-mode).
+:::
+
+## Example Script: Battle Mode
+
+The `bm` (Battle Manager) object is globally available when running scripts in battle. The following script is compatible with both **Rome II**, **Attila**, **ToB** and showcases how to iterate through all alliances and units currently on the field:
 
 ```lua
 -- clear the console output for a nice view

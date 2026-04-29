@@ -3,6 +3,7 @@
 .cursor
 consulscriptum.pack
 consulscriptum_attila.pack
+consulscriptum_tob.pack
 .deps
 build
 mod

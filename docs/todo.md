@@ -1,0 +1,2 @@
+- add conditions and other apis that are present in all games
+- 

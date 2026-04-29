@@ -1,6 +1,6 @@
 ---
 title: "Total War Script Runner (Scriptum)"
-description: "File-based scripting for Total War. Execute complex .lua files live in Rome II and Attila without restarting the game. Perfect for mod development."
+description: "File-based scripting for Total War. Execute complex .lua files live in Rome II, Attila, and ToB without restarting the game. Perfect for mod development."
 next:
   text: Local Files and Logs
   link: /guide/consul-scriptum-files
@@ -92,6 +92,7 @@ Because it uses `dofile`, the game engine re-reads the file from disk every time
 Your scripts must be located within the game's root directory:
 - Rome II: `...\Total War Rome II\`
 - Attila: `...\Total War Attila\`
+- ToB: `...\Total War Saga Thrones of Britannia\`
 
 ### Errors
 If a script has a Lua error, the error message is printed to the console output. Check the console if nothing happens after clicking a button.
