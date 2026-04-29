@@ -960,7 +960,8 @@
             } else {
                 el.classList.remove('active');
                 el.classList.add('paused');
-                label.innerText = "Capture: Paused (Shortcut: toggle_stream_pause (F7))";
+                const shortcutHint = CURRENT_GAME_ID === 'TOB' ? 'F5' : 'toggle_stream_pause (F7)';
+                label.innerText = `Capture: Paused (Shortcut: ${shortcutHint})`;
             }
         }
 

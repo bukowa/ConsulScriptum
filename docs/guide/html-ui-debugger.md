@@ -85,8 +85,8 @@ You can manually change the `CurrentState` of a component in the inspector to se
 - **Hide Properties**: If there are properties you never use, click the `×` next to them. This preference is saved in your browser's local storage.
 - **Restore**: Use the "Restore Hidden" button to bring them back.
 
-### Capture Toggle (F7)
-You can pause the game-side data stream by pressing **F7** in-game. This stops the game from writing updates to the state file, which is useful if you want to freeze the entire debugger state.
+### Capture Toggle (F7 / F5 in TOB)
+You can pause the game-side data stream by pressing **F7** (or **F5** in Thrones of Britannia) in-game. This stops the game from writing updates to the state file, which is useful if you want to freeze the entire debugger state.
 ## How It Works (Technical Overview)
 
 The UI Debugger uses a "File-based Bridge" to communicate between the game engine and your web browser. 
