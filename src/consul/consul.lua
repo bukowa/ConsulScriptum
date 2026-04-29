@@ -2341,6 +2341,38 @@ consul = {
 									end,
 								},
 							},
+							TOB = {
+								main_icon = {
+									type = "settlement",
+									strip = { "radar_icon_settlement:" },
+									strip_element = "parent",
+									f = function(name)
+										local settlement = consul.game.region(name):settlement()
+										consul.debug.settlement = settlement
+										return consul.pretty(settlement)
+									end,
+								},
+								button_icon = {
+									type = "faction",
+									strip = { "faction_icon_" },
+									strip_element = "parent",
+									f = function(name)
+										local faction = consul.game.faction(name)
+										consul.debug.faction = faction
+										return consul.pretty(faction)
+									end,
+								},
+								faction_row_entry_ = {
+									type = "faction",
+									strip = { "faction_row_entry_" },
+									strip_element = "this",
+									f = function(name)
+										local faction = consul.game.faction(name)
+										consul.debug.faction = faction
+										return consul.pretty(faction)
+									end,
+								},
+							},
 						}
 
 						local mapping = game_mappings[consul_build] or {}
