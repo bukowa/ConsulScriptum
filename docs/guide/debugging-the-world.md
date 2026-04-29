@@ -15,7 +15,7 @@ Consul Scriptum provides a way to inspect game objects directly in the world for
 <video :src="$withBase('/videos/attila_debugging.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
 == ToB
-<video :src="$withBase('/videos/tob_debugging.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/tob_debugging.mp4')" data-title="Killing Multiple Characters" data-game="ToB" autoplay loop muted playsinline></video>
 
 == Rome II
 <video :src="$withBase('/videos/rome2_debugging.mp4')" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>

@@ -1,7 +1,7 @@
 ---
 outline: deep
-title: "Total War Lua Console Guide (Rome 2 & Attila)"
-description: "Total War Lua console. Learn how to execute raw Lua scripts, trigger events, and interact with the game model in real-time within Rome II and Attila."
+title: "Total War Lua Console Guide (Rome 2, Attila, ToB)"
+description: "Total War Lua console. Learn how to execute raw Lua scripts, trigger events, and interact with the game model in real-time within Rome II, Attila, and ToB."
 ---
 
 # Commands & Lua Console

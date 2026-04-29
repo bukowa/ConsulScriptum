@@ -38,7 +38,7 @@ The interface consists of three main panels: **Console**, **Consul**, and **Scri
 Click the **ConsulScriptum toggle button** in the campaign UI top bar. The window will appear. You can drag it anywhere — its position is saved automatically between sessions.
 
 == ToB
-<video :src="$withBase('/videos/tob_accessconsole.mp4')" data-title="Accessing the Interface" data-game="Rome II" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/tob_accessconsole.mp4')" data-title="Accessing the Interface" data-game="ToB" autoplay loop muted playsinline></video>
 
 Click the **ConsulScriptum toggle button** in the campaign UI top bar. The window will appear. You can drag it anywhere — its position is saved automatically between sessions.
 
@@ -59,7 +59,7 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
 <video :src="$withBase('/videos/attila_index.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
 == ToB
-<video :src="$withBase('/videos/tob_index.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
+<video :src="$withBase('/videos/tob_index.mp4')" data-title="Killing Multiple Characters" data-game="ToB" autoplay loop muted playsinline></video>
 
 == Rome II
 <video :src="$withBase('/videos/rome2_index.mp4')" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
