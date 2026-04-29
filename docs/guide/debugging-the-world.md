@@ -2,16 +2,20 @@
 next:
   text: Debugging The UI
   link: /guide/debugging-the-ui
+description: "Check supported games and feature compatibility for Consul Scriptum in Rome II, Attila, and ToB. Learn about mod compatibility and stability."
 ---
 
 # Debugging The World
 
-Consul Scriptum provides a way to inspect game objects directly in the world. By toggling debug mode, you will see the available Lua data for settlements, characters, and units as you interact with them.
+Consul Scriptum provides a way to inspect game objects directly in the world for Rome II, Attila, and ToB. By toggling debug mode, you will see the available Lua data for settlements, characters, and units as you interact with them.
 
 :::tabs key:game
 
 == Attila
 <video :src="$withBase('/videos/attila_debugging.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
+
+== ToB
+<video :src="$withBase('/videos/tob_debugging.mp4')" data-title="Killing Multiple Characters" data-game="Attila" autoplay loop muted playsinline></video>
 
 == Rome II
 <video :src="$withBase('/videos/rome2_debugging.mp4')" data-title="Transferring Settlement & Killing Character" data-game="Rome II" autoplay loop muted playsinline></video>
@@ -229,15 +233,14 @@ Example Output
 }
 ```
 
-### Can't find what you need? 
-You can use `/debug_mouseover` to find UI data about additional components.
-Under the hood, Consul often uses the UI state to extract region or unit names from the component ID.
-
-
-### Grabbing a Script Interface Handle
+### Using data
 
 Once you use the `/debug` command to inspect an object, look for its unique identifier — usually its `name` or `cqi` (Command Queue Index).
 With this identifier in hand, you can use game model functions inside your scripts to fetch the object handle and begin interacting with it.
+
+## Grabbing a Script Interface Handle
+
+<video :src="$withBase('/videos/objects_debug.mp4')" data-title="Objects Debug" autoplay loop muted playsinline></video>
 
 You can also rely on built-in Consul handles that cache the last clicked object when `/debug` is active:
 - `consul.debug.garrison_residence`
@@ -265,6 +268,12 @@ table.insert(events.CharacterCompletedBattle, function(context)
     consul.log:info(consul.pretty(char))
 end)
 ```
+
+## Can't find what you need? 
+You can use `/debug_mouseover` to find UI data about additional components.
+Under the hood, Consul often uses the UI state to extract region or unit names from the component ID.
+
+<video :src="$withBase('/videos/cantfind_debugging.mp4')" data-title="Cant find debug" autoplay loop muted playsinline></video>
 
 ## Console Output Mirroring
 
