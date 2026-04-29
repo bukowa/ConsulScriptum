@@ -3664,9 +3664,6 @@ consul.console.write(
 			return scripting.game_interface
 		end
 
-		-- this is still ok
-		consul.log:debug("Could not find scripting.game_interface, trying to locate...")
-
 		-- this can happen in campaigns other than grand campaign and cig
 		-- try locating scripting in preloaded modules
 		local scripting = package.loaded["lua_scripts.EpisodicScripting"]
@@ -3682,7 +3679,9 @@ consul.console.write(
 			return scripting.game_interface
 		end
 
-		consul.log:error("Could not find scripting.game_interface, consul will not work properly")
+        if consul.env.mode == 1 then
+		    consul.log:error("Could not find scripting.game_interface, consul will not work properly")
+		end
 		return nil
 	end,
 
