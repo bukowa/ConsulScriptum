@@ -1,6 +1,6 @@
 ---@module consul
 
-consul_build = "Attila" -- or "Rome2"
+consul_build = "Attila" -- or "Rome2", "TOB"
 
 consul = {
 
@@ -28,6 +28,15 @@ consul = {
 			table.insert(events.ComponentMoved, consul.ui.attila.OnComponentMoved)
 			table.insert(events.TimeTrigger, consul.ui.attila.TimeTrigger)
 			table.insert(events.UICreated, consul.ui.attila.OnUICreated)
+		end
+		if consul_build == "TOB" then
+			table.insert(events.ComponentMoved, function(ctx)
+				local ok, err = pcall(consul.ui.tob.OnComponentMoved, ctx)
+				consul.log:error(tostring(err))
+				consul.log:error(ok)
+			end)
+			table.insert(events.TimeTrigger, consul.ui.tob.TimeTrigger)
+			table.insert(events.UICreated, consul.ui.tob.OnUICreated)
 		end
 		table.insert(events.ComponentLClickUp, consul.ui.OnComponentLClickUp)
 		table.insert(events.UICreated, consul.history.OnUICreated)
@@ -758,7 +767,7 @@ consul = {
 	ui = {
 		-- contains all the components
 		root = (function()
-			if consul_build == "Attila" then
+			if consul_build == "Attila" or consul_build == "TOB" then
 				return "consul"
 			end
 			return "consul_scriptum"
@@ -1252,6 +1261,7 @@ consul = {
 				-- toggle visibility
 				r:SetVisible(not r:Visible())
 				consul.ui.attila.visible = r:Visible()
+				consul.ui.tob.visible = r:Visible()
 
 				-- save to config
 				consul.config.process(function(_cfg)
@@ -1321,6 +1331,92 @@ consul = {
 				config.write(cfg)
 			end
 		end,
+
+		tob = {
+			xx = 0,
+			yy = 0,
+			should_move = false,
+			visible = false,
+
+			-- to avoid creating consul multiple times in battle, as the UI is recreated multiple times
+			-- this is strange behavior because the UICreated event is not "called"; it is called but does not
+			-- appear in the log of the events... if that makes sense lol
+			created = false,
+
+			OnUICreated = function()
+				local ui = consul.ui
+				local log = consul.new_log("ui.tob:OnUICreated")
+				log:trace("TOB specific OnUICreated start")
+
+				if ui.tob.created then
+					log:debug("Consul already created, skipping...")
+					return
+				end
+
+				local menu = ui.find("menu_bar")
+				menu:CreateComponent(ui.button_toggle, ui.template_attila_toggle)
+                ui._UIRoot:CreateComponent(ui.root, ui.template_attila)
+
+				ui.MoveToConfigPosition()
+				ui.tob.created = true
+				log:trace("TOB specific OnUICreated end")
+			end,
+
+			OnComponentMoved = function(context)
+				local log = consul.new_log("ui.tob:OnComponentMoved")
+				log:trace("TOB specific OnComponentMoved start")
+
+				if context.string ~= consul.ui.root then
+					return
+				end
+
+				local ui, tob = consul.ui, consul.ui.tob
+
+				if not tob.visible then
+					return
+				end
+
+				-- in campaign
+				if consul._game() ~= nil then
+					consul._game():add_time_trigger("consul_move_trigger", 0)
+					-- in battle
+					--elseif consul_build == "Attila" and consul.is_in_battle_script then
+					--	function __consul_attila_ui_battle_single_shot_timer()
+					--		consul.ui.attila.TimeTrigger()
+					--	end
+					--
+					--	consul.bm:register_singleshot_timer("__consul_attila_ui_battle_single_shot_timer", 0)
+				end
+				local c = ui.find(consul.ui.root)
+				tob.xx, tob.yy = c:Position()
+				tob.should_move = true
+				c:SetVisible(false)
+
+				log:trace("TOB specific OnComponentMoved end")
+			end,
+
+			TimeTrigger = function()
+				local log = consul.new_log("ui.tob:TimeTrigger")
+				log:trace("TOB specific TimeTrigger start")
+
+				local ui, tob = consul.ui, consul.ui.tob
+				local c = ui.find(ui.root)
+				local x, y = c:Position()
+				local xx, yy = tob.xx, tob.yy
+
+				-- always set visible, the component may be moved without changing position
+				if not tob.visible then
+					return
+				end
+				c:SetVisible(true)
+				if (x ~= xx or y ~= yy) and tob.should_move == true then
+					c:MoveTo(xx, yy)
+					tob.should_move = false
+				end
+
+				log:trace("TOB specific TimeTrigger end")
+			end,
+		},
 	},
 
 	history = {
