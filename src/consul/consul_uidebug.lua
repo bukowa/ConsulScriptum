@@ -1,7 +1,7 @@
 ---@module consul_uidebug
 
 local uidebug = {
-	is_active = true,
+	is_active = false,
 	last_hovered_address = nil,
 	cache = {},
 }
@@ -142,14 +142,16 @@ uidebug.dump_tree = function(root_component, hovered_address)
 
 	local output = {}
 
-	local ok, err = pcall(function()
-		uidebug.cache = {} -- clear cache on new dump
-		traverse_ui(root_component, 0, output, uidebug.last_hovered_address)
-	end)
-
-	if not ok then
-		consul.log:error("uidebug: Error traversing UI tree: " .. tostring(err))
-		return
+	if uidebug.is_active then
+		local ok, err = pcall(function()
+			uidebug.cache = {} -- clear cache on new dump
+			traverse_ui(root_component, 0, output, uidebug.last_hovered_address)
+		end)
+	
+		if not ok then
+			consul.log:error("uidebug: Error traversing UI tree: " .. tostring(err))
+			return
+		end
 	end
 
 	local file, err_open = io.open(UI_DEBUG_DIR .. "consul_debug_ui_state.txt", "w+")
@@ -160,7 +162,9 @@ uidebug.dump_tree = function(root_component, hovered_address)
 
 	file:write("IS_ACTIVE:" .. (uidebug.is_active and "true" or "false") .. "\n")
 	file:write("GAME:" .. tostring(consul_build or "Unknown") .. "\n")
-	file:write(table.concat(output, "\n"))
+	if uidebug.is_active then
+		file:write(table.concat(output, "\n"))
+	end
 	file:close()
 end
 
@@ -228,6 +232,7 @@ uidebug.process_commands = function()
 end
 
 uidebug.init_hooks = function()
+	uidebug.is_active = true
 	if uidebug.is_hooked then
 		return
 	end

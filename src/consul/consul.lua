@@ -1792,12 +1792,16 @@ consul = {
 							cfg.debug.debug_ui = not cfg.debug.debug_ui
 							current = cfg.debug.debug_ui
 						end)
+						consul.uidebug.is_active = current
 						if current then
 							consul.uidebug.init_hooks()
 							consul.uidebug.launch()
 							return "HTML UI Debugger ENABLED (persistent) and launched. "
 						else
-							return "HTML UI Debugger DISABLED (persistence removed, will unhook on restart)."
+							if consul.ui and consul.ui._UIRoot then
+								consul.uidebug.dump_tree(consul.ui._UIRoot)
+							end
+							return "HTML UI Debugger DISABLED (persistence removed, stopped dumping)."
 						end
 					end,
 					exec = false,
