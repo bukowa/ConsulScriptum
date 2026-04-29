@@ -19,7 +19,7 @@ const selectedGame = computed({
   }
 })
 
-const games = ['Attila', 'Rome II']
+const games = ['Attila', 'Rome II', 'ToB']
 
 import { watchEffect, onMounted } from 'vue'
 

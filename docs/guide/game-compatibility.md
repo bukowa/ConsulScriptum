@@ -1,6 +1,6 @@
 ---
 title: "Game Compatibility"
-description: "Check supported games and feature compatibility for Consul Scriptum in Total War: Rome II and Attila. Learn about mod compatibility and stability."
+description: "Check supported games and feature compatibility for Consul Scriptum in Rome II, Attila, and ToB. Learn about mod compatibility and stability."
 ---
 
 # Games and compatibility
@@ -10,14 +10,14 @@ description: "Check supported games and feature compatibility for Consul Scriptu
 
 ## Feature Comparison
 
-| Feature | Rome II | Attila |
-|---------|:-------:|:------:|
-| **One-Click Scripts (Consul)** | ✅ Full | ✅ Full |
-| **Script Runner (Scriptum)** | ✅ Full | ✅ Full |
-| **Lua Console** | ✅ Full | ✅ Full |
-| **Commands** | ✅ Full | ⚠️ Partial |
-| **Battle Mode** | ✅ Experimental | ✅ Experimental |
-| **Stability Level** | Stable | Experimental |
+| Feature | Rome II | Attila | ToB |
+|---------|:-------:|:------:|:---:|
+| **One-Click Scripts (Consul)** | ✅ Full | ✅ Full | ✅ Full |
+| **Script Runner (Scriptum)** | ✅ Full | ✅ Full | ✅ Full |
+| **Lua Console** | ✅ Full | ✅ Full | ✅ Full |
+| **Commands** | ✅ Full | ⚠️ Partial | ⚠️ Partial |
+| **Battle Mode** | ✅ Experimental | ✅ Experimental | ✅ Native |
+| **Stability Level** | Stable | Experimental | Experimental |
 
 
 ## Mod Compatibility
@@ -42,3 +42,9 @@ Currently in a **General Alpha** phase. While core features (Consul Scripts, Scr
 - **Commands**: **Partial Support**. Many built-in slash commands from Rome II have been ported, but certain Attila-specific engine calls are still being investigated.
 - **Battle Mode**: **Experimental**. The Rome II workaround has been successfully adapted for Attila. Run `/use_in_battle` in a campaign session to enable.
 
+### ToB
+Recently ported. Shares the same engine as Attila, so it inherits similar functionality and limitations.
+
+- **Status**: Alpha / Experimental
+- **Commands**: **Partial Support**. Core commands are available, but game-specific interfaces are still being documented.
+- **Battle Mode**: **Native**. Works by default without extra steps.

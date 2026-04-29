@@ -1,6 +1,6 @@
 ---
 title: "Technical Limitations & Constraints"
-description: "Understand the technical limitations and constraints of modding the Total War: Rome II and Attila engine. Coverage of UI restrictions, console input, and battle mode scripting."
+description: "Understand the technical limitations and constraints of modding the Total War: Rome II, Attila, and Thrones of Britannia engine. Coverage of UI restrictions, console input, and battle mode scripting."
 ---
 
 # Limitations
@@ -50,7 +50,7 @@ When new text is added, the scrollbar may not automatically jump to the bottom. 
 **Slot Limit (10 Scripts).** 
 The panel is currently hard-capped at 10 script buttons. This is not a random number, but a technical compromise:
 - **Rome II**: The UI engine cannot create components on the fly. All 10 buttons are pre-built into the interface files.
-- **Attila**: While it technically supports dynamic lists, the 10-slot limit is maintained to keep the experience consistent across both games.
+- **Attila / ToB**: While they technically support dynamic lists, the 10-slot limit is maintained to keep the experience consistent across all supported games.
 
 ::: tip Pro Tip: Master Scripts
 If you run out of slots, you can create a "Master Script" that uses dofile() to execute multiple other scripts in sequence, or use the console to run one-off files.
@@ -63,18 +63,21 @@ If you run out of slots, you can create a "Master Script" that uses dofile() to 
 
 <!-- @include: ./parts/battle-mode.md -->
 
-## Total War: Attila
+## Total War: Attila & ToB
 
 The Attila implementation is currently considered **Alpha**. 
 
 **Legacy UI Files.**
 To maintain a unified experience and ensure stability, the Attila version reuses several core UI components and layout logic from the Rome II version. Because of this "frankenstein" approach, minor visual glitches or alignment issues in the console may occur.
 
-**Experimental Status.**
-While the core features (Consul Scripts, Scriptum, and Lua Console) are functional, the engine differences between the two games mean that Attila is inherently more experimental. That said, the fact that the Rome II logic "just works" in Attila is a testament to the underlying engine similarities.
+**Experimental Status (Attila).**
+While the core features (Consul Scripts, Scriptum, and Lua Console) are functional, the engine differences mean that Attila is currently considered more experimental than Rome II or ToB. 
+
+**Stability Note (ToB).**
+Thrones of Britannia is built on the most refined version of this engine branch. While it shares some of the "Frankenstein" UI traits of the Attila version, it is generally more stable and supports several features (like Battle Mode) natively.
 
 ::: warning Bug Reports
-If you encounter a UI crash or a script that behaves differently in Attila than in Rome II, please [open an issue](https://github.com/bukowa/ConsulScriptum/issues).
+If you encounter a UI crash or a script that behaves differently in Attila or ToB than in Rome II, please [open an issue](https://github.com/bukowa/ConsulScriptum/issues).
 :::
 
 ---

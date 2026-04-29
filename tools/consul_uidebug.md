@@ -125,7 +125,7 @@ These are high-level features built into the UI Explorer tool that combine multi
 | `Auto-Expand` | ✅ | Automatic folder opening during search navigation and drag operations. |
 | `Multi-line Parsing` | ✅ | Robust sanitization of `GetStateText` to prevent tree corruption. |
 | `Property Hiding` | ✅ | Persistent toggle for individual property boxes (saves to localStorage). |
-| `Capture Pause` | ✅ | F7 toggle to freeze the UI tree for deep investigation. |
+| `Capture Pause` | ✅ | F7 toggle (F5 in TOB) to freeze the UI tree for deep investigation. |
 | `Component Factory` | ✅ | Dynamically instantiate components from templates (Attila only). |
 
 ## 5. Planned Improvements

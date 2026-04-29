@@ -8,12 +8,14 @@ outline: deep
 
 The **HTML UI Debugger** is an interactive tool for inspecting and manipulating the game's User Interface. It provides a visual tree view of all components, making it easier to understand hierarchies than using console commands alone.
 
-::: warning Alpha Version
-This tool is currently in **Alpha**. Bugs and crashes are to be expected as the architecture is still being refined. Feedback and suggestions are highly welcome on **[GitHub](https://github.com/bukowa/ConsulScriptum)**.
+::: warning Experimental Feature
+This tool is **highly experimental**. While functional, bugs and unexpected behavior are to be expected. Feedback, bug reports, and suggestions are **highly welcome** and critical for the tool's refinement. 
+
+Please report issues on the **[GitHub Repository](https://github.com/bukowa/ConsulScriptum/issues)**.
 :::
 
 ::: tip Recommended Tool
-This is the standard way to debug UI in Rome II and Attila as of version **0.8.0**. It provides a live view of the UI state and allows for direct interaction with components.
+This is the standard way to debug UI in Rome II, Attila, and ToB as of version **0.8.0**. It provides a live view of the UI state and allows for direct interaction with components.
 :::
 
 ## Launching the Debugger
@@ -85,8 +87,8 @@ You can manually change the `CurrentState` of a component in the inspector to se
 - **Hide Properties**: If there are properties you never use, click the `×` next to them. This preference is saved in your browser's local storage.
 - **Restore**: Use the "Restore Hidden" button to bring them back.
 
-### Capture Toggle (F7)
-You can pause the game-side data stream by pressing **F7** in-game. This stops the game from writing updates to the state file, which is useful if you want to freeze the entire debugger state.
+### Capture Toggle (F7 / F5 in ToB)
+You can pause the game-side data stream by pressing **F7** (or **F5** in ToB) in-game. This stops the game from writing updates to the state file, which is useful if you want to freeze the entire debugger state.
 ## How It Works (Technical Overview)
 
 The UI Debugger uses a "File-based Bridge" to communicate between the game engine and your web browser. 

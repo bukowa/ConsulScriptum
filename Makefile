@@ -15,6 +15,16 @@ ifeq ($(GAME),Rome2)
     GAME_EXE := Rome2.exe
     STEAM_APP_ID := 214950
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_rome2.lua
+else ifeq ($(GAME),TOB)
+    MOD_PACKAGE := consulscriptum_tob.pack
+    RPFM_GAME_ID := thrones_of_britannia
+    RPFM_SCHEMA_FILE := schema_tob.ron
+    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Saga Thrones of Britannia 712100
+    INSTALL_ALONE_DIR := $(INSTALL_STEAM_DIR)
+    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/ThronesofBritannia/scripts
+    GAME_EXE := Thrones.exe
+    STEAM_APP_ID := 712100
+    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_tob.lua
 else
     # Default is Attila
     MOD_PACKAGE := consulscriptum_attila.pack
@@ -115,7 +125,7 @@ PENLIGHT_REVISION = 1c85dd5418ee9aef71b4dc527fedf6714c139a6b
 # Start Source Files
 # ============================================================
 UI_TARGETS :=
-ifeq ($(GAME),Attila)
+ifeq ($(filter Attila TOB,$(GAME)),$(GAME))
 UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul
 UI_TARGETS += $(BUILD_DIR)/ui/common\ ui/consul_button_toggle
 ifeq ($(DEV),1)
@@ -138,6 +148,10 @@ LUA_TARGETS := \
 	$(BUILD_DIR)/consul/consul_commands_dei.lua \
 	$(BUILD_DIR)/consul/consul_uidebug.lua \
 	$(BUILD_DIR)/consul/consul_uidebug_template.lua
+
+ifeq ($(GAME),TOB)
+LUA_TARGETS += $(BUILD_DIR)/script/default_battle/battle_start.lua
+endif
 
 IMAGE_TARGETS := \
 	$(BUILD_DIR)/ui/skins/default/consul_v_slider_end.png \
@@ -256,7 +270,7 @@ $(BUILD_DIR)/consul/consul_config.lua: \
 	@cp "$<" "$@"
 
 $(BUILD_DIR)/consul/consul_game_events.lua: \
-	src/consul/$(if $(filter Attila,$(GAME)),consul_game_events_attila.lua,consul_game_events.lua)
+	src/consul/$(if $(filter TOB,$(GAME)),consul_game_events_tob.lua,$(if $(filter Attila,$(GAME)),consul_game_events_attila.lua,consul_game_events.lua))
 	$(create_dir)
 	@cp "$<" "$@"
 
@@ -299,6 +313,11 @@ $(BUILD_DIR)/consul/consul_uidebug_template.lua: tools/consul_uidebug.html
 
 $(BUILD_DIR)/consul/consul_battle.lua: \
 	src/consul/consul_battle.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/script/default_battle/battle_start.lua: \
+	src/script/default_battle/battle_start.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
@@ -687,7 +706,7 @@ ifeq ($(GAME),Rome2)
 	$(UI2XML_BIN) ./src/ui/common\ ui/menu_bar ./src/ui/common\ ui/menu_bar.xml
 	rm ./src/ui/frontend\ ui/sp_frame
 	rm ./src/ui/common\ ui/menu_bar
-else
+else ifeq ($(filter Attila TOB,$(GAME)),$(GAME))
 	$(XML2UI_BIN) ./src/ui/common\ ui/consul.xml ./src/ui/common\ ui/consul
 	$(UI2XML_BIN) ./src/ui/common\ ui/consul ./src/ui/common\ ui/consul.xml
 	rm ./src/ui/common\ ui/consul

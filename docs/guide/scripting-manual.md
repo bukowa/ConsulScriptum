@@ -1,6 +1,6 @@
 ---
 title: "Scripting Manual"
-description: "A beginner-friendly guide to scripting with ConsulScriptum. Learn about the game engine hierarchy, iteration patterns, and how to manipulate Rome II and Attila."
+description: "A beginner-friendly guide to scripting with ConsulScriptum. Learn about the game engine hierarchy, iteration patterns, and how to manipulate Rome II, Attila, and ToB."
 outline: deep
 ---
 
@@ -13,7 +13,7 @@ This manual is for anyone who wants to move beyond the built-in commands and sta
 > It allows you to write code in your text editor and see results live in-game without restarts.
 
 > [!IMPORTANT]
-> All the following script examples are designed to work in the **Grand Campaign** for both Rome II and Attila.
+> All the following script examples are designed to work in the **Grand Campaign** for Rome II, Attila, and ToB.
 
 ## 1. The Foundation
 To do anything in Total War, you first need to require the official interface.
@@ -27,6 +27,16 @@ scripting = require "lua_scripts.episodicscripting"
 -- grab a reference to the GAME interface
 local game = scripting.game_interface
 ```
+
+== ToB
+```lua
+-- load the official Lua library from the base game
+scripting = require "lua_scripts.episodicscripting"
+
+-- grab a reference to the GAME interface
+local game = scripting.game_interface
+```
+
 == Rome II
 ```lua
 -- load the official Lua library from the base game
@@ -163,6 +173,29 @@ consul.console.write("number of armies: " .. count)
 consul.console.write("is siegied: " .. tostring(is_sieged))
 ```
 
+== ToB
+
+```lua
+-- Load the GAME interface
+scripting = require "lua_scripts.episodicscripting"
+local game = scripting.game_interface
+
+-- Example 1: Finding how many armies a faction has
+local faction = game:model():world():faction_by_key("vik_fact_west_seaxe")
+local armies = faction:military_force_list()
+local count = armies:num_items() -- Returns an INTEGER
+
+-- Example 2: Checking if a region is under siege
+local region = game:model():world():region_manager():region_by_key("vik_reg_wintanceaster")
+local residence = region:garrison_residence()
+local is_sieged = residence:is_under_siege() -- Returns a BOOLEAN (true/false)
+
+-- Optional Log data to the console
+consul.console.clear()
+consul.console.write("number of armies: " .. count)
+consul.console.write("is siegied: " .. tostring(is_sieged))
+```
+
 == Rome II
 
 ```lua
@@ -208,6 +241,26 @@ local world = game:model():world()
 
 -- Option A: Find one specific faction
 local rome = world:faction_by_key("att_fact_hunni")
+
+-- Option B: Iterate (loop) through ALL factions
+local factions = world:faction_list()
+for i = 0, factions:num_items() - 1 do
+    local fac = factions:item_at(i)
+    consul.console.write("Found faction: " .. fac:name())
+end
+```
+
+== ToB
+
+```lua
+consul.console.clear() -- Clear the console output
+
+scripting = require "lua_scripts.episodicscripting"
+local game = scripting.game_interface
+local world = game:model():world()
+
+-- Option A: Find one specific faction
+local rome = world:faction_by_key("vik_fact_west_seaxe")
 
 -- Option B: Iterate (loop) through ALL factions
 local factions = world:faction_list()
@@ -268,6 +321,26 @@ for i = 0, regions:num_items() - 1 do
 end
 ```
 
+== ToB
+
+```lua
+consul.console.clear()
+
+scripting = require "lua_scripts.episodicscripting"
+local game = scripting.game_interface
+local world = game:model():world()
+
+-- Option A: Find one specific region
+local lathium = world:region_manager():region_by_key("vik_reg_wintanceaster")
+
+-- Option B: Iterate through ALL regions in the world
+local regions = world:region_manager():region_list()
+for i = 0, regions:num_items() - 1 do
+    local region = regions:item_at(i)
+    consul.console.write("Region: " .. region:name() .. " is owned by " .. region:owning_faction():name())
+end
+```
+
 == Rome II
 
 ```lua
@@ -305,6 +378,7 @@ To find armies, you must first "drill down" into a specific Faction. Every Facti
 ```lua
 consul.console.clear()
 
+scripting = require "lua_scripts.episodicscripting"
 local game = scripting.game_interface
 local world = game:model():world()
 local rome = world:faction_by_key("att_fact_hunni")
@@ -321,11 +395,34 @@ for i = 0, armies:num_items() - 1 do
 end
 ```
 
+== ToB
+
+```lua
+consul.console.clear()
+
+scripting = require "lua_scripts.episodicscripting"
+local game = scripting.game_interface
+local world = game:model():world()
+local rome = world:faction_by_key("vik_fact_west_seaxe")
+
+-- Get the cabinet of armies for Rome
+local armies = rome:military_force_list()
+
+for i = 0, armies:num_items() - 1 do
+    local force = armies:item_at(i)
+    -- Is it an army or a navy?
+    if force:is_army() then
+        consul.console.write("TOB has an army at " .. force:general_character():logical_position_x())
+    end
+end
+```
+
 == Rome II
 
 ```lua
 consul.console.clear()
 
+scripting = require "lua_scripts.EpisodicScripting"
 local game = scripting.game_interface
 local world = game:model():world()
 local rome = world:faction_by_key("rom_rome")
@@ -389,7 +486,7 @@ If you click a settlement, the `context` contains that settlement. If a turn sta
 
 ### 4.3 Practical Examples
 
-Events are the primary way to create interactive mods. Below are examples that work across both Rome II and Attila.
+Events are the primary way to create interactive mods. Below are examples that work across Rome II, Attila, and ToB.
 
 > [!TIP]
 > After executing this script click on a **Settlement** or **Character** then check the Consul console!
@@ -397,6 +494,31 @@ Events are the primary way to create interactive mods. Below are examples that w
 :::tabs key:game
 
 == Attila
+```lua
+-- 1. Load the toolkit
+scripting = require "lua_scripts.episodicscripting"
+local game = scripting.game_interface
+
+-- 2. Reacting to a click
+-- Print the name of every settlement you click on to the console
+table.insert(events.SettlementSelected, 
+    function(context)
+        local region = context:garrison_residence():region()
+        consul.console.write("Inspecting: " .. region:name())
+    end
+)
+
+-- 3. Inspecting a character
+-- Print information about every character you click on
+table.insert(events.CharacterSelected, 
+    function(context)
+        local character = context:character()
+        consul.console.write("Selected: " .. character:get_forename() .. " (age " .. character:age() .. ")")
+    end
+)
+```
+
+== ToB
 ```lua
 -- 1. Load the toolkit
 scripting = require "lua_scripts.episodicscripting"

@@ -12,7 +12,8 @@ local changelog = {
             "\nFixed: Increased priority of consul UI to ensure it loads on top of game elements (especially for Attila)."..
             "\nFixed: /debug command now works properly for factions and settlements in diplomacy and strategic map.",
             Attila = "Fixed: Prevent multiple creations of consul UI in battle mode."..
-            "\nAdded: Consul visibility can be toggled on/off via top left button like in Rome2."
+            "\nAdded: Consul visibility can be toggled on/off via top left button like in Rome2.",
+            TOB = "Added: Ported Consul to Total War Saga: Thrones of Britannia."
         },
         ["0.7.2"] = {
             common = "Added: Command `/consul_log_level <integer>` to set the consul log level persistently (e.g. 1=DEBUG, 2=INFO, 3=WARN).",
