@@ -2,4 +2,5 @@
 |------|--------|-----------|---------------|
 | **Total War: Rome II** | ✅ Supported | Very Stable | Full |
 | **Total War: Attila** | ✅ Supported | Experimental | Basic |
+| **TW Saga: Thrones of Britannia** | ✅ Supported | Experimental | Basic |
 | Other TW titles | ❌ Not supported | N/A | N/A |
