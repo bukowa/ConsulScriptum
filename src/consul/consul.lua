@@ -3134,6 +3134,24 @@ consul.console.write(
 	-- consul scripts window
 	consul_scripts = {
 
+		-- game specific behavior
+        games = {
+            TOB = {
+                setup = function()
+                    local hide_scripts = {
+                        consul.ui.consul_force_exchange_garrison_entry,
+                        consul.ui.consul_incrementum_regio_entry,
+                    }
+                    for _,v in ipairs(hide_scripts) do
+                        local el = consul.ui.find(v)
+                        local parent = consul.ui._UIComponent(el:Parent())
+                        parent:Divorce(el:Address())
+                        parent:Layout()
+                    end
+                end,
+            },
+        },
+
 		-- scripts register their event handlers here
 		-- just add empty ones here so other scripts don't
 		-- have to check if they exist before adding
@@ -3200,6 +3218,11 @@ consul.console.write(
 				scripting.AddEventCallBack(k, scripts.event_dispatcher(k))
 			end
 
+            -- hide per game scripts
+            log:debug("Handling per game consul scripts setup.")
+            if consul_build == "TOB" then
+                scripts.games.TOB.setup()
+            end
 			-- mark as ready
 			log:debug("Setup finished")
 			scripts._is_ready = true
