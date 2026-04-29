@@ -66,6 +66,13 @@ const jumpToGame = (gameName: string) => {
       >
         Rome II
       </button>
+      <button 
+        class="hero-demo-tab"
+        :class="{ active: activeGame === 'ToB' }"
+        @click="jumpToGame('ToB')"
+      >
+        ToB
+      </button>
     </div>
 
     <div class="hero-demo-display">

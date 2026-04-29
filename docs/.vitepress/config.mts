@@ -1,6 +1,6 @@
-import {defineConfig} from 'vitepress'
-import {tabsMarkdownPlugin} from 'vitepress-plugin-tabs'
-import {withMermaid} from 'vitepress-plugin-mermaid'
+import { defineConfig } from 'vitepress'
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 export default withMermaid(defineConfig({
     markdown: {
@@ -11,7 +11,7 @@ export default withMermaid(defineConfig({
 
     title: 'Consul Scriptum',
     titleTemplate: 'Total War Console - Consul Scriptum',
-    description: 'An in-game Lua console and script runner for Total War: Rome II and Attila.',
+    description: 'An in-game Lua console and script runner for Total War: Rome II, Attila, and ToB.',
     base: '/',
     appearance: 'force-dark',
 
@@ -37,7 +37,7 @@ export default withMermaid(defineConfig({
         ['meta', {property: 'og:title', content: 'Consul Scriptum'}],
         ['meta', {
             property: 'og:description',
-            content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.'
+            content: 'An in-game Lua console and script runner for Total War: Rome II, Attila, and ToB.'
         }],
         ['meta', {property: 'og:image', content: 'https://consulscriptum.com/logo.png'}],
         ['meta', {property: 'og:url', content: 'https://consulscriptum.com/'}],
@@ -47,7 +47,7 @@ export default withMermaid(defineConfig({
         ['meta', {name: 'twitter:title', content: 'Consul Scriptum'}],
         ['meta', {
             name: 'twitter:description',
-            content: 'An in-game Lua console and script runner for Total War: Rome II and Attila.'
+            content: 'An in-game Lua console and script runner for Total War: Rome II, Attila, and ToB.'
         }],
         ['meta', {name: 'twitter:image', content: 'https://consulscriptum.com/logo.png'}],
     ],
@@ -115,10 +115,12 @@ export default withMermaid(defineConfig({
             {
                 text: 'Game Reference',
                 items: [
-                    {text: 'Rome II API Reference', link: '/reference/rome2-api'},
-                    {text: 'Rome II Event Reference', link: '/reference/rome2-events'},
-                    {text: 'Attila API Reference', link: '/reference/attila-api'},
-                    {text: 'Attila Event Reference', link: '/reference/attila-events'},
+                    { text: 'Rome II API Reference', link: '/reference/rome2-api' },
+                    { text: 'Rome II Event Reference', link: '/reference/rome2-events' },
+                    { text: 'Attila API Reference', link: '/reference/attila-api' },
+                    { text: 'Attila Event Reference', link: '/reference/attila-events' },
+                    { text: 'ToB API Reference', link: '/reference/tob-api' },
+                    { text: 'ToB Event Reference', link: '/reference/tob-events' },
                 ]
             },
             {
