@@ -3925,7 +3925,7 @@ consul.console.write(
 				end
 			end
 			if func == nil then
-				log:debug("No function found for type: " .. type_str)
+				log:trace("No function found for type: " .. type_str)
 				return nil
 			end
 			return consul.pprinter.pretty(func(_any, _opts))
