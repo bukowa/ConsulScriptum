@@ -95,6 +95,7 @@ export default withMermaid(defineConfig({
                     {text: 'HTML UI Debugger', link: '/guide/html-ui-debugger'},
                     {text: 'Scripting Manual', link: '/guide/scripting-manual'},
                     {text: 'Battle mode', link: '/guide/battle-mode-scripting'},
+                    {text: 'Tips & Tricks', link: '/guide/tips-and-tricks'},
                 ]
             },
             {
