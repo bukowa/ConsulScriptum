@@ -40,4 +40,34 @@ setmetatable(events, {
 })
 ```
 
-You can save this snippet as a script and run it using Scriptum, or run it through the Consul interface. Once executed, every event that fires will be captured and output to the game's log and Consul console, along with its full context interface.
+You can save this snippet as a script and run it using Scriptum. Once executed, every event that fires will be captured and output to the game's log and Consul console, along with its full context interface.
+
+## Lua Environments & The Registry
+
+In Total War, the Lua environment isn't one giant bucket. Instead, the game engine partitions functionality across different **environments**. This is why a variable like `UIComponent` might be available when you are clicking a button, but "missing" if you try to use it in a background campaign script.
+
+### Using the Registry to find "Missing" Objects
+The **Lua Registry** is a hidden table that stores almost everything the game loads. If a global is missing in your current context, it's usually still tucked away in the registry.
+
+To discover what is available, use these Consul tools to dump every loaded environment to your `consul.log`:
+
+| Method | Description |
+| :--- | :--- |
+| `/logregistry` | Console command that logs all registry environments. |
+| `consul.debug.logregistry()` | Lua function that performs the same dump. |
+
+### How to "Grab" a missing global
+Once you find the name of a missing object in the log (for example, `UIComponent`), you can "grab" it by looping through the registry yourself.
+
+```lua
+-- Simple example: searching the registry for UIComponent
+for k, v in pairs(debug.getregistry()) do
+    local status, env = pcall(debug.getfenv, v)
+    if status and type(env) == "table" and env.UIComponent then
+        -- We found it! Now we can use it.
+        UIComponent = env.UIComponent
+        break
+    end
+end
+```
+
