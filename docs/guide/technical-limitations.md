@@ -80,6 +80,17 @@ Thrones of Britannia is built on the most refined version of this engine branch.
 If you encounter a UI crash or a script that behaves differently in Attila or ToB than in Rome II, please [open an issue](https://github.com/bukowa/ConsulScriptum/issues).
 :::
 
+## Resolution Changes
+
+**Changing screen resolution during an active session.**
+The Total War UI engine does not always update component positions correctly when the screen resolution or UI scale is changed while the game is running.
+- **Symptom**: The Consul window may appear misplaced, stretched, or partially off-screen.
+- **Fix**: Auto-correction logic will attempt to bring the Consul back to the center on the next toggle, but for full UI alignment restoration, you may need to reload the UI (e.g., by entering and exiting a battle, or restarting the game).
+
+::: tip Restore Defaults
+If the Consul UI remains broken or invisible after a resolution change, you can manually delete the `consul.config` file in your game root folder. This will reset all settings and UI positions to their defaults on the next launch.
+:::
+
 ---
 
 
