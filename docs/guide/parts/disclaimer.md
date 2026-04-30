@@ -1,6 +1,6 @@
 ## Mod Scope & Philosophy
 
-ConsulScriptum is a high-level automation and troubleshooting tool, **not a low-level engine hack**. It is designed to be highly capable while remaining strictly non-invasive:
+ConsulScriptum is a high-level automation and troubleshooting tool, **not a low-level engine hack**.
 
 | What it IS                                    | What it is NOT                                    |
 |:----------------------------------------------|:--------------------------------------------------|

@@ -22,9 +22,9 @@ description: "Check supported games and feature compatibility for Consul Scriptu
 
 ## Mod Compatibility
 
-ConsulScriptum is designed to be highly non-invasive. It uses a single entry point (all_scripted.lua) to hook into the game, leaving all others untouched! This makes it **fully compatible** with nearly every mod and overhaul (like Divide et Impera or The Dawnless Days). 
+ConsulScriptum is designed to be non-invasive. It uses a single entry point `all_scripted.lua` to hook into the game, leaving all others untouched! This makes it **fully compatible** with nearly every mod and overhaul (like Divide et Impera or The Dawnless Days). 
 
-In the rare event that another mod also uses all_scripted.lua, compatibility can be restored by adding just a few lines of code.
+In the rare event that another mod also uses `all_scripted.lua`, compatibility can be restored by adding just a few lines of code.
 
 ## Detailed Compatibility Notes
 

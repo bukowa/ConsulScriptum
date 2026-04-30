@@ -13,7 +13,7 @@
 
 ## v0.8.0
 **Common:**
-- Added: UI Debugger (/debug_html command) - A new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching.
+- Added: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching.
 - Added: Console minimized state is now remembered across sessions.
 - Added: Official Manual updates with new 'Debugging The World' and 'Debugging The UI' sections.
 - Added: Improved /debug, /debug_mouseover and /debug_onclick with more detailed information.
