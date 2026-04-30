@@ -3,7 +3,7 @@
 [h2]Documentation & Manual[/h2]
 [b]Full instructions with images and videos are available on the official documentation site:[/b]
 
-[url=https://bukowa.github.io/ConsulScriptum/][b]➜ Read Documentation & Manual[/b][/url]
+[url=https://consulscriptum.com/rome2][b]➜ Read Documentation & Manual[/b][/url]
 
 Covers everything: installation, all features, scripting guide, API reference, and more.
 
@@ -18,13 +18,13 @@ Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consu
 
 [b]No technical knowledge required![/b] While under the hood it is a full Lua scripting console, it comes with a collection of simple, ready-to-use "one-click" scripts. You can use it right away without ever writing a line of code.
 
-[url=https://bukowa.github.io/ConsulScriptum/guide/getting-started][b]➜ Open Getting Started Guide[/b][/url]
+[url=https://consulscriptum.com/guide/getting-started][b]➜ Open Getting Started Guide[/b][/url]
 
 [h2]Scripting Manual[/h2]
 [b]Want to write your own scripts?[/b]
 I've created a comprehensive manual covering everything from basic Lua to advanced game-specific event handling.
 
-[url=https://bukowa.github.io/ConsulScriptum/guide/scripting-manual][b]➜ Open Detailed Scripting Manual[/b][/url]
+[url=https://consulscriptum.com/guide/scripting-manual][b]➜ Open Detailed Scripting Manual[/b][/url]
 
 [h3]Consul (Non-Technical)[/h3]
 A window with a list of scripts that you can activate with a click. This provides a non-technical way to use scripts included in the mod—such as the character-kill script—without needing to interact with the console, making it more immersive.
@@ -59,7 +59,7 @@ This allows you to write your own scripts, place them in the game data folder, a
 
 [h3]Technical Limitations & FAQ[/h3]
 Detailed information about engine limitations, workarounds, and frequently asked questions are available here:
-[url=https://bukowa.github.io/ConsulScriptum/guide/technical-limitations][b]➜ View Technical Limitations & FAQ[/b][/url]
+[url=https://consulscriptum.com/guide/technical-limitations][b]➜ View Technical Limitations & FAQ[/b][/url]
 
 [h3]Tags[/h3]
 - scripting, console, debug, modding, lua
@@ -97,7 +97,7 @@ Please report any bugs in the GitHub repository — it is much easier to track t
 [/list]
 
 [h3]Documentation & API Reference[/h3]
-[url=https://bukowa.github.io/ConsulScriptum/][b]➜ Visit Full Documentation Website[/b][/url]
+[url=https://consulscriptum.com/rome2][b]➜ Visit Full Documentation Website[/b][/url]
 
 [h3]Discord[/h3]
 I've made a Discord server for any script related talk / help.
