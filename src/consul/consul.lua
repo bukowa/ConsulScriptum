@@ -1207,6 +1207,28 @@ consul = {
 		-- moves the consul root to the position saved in config
 		-- if position is 0,0 it moves to center
 
+		--- A function that checks if the position is off-screen.
+		--- @function ui.IsOffScreen
+		--- @tparam number x The x coordinate.
+		--- @tparam number y The y coordinate.
+		--- @return boolean True if off-screen, false otherwise.
+		IsOffScreen = function(x, y)
+			local ui = consul.ui
+			if not ui._UIRoot then
+				return false
+			end
+
+			local screen_w = ui._UIRoot:Width()
+			local screen_h = ui._UIRoot:Height()
+
+			-- If top-left corner is outside screen bounds
+			if x < 0 or y < 0 or x >= screen_w or y >= screen_h then
+				return true
+			end
+
+			return false
+		end,
+
 		--- A function that moves the consul root to the position saved in config.<br>
 		--- If position is 0,0 it moves to center.
 		--- @function ui.MoveToConfigPosition
@@ -1218,7 +1240,8 @@ consul = {
 			local x = cfg.ui.position.x
 			local y = cfg.ui.position.y
 			local c = ui.find(ui.root)
-			if x == 0 and y == 0 then
+
+			if (x == 0 and y == 0) or ui.IsOffScreen(x, y) then
 				-- move to center
 				local screen_x = ui._UIRoot:Width()
 				local screen_y = ui._UIRoot:Height()

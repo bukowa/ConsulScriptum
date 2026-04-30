@@ -1,7 +1,7 @@
 ## v0.9.0
 **Common:**
 - New: THRONES OF BRITANNIA support for Consul Scriptum (link in Github release page)
-- Fixed: few minor boring bugs (html debug, ui component finding)
+- Fixed: few minor boring bugs (html debug, ui component finding,offscreen detection)
 
 ---
 

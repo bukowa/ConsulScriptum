@@ -439,6 +439,19 @@ local pretty_table = consul.pretty_inspect(table)
 
 ---
 
+#### `consul.ui.IsOffScreen`
+
+A function that checks if the position is off-screen.
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `x` | `number` |  The x coordinate. |
+| `y` | `number` |  The y coordinate. |
+
+
+---
+
 #### `consul.ui.MoveRootToCenter`
 
 A function that moves the consul root to the center of the screen.

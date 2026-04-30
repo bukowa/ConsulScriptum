@@ -3,7 +3,7 @@ local changelog = {
     notes = {
         ["0.9.0"] = {
           common = "New: THRONES OF BRITANNIA support for Consul Scriptum (link in Github release page)"..
-          "\nFixed: few minor boring bugs (html debug, ui component finding)"
+          "\nFixed: few minor boring bugs (html debug, ui component finding,offscreen detection)"
         },
         ["0.8.1"] = {
             common = "Fixed: UI Debugger permission issues (Program Files access) by redirecting data to C:\\Users\\Public\\consul."
