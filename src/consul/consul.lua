@@ -3732,8 +3732,8 @@ consul.console.write(
 			return scripting.game_interface
 		end
 
-        if consul.env.mode == 1 then
-		    consul.log:error("Could not find scripting.game_interface, consul will not work properly")
+		if consul.env.mode == 1 then
+			consul.log:error("Could not find scripting.game_interface, consul will not work properly")
 		end
 		return nil
 	end,
@@ -4304,7 +4304,7 @@ consul.console.write(
 				["age"] = _char:age(),
 				["battles_fought"] = _char:battles_fought(),
 				["battles_won"] = _char:battles_won(),
-				["body_guard_casulties"] = "will crash game in campaign",
+				["body_guard_casulties"] = "may crash game in campaign",
 				["character_type"] = _char:character_type(),
 				["cqi"] = _char:cqi(),
 				["defensive_ambush_battles_fought"] = _char:defensive_ambush_battles_fought(),
@@ -4361,7 +4361,7 @@ consul.console.write(
 				["performed_action_this_turn"] = _char:performed_action_this_turn(),
 				["rank"] = _char:rank(),
 				["region"] = _char:region(),
-				["routed_in_battle"] = "will crash game in campaign",
+				["routed_in_battle"] = "may crash game in campaign",
 				["spouse"] = _char:spouse(),
 				["surname"] = _char:surname(),
 				["trait_level"] = _char:trait_level(),
@@ -4386,7 +4386,7 @@ consul.console.write(
 				["age"] = _char:age(),
 				["battles_fought"] = _char:battles_fought(),
 				["battles_won"] = _char:battles_won(),
-				["body_guard_casulties"] = "will crash game in campaign",
+				["body_guard_casulties"] = "may crash game in campaign",
 				["character_type"] = _char:character_type(),
 				["command_queue_index"] = _char:command_queue_index(),
 				["cqi"] = _char:cqi(),
@@ -4448,7 +4448,7 @@ consul.console.write(
 				["performed_action_this_turn"] = _char:performed_action_this_turn(),
 				["rank"] = _char:rank(),
 				["region"] = _char:region(),
-				["routed_in_battle"] = "will crash game in campaign",
+				["routed_in_battle"] = "may crash game in campaign",
 				["surname"] = _char:surname(),
 				["trait_level"] = _char:trait_level(),
 				["trait_points"] = _char:trait_points(),
@@ -4477,7 +4477,7 @@ consul.console.write(
 				["age"] = _char:age(),
 				["battles_fought"] = _char:battles_fought(),
 				["battles_won"] = _char:battles_won(),
-				["body_guard_casulties"] = "will crash game in campaign",
+				["body_guard_casulties"] = "may crash game in campaign",
 				["character_type"] = _char:character_type(),
 				["command_queue_index"] = _char:command_queue_index(),
 				["cqi"] = _char:cqi(),
@@ -4539,7 +4539,7 @@ consul.console.write(
 				["performed_action_this_turn"] = _char:performed_action_this_turn(),
 				["rank"] = _char:rank(),
 				["region"] = _char:region(),
-				["routed_in_battle"] = "will crash game in campaign",
+				["routed_in_battle"] = "may crash game in campaign",
 				["surname"] = _char:surname(),
 				["trait_level"] = _char:trait_level(),
 				["trait_points"] = _char:trait_points(),
@@ -4606,7 +4606,7 @@ consul.console.write(
 				["research_queue_idle"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:research_queue_idle()
 				end)(),
@@ -4621,7 +4621,7 @@ consul.console.write(
 				["trade_route_limit_reached"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:trade_route_limit_reached()
 				end)(),
@@ -4634,7 +4634,7 @@ consul.console.write(
 				["unused_international_trade_route"] = function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:unused_international_trade_route()
 				end,
@@ -4679,7 +4679,7 @@ consul.console.write(
 				["research_queue_idle"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:research_queue_idle()
 				end)(),
@@ -4693,7 +4693,7 @@ consul.console.write(
 				["trade_route_limit_reached"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:trade_route_limit_reached()
 				end)(),
@@ -4705,7 +4705,7 @@ consul.console.write(
 				["unused_international_trade_route"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:unused_international_trade_route()
 				end)(),
@@ -4721,7 +4721,18 @@ consul.console.write(
 			end
 			return {
 				["factions_at_war_with"] = _fac:factions_at_war_with(),
-				["factions_trading_with"] = _fac:factions_trading_with(),
+				["factions_at_war_with"] = (function()
+					if _fac:name() == "rebels" then
+						return "will crash game in campaign (rebels)"
+					end
+					return _fac:factions_at_war_with()
+				end)(),
+				["factions_trading_with"] = (function()
+					if _fac:name() == "rebels" then
+						return "will crash game in campaign (rebels)"
+					end
+					return _fac:factions_trading_with()
+				end)(),
 				["has_effect_bundle"] = _fac:has_effect_bundle(),
 				["is_dead"] = _fac:is_dead(),
 				["is_vassal_of"] = _fac:is_vassal_of(),
@@ -4758,7 +4769,7 @@ consul.console.write(
 				["research_queue_idle"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:research_queue_idle()
 				end)(),
@@ -4772,7 +4783,7 @@ consul.console.write(
 				["trade_route_limit_reached"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:trade_route_limit_reached()
 				end)(),
@@ -4784,7 +4795,7 @@ consul.console.write(
 				["unused_international_trade_route"] = (function()
 					-- wont work for rebels
 					if _fac:name() == "rebels" then
-						return "will crash game in campaign"
+						return "will crash game in campaign (rebels)"
 					end
 					return _fac:unused_international_trade_route()
 				end)(),
