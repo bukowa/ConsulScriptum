@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, watch } from 'vue'
+import { computed, inject, watch, onMounted } from 'vue'
 import { state, nextHero as next, prevHero as prev, HOME_PLAYLIST } from '../index.mts'
 
 const demoVideos = HOME_PLAYLIST
@@ -38,6 +38,25 @@ watch(globalGame, (newGame) => {
   }
 }, { immediate: true })
 // -----------------------------------
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search)
+    const gameParam = params.get('game')
+    if (gameParam) {
+      const gameMap: Record<string, string> = {
+        'rome2': 'Rome II',
+        'attila': 'Attila',
+        'tob': 'ToB'
+      }
+      const mapped = gameMap[gameParam.toLowerCase()]
+      if (mapped) {
+        globalGame.value = mapped
+        window.history.replaceState({}, '', '/')
+      }
+    }
+  }
+})
 
 const setIndex = (index: number) => {
   state.heroIndex = index

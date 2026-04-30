@@ -18,6 +18,11 @@ UIComponent
 docs/.vitepress/dist
 docs/.vitepress/cache
 
+# Generated Docs Aliases
+docs/attila.md
+docs/rome2.md
+docs/tob.md
+
 # Release
 release/
 
