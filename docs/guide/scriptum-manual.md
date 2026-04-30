@@ -16,31 +16,6 @@ Scriptum is a panel of buttons, each mapped to a .lua file in the game root fold
 3. **Write Lua**: Create that .lua file in your game folder and write your code.
 4. **Execute**: Open the **Scriptum** tab in-game and click the new button.
 
-## Toggling Highlight (Green State)
-
-<div class="cs-video-prominent">
-  <video :src="$withBase('/videos/scriptum_toggle.mp4')" data-title="Green Toggle" data-game="Attila" autoplay loop muted playsinline></video>
-</div>
-
-You can make your scripts behave like the built-in **Consul** scripts by toggling their visual "active" state (the green highlight). 
-
-When you click a Scriptum button, the system automatically sets consul.scriptum.entry to the ID of the **text component** of that button.
-
-```lua
--- toggle_green.lua
-local my_id = consul.scriptum.entry
-local btn = consul.ui.find(my_id)
-
-if btn:CurrentState() == 'online' then
-    btn:SetState('offline')
-    consul.console.write("Highlight OFF")
-else
-    btn:SetState('online')
-    consul.console.write("Highlight ON")
-end
-```
-
-
 ## Suggested Workflow
 
 The recommended way to work with Scriptum is to run the game in **Windowed Mode** with your text editor (like VS Code or Notepad++) open next to it. 
@@ -68,6 +43,30 @@ for i = 0, fl:num_items() - 1 do
         consul.console.write(fac:name() .. " treasury: " .. fac:treasury())
         return
     end
+end
+```
+
+## Toggling Highlight (Green State)
+
+<div class="cs-video-prominent">
+  <video :src="$withBase('/videos/scriptum_toggle.mp4')" data-title="Green Toggle" data-game="Attila" autoplay loop muted playsinline></video>
+</div>
+
+You can make your scripts behave like the built-in **Consul** scripts by toggling their visual "active" state (the green highlight). 
+
+When you click a Scriptum button, the system automatically sets consul.scriptum.entry to the ID of the **text component** of that button.
+
+```lua
+-- toggle_green.lua
+local my_id = consul.scriptum.entry
+local btn = consul.ui.find(my_id)
+
+if btn:CurrentState() == 'online' then
+    btn:SetState('offline')
+    consul.console.write("Highlight OFF")
+else
+    btn:SetState('online')
+    consul.console.write("Highlight ON")
 end
 ```
 
