@@ -35,6 +35,16 @@ else ifeq ($(GAME),Attila)
     GAME_EXE := Attila.exe
     STEAM_APP_ID := 325610
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_attila.lua
+else ifeq ($(GAME),Shogun2)
+    MOD_PACKAGE := consulscriptum_shogun2.pack
+    RPFM_GAME_ID := shogun_2
+    RPFM_SCHEMA_FILE := schema_sho2.ron
+    INSTALL_ALONE_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War SHOGUN 2
+    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War SHOGUN 2
+    INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Shogun2/scripts
+    GAME_EXE := Shogun2.exe
+    STEAM_APP_ID := 34330
+    ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_shogun2.lua
 endif
 
 MOD_VERSION = 0.1.0
