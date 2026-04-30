@@ -25,7 +25,7 @@ The recommended way to work with Scriptum is to run the game in **Windowed Mode*
 </div>
 
 ::: tip No Restart Required
-The Scriptum files are read "live". You can edit your .lua file, save it (Ctrl+S), and then click the button in the Scriptum tab to execute the updated code immediately. This creates a powerful development loop.
+The Scriptum files are read "live". You can edit your .lua file, save it (Ctrl+S), and then click the button in the Scriptum tab to execute the updated code immediately. This enables rapid iteration.
 :::
 
 ## Writing a script

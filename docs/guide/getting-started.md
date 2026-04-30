@@ -101,7 +101,7 @@ Most actions follow a simple **Point and Click** logic: activate a script, then 
 
 ## Step 4: The Console (Commands & Lua)
 
-Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts. Type /help to list all available slash-commands.
+Use the **Console** tab for manual interaction. It allows you to run slash commands or raw Lua snippets. You can also clear the output at any time to remove text from other scripts. Type `/help` to list all available slash-commands.
 
 :::tabs key:game
 
@@ -159,7 +159,7 @@ Because the console input field is limited to short text, use the **Scriptum** t
 
 ## Step 6: Writing your own scripts
 
-If you're ready to create your own mods or automate complex tasks, move on to the Scripting Manual. It explains how the game engine works and provides code patterns you can use immediately.
+If you're ready to create your own mods or automate complex tasks, move on to the Scripting Manual. It explains how the game engine works and provides code examples.
 
 <div class="cs-step-footer">
   <a href="./scripting-manual" class="cs-step-ref">

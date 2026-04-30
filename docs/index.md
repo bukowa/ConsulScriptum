@@ -26,7 +26,7 @@ features:
 
   - icon: ⌨️
     title: Console & Scriptum
-    details: A Lua console inside the game. Run commands, test snippets, or execute full .lua files from your game folder — all without restarting.
+    details: A Lua console inside the game. Run commands, test snippets, or execute full .lua files from your game folder — without restarting.
 
   - icon: 🛡️
     title: Just a mod

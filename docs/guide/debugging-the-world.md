@@ -41,7 +41,7 @@ Consul registers event handlers for various UI interactions (`CharacterSelected`
 In some cases, the game provides the handle to the object directly in the event context. However, for features like the diplomacy view or strategic map, Consul relies on extracting the string representing the clicked object and then querying the game world to retrieve the relevant script interface. More details can be found in the Consul source code.
 
 > [!NOTE]
-> Not everything in the game world is covered, but it's a comprehensive starting point.
+> Not everything in the game world is covered, but it provides a solid starting point.
 
 ### Inspecting Factions
 Open the **Diplomacy View** and click any faction icon.

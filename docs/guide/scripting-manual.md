@@ -637,7 +637,7 @@ When one of these commands is active, Consul automatically wraps the context and
 }
 ```
 
-This is the ultimate discovery tool: simply run `/log_events_all`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
+This is an excellent way to discover events: simply run `/log_events_all`, go back into the game, click around the UI or move an army, and then check your log file to see exactly which events fired and what data they carried.
 
 #### Catching Early Boot Events
 Standard console commands only work once the UI is loaded. If you need to debug events that happen earlier (during the load screen or campaign creation), use the persistent flag:
