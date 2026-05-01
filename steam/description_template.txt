@@ -1,7 +1,12 @@
 [h2] Introduction [/h2]
-[b]Consul Scriptum[/b] is live scripting console and sandbox utility tool for Total War.
+[b]Consul Scriptum[/b] is a live scripting console and sandbox utility tool for Total War.
 
-Whether you want to instantly kill a character, transfer a settlement, or write and test Lua scripts without restarting your game, this mod provides interface directly inside your campaign.
+[h3] Currently supporting the following games: [/h3]
+- Rome 2
+- Attila (Beta)
+- Thrones of Britannia (Beta)
+
+Whether you want to instantly kill a character, transfer a settlement, or write and test Lua scripts without restarting your game, this mod provides an interface directly inside your campaign.
 
 [img]{interface_image}[/img]
 
@@ -10,7 +15,7 @@ Whether you want to instantly kill a character, transfer a settlement, or write 
 It acts as a point-and-click sandbox tool. Open the "Consul" window, select a target on the map, and click a button to execute scripts instantly.
 
 [b]For Modders & Developers:[/b]
-It is a live development environment. You can execute `.lua` files from your hard drive, test snippets in the console, inspect the UI, and view the game's registry without closing or restarting the game.
+It is a live development environment. You can execute `.lua` files from your hard drive, test snippets in the console, inspect the UI and game world without closing or restarting the game.
 
 [h2]Core Features[/h2]
 
@@ -27,7 +32,7 @@ Select a character or settlement, click the script, and watch it happen.
 
 [h3]2. The Console[/h3]
 Raw access to Lua and extra commands.
-Type commands, evaluate game state, and debug your campaigns live.
+Type commands, evaluate the game state, and debug your campaigns live.
 
 [img]{console_image}[/img]
 
@@ -35,6 +40,14 @@ Type commands, evaluate game state, and debug your campaigns live.
 Write your own scripts in an external text editor, place them in the game folder, and execute them with a click. When you save changes to your `.lua` file, just click the button again to run the updated code. No game restarts required.
 
 [img]{scriptum_image}[/img]
+
+[h3]4. Debugging The World[/h3]
+Use built-in commands to quickly gather information about the state of the world.
+
+[img]{debug_image}[/img]
+
+[h3]5. Debugging the UI[/h3]
+[url=http://consulscriptum.com/guide/html-ui-debugger][b]Read more about UI Debugging[/b][/url]
 
 [h2]Documentation & Manual[/h2]
 [b]Full instructions, API references, and video tutorials are available on the official documentation site:[/b]
@@ -58,6 +71,14 @@ Write your own scripts in an external text editor, place them in the game folder
 [*] [url=https://ko-fi.com/bukowa]Support the Project on Ko-fi[/url]
 [/list]
 
+[h2]Technical Limitations[/h2]
+[b]Consul Scriptum[/b] operates within the constraints of the Total War engine. Some features may have specific limitations depending on the game or campaign state. For a detailed breakdown of known constraints and how to handle them, please refer to our guide:
+
+[url=https://consulscriptum.com/guide/technical-limitations][b]➜ Read Technical Limitations Guide[/b][/url]
+
+[h2]Contributions[/h2]
+[b]Consul Scriptum[/b] is an open-source project with a single codebase that currently runs across three different games. The Consul started from the Rome 2 UI base and reuses many existing components, which should be kept in mind if you ever find yourself frustrated with certain limitations. There is still much to be added—especially one-click scripts, which haven't been the main focus for quite some time. I highly welcome contributions and feedback to help expand and improve the tool!
+
 [h2]Credits & Acknowledgments[/h2]
 
 [b]Individual Contributors[/b]
@@ -69,7 +90,7 @@ Write your own scripts in an external text editor, place them in the game folder
 [b]Open Source & Libraries[/b]
 [list]
 [*] [url=https://github.com/taw/etwng]Taw's ETWNG[/url] — For the core research and decoding of UI pack files.
-[*] [url=https://github.com/Cpecific/twwh2_ctm]Cpecific's twwh2_ctm[/url] — UI Layout tool
+[*] [url=https://github.com/Cpecific/twwh2_ctm]Cpecific's twwh2_ctm[/url] — A UI Layout tool
 [/list]
 
 [h2]Lore[/h2]
@@ -77,4 +98,4 @@ Write your own scripts in an external text editor, place them in the game folder
 
 [b]Scriptum[/b]: This means "written" (from the verb scribere, "to write"). It can refer to a document, text, or written work.
 
-Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on context: It could metaphorically imply "the written authority" or "a document issued by a consul."
+Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on the context: It could metaphorically imply "the written authority" or "a document issued by a consul."

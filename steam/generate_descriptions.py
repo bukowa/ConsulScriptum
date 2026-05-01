@@ -11,6 +11,7 @@ GAMES = {
         "manual_image": "https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "docs_link": "https://consulscriptum.com/rome2",
         "compatibility_text": "Modifies only highly specific UI files. Compatible with everything, save game compatible.",
+        "debug_image": "https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     },
     "attila": {
         "youtube_id": "YOUR_YOUTUBE_VIDEO_ID",
@@ -21,6 +22,7 @@ GAMES = {
         "manual_image": "https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "docs_link": "https://consulscriptum.com/attila",
         "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] entry point. Compatible with virtually everything, save game compatible.",
+        "debug_image": "https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     },
     "tob": {
         "youtube_id": "YOUR_YOUTUBE_VIDEO_ID",
@@ -31,6 +33,7 @@ GAMES = {
         "manual_image": "https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "docs_link": "https://consulscriptum.com/tob",
         "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] entry point. Compatible with virtually everything, save game compatible.",
+        "debug_image": "https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     }
 }
 
@@ -72,7 +75,8 @@ def main():
             manual_image=config["manual_image"],
             docs_link=config["docs_link"],
             compatibility_text=config["compatibility_text"],
-            included_scripts=scripts_list
+            included_scripts=scripts_list,
+            debug_image=config['debug_image']
         )
         
         output_filename = f"{game_id}_description.txt"
