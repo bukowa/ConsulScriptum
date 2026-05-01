@@ -1,12 +1,16 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["unreleased"] = {
+          common = "Fixed: Changelog improvements so you don't get spammed with them",
+        },
         ["0.9.0"] = {
           common = "New: THRONES OF BRITANNIA support for Consul Scriptum (link in Github release page)"..
           "\nFixed: few minor boring bugs (html debug, ui component finding,offscreen detection)"
         },
         ["0.8.1"] = {
-            common = "Fixed: UI Debugger permission issues (Program Files access) by redirecting data to C:\\Users\\Public\\consul."
+            common = "Fixed: UI Debugger permission issues (Program Files access) by redirecting data to C:\\Users\\Public\\consul.",
+            silent = true
         },
         ["0.8.0"] = {
             common = "\nAdded: UI Debugger (/debug_html command) - A powerful new HTML-based tool for real-time UI inspection, hierarchy manipulation, and live searching."..
@@ -43,7 +47,8 @@ local changelog = {
             "\nAdded: All game events for Attila for event tracking."
         },
         ["0.6.2"] = {
-            common = "Fixed: The changelog module now correctly loads in campaign mode by fixing the require path."
+            common = "Fixed: The changelog module now correctly loads in campaign mode by fixing the require path.",
+            silent = true
         },
         ["0.6.1"] = {
             common = "Added: Changelog feature.\nAdded: Command /changelog - displays version notes.\nAdded: Command /changelog_read - marks current version as read and hides it on startup."

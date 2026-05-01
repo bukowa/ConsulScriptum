@@ -368,6 +368,16 @@ consul = {
 			local log = consul.new_log("changelog:OnUICreated")
 			local cfg = consul.config.read()
 			if cfg.console.last_read_changelog ~= consul.VERSION then
+
+				-- check if this version is silent
+				local data = consul.changelog._data
+				if data and data.notes and data.notes[consul.VERSION] then
+					if data.notes[consul.VERSION].silent then
+						log:debug("New version is silent, skipping notification")
+						return
+					end
+				end
+
 				log:debug("New changelog available, printing to console")
 				local text = consul.changelog.format_all()
 				-- bypass history, directly write to UI
