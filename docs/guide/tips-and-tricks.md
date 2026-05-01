@@ -10,6 +10,7 @@ A collection of useful snippets and advanced techniques for modding Total War wi
 ## Catch-All Event Logger
 
 Not all events are documented in the DB or Lua scripts, but the core game engine will still fire them! You can use a `metatable` on the `events` table to catch every single event the engine triggers, even the hidden ones.
+Consul does it by default when you enable event logging via `/consul_debug_events` toggle.
 
 ```lua
 -- catch_all_events.lua
