@@ -1,9 +1,10 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
+        ["0.9.1"] = {
           common = "Fixed: Changelog improvements so you don't get spammed with them"..
           "\nFixed: event logging and logging improvement bugs",
+          silent = true
         },
         ["0.9.0"] = {
           common = "New: THRONES OF BRITANNIA support for Consul Scriptum (link in Github release page)"..

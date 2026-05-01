@@ -1,4 +1,4 @@
-## Unreleased
+## v0.9.1
 **Common:**
 - Fixed: Changelog improvements so you don't get spammed with them
 - Fixed: event logging and logging improvement bugs
