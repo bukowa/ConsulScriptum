@@ -100,7 +100,7 @@ Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consu
 [h2] Workshop Links For Other Titles: [/h2]
 - [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001]Rome 2[/url]
 - [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3717893382]Attila[/url]
-- Thrones of Britannia (Beta)
+- [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3717928343]Thrones of Britannia (Beta)[/url]
 
-[h2] Standalone Pack Files [h2]
+[h2] Standalone Pack Files [/h2]
 [url=https://github.com/bukowa/ConsulScriptum/releases]Download[/url]
