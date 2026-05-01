@@ -10,7 +10,7 @@ GAMES = {
         "scriptum_image": "https://images.steamusercontent.com/ugc/11605380554018906578/C89A2DFA05DFFA01EECE5D01F74BFEC355DED8FF/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "manual_image": "https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "docs_link": "https://consulscriptum.com/rome2",
-        "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] [b]menu_bar[/b] [b]sp_frame.xml[/b]. Compatible with everything, save game compatible.",
+        "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] [b]menu_bar[/b] [b]sp_frame.xml[/b].\nCompatible with everything, save game compatible.",
         "debug_image": "https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     },
     "attila": {
@@ -21,7 +21,7 @@ GAMES = {
         "scriptum_image": "https://images.steamusercontent.com/ugc/11605380554018906578/C89A2DFA05DFFA01EECE5D01F74BFEC355DED8FF/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "manual_image": "https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "docs_link": "https://consulscriptum.com/attila",
-        "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] entry point. Compatible with virtually everything, save game compatible.",
+        "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] entry point.\nCompatible with virtually everything, save game compatible.",
         "debug_image": "https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     },
     "tob": {
@@ -32,7 +32,7 @@ GAMES = {
         "scriptum_image": "https://images.steamusercontent.com/ugc/11605380554018906578/C89A2DFA05DFFA01EECE5D01F74BFEC355DED8FF/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "manual_image": "https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
         "docs_link": "https://consulscriptum.com/tob",
-        "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] entry point. Compatible with virtually everything, save game compatible.",
+        "compatibility_text": "Modifies only the [b]all_scripted.lua[/b] entry point.\nCompatible with virtually everything, save game compatible.",
         "debug_image": "https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
     }
 }

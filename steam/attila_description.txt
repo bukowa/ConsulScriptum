@@ -12,13 +12,17 @@ It acts as a point-and-click sandbox tool. Open the "Consul" window, select a ta
 [b]For Modders & Developers:[/b]
 It is a live development environment. You can execute `.lua` files from your hard drive, test snippets in the console, inspect the UI and game world without closing or restarting the game.
 
-[h2] Currently supporting the following games: [/h2]
-- [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001]Rome 2 (Steam Link)[/url]
+[h2] Supported Games: [/h2]
+- Rome 2
 - Attila (Beta)
 - Thrones of Britannia (Beta)
 
-[h2]Core Features[/h2]
+[h2]How to Use & Compatibility[/h2]
+It's simple: Subscribe, ensure it's at the top of your load order, and [b]Enjoy![/b]
+Modifies only the [b]all_scripted.lua[/b] entry point.
+Compatible with virtually everything, save game compatible.
 
+[h2]Core Features[/h2]
 [h3]1. Consul (Point-and-Click Scripts)[/h3]
 An immersive window with a list of built-in scripts.
 Select a character or settlement, click the script, and watch it happen.
@@ -66,10 +70,6 @@ Use built-in commands to quickly gather information about the state of the world
 
 [img]https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
-[h2]Compatibility & Load Order[/h2]
-- Modifies only the [b]all_scripted.lua[/b] entry point. Compatible with virtually everything, save game compatible.
-- [b]Load on top of everything[/b] in your mod manager.
-
 [h2]Links & Support[/h2]
 [list]
 [*] [url=https://github.com/bukowa/ConsulScriptum]Source Code[/url]
@@ -107,3 +107,11 @@ Use built-in commands to quickly gather information about the state of the world
 [b]Scriptum[/b]: This means "written" (from the verb scribere, "to write"). It can refer to a document, text, or written work.
 
 Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consul's writing." However, this phrasing is not a standard Latin expression or historical term. Its meaning would depend on the context: It could metaphorically imply "the written authority" or "a document issued by a consul."
+
+[h2] Workshop Links For Other Titles: [/h2]
+- [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001]Rome 2[/url]
+- Attila (Beta)
+- Thrones of Britannia (Beta)
+
+[h2] Standalone Pack Files [h2]
+[url=https://github.com/bukowa/ConsulScriptum/releases]Download[/url]
