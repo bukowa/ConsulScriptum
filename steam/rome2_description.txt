@@ -1,11 +1,6 @@
 [h2] Introduction [/h2]
 [b]Consul Scriptum[/b] is a live scripting console and sandbox utility tool for Total War.
 
-[h3] Currently supporting the following games: [/h3]
-- Rome 2
-- Attila (Beta)
-- Thrones of Britannia (Beta)
-
 Whether you want to instantly kill a character, transfer a settlement, or write and test Lua scripts without restarting your game, this mod provides an interface directly inside your campaign.
 
 [img]https://images.steamusercontent.com/ugc/16988052029949233469/C5BE5EB74DC0A02F7F2E9DB0D0099827EB7B315A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
@@ -16,6 +11,11 @@ It acts as a point-and-click sandbox tool. Open the "Consul" window, select a ta
 
 [b]For Modders & Developers:[/b]
 It is a live development environment. You can execute `.lua` files from your hard drive, test snippets in the console, inspect the UI and game world without closing or restarting the game.
+
+[h2] Currently supporting the following games: [/h2]
+- [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001]Rome 2 (Steam Link)[/url]
+- Attila (Beta)
+- Thrones of Britannia (Beta)
 
 [h2]Core Features[/h2]
 
@@ -67,10 +67,8 @@ Use built-in commands to quickly gather information about the state of the world
 [img]https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h2]Compatibility & Load Order[/h2]
-- Modifies only highly specific UI files. Compatible with everything, save game compatible.
+- Modifies only the [b]all_scripted.lua[/b] [b]menu_bar[/b] [b]sp_frame.xml[/b]. Compatible with everything, save game compatible.
 - [b]Load on top of everything[/b] in your mod manager.
-
-[img]https://images.steamusercontent.com/ugc/16764158438205361713/E344F33DD0CCF0AE39FADEE8B8C3A88130F2E3E2/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h2]Links & Support[/h2]
 [list]
