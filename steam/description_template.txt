@@ -49,9 +49,6 @@ Use built-in commands to quickly gather information about the state of the world
 
 [img]{debug_image}[/img]
 
-[h3]5. Debugging the UI[/h3]
-[url=http://consulscriptum.com/guide/html-ui-debugger][b]Read more about UI Debugging[/b][/url]
-
 [h2]Documentation & Manual[/h2]
 [b]Full instructions, API references, and video tutorials are available on the official documentation site:[/b]
 
