@@ -433,6 +433,9 @@ consul = {
 	-- contrib
 	serpent = require("serpent.serpent"),
 	inspect = require("inspect.inspect"),
+	penlight = {
+		pretty = require("penlight.pretty"),
+	},
 	-- ui debugger
 	uidebug = require("consul_uidebug"),
 
@@ -459,7 +462,7 @@ consul = {
 				return formatted
 			end
 		end
-		return require("penlight.pretty").write(...)
+		return consul.penlight.pretty.write(...)
 	end,
 
 	--- A function that pretty-prints a Lua value using 'inspect.lua'.

@@ -244,26 +244,47 @@ function Logger:log_events(_events, filter_func)
                 end
 
                 table.insert(events[event], function(context)
+                    local ok, err = pcall(function()
+                        -- build a better looking context table
+                        local context_log = {
+                            _event = event,
+                        }
 
-                    -- build a better looking context table
-                    local context_log = {
-                        _event = event,
-                    }
+                        if context then
+                            -- grab original
+                            local context_metatable = debug.getmetatable(context)
 
-                    -- grab original
-                    local context_metatable = debug.getmetatable(context)
+                            if context_metatable and type(context_metatable.__index) == "table" then
+                                -- add each key inside __index as key
+                                for k, v in pairs(context_metatable.__index) do
+                                    context_log[k] = v
+                                end
+                            elseif type(context) == "table" then
+                                for k, v in pairs(context) do
+                                    context_log[k] = v
+                                end
+                            end
 
-                    -- add each key inside __index as key
-                    for k, v in pairs(context_metatable.__index) do
-                        context_log[k] = v
+                            -- fallback for string representation
+                            if context_log.string == nil then
+                                local status, str = pcall(tostring, context)
+                                if status then
+                                    context_log.string = str
+                                end
+                            end
+                        end
+
+                        if context_log.string == "" then
+                            context_log.string = nil
+                        end
+
+                        -- log the event
+                        self:_write_to_file(consul.pretty(context_log));
+                    end)
+
+                    if not ok then
+                        self:_write_to_file("ERROR logging event '" .. tostring(event) .. "': " .. tostring(err))
                     end
-
-                    if context_log.string == "" then
-                        context_log.string = nil
-                    end
-
-                    -- log the event
-                    self:_write_to_file(consul.pretty(context_log));
                 end)
 
             end)

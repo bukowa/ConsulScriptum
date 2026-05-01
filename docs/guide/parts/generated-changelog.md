@@ -1,3 +1,10 @@
+## Unreleased
+**Common:**
+- Fixed: Changelog improvements so you don't get spammed with them
+- Fixed: event logging and logging improvement bugs
+
+---
+
 ## v0.9.0
 **Common:**
 - New: THRONES OF BRITANNIA support for Consul Scriptum (link in Github release page)
