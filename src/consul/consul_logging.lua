@@ -220,6 +220,60 @@ function Logger:stop_trace()
     debug.sethook()
 end
 
+-- Internal method to create a callback for an event
+function Logger:_get_event_callback(event, is_caught)
+    return function(context)
+        -- Guard against logging if it's disabled globally
+        if not self._is_logging_all_events then return end
+
+        local ok, err = pcall(function()
+            -- build a better looking context table
+            local context_log = {
+                _event = event,
+            }
+
+            if is_caught then
+                context_log.__consul_caught = true
+            end
+
+            if context then
+                -- grab original
+                local context_metatable = debug.getmetatable(context)
+
+                if context_metatable and type(context_metatable.__index) == "table" then
+                    -- add each key inside __index as key
+                    for k, v in pairs(context_metatable.__index) do
+                        context_log[k] = v
+                    end
+                elseif type(context) == "table" then
+                    for k, v in pairs(context) do
+                        context_log[k] = v
+                    end
+                end
+
+                -- fallback for string representation
+                if context_log.string == nil then
+                    local status, str = pcall(tostring, context)
+                    if status then
+                        context_log.string = str
+                    end
+                end
+            end
+
+            if context_log.string == "" then
+                context_log.string = nil
+            end
+
+            -- log the event
+            self:_write_to_file(consul.pretty(context_log));
+        end)
+
+        if not ok then
+            self:_write_to_file("ERROR logging event '" .. tostring(event) .. "': " .. tostring(err))
+        end
+    end
+end
+
 -- Log events based on a filter function, with always-filtered events
 function Logger:log_events(_events, filter_func)
 
@@ -243,49 +297,7 @@ function Logger:log_events(_events, filter_func)
                     events[event] = {}
                 end
 
-                table.insert(events[event], function(context)
-                    local ok, err = pcall(function()
-                        -- build a better looking context table
-                        local context_log = {
-                            _event = event,
-                        }
-
-                        if context then
-                            -- grab original
-                            local context_metatable = debug.getmetatable(context)
-
-                            if context_metatable and type(context_metatable.__index) == "table" then
-                                -- add each key inside __index as key
-                                for k, v in pairs(context_metatable.__index) do
-                                    context_log[k] = v
-                                end
-                            elseif type(context) == "table" then
-                                for k, v in pairs(context) do
-                                    context_log[k] = v
-                                end
-                            end
-
-                            -- fallback for string representation
-                            if context_log.string == nil then
-                                local status, str = pcall(tostring, context)
-                                if status then
-                                    context_log.string = str
-                                end
-                            end
-                        end
-
-                        if context_log.string == "" then
-                            context_log.string = nil
-                        end
-
-                        -- log the event
-                        self:_write_to_file(consul.pretty(context_log));
-                    end)
-
-                    if not ok then
-                        self:_write_to_file("ERROR logging event '" .. tostring(event) .. "': " .. tostring(err))
-                    end
-                end)
+                table.insert(events[event], self:_get_event_callback(event))
 
             end)
 
@@ -295,6 +307,64 @@ function Logger:log_events(_events, filter_func)
             end
         end
     end
+end
+
+-- Enable event discovery by setting a metatable on the global events table
+-- This catches any events that are not explicitly defined in our known lists
+function Logger:enable_event_discovery()
+    -- Get existing metatable
+    local existing_mt = getmetatable(events)
+
+    -- Check if we already wrapped it to prevent recursion
+    if existing_mt and type(existing_mt) == "table" and existing_mt.__consul_discovery then
+        return
+    end
+
+    self:internal("Enabling event discovery (wrapping existing metatable on 'events')")
+    self._is_logging_all_events = true
+
+    local new_mt = {
+        __consul_discovery = true,
+        __index = function(t, key)
+            -- 1. Try to get value from original __index if it exists
+            local result
+            if existing_mt and type(existing_mt) == "table" and existing_mt.__index then
+                if type(existing_mt.__index) == "function" then
+                    result = existing_mt.__index(t, key)
+                else
+                    result = existing_mt.__index[key]
+                end
+            end
+
+            -- 2. If result is still nil, it's a new discovery
+            if result == nil then
+                self:internal("Discovered new event: " .. tostring(key))
+
+                -- Create the new event table
+                result = {}
+                result.__consul_caught = true
+
+                -- Add our automatic logger to it
+                table.insert(result, self:_get_event_callback(key, true))
+
+                -- Store it back in the events table so subsequent accesses are fast
+                rawset(t, key, result)
+            end
+
+            return result
+        end
+    }
+
+    -- 3. Copy any other metamethods from the original metatable to be ultra safe
+    if existing_mt and type(existing_mt) == "table" then
+        for k, v in pairs(existing_mt) do
+            if k ~= "__index" and k ~= "__consul_discovery" then
+                new_mt[k] = v
+            end
+        end
+    end
+
+    setmetatable(events, new_mt)
 end
 
 function Logger:get_all_events()
@@ -317,6 +387,8 @@ function Logger:log_events_all()
     self:log_events(self:get_all_events(), function()
         return true
     end)
+
+    self._is_logging_all_events = true
 end
 
 -- Log all events excluding
