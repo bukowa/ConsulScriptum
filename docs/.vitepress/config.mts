@@ -57,8 +57,17 @@ export default withMermaid(defineConfig({
         siteTitle: 'Consul Scriptum',
 
         nav: [
-            {text: 'Getting started', link: '/guide/getting-started'},
-            {text: 'Scripting Manual', link: '/guide/scripting-manual'},
+            { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Scripting Manual', link: '/guide/scripting-manual' },
+            {
+                text: 'DOWNLOAD',
+                items: [
+                    { text: 'Rome II Workshop', link: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001' },
+                    { text: 'Attila Workshop', link: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3717893382' },
+                    { text: 'ToB Workshop', link: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3717928343' },
+                    { text: 'GitHub Releases', link: 'https://github.com/bukowa/ConsulScriptum/releases' },
+                ]
+            },
             {
                 text: 'v0.9.1',
                 items: [

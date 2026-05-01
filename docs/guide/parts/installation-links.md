@@ -1,3 +1,3 @@
 - **Total War: Rome II**: [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001) | [Standalone (.pack)](https://github.com/bukowa/ConsulScriptum/releases)
-- **Total War: Attila**: *Workshop TBD* | [Standalone (.pack)](https://github.com/bukowa/ConsulScriptum/releases)
-- **ToB**: *Workshop TBD* | [Standalone (.pack)](https://github.com/bukowa/ConsulScriptum/releases)
+- **Total War: Attila**: [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3717893382) | [Standalone (.pack)](https://github.com/bukowa/ConsulScriptum/releases)
+- **Thrones of Britannia**: [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3717928343) | [Standalone (.pack)](https://github.com/bukowa/ConsulScriptum/releases)
