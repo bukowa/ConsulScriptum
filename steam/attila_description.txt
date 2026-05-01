@@ -3,7 +3,7 @@
 
 Whether you want to instantly kill a character, transfer a settlement, or write and test Lua scripts without restarting your game, this mod provides an interface directly inside your campaign.
 
-[img]https://images.steamusercontent.com/ugc/16988052029949233469/C5BE5EB74DC0A02F7F2E9DB0D0099827EB7B315A/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+[img]https://images.steamusercontent.com/ugc/11728230172789067062/EC9C0B54987C275304C96C37A61EB07725657D48/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h2]Who is this for?[/h2]
 [b]For Players (No coding required):[/b]
@@ -27,7 +27,7 @@ Compatible with virtually everything, save game compatible.
 An immersive window with a list of built-in scripts.
 Select a character or settlement, click the script, and watch it happen.
 
-[img]https://images.steamusercontent.com/ugc/17036728790708406025/0A9651581C3D1AF0D86D2DBEF6A5952334D3C2A1/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+[img]https://images.steamusercontent.com/ugc/13084413983348014747/FF62B03651F469A4B106AF56673C354309DE3C1E/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [b]Included Scripts:[/b]
 [list]
@@ -48,24 +48,27 @@ Select a character or settlement, click the script, and watch it happen.
 Raw access to Lua and extra commands.
 Type commands, evaluate the game state, and debug your campaigns live.
 
-[img]https://images.steamusercontent.com/ugc/10820139722107472780/EA230A3029BC0ED8F2C39109598586575FB0CBCD/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+[img]https://images.steamusercontent.com/ugc/9393493980529326132/C56BDB4C37EAC4B873CE7259969D47AA00150096/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h3]3. Scriptum (Live File Execution)[/h3]
 Write your own scripts in an external text editor, place them in the game folder, and execute them with a click. When you save changes to your `.lua` file, just click the button again to run the updated code. No game restarts required.
 
-[img]https://images.steamusercontent.com/ugc/11605380554018906578/C89A2DFA05DFFA01EECE5D01F74BFEC355DED8FF/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+[img]https://images.steamusercontent.com/ugc/15046468668295812664/EEB226321FAAC39FCF184C1EDC3D5F1EC751930B/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h3]4. Debugging The World[/h3]
 Use built-in commands to quickly gather information about the state of the world.
 
 [img]https://images.steamusercontent.com/ugc/10705253734120946644/1E1A6CECE39CEE1423071FADAB30D8059F4F4C52/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
+[h3]5. Debugging The UI[/h3]
+Dedicated commands and a special HTML-based tool are available for debugging the UI (see documentation for more details).
+
 [h2]Documentation & Manual[/h2]
 [b]Full instructions, API references, and video tutorials are available on the official documentation site:[/b]
 
 [url=https://consulscriptum.com/attila][b]➜ Read Documentation & Manual[/b][/url]
 
-[img]https://images.steamusercontent.com/ugc/15350833015911593758/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
+[img]https://images.steamusercontent.com/ugc/12572422953631299009/9B093006760F620A00B3727ADB4F81932A7B2CD0/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img]
 
 [h2]Links & Support[/h2]
 [list]
@@ -107,7 +110,7 @@ Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consu
 
 [h2] Workshop Links For Other Titles: [/h2]
 - [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001]Rome 2[/url]
-- Attila (Beta)
+- [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3717893382]Attila[/url]
 - Thrones of Britannia (Beta)
 
 [h2] Standalone Pack Files [h2]

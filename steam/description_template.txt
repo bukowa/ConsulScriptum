@@ -49,6 +49,9 @@ Use built-in commands to quickly gather information about the state of the world
 
 [img]{debug_image}[/img]
 
+[h3]5. Debugging The UI[/h3]
+Dedicated commands and a special HTML-based tool are available for debugging the UI (see documentation for more details).
+
 [h2]Documentation & Manual[/h2]
 [b]Full instructions, API references, and video tutorials are available on the official documentation site:[/b]
 
@@ -96,7 +99,7 @@ Literally, [i]"Consul Scriptum"[/i] translates to "written consul" or "the consu
 
 [h2] Workshop Links For Other Titles: [/h2]
 - [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3435375001]Rome 2[/url]
-- Attila (Beta)
+- [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3717893382]Attila[/url]
 - Thrones of Britannia (Beta)
 
 [h2] Standalone Pack Files [h2]
