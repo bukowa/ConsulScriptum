@@ -653,7 +653,7 @@ consul = {
 				console = {
 					autoclear = false,
 					autoclear_after = 1,
-					last_read_changelog = "0.0.0",
+					last_read_changelog = consul.VERSION,
 				},
 				battle = {
 					use_in_battle = false,
