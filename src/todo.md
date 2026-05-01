@@ -1,0 +1,2 @@
+- exterminare should kill garrison general with army
+- 
