@@ -1,11 +1,3 @@
--- this script works on vanilla as rom_rome in Rome2 (may work anywhere tho)
--- it auto plays the turns teleporting you to Terra Incognita and blocking all diplomation with you
--- it also auto clicks all general died and dilemmas
-
--- WARNING: currently the logic for making sure theres at least one army on the map
---          so theres no "Defeat" is a bit flawed, it needs rework because theres too many character spawning
---          i got a crash at turn 100 so for sure this needs improvement and fixes :))
-
 STOP_NOW = false
 STOP_AT_TURNS = 60
 
@@ -15,8 +7,6 @@ local game = consul._game()
 local model = game:model()
 local world = model:world()
 local faction = world:faction_by_key(faction_name)
-local characters = faction:character_list()
-local regions = faction:region_list()
 local factions = world:faction_list()
 
 local diplomacy_types = {
@@ -66,16 +56,6 @@ table.insert(events.FactionTurnStart, function(ctx)
     if model:turn_number() == STOP_AT_TURNS then return end
 
     if ctx:faction():is_human() then
-        local general_count = 0
-
-        characters = ctx:faction():character_list()
-
-        for i = 0, characters:num_items() - 1, 1 do
-            local char = characters:item_at(i)
-            if char:has_military_force() then
-                general_count = general_count + 1
-            end
-        end
 
         while find_dillema() do
             click_dilemma()
