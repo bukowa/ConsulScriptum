@@ -50,7 +50,6 @@ local function update_region_pop(region_key, class_idx, amount)
     
     return true
 end
-emp_dacia_zarmizegetusa
 return {
     exact = {
         -- /dei_reset_all_pop: Wipe population of all regions.
