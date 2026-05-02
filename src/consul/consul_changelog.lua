@@ -1,6 +1,11 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["unreleased"] = {
+            common = "Fixed: event logging bugfix"..
+            "\nFixed: typo in DEI specific commands",
+            silent = true
+        },
         ["0.9.1"] = {
           common = "Fixed: Changelog improvements so you don't get spammed with them"..
           "\nFixed: event logging and logging improvement bugs",

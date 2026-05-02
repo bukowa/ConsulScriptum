@@ -1,3 +1,10 @@
+## Unreleased
+**Common:**
+- Fixed: event logging bugfix
+- Fixed: typo in DEI specific commands
+
+---
+
 ## v0.9.1
 **Common:**
 - Fixed: Changelog improvements so you don't get spammed with them
