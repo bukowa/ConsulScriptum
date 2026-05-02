@@ -47,7 +47,7 @@ else ifeq ($(GAME),Shogun2)
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_shogun2.lua
 endif
 
-MOD_VERSION = 0.1.0
+MOD_VERSION = 0.9.1
 
 # ============================================================
 # Instructions for Executing This Makefile on Windows
@@ -766,6 +766,15 @@ docs-deploy: docs-build
 	git commit -m "Deploy documentation" && \
 	git push -f git@github.com:bukowa/ConsulScriptum.git master:gh-pages
 
+# Bumps the version across the project
+bump-version:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is not set. Use: make bump-version VERSION=X.Y.Z"; \
+		exit 1; \
+	fi
+	py scripts/bump_version.py $(VERSION)
+	"$(MAKE)" docs-gen
+
 # Declare phony targets to prevent conflicts with file names
 .PHONY: setup \
 			setup-7zip \
@@ -790,4 +799,5 @@ docs-deploy: docs-build
 		generate-docs \
 		docs-gen \
 		docs-build \
-		docs-deploy
+		docs-deploy \
+		bump-version
