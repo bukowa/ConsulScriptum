@@ -49,6 +49,13 @@ consul = {
 		table.insert(events.UICreated, consul.uidebug.OnUICreated)
 		table.insert(events.UICreated, consul.ui.OnUICreated_HandleInitialVisibility)
 
+		table.insert(events.UICreated, function()
+			local cfg = consul.config.read()
+			if cfg.debug and cfg.debug.log_events then
+				consul.console.write("Persistent event logging is active. It may impact performance. Disable via /consul_debug_events")
+			end
+		end)
+
 		-- persistent debug logging
 		local cfg = consul.config.read()
 		if cfg.debug then

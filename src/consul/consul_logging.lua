@@ -224,7 +224,7 @@ end
 function Logger:_get_event_callback(event, is_caught)
     return function(context)
         -- Guard against logging if it's disabled globally
-        if not self._is_logging_all_events then return end
+        if not (self._is_logging_all_events or self._is_logging_game_events) then return end
 
         local ok, err = pcall(function()
             -- build a better looking context table
@@ -420,6 +420,8 @@ function Logger:log_game_events()
 
     -- Log events with the custom filter
     self:log_events(self:get_all_events(), filter_func)
+
+    self._is_logging_game_events = true
 end
 
 -- Log all events excluding specified events
