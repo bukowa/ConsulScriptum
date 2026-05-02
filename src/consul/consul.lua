@@ -1105,14 +1105,14 @@ consul = {
 
 			-- if UIComponent is nil grab it from registry
 			if not UIComponent then
-				log:warn("UIComponent is nil; trying to grab it from lua registry")
+				log:debug("UIComponent is nil; trying to grab it from lua registry")
 
 				for k, v in pairs(debug.getregistry()) do
 					local status, env = pcall(debug.getfenv, v)
 
 					if status and type(env) == "table" then
 						if env.UIComponent ~= nil then
-							log:info("Found UIComponent in environment of registry index: " .. tostring(k))
+							log:debug("Found UIComponent in environment of registry index: " .. tostring(k))
 							UIComponent = env.UIComponent
 							break
 						end
