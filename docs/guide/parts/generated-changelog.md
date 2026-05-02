@@ -1,4 +1,4 @@
-## Unreleased
+## v0.9.2
 **Common:**
 - Fixed: event logging bugfix
 - Fixed: typo in DEI specific commands
