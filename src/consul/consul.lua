@@ -1023,6 +1023,7 @@ consul = {
 		--- consul.console.write(c:Visible())
 		find = function(key)
 			local log = consul.new_log("ui:find")
+            log:debug('Looking for key: ' .. tostring(key))
 
 			-- make sure the key is of type string- if not, and you pass something
 			-- that cannot be resolved to a string, it may break the upstream game code
