@@ -34,7 +34,7 @@ Select a character or settlement, click the script, and watch it happen.
 [/list]
 
 [h3]2. The Console[/h3]
-Raw access to Lua and extra commands.
+The console gives you raw access to Lua and extra commands.
 Type commands, evaluate the game state, and debug your campaigns live.
 
 [img]{console_image}[/img]
