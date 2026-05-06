@@ -52,7 +52,9 @@ consul = {
 		table.insert(events.UICreated, function()
 			local cfg = consul.config.read()
 			if cfg.debug and cfg.debug.log_events then
-				consul.console.write("Persistent event logging is active. It may impact performance. Disable via /consul_debug_events")
+				consul.console.write(
+					"Persistent event logging is active. It may impact performance. Disable via /consul_debug_events"
+				)
 			end
 		end)
 
@@ -88,28 +90,34 @@ consul = {
 		-- 1 == campaign
 		-- 2 == frontend
 		mode = nil,
+		_mode = nil,
 
 		setup = function()
 			setmetatable(consul.env, {
 				__index = function(self, key)
 					if key == "mode" then
+						-- 1. Check if we already have a cached value in the table
+						local cached = rawget(self, "mode")
+						if cached ~= nil then
+							return cached
+						end
+
+						-- 2. Calculate the mode
+						local mode = nil
+
 						if __game_mode then
-							return __game_mode
+							mode = __game_mode
+						elseif consul._game() then
+							mode = 1
+						elseif consul.is_in_battle_script then
+							mode = 0
+						else
+							mode = consul.utils.get_from_registry("__game_mode")
 						end
 
-						-- if game obj is not nil we are in campaign
-						-- this is important because the base game script
-						-- don't always import the campaign script header...
-						if consul._game() then
-							return 1
-						end
-
-						-- we are 99% in battle
-						if consul.is_in_battle_script then
-							return 0
-						end
-
-						return consul.utils.get_from_registry("__game_mode")
+						-- 3. Cache the value into the table so __index isn't called next time
+						rawset(self, "mode", mode)
+						return mode
 					else
 						return rawget(self, key)
 					end
@@ -1023,7 +1031,7 @@ consul = {
 		--- consul.console.write(c:Visible())
 		find = function(key)
 			local log = consul.new_log("ui:find")
-            log:debug('Looking for key: ' .. tostring(key))
+			log:debug("Looking for key: " .. tostring(key))
 
 			-- make sure the key is of type string- if not, and you pass something
 			-- that cannot be resolved to a string, it may break the upstream game code
@@ -3776,7 +3784,7 @@ consul.console.write(
 			return scripting.game_interface
 		end
 
-		if consul.env.mode == 1 then
+		if consul.env._mode == 1 then
 			consul.log:error("Could not find scripting.game_interface, consul will not work properly")
 		end
 		return nil

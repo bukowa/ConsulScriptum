@@ -1,6 +1,9 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["unreleased"] = {
+            common = "Fixed: consul.env.mode stack overflow in battles that prevented moving consul window",
+        },
         ["0.9.2"] = {
             common = "Fixed: event logging bugfix"..
             "\nFixed: typo in DEI specific commands",

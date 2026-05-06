@@ -1,3 +1,9 @@
+## Unreleased
+**Common:**
+- Fixed: consul.env.mode stack overflow in battles that prevented moving consul window
+
+---
+
 ## v0.9.2
 **Common:**
 - Fixed: event logging bugfix
