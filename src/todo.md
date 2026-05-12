@@ -1,2 +1,2 @@
 - exterminare should kill garrison general with army
-- 
+- add capital city change 
