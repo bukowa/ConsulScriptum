@@ -154,7 +154,7 @@ uidebug.dump_tree = function(root_component, hovered_address)
 		end
 	end
 
-	local file, err_open = io.open(UI_DEBUG_DIR .. "consul_debug_ui_state.txt", "w+")
+	local file, err_open = consul.io_open(UI_DEBUG_DIR .. "consul_debug_ui_state.txt", "w+")
 	if not file then
 		consul.log:error("uidebug: Could not open output file: " .. tostring(err_open))
 		return
@@ -185,7 +185,7 @@ uidebug.launch = function()
 	content = content:gsub("%[%[DYNAMIC_PATH%]%]", UI_DEBUG_DIR_NAME)
 	content = content:gsub("%[%[GAME_ID%]%]", game_subfolder)
 
-	local f_out = io.open(output_path, "w")
+	local f_out = consul.io_open(output_path, "w")
 	if not f_out then
 		return "Error: Could not write to " .. output_path
 	end
@@ -198,7 +198,7 @@ uidebug.launch = function()
 end
 
 uidebug.process_commands = function()
-	local f = io.open(UI_DEBUG_DIR .. "consul_debug_ui_command.txt", "r")
+	local f = consul.io_open(UI_DEBUG_DIR .. "consul_debug_ui_command.txt", "r")
 	if not f then
 		return
 	end
@@ -208,7 +208,7 @@ uidebug.process_commands = function()
 
 	if content and content ~= "" then
 		-- clear the file immediately
-		local fw = io.open(UI_DEBUG_DIR .. "consul_debug_ui_command.txt", "w")
+		local fw = consul.io_open(UI_DEBUG_DIR .. "consul_debug_ui_command.txt", "w")
 		if fw then
 			fw:close()
 		end
