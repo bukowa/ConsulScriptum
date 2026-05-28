@@ -10,7 +10,7 @@ ifeq ($(GAME),Rome2)
     RPFM_GAME_ID := rome_2
     RPFM_SCHEMA_FILE := schema_rom2.ron
     INSTALL_ALONE_DIR := D:\Games\Total War - Rome 2 Steam
-    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Rome II
+    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Rome II
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
     GAME_EXE := Rome2.exe
     STEAM_APP_ID := 214950
@@ -19,8 +19,8 @@ else ifeq ($(GAME),TOB)
     MOD_PACKAGE := consulscriptum_tob.pack
     RPFM_GAME_ID := thrones_of_britannia
     RPFM_SCHEMA_FILE := schema_tob.ron
-    INSTALL_ALONE_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Saga Thrones of Britannia 712100
-    INSTALL_STEAM_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Saga Thrones of Britannia 712100
+    INSTALL_ALONE_DIR := E:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
+    INSTALL_STEAM_DIR := E:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/ThronesofBritannia/scripts
     GAME_EXE := thrones.exe
     STEAM_APP_ID := 712100
@@ -30,7 +30,7 @@ else ifeq ($(GAME),Attila)
     RPFM_GAME_ID := attila
     RPFM_SCHEMA_FILE := schema_att.ron
     INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
-    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War Attila
+    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Attila
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
     GAME_EXE := Attila.exe
     STEAM_APP_ID := 325610
@@ -39,15 +39,15 @@ else ifeq ($(GAME),Shogun2)
     MOD_PACKAGE := consulscriptum_shogun2.pack
     RPFM_GAME_ID := shogun_2
     RPFM_SCHEMA_FILE := schema_sho2.ron
-    INSTALL_ALONE_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War SHOGUN 2
-    INSTALL_STEAM_DIR := C:/Program Files (x86)/Steam/steamapps/common/Total War SHOGUN 2
+    INSTALL_ALONE_DIR := E:\SteamLibrary\steamapps\common\Total War SHOGUN 2
+    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War SHOGUN 2
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Shogun2/scripts
     GAME_EXE := Shogun2.exe
     STEAM_APP_ID := 34330
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_shogun2.lua
 endif
 
-MOD_VERSION = 0.9.2
+MOD_VERSION = 0.9.3
 
 # ============================================================
 # Instructions for Executing This Makefile on Windows
