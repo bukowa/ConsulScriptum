@@ -2,63 +2,9 @@
 
 consul_build = "Attila" -- or "Rome2", "TOB"
 
--- Finds the Rome II installation path by reading Steam's libraryfolders.vdf,
--- then verifying presence via appmanifest_214950.acf (Rome II app ID).
--- Returns the game path (trailing slash) or "" for CWD, cached in consul._base_path.
-local function _detect_base_path()
-	-- CWD writable? Use relative path (covers Linux/Proton where CWD is set correctly).
-	local test = io.open('consul.log', 'a')
-	if test then test:close(); return '' end
-
-	local home = os.getenv('HOME') or '/tmp'
-
-	-- Detect macOS vs Linux: /proc/version exists only on Linux.
-	local pv = io.open('/proc/version', 'r')
-	local is_linux = pv ~= nil
-	if pv then pv:close() end
-
-	-- Read all library paths from Steam's libraryfolders.vdf.
-	local function read_library_paths(vdf_path)
-		local f = io.open(vdf_path, 'r')
-		if not f then return {} end
-		local content = f:read('*all')
-		f:close()
-		local paths = {}
-		for p in content:gmatch('"path"%s+"([^"]+)"') do
-			table.insert(paths, p)
-		end
-		return paths
-	end
-
-	-- Return the Rome II game path if installed in this Steam library, nil otherwise.
-	-- Uses appmanifest_214950.acf (Rome II app ID) as the presence check.
-	local function find_rome2(lib_root)
-		local f = io.open(lib_root .. '/steamapps/appmanifest_214950.acf', 'r')
-		if not f then return nil end
-		f:close()
-		return lib_root .. '/steamapps/common/Total War Rome II/'
-	end
-
-	-- Steam installation directories to probe, in priority order.
-	local steam_bases = is_linux
-		and { home .. '/.local/share/Steam', home .. '/.steam/steam' }
-		or  { home .. '/Library/Application Support/Steam' }
-
-	for _, steam_base in ipairs(steam_bases) do
-		local libs = read_library_paths(steam_base .. '/steamapps/libraryfolders.vdf')
-		table.insert(libs, 1, steam_base)  -- Steam base is always an implicit library
-		for _, lib in ipairs(libs) do
-			local path = find_rome2(lib)
-			if path then return path end
-		end
-	end
-
-	return '/tmp/'
-end
-
 consul = {
 
-	VERSION = "0.9.2",
+	VERSION = "0.9.3",
 	URL = "http://github.com/bukowa/ConsulScriptum",
 	AUTHOR = "Mateusz Kurowski",
 	CONTACT = "gitbukowa@gmail.com",
@@ -137,26 +83,30 @@ consul = {
 
 		consul.env.setup()
 	end,
-	--- Opens a file, prepending the OS-specific base path for relative filenames.
+	--- resolves a path for relative filenames based on the OS and game build.
 	--- On Windows the path is used as-is (relative to the game CWD).
-	--- On non-Windows (macOS / Linux) with Rome2, the base is resolved at runtime:
-	--- CWD is tried first; if not writable, Steam's libraryfolders.vdf is parsed to
-	--- locate the Rome II installation (app ID 214950) across all configured libraries,
-	--- with /tmp/ as final fallback. Result is cached in consul._base_path.
-	--- @function consul.io_open
-	--- @tparam string filename The filename (relative or absolute) to open.
-	--- @tparam string mode The mode string passed to io.open.
-	--- @return file*, string The file handle and error message, as returned by io.open.
-	io_open = function(filename, mode, ...)
+	--- On macOS with Rome2 the base is $HOME/Library/Application Support/Steam/steamapps/common/Total War Rome II/.
+	--- @function consul.io_resolve_path
+	--- @tparam string filename The filename (relative or absolute) to resolve.
+	--- @return string The resolved path.
+	io_resolve_path = function(filename)
 		local sep = package.config:sub(1, 1)
 		if sep ~= '\\' and consul_build == "Rome2" then
-			-- macOS: only prepend base for relative paths
 			if filename:sub(1, 1) ~= '/' then
 				local home = os.getenv('HOME') or '/tmp'
 				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Rome II/' .. filename
 			end
 		end
-		return io.open(filename, mode, ...)
+		return filename
+	end,
+	--- Opens a file, prepending the OS-specific base path for relative filenames.
+	
+	--- @function consul.io_open
+	--- @tparam string filename The filename (relative or absolute) to open.
+	--- @tparam string mode The mode string passed to io.open.
+	--- @return file*, string The file handle and error message, as returned by io.open.
+	io_open = function(filename, mode, ...)
+    	return io.open(consul.io_resolve_path(filename), mode, ...)
 	end,
 
 	env = {
@@ -3055,7 +3005,7 @@ consul.console.write(
 					local index = string.sub(script_name, #ui.scriptum_entry + 1)
 					consul.scriptum.entry = ui.scriptum_entry_text .. index
 
-					local success, err = pcall(dofile, script)
+					local success, err = pcall(dofile, consul.io_resolve_path(script))
 
 					-- Clean up after execution
 					consul.scriptum.entry = nil

@@ -1,2 +1,4 @@
 - exterminare should kill garrison general with army
-- add capital city change 
+- add capital city change
+- notify user about lua statement handling in the console
+- add agent / general experience add
