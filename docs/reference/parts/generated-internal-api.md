@@ -360,6 +360,33 @@ local world = consul.game.world()
 
 ---
 
+#### `consul.io_open`
+
+
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `filename` | `string` |  The filename (relative or absolute) to open. |
+| `mode` | `string` |  The mode string passed to io.open. |
+
+
+---
+
+#### `consul.io_resolve_path`
+
+resolves a path for relative filenames based on the OS and game build.
+ On Windows the path is used as-is (relative to the game CWD).
+ On macOS with Rome2 the base is $HOME/Library/Application Support/Steam/steamapps/common/Total War Rome II/.
+
+ Parameters:
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `filename` | `string` |  The filename (relative or absolute) to resolve. |
+
+
+---
+
 #### `consul.new_logger`
 
 Creates a new logger instance.<br>

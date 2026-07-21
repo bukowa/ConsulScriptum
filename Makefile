@@ -51,7 +51,7 @@ else ifeq ($(GAME),Shogun2)
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_shogun2.lua
 endif
 
-MOD_VERSION = 0.9.3
+MOD_VERSION = 0.10.0
 
 # ============================================================
 # Instructions for Executing This Makefile on Windows

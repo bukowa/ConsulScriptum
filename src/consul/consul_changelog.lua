@@ -1,6 +1,11 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["0.10.0"] ={
+            Attila = "Now working on MacOS.",
+            Rome2 = "Now working on MacOS.",
+            silent = true,
+        },
         ["0.9.3"] = {
             common = "Fixed: consul.env.mode stack overflow in battles that prevented moving consul window",
             silent = true,
