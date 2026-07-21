@@ -26,8 +26,10 @@ events = get_events();
 -- Ensure logging to a file if something goes wrong
 local __write = function(line)
     local f = io.open('consul.log', 'a')
-    f:write(line)
-    f:close()
+    if f then
+        f:write(line)
+        f:close()
+    end
 end
 
 __write('Starting consul\n')

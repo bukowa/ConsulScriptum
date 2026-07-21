@@ -54,7 +54,7 @@ end
 
 -- Internal method to write directly to the log file
 function Logger:_write_to_file(text)
-    local logfile, err = io.open(self.log_file_path, "a")
+    local logfile, err = consul.io_open(self.log_file_path, "a")
     if not logfile then
         error("Failed to open log file: " .. (err or "Unknown error"))
     end

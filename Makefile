@@ -11,7 +11,9 @@ ifeq ($(GAME),Rome2)
     RPFM_SCHEMA_FILE := schema_rom2.ron
     INSTALL_ALONE_DIR := D:\Games\Total War - Rome 2 Steam
     INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Rome II
+	INSTALL_STEAM_MACOS_DIR := Z:/Library/Application Support/Steam/steamapps/common/Total War Rome II/TotalWarRome2Data
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
+	INSTALL_USER_SCRIPT_MACOS :=Z:/Library/Application Support/Feral Interactive/Total War ROME II/VFS/User/AppData/Roaming/The Creative Assembly/Rome2/scripts
     GAME_EXE := Rome2.exe
     STEAM_APP_ID := 214950
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_rome2.lua
@@ -31,7 +33,9 @@ else ifeq ($(GAME),Attila)
     RPFM_SCHEMA_FILE := schema_att.ron
     INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
     INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Attila
+	INSTALL_STEAM_MACOS_DIR := Z:/Library/Application Support/Steam/steamapps/common/Total War Attila/TotalWarAttilaData
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
+	INSTALL_USER_SCRIPT_MACOS :=Z:/Library/Application Support/Feral Interactive/Total War ATTILA/VFS/User/AppData/Roaming/The Creative Assembly/Attila/scripts
     GAME_EXE := Attila.exe
     STEAM_APP_ID := 325610
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_attila.lua
@@ -73,6 +77,14 @@ MOD_VERSION = 0.9.3
 # Note:
 # This Makefile has been designed and tested for use with GNU Make in the Git Bash shell.
 # ============================================================
+
+ifeq ($(OS),Windows_NT)
+GIT_SH_CANDIDATES := $(wildcard C:/Program\ Files/Git/usr/bin/sh.exe) $(wildcard C:/Program\ Files/Git/bin/sh.exe) $(wildcard C:/Program\ Files\ \(x86\)/Git/usr/bin/sh.exe) $(wildcard C:/Program\ Files\ \(x86\)/Git/bin/sh.exe)
+ifneq ($(strip $(GIT_SH_CANDIDATES)),)
+else
+$(warning Git Bash / sh.exe was not found in a standard Windows install path. This Makefile's setup target uses POSIX shell syntax and is intended to run from Git Bash.)
+endif
+endif
 
 # Directories for dependencies and build files
 BUILD_DIR         := ./build/$(GAME)
@@ -422,6 +434,7 @@ clean:
 	@rm -f $(RELEASE_DIR)/$(MOD_PACKAGE)
 	@rm -f '$(INSTALL_ALONE_DIR)/data/$(MOD_PACKAGE)'
 	@rm -f '$(INSTALL_STEAM_DIR)/data/$(MOD_PACKAGE)'
+	@rm -f '$(INSTALL_STEAM_MACOS_DIR)/data/$(MOD_PACKAGE)'
 	@echo "Cleaned up build directory and mod package for $(GAME)."
 
 # Setup target to prepare all necessary dependencies
@@ -596,11 +609,18 @@ generate-docs: setup-lua setup-lua-libs setup-ldoc
 # Install Steam and alone
 install: \
 	install-alone \
-	install-steam
+	install-steam \
+	install-steam-macos
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
+
+install-steam-macos: $(MOD_PACKAGE)
+	$(call install-to-dir,$(INSTALL_STEAM_MACOS_DIR)/data)
+	@mkdir -p "$(INSTALL_USER_SCRIPT_MACOS)"
+	@echo 'mod "$(MOD_PACKAGE)";' > "$(INSTALL_USER_SCRIPT_MACOS)/user.script.txt"
+	@echo 'mod "$(MOD_PACKAGE)" written to $(INSTALL_USER_SCRIPT_MACOS)/user.script.txt for Steam macOS installation'
 
 # Install the built .pack file only if different for standalone
 install-alone: $(MOD_PACKAGE)
@@ -642,6 +662,8 @@ copy_alone: $(MOD_PACKAGE)
 
 copy_steam: $(MOD_PACKAGE)
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
+copy_steam_macos: $(MOD_PACKAGE)
+	$(call install-to-dir,$(INSTALL_STEAM_MACOS_DIR)/data)
 
 # Function to install the mod package to a specified directory
 install-to-dir = \
@@ -690,6 +712,9 @@ run-steam: \
 	install-steam
 	@$(disable_outdated_mods_popup)
 	@powershell -Command start steam://rungameid/$(STEAM_APP_ID)
+copy-macos: \	
+	install-steam-macos
+	@$(disable_outdated_mods_popup)
 
 
 # short aliases for the run targets
@@ -787,6 +812,7 @@ bump-version:
 			setup-etwng \
 		install \
 			install-steam \
+			install-steam-macos \
 			install-alone \
 		kill-game \
 		run-alone \
