@@ -97,6 +97,12 @@ consul = {
 				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Rome II/' .. filename
 			end
 		end
+		if sep ~= '\\' and consul_build == "Attila" then
+			if filename:sub(1, 1) ~= '/' then
+				local home = os.getenv('HOME') or '/tmp'
+				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Attila/' .. filename
+			end
+		end
 		return filename
 	end,
 	--- Opens a file, prepending the OS-specific base path for relative filenames.
