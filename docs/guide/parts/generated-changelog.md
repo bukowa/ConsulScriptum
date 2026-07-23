@@ -1,3 +1,12 @@
+## v0.10.0
+**Rome II specific:**
+- Now working on MacOS.
+
+**Attila specific:**
+- Now working on MacOS.
+
+---
+
 ## v0.9.3
 **Common:**
 - Fixed: consul.env.mode stack overflow in battles that prevented moving consul window
