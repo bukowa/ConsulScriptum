@@ -1666,9 +1666,13 @@ consul = {
 
 			-- find the console output component
 			local c = ui.find(ui.console_output_text_1)
-
+			-- if the component is not found, do not write in the console output, 
+			-- but still write to the file
+			if c == nil then
+				return
+			end
 			-- grab the current text
-			text = c:GetStateText()
+			local text = c:GetStateText()
 
 			-- if text is empty, we don't want to add a newline
 			if text == "" then
