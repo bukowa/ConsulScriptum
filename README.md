@@ -46,3 +46,7 @@ Few simple scripts are already included:
 
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bukowa/ConsulScriptum)
+
+## Sponsors
+
+Special thanks to **gdough** for supporting this project through ko-fi. 💛

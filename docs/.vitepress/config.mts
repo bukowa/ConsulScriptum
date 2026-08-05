@@ -74,7 +74,8 @@ export default withMermaid(defineConfig({
                     {text: 'Changelog', link: '/guide/changelog'},
                     {text: 'GitHub', link: 'https://github.com/bukowa/ConsulScriptum'},
                 ]
-            }
+            },
+            { text: 'Credits', link: '/credits' }
         ],
 
         sidebar: [
