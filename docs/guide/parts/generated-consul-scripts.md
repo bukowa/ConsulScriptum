@@ -21,7 +21,7 @@ To mobilize a garrison for field duty, first select your general's army. Then, d
 #### Exterminare — Kill character
 
 **ID**: `consul_exterminare_entry`  
-When activated, any character you select will be exterminated.
+When activated, any character you select will be exterminated. Selecting a settlement will first exterminate its commander (if any), and a second selection will exterminate the garrison colonel.
 
 #### Impetus — Restore action points
 

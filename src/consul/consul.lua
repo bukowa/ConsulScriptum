@@ -3438,6 +3438,7 @@ consul.console.write(
 				log:debug("Setting up...")
 
 				scripts.event_handlers["CharacterSelected"]["exterminare"] = nil
+				scripts.event_handlers["SettlementSelected"]["exterminare"] = nil
 			end,
 
 			start = function()
@@ -3468,6 +3469,57 @@ consul.console.write(
 					consul._game():kill_character(target, true, true)
 				end
 
+				scripts.event_handlers["SettlementSelected"]["exterminare"] = function(context)
+					log:debug("SettlementSelected")
+
+					local garrison = context:garrison_residence()
+					local settlement = garrison:settlement_interface()
+					local region = settlement:region()
+					local target_char = nil
+
+					if settlement:has_commander() and not settlement:commander():character_type("colonel") then
+						target_char = settlement:commander()
+						log:debug("Targetting settlement commander")
+					else
+						target_char = scripts.force_exchange_garrison._get_colonel_for_garrison(garrison, true, false)
+						if target_char then
+							log:debug("Targetting garrison colonel")
+						else
+							-- Check for governor (exists in Attila and ToB, but not Rome 2)
+							local ok, has_gov = pcall(function() return region:has_governor() end)
+							if ok and has_gov then
+								local ok2, gov = pcall(function() return region:governor() end)
+								if ok2 and gov and not gov:is_null_interface() then
+									target_char = gov
+									log:debug("Targetting region governor")
+								end
+							end
+						end
+					end
+
+					if not target_char then
+						log:debug("Settlement has no garrison colonel/general/governor")
+						return
+					end
+
+					-- get the faction and forename
+					local faction = target_char:faction():name()
+					local forename = target_char:get_forename()
+
+					-- build the target
+					local target = "faction:"
+						.. tostring(faction)
+						.. ","
+						.. "forename:"
+						.. string.gsub(forename, "names_name_", "")
+
+					-- destroy
+					log:debug("Target: " .. target)
+
+					-- TODO we can switch flag to only kill character (now it kills the whole army)
+					consul._game():kill_character(target, true, true)
+				end
+
 				log:debug("Started.")
 			end,
 
@@ -3478,6 +3530,7 @@ consul.console.write(
 
 				-- unregister event handler
 				scripts.event_handlers["CharacterSelected"]["exterminare"] = nil
+				scripts.event_handlers["SettlementSelected"]["exterminare"] = nil
 				log:debug("Stopped.")
 			end,
 		},
