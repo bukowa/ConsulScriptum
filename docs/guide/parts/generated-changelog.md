@@ -1,3 +1,10 @@
+## v0.11.0
+**Common:**
+- Fixed: Nil exception when console output UI component is not found (#7).
+- Added: Exterminare now supports settlement targets - first click kills the commander (if any), second click kills the garrison colonel/governor.
+
+---
+
 ## v0.10.0
 **Rome II specific:**
 - Now working on MacOS.
