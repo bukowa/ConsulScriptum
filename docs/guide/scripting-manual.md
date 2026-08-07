@@ -77,8 +77,8 @@ While the next section explains how to **navigate** the hierarchy, below are a f
 > [!IMPORTANT]
 > **Understanding the API**: The <GameLink hash="game">**Game API Reference**</GameLink> is generated directly from raw engine Lua dumps. Because these are internal bindings, parameter names are often unavailable in the automated reference.
 > 
-> *   **Parameter Discovery**: To find exact arguments (such as expected keys, IDs, or string values), consult the official **CA Wiki** links in [Section 8](#_8-further-reading-official-wikis).
-> *   **Total War Ecosystem**: While this manual supports both games, official engine documentation is only available for **Attila onwards**. However, the engine logic is 99% identical for **Rome II** and highly consistent across other titles discussed in [Section 8](#_8-further-reading-official-wikis).
+> *   **Parameter Discovery**: To find exact arguments (such as expected keys, IDs, or string values), consult the official **CA Wiki** links in [Section 7](#_7-further-reading-official-wikis).
+> *   **Total War Ecosystem**: While this manual supports both games, official engine documentation is only available for **Attila onwards**. However, the engine logic is 99% identical for **Rome II** and highly consistent across other titles discussed in [Section 7](#_7-further-reading-official-wikis).
 
 
 ## 2. Navigating the Game Object Hierarchy
