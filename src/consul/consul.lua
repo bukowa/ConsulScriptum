@@ -2837,7 +2837,7 @@ consul.console.write(
 		-- because we don't know how to create elements
 		-- dynamically, we have to set a maximum number of entries
 		-- they are pre-created in the ui file
-		max_entries = 10,
+		max_entries = 40,
 
 		-- this is a map of ui listview entries to the scripts
 		-- example scriptum_text1 -> consul_example.lua
@@ -2914,7 +2914,7 @@ consul.console.write(
 			-- now we can open the file and read its lines
 			-- each line is a path to a script that can be executed
 			-- it will be added to the listview by toggling visibility flag
-			-- we can support up to 10 scripts for now, and each script
+			-- we can support up to 40 scripts for now, and each script
 			-- has to find ui element with index +1 after the scriptum_entry
 
 			-- first read all lines to local var so we can close the file

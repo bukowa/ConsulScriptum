@@ -47,10 +47,12 @@ When new text is added, the scrollbar may not automatically jump to the bottom. 
 
 ## Scriptum panel
 
-**Slot Limit (10 Scripts).** 
-The panel is currently hard-capped at 10 script buttons. This is not a random number, but a technical compromise:
-- **Rome II**: The UI engine cannot create components on the fly. All 10 buttons are pre-built into the interface files.
-- **Attila / ToB**: While they technically support dynamic lists, the 10-slot limit is maintained to keep the experience consistent across all supported games.
+**Slot Limit (40 Scripts).** 
+The panel currently supports up to 40 script buttons. This is not a random number, but a technical compromise:
+- **Rome II**: The UI engine cannot create components on the fly. All 40 buttons are pre-built into the interface files.
+- **Attila / ToB**: While they technically support dynamic lists, the 40-slot limit is maintained to keep the experience consistent across all supported games.
+
+This limit is not set in stone and can be raised in a future update. If you need more script slots, please [open an issue on GitHub](https://github.com/bukowa/ConsulScriptum/issues).
 
 ::: tip Pro Tip: Master Scripts
 If you run out of slots, you can create a "Master Script" that uses Lua `dofile()` to execute multiple other scripts in sequence, or use the console to run one-off files.

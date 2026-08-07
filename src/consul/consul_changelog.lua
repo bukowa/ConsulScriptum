@@ -1,6 +1,10 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["unreleased"] = {
+            common = "Added: Scriptum (custom scripts list) now supports up to 40 entries (previously 10)."..
+            "\nFixed: Scriptum list scrolling so all 40 entries are reachable in-game.",
+        },
         ["0.11.0"] = {
             common = "Fixed: Nil exception when console output UI component is not found (#7)."..
             "\nAdded: Exterminare now supports settlement targets - first click kills the commander (if any), second click kills the garrison colonel/governor.",
