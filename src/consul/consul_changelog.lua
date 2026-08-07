@@ -1,7 +1,7 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
+        ["1.0.0"] = {
             common = "Added: Scriptum (custom scripts list) now supports up to 40 entries (previously 10)."..
             "\nFixed: Scriptum list scrolling so all 40 entries are reachable in-game.",
         },

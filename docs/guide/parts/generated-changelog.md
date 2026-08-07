@@ -1,3 +1,10 @@
+## v1.0.0
+**Common:**
+- Added: Scriptum (custom scripts list) now supports up to 40 entries (previously 10).
+- Fixed: Scriptum list scrolling so all 40 entries are reachable in-game.
+
+---
+
 ## v0.11.0
 **Common:**
 - Fixed: Nil exception when console output UI component is not found (#7).
