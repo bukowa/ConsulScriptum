@@ -85,25 +85,16 @@ consul = {
 	end,
 	--- resolves a path for relative filenames based on the OS and game build.
 	--- On Windows the path is used as-is (relative to the game CWD).
-	--- On macOS with Rome2 the base is $HOME/Library/Application Support/Steam/steamapps/common/Total War Rome II/.
+	--- On macOS see consul_macos.lua.
 	--- @function consul.io_resolve_path
 	--- @tparam string filename The filename (relative or absolute) to resolve.
 	--- @return string The resolved path.
 	io_resolve_path = function(filename)
-		local sep = package.config:sub(1, 1)
-		if sep ~= '\\' and consul_build == "Rome2" then
-			if filename:sub(1, 1) ~= '/' then
-				local home = os.getenv('HOME') or '/tmp'
-				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Rome II/' .. filename
-			end
+		-- Windows: the game CWD already is the game folder, use the path as-is
+		if package.config:sub(1, 1) == '\\' then
+			return filename
 		end
-		if sep ~= '\\' and consul_build == "Attila" then
-			if filename:sub(1, 1) ~= '/' then
-				local home = os.getenv('HOME') or '/tmp'
-				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Attila/' .. filename
-			end
-		end
-		return filename
+		return require("consul_macos").resolve_path(filename)
 	end,
 	--- Opens a file, prepending the OS-specific base path for relative filenames.
 	
@@ -2860,6 +2851,23 @@ consul.console.write(
 			local path = consul.scriptum.path
 			local max = consul.scriptum.max_entries
 
+			-- a previous install may have left files with Windows line endings,
+			-- convert them in place so user changes are kept (never on Windows)
+			local normalize_eol = function(filename)
+				if package.config:sub(1, 1) == '\\' then
+					return
+				end
+				log:trace("normalize_eol: " .. tostring(filename))
+				local ok, res = xpcall(function()
+					return require("consul_macos").normalize_eol(filename)
+				end, debug.traceback)
+				if not ok then
+					log:error("normalize_eol failed for " .. tostring(filename) .. ": " .. tostring(res))
+				elseif res then
+					log:info("Converted CRLF line endings to LF: " .. filename)
+				end
+			end
+
 			local f = consul.io_open(path, "r")
 			if f then
 				f:close()
@@ -2887,6 +2895,9 @@ consul.console.write(
 					end
 				end
 			end
+
+			normalize_eol(path)
+			normalize_eol(consul.scriptum.path_example)
 
 			-- at start just clean all the entries
 			-- and set all the elements to invisible
@@ -2919,12 +2930,15 @@ consul.console.write(
 
 			-- first read all lines to local var so we can close the file
 			local lines = {}
+			log:trace("reading scriptum list: " .. path)
 			f = consul.io_open(path, "r")
 			if not f then
 				log:error("Could not open scriptum file, this should never happen " .. path)
 				return
 			end
 			for line in f:lines() do
+				-- never keep a trailing CR in a path, even if the conversion failed
+				line = string.gsub(line, "\r$", "")
 				table.insert(lines, line)
 			end
 			f:close()
@@ -2944,6 +2958,8 @@ consul.console.write(
 
 				-- make sure the line is not empty
 				if line ~= "" then
+					normalize_eol(line)
+
 					-- if the file exists, add it to the list
 					local f = consul.io_open(line, "r")
 					if f then
@@ -2980,6 +2996,7 @@ consul.console.write(
 					end
 				end
 			end
+			log:trace("setup: done, " .. (i - 1) .. " entries")
 		end,
 
 		-- let's handle the event when we click on the scriptum entry
