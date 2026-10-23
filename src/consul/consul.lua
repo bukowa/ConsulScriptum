@@ -83,86 +83,18 @@ consul = {
 
 		consul.env.setup()
 	end,
-	-- Steam app ids and install folder names of the supported games
-	_steam_games = {
-		Rome2 = { appid = "214950", dir = "Total War Rome II" },
-		Attila = { appid = "325610", dir = "Total War Attila" },
-		TOB = { appid = "712100", dir = "Total War Saga Thrones of Britannia" },
-	},
-
-	--- returns the candidate Steam install folders for the current OS, most likely first.
-	--- @function consul._steam_roots
-	--- @return table The list of Steam install folders.
-	_steam_roots = function()
-		if package.config:sub(1, 1) == '\\' then
-			local pf = os.getenv('ProgramFiles(x86)') or os.getenv('ProgramFiles') or 'C:\\Program Files (x86)'
-			return { pf .. '\\Steam' }
-		end
-		local home = os.getenv('HOME') or '/tmp'
-		return {
-			home .. '/Library/Application Support/Steam', -- macOS
-			home .. '/.local/share/Steam', -- Linux
-			home .. '/.steam/steam', -- Linux (legacy symlink)
-			home .. '/.var/app/com.valvesoftware.Steam/.local/share/Steam', -- Linux (Flatpak)
-		}
-	end,
-
-	--- finds the game root folder, looking up the Steam library the game is installed in.
-	--- Reads steamapps/libraryfolders.vdf from the first Steam install found (see consul._steam_roots)
-	--- and falls back to the default Steam library if the game cannot be found there. The result is cached.
-	--- @function consul._find_game_root
-	--- @tparam table game The entry of consul._steam_games for the current build.
-	--- @return string The game root folder, with a trailing separator.
-	_find_game_root = function(game)
-		if consul._game_root then
-			return consul._game_root
-		end
-
-		local sep = package.config:sub(1, 1)
-		local roots = consul._steam_roots()
-		local library = roots[1]
-
-		pcall(function()
-			for _, root in ipairs(roots) do
-				local f = io.open(root .. sep .. 'steamapps' .. sep .. 'libraryfolders.vdf', 'r')
-				if f then
-					library = root
-					local current_path = nil
-					for line in f:lines() do
-						local path = line:match('^%s*"path"%s+"(.-)"%s*$')
-						if path then
-							-- VDF escapes backslashes (Windows paths)
-							current_path = path:gsub('\\\\', '\\')
-						elseif current_path and line:match('^%s*"' .. game.appid .. '"%s+"') then
-							library = current_path
-							break
-						end
-					end
-					f:close()
-					return
-				end
-			end
-		end)
-
-		consul._game_root = library .. sep .. 'steamapps' .. sep .. 'common' .. sep .. game.dir .. sep
-		return consul._game_root
-	end,
-
 	--- resolves a path for relative filenames based on the OS and game build.
-	--- On Windows the path is used as-is: the game CWD already is the game folder, which also covers
-	--- non-Steam (standalone) installs.
-	--- On macOS and Linux the base is the game folder inside the Steam library it is installed in
-	--- (see consul._find_game_root).
+	--- On Windows the path is used as-is (relative to the game CWD).
+	--- On macOS see consul_macos.lua.
 	--- @function consul.io_resolve_path
 	--- @tparam string filename The filename (relative or absolute) to resolve.
 	--- @return string The resolved path.
 	io_resolve_path = function(filename)
-		local sep = package.config:sub(1, 1)
-		local game = consul._steam_games[consul_build]
-		if sep ~= '\\' and game and filename:sub(1, 1) ~= '/' then
-			filename = consul._find_game_root(game) .. filename
+		-- Windows: the game CWD already is the game folder, use the path as-is
+		if package.config:sub(1, 1) == '\\' then
+			return filename
 		end
-		return filename
+		return require("consul_macos").resolve_path(filename)
 	end,
 	--- Opens a file, prepending the OS-specific base path for relative filenames.
 	

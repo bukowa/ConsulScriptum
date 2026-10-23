@@ -163,6 +163,7 @@ endif
 LUA_TARGETS := \
 	$(BUILD_DIR)/lua_scripts/all_scripted.lua \
 	$(BUILD_DIR)/consul/consul_logging.lua \
+	$(BUILD_DIR)/consul/consul_macos.lua \
 	$(BUILD_DIR)/consul/consul.lua \
 	$(BUILD_DIR)/consul/consul_battle.lua \
 	$(BUILD_DIR)/consul/consul_changelog.lua \
@@ -284,6 +285,11 @@ $(BUILD_DIR)/lua_scripts/battle_scripted.lua: \
 
 $(BUILD_DIR)/consul/consul_logging.lua: \
 	src/consul/consul_logging.lua
+	$(create_dir)
+	@cp "$<" "$@"
+
+$(BUILD_DIR)/consul/consul_macos.lua: \
+	src/consul/consul_macos.lua
 	$(create_dir)
 	@cp "$<" "$@"
 
