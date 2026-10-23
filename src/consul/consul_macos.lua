@@ -1,4 +1,4 @@
--- macOS only: path resolution for the Feral ports. Never loaded on Windows
+-- macOS only: path resolution and line-ending fixes for the Feral ports. Never loaded on Windows
 -- (see consul.io_resolve_path).
 --
 -- On macOS the game CWD is not the game folder, so relative paths are resolved
@@ -63,7 +63,47 @@ local function resolve_path(filename)
     return find_game_root(game) .. filename
 end
 
+--- converts Windows line endings (CRLF) to Unix (LF) in place.
+--- Does nothing if the file is missing or contains no CR.
+--- @tparam string filename The filename (relative or absolute) to normalize.
+--- @return boolean true if the file was rewritten.
+local function normalize_eol(filename)
+    local log = consul.new_log("macos:normalize_eol")
+    local path = resolve_path(filename)
+    log:trace("normalize: " .. filename .. " -> " .. path)
+    -- 'r'/'w' are the same as 'rb'/'wb' on POSIX
+    local f, err = io.open(path, 'r')
+    if not f then
+        log:trace("open for read failed: " .. tostring(err))
+        return false
+    end
+    log:trace("opened for read")
+    local content = f:read('*a')
+    f:close()
+    if not content then
+        log:trace("read returned nil")
+        return false
+    end
+    local _, cr_count = content:gsub('\r', '\r')
+    log:trace("read " .. #content .. " bytes, " .. cr_count .. " CR")
+    if cr_count == 0 then
+        return false
+    end
+    local converted = content:gsub('\r\n?', '\n')
+    f, err = io.open(path, 'w')
+    if not f then
+        log:trace("open for write failed: " .. tostring(err))
+        return false
+    end
+    log:trace("opened for write")
+    f:write(converted)
+    f:close()
+    log:trace("written " .. #converted .. " bytes (was " .. #content .. ")")
+    return true
+end
+
 -- Module return
 return {
     resolve_path = resolve_path,
+    normalize_eol = normalize_eol,
 }
