@@ -1,6 +1,9 @@
 ---@module consul
 
 consul_build = "Attila" -- or "Rome2", "TOB"
+-- package.config starts with the directory separator: '\' on Windows.
+-- Any other OS is assumed to be macOS (Linux is not supported).
+consul_os = package.config:sub(1, 1) == '\\' and "WINDOWS" or "MACOS" -- or "WINDOWS"
 
 consul = {
 
@@ -85,25 +88,16 @@ consul = {
 	end,
 	--- resolves a path for relative filenames based on the OS and game build.
 	--- On Windows the path is used as-is (relative to the game CWD).
-	--- On macOS with Rome2 the base is $HOME/Library/Application Support/Steam/steamapps/common/Total War Rome II/.
+	--- On macOS see consul_macos.lua.
 	--- @function consul.io_resolve_path
 	--- @tparam string filename The filename (relative or absolute) to resolve.
 	--- @return string The resolved path.
 	io_resolve_path = function(filename)
-		local sep = package.config:sub(1, 1)
-		if sep ~= '\\' and consul_build == "Rome2" then
-			if filename:sub(1, 1) ~= '/' then
-				local home = os.getenv('HOME') or '/tmp'
-				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Rome II/' .. filename
-			end
+		-- Windows: the game CWD already is the game folder, use the path as-is
+		if consul_os == "WINDOWS" then
+			return filename
 		end
-		if sep ~= '\\' and consul_build == "Attila" then
-			if filename:sub(1, 1) ~= '/' then
-				local home = os.getenv('HOME') or '/tmp'
-				filename = home .. '/Library/Application Support/Steam/steamapps/common/Total War Attila/' .. filename
-			end
-		end
-		return filename
+		return require("consul_macos").resolve_path(filename)
 	end,
 	--- Opens a file, prepending the OS-specific base path for relative filenames.
 	
