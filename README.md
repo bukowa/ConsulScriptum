@@ -41,7 +41,7 @@ Few simple scripts are already included:
 - Cannot use **TAB** key for command autocomplete.
 - Cannot use the **mouse** to select text from command history.
 - Cannot paste long commands - but you can type them...?! 🤷 (I have no idea how to handle this and this is very annoying. Current workaround: use scripting files via **Scriptum**, as they load dynamically.)
-- **Scriptum** accepts only **10 custom scripts** for now (I can't find a way to dynamically create components - if anyone needs more, just let me know).
+- **Scriptum** accepts up to **40 custom scripts** (all pre-built and scrollable).
 - **Battle Mode**: Experimental support for Rome II and Attila via a technical workaround, and full native support in Thrones of Britannia. Use the `/use_in_battle` command to enable.
 
 

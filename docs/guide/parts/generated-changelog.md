@@ -1,3 +1,10 @@
+## v1.0.1
+**Common:**
+- Fixed: On macOS, resolved game folder dynamically from Steam libraryfolders.vdf to support custom and secondary Steam libraries (Rome 2, Attila, Thrones of Britannia) (#9).
+- Added: STEAM_LIBRARY_MACOS override support in Makefile for custom macOS Steam installs.
+
+---
+
 ## v1.0.0
 **Common:**
 - Added: Scriptum (custom scripts list) now supports up to 40 entries (previously 10).

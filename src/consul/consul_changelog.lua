@@ -1,6 +1,11 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["1.0.1"] = {
+            common = "Fixed: On macOS, resolved game folder dynamically from Steam libraryfolders.vdf to support custom and secondary Steam libraries (Rome 2, Attila, Thrones of Britannia) (#9)."..
+            "\nAdded: STEAM_LIBRARY_MACOS override support in Makefile for custom macOS Steam installs.",
+            silent = true,
+        },
         ["1.0.0"] = {
             common = "Added: Scriptum (custom scripts list) now supports up to 40 entries (previously 10)."..
             "\nFixed: Scriptum list scrolling so all 40 entries are reachable in-game.",

@@ -377,7 +377,7 @@ local world = consul.game.world()
 
 resolves a path for relative filenames based on the OS and game build.
  On Windows the path is used as-is (relative to the game CWD).
- On macOS with Rome2 the base is $HOME/Library/Application Support/Steam/steamapps/common/Total War Rome II/.
+ On macOS see consul_macos.lua.
 
  Parameters:
 | Name | Type | Description |
