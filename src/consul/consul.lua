@@ -1708,7 +1708,8 @@ consul = {
 				local cfg = consul.config.read()
 				local log = consul.new_log("console:commands:load_module")
 
-				if not string.find(package.path, ";consul/?.lua", 1, true) then
+				-- escape ? and . instead of passing plain = true: string.find with the plain flag crashes Rome 2 at the main menu
+				if not string.find(package.path, ";consul/%?%.lua") then
 					package.path = package.path .. ";consul/?.lua"
 				end
 
