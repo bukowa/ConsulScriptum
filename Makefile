@@ -207,6 +207,13 @@ CONTRIB_TARGETS := \
 	$(BUILD_DIR)/consul/profi/profi.lua \
 	$(BUILD_DIR)/consul/profile/profile.lua
 
+# database tables and text as TSV, turned into binary by rpfm when the pack is built
+TABLE_TARGETS :=
+ifeq ($(GAME),Rome2)
+TABLE_SRC := $(wildcard src/tables/rome2/db/*/*.tsv) $(wildcard src/tables/rome2/text/db/*.tsv)
+TABLE_TARGETS := $(patsubst src/tables/rome2/%,$(BUILD_DIR)/%,$(TABLE_SRC))
+endif
+
 LICENSE_TARGETS := \
 	$(BUILD_DIR)/consul/LICENSE \
 	$(BUILD_DIR)/consul/inspect/LICENSE \
@@ -216,12 +223,16 @@ LICENSE_TARGETS := \
 	$(BUILD_DIR)/consul/profile/LICENSE
 
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS) $(LICENSE_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS) $(LICENSE_TARGETS) $(TABLE_TARGETS)
 	@{ \
 	  ${RPFM_CLI_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
 	  echo "Pack file $@ built successfully." ; \
 	} || { rm $@; exit 1; }
+
+$(TABLE_TARGETS): $(BUILD_DIR)/%: src/tables/rome2/%
+	$(create_dir)
+	@cp "$<" "$@"
 
 define create_dir
 	@mkdir -p $(dir $@)

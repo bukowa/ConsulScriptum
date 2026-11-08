@@ -875,6 +875,15 @@ consul = {
 		consul_sedatio_provinciae_script = "consul_sedatio_provinciae_script",
 		consul_incrementum_regio_entry = "consul_incrementum_regio_entry",
 		consul_incrementum_regio_script = "consul_incrementum_regio_script",
+		-- cheats for testing, Rome 2 only
+		consul_aerarium_entry = "consul_aerarium_entry",
+		consul_aerarium_script = "consul_aerarium_script",
+		consul_aedificatio_entry = "consul_aedificatio_entry",
+		consul_aedificatio_script = "consul_aedificatio_script",
+		consul_scientia_entry = "consul_scientia_entry",
+		consul_scientia_script = "consul_scientia_script",
+		consul_virtus_entry = "consul_virtus_entry",
+		consul_virtus_script = "consul_virtus_script",
 
 		-- keep internals private
 		_UIRoot = nil, -- UIComponent(context.component)
@@ -3070,6 +3079,12 @@ consul.console.write(
 				end,
 				"Forcing vassal"
 			)
+
+			-- cheats for testing, Rome 2 only
+			scripts.instances["aerarium"] = scripts.create_cheat_money(scripts.cheat_money)
+			scripts.instances["aedificatio"] = scripts.create_cheat_toggle("Aedificatio", "consul_cheat_fast_build")
+			scripts.instances["scientia"] = scripts.create_cheat_toggle("Scientia", "consul_cheat_fast_research")
+			scripts.instances["virtus"] = scripts.create_cheat_toggle("Virtus", "consul_cheat_super_soldiers")
 		end,
 
 		instances = {
@@ -3079,7 +3094,70 @@ consul.console.write(
 			force_make_peace = nil,
 			force_make_war = nil,
 			force_make_vassal = nil,
+			aerarium = nil,
+			aedificatio = nil,
+			scientia = nil,
+			virtus = nil,
 		},
+
+		-- money added by Aerarium per click
+		cheat_money = 10000,
+
+		-- the faction the player controls
+		played_faction = function()
+			local list = consul._game():model():world():faction_list()
+			for i = 0, list:num_items() - 1 do
+				local faction = list:item_at(i)
+				if faction:is_human() then
+					return faction
+				end
+			end
+		end,
+
+		-- adds money to the played faction, once per click
+		create_cheat_money = function(amount)
+			local scripts2 = consul.consul_scripts_v2
+			local log = scripts2.__get_logger("aerarium")
+
+			local start = function()
+				local name = scripts2.played_faction():name()
+				consul._game():treasury_mod(name, amount)
+				consul.console.write("Aerarium: added " .. amount .. " to " .. name)
+			end
+
+			return {
+				-- runs once per click instead of switching on and off
+				once = true,
+				setup = scripts2.__wrap_setup(function() end, log),
+				start = scripts2.__wrap_start(start, log),
+				stop = scripts2.__wrap_stop(function() end, log),
+			}
+		end,
+
+		-- switches an effect bundle on the played faction on and off
+		-- the game can't report a faction's effect bundles, so the entry's colour lasts for this session only
+		create_cheat_toggle = function(label, bundle)
+			local scripts2 = consul.consul_scripts_v2
+			local log = scripts2.__get_logger(label)
+
+			local start = function()
+				local name = scripts2.played_faction():name()
+				consul._game():apply_effect_bundle(bundle, name, 0)
+				consul.console.write(label .. " ON for " .. name)
+			end
+
+			local stop = function()
+				local name = scripts2.played_faction():name()
+				consul._game():remove_effect_bundle(bundle, name)
+				consul.console.write(label .. " OFF for " .. name)
+			end
+
+			return {
+				setup = scripts2.__wrap_setup(function() end, log),
+				start = scripts2.__wrap_start(start, log),
+				stop = scripts2.__wrap_stop(stop, log),
+			}
+		end,
 
 		__wrap_func_with_log = function(func, log, text)
 			return function()
@@ -3313,6 +3391,10 @@ consul.console.write(
 			scripts2.instances.vexatio_provinciae.setup()
 			scripts2.instances.sedatio_provinciae.setup()
 			scripts2.instances.incrementum_regio.setup()
+			scripts2.instances.aerarium.setup()
+			scripts2.instances.aedificatio.setup()
+			scripts2.instances.scientia.setup()
+			scripts2.instances.virtus.setup()
 
 			log:debug("Finished setting up scripts")
 
@@ -3333,6 +3415,13 @@ consul.console.write(
 			log:debug("Handling per game consul scripts setup.")
 			if consul_build == "TOB" then
 				scripts.games.TOB.setup()
+			end
+			-- lay the list out again, or the last entries can't be scrolled to
+			if consul_build == "Rome2" then
+				local last = consul.ui.find(consul.ui.consul_virtus_entry)
+				if last then
+					consul.ui._UIComponent(last:Parent()):Layout()
+				end
 			end
 			-- mark as ready
 			log:debug("Setup finished")
@@ -3411,12 +3500,37 @@ consul.console.write(
 					component = ui.consul_incrementum_regio_script,
 					log_msg = "Clicked on consul_incrementum_regio",
 				},
+				[ui.consul_aerarium_entry] = {
+					script = scripts2.instances.aerarium,
+					component = ui.consul_aerarium_script,
+					log_msg = "Clicked on consul_aerarium",
+				},
+				[ui.consul_aedificatio_entry] = {
+					script = scripts2.instances.aedificatio,
+					component = ui.consul_aedificatio_script,
+					log_msg = "Clicked on consul_aedificatio",
+				},
+				[ui.consul_scientia_entry] = {
+					script = scripts2.instances.scientia,
+					component = ui.consul_scientia_script,
+					log_msg = "Clicked on consul_scientia",
+				},
+				[ui.consul_virtus_entry] = {
+					script = scripts2.instances.virtus,
+					component = ui.consul_virtus_script,
+					log_msg = "Clicked on consul_virtus",
+				},
 			}
 
 			local clicked_script = click_map[context.string]
 			if clicked_script then
 				log:debug(clicked_script.log_msg)
-				scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
+				if clicked_script.script.once then
+					-- one-shot entries run on each click and don't stay green
+					clicked_script.script.start()
+				else
+					scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
+				end
 			end
 		end,
 
