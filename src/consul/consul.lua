@@ -923,7 +923,6 @@ consul = {
 		consul_sedatio_provinciae_script = "consul_sedatio_provinciae_script",
 		consul_incrementum_regio_entry = "consul_incrementum_regio_entry",
 		consul_incrementum_regio_script = "consul_incrementum_regio_script",
-		-- cheats for testing, Rome 2 only
 		consul_aerarium_entry = "consul_aerarium_entry",
 		consul_aerarium_script = "consul_aerarium_script",
 		consul_aedificatio_entry = "consul_aedificatio_entry",
@@ -3128,7 +3127,6 @@ consul.console.write(
 				"Forcing vassal"
 			)
 
-			-- cheats for testing
 			scripts.instances["aerarium"] = scripts.create_cheat_money(scripts.cheat_money)
 			scripts.instances["aedificatio"] = scripts.create_cheat_toggle(
 				"Aedificatio",
@@ -3186,7 +3184,12 @@ consul.console.write(
 			local log = scripts2.__get_logger("aerarium")
 
 			local start = function()
-				local name = scripts2.played_faction():name()
+				local faction = scripts2.played_faction()
+				if not faction then
+					log:warn("No played human faction found")
+					return
+				end
+				local name = faction:name()
 				consul._game():treasury_mod(name, amount)
 			end
 
@@ -3215,13 +3218,23 @@ consul.console.write(
 			end
 
 			local start = function()
-				local name = scripts2.played_faction():name()
+				local faction = scripts2.played_faction()
+				if not faction then
+					log:warn("No played human faction found")
+					return
+				end
+				local name = faction:name()
 				consul._game():apply_effect_bundle(bundle, name, 0)
 				consul.state.set(bundle, true)
 			end
 
 			local stop = function()
-				local name = scripts2.played_faction():name()
+				local faction = scripts2.played_faction()
+				if not faction then
+					log:warn("No played human faction found")
+					return
+				end
+				local name = faction:name()
 				consul._game():remove_effect_bundle(bundle, name)
 				consul.state.set(bundle, false)
 			end

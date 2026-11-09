@@ -1,3 +1,9 @@
+## Unreleased
+**Common:**
+- Added: (thanks to Pawel Rut) 4 new Consul cheat commands across Rome II, Attila, and Thrones of Britannia: Aerarium (+10,000 treasury), Aedificatio (1-turn construction), Scientia (1-turn research), and Virtus (army combat stat boost).
+
+---
+
 ## v1.0.1
 **Common:**
 - Fixed: On macOS, resolved game folder dynamically from Steam libraryfolders.vdf to support custom and secondary Steam libraries (Rome 2, Attila, Thrones of Britannia) (#9).
