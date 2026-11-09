@@ -3188,7 +3188,6 @@ consul.console.write(
 			local start = function()
 				local name = scripts2.played_faction():name()
 				consul._game():treasury_mod(name, amount)
-				consul.console.write("Aerarium: added " .. amount .. " to " .. name)
 			end
 
 			return {
@@ -3219,14 +3218,12 @@ consul.console.write(
 				local name = scripts2.played_faction():name()
 				consul._game():apply_effect_bundle(bundle, name, 0)
 				consul.state.set(bundle, true)
-				consul.console.write(label .. " ON for " .. name)
 			end
 
 			local stop = function()
 				local name = scripts2.played_faction():name()
 				consul._game():remove_effect_bundle(bundle, name)
 				consul.state.set(bundle, false)
-				consul.console.write(label .. " OFF for " .. name)
 			end
 
 			return {
@@ -3600,14 +3597,11 @@ consul.console.write(
 			local clicked_script = click_map[context.string]
 			if clicked_script then
 				log:debug(clicked_script.log_msg)
-				local component = ui.find(clicked_script.component)
 				if clicked_script.script.once then
 					-- one-shot entries run on each click and don't stay green
-					component:SetState("active")
 					clicked_script.script.start()
-					component:SetState("default")
 				else
-					scripts._on_click(clicked_script.script, component)
+					scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
 				end
 			end
 		end,
