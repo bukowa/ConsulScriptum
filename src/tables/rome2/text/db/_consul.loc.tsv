@@ -1,10 +1,10 @@
 key	text	tooltip
-#Loc;1;text/db/consul_cheats.loc		
+#Loc;1;text/db/_consul.loc		
 effects_description_consul_cheat_soldiers_strong	All soldier stats +%n%	false
 effects_description_consul_cheat_soldiers_move	Battle speed and range +%n%	false
-effect_bundles_localised_title_consul_cheat_fast_build	Fast building	false
+effect_bundles_localised_title_consul_cheat_fast_build	Consul Aedificatio	false
 effect_bundles_localised_description_consul_cheat_fast_build	All buildings queued now take 1 turn.	false
-effect_bundles_localised_title_consul_cheat_fast_research	Fast research	false
+effect_bundles_localised_title_consul_cheat_fast_research	Consul Scientia	false
 effect_bundles_localised_description_consul_cheat_fast_research	Research is far faster.	false
-effect_bundles_localised_title_consul_cheat_super_soldiers	Super soldiers	false
+effect_bundles_localised_title_consul_cheat_super_soldiers	Consul Virtus	false
 effect_bundles_localised_description_consul_cheat_super_soldiers	All your soldiers are far stronger.	false

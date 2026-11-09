@@ -3417,11 +3417,9 @@ consul.console.write(
 				scripts.games.TOB.setup()
 			end
 			-- lay the list out again, or the last entries can't be scrolled to
-			if consul_build == "Rome2" then
-				local last = consul.ui.find(consul.ui.consul_virtus_entry)
-				if last then
-					consul.ui._UIComponent(last:Parent()):Layout()
-				end
+			local last = consul.ui.find(consul.ui.consul_virtus_entry)
+			if last then
+				consul.ui._UIComponent(last:Parent()):Layout()
 			end
 			-- mark as ready
 			log:debug("Setup finished")

@@ -26,7 +26,7 @@ ifeq ($(GAME),Rome2)
     RPFM_GAME_ID := rome_2
     RPFM_SCHEMA_FILE := schema_rom2.ron
     INSTALL_ALONE_DIR := D:\Games\Total War - Rome 2 Steam
-    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Rome II
+    INSTALL_STEAM_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Rome II
 	INSTALL_STEAM_MACOS_DIR := $(STEAM_LIBRARY_MACOS)/steamapps/common/Total War Rome II/TotalWarRome2Data
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
 	INSTALL_USER_SCRIPT_MACOS :=Z:/Library/Application Support/Feral Interactive/Total War ROME II/VFS/User/AppData/Roaming/The Creative Assembly/Rome2/scripts
@@ -208,11 +208,9 @@ CONTRIB_TARGETS := \
 	$(BUILD_DIR)/consul/profile/profile.lua
 
 # database tables and text as TSV, turned into binary by rpfm when the pack is built
-TABLE_TARGETS :=
-ifeq ($(GAME),Rome2)
-TABLE_SRC := $(wildcard src/tables/rome2/db/*/*.tsv) $(wildcard src/tables/rome2/text/db/*.tsv)
-TABLE_TARGETS := $(patsubst src/tables/rome2/%,$(BUILD_DIR)/%,$(TABLE_SRC))
-endif
+TABLE_GAME := $(if $(filter Rome2,$(GAME)),rome2,$(if $(filter TOB,$(GAME)),tob,attila))
+TABLE_SRC := $(wildcard src/tables/$(TABLE_GAME)/db/*/*.tsv) $(wildcard src/tables/$(TABLE_GAME)/text/db/*.tsv)
+TABLE_TARGETS := $(patsubst src/tables/$(TABLE_GAME)/%,$(BUILD_DIR)/%,$(TABLE_SRC))
 
 LICENSE_TARGETS := \
 	$(BUILD_DIR)/consul/LICENSE \
@@ -230,7 +228,7 @@ $(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS)
 	  echo "Pack file $@ built successfully." ; \
 	} || { rm $@; exit 1; }
 
-$(TABLE_TARGETS): $(BUILD_DIR)/%: src/tables/rome2/%
+$(TABLE_TARGETS): $(BUILD_DIR)/%: src/tables/$(TABLE_GAME)/%
 	$(create_dir)
 	@cp "$<" "$@"
 
