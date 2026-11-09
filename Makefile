@@ -38,7 +38,7 @@ else ifeq ($(GAME),TOB)
     RPFM_GAME_ID := thrones_of_britannia
     RPFM_SCHEMA_FILE := schema_tob.ron
     INSTALL_ALONE_DIR := E:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
-    INSTALL_STEAM_DIR := E:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
+    INSTALL_STEAM_DIR := G:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/ThronesofBritannia/scripts
     GAME_EXE := thrones.exe
     STEAM_APP_ID := 712100
@@ -48,7 +48,7 @@ else ifeq ($(GAME),Attila)
     RPFM_GAME_ID := attila
     RPFM_SCHEMA_FILE := schema_att.ron
     INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
-    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Attila
+    INSTALL_STEAM_DIR := G:/SteamLibrary/steamapps/common/Total War Attila
 	INSTALL_STEAM_MACOS_DIR := $(STEAM_LIBRARY_MACOS)/steamapps/common/Total War Attila/TotalWarAttilaData
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
 	INSTALL_USER_SCRIPT_MACOS :=Z:/Library/Application Support/Feral Interactive/Total War ATTILA/VFS/User/AppData/Roaming/The Creative Assembly/Attila/scripts
@@ -636,6 +636,11 @@ install: \
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 install-steam-macos: $(MOD_PACKAGE)
