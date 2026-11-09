@@ -1,5 +1,5 @@
 key	localised_description	localised_title	ui_icon	bundle_target
 #effect_bundles_tables;1;db/effect_bundles_tables/_consul				
-consul_cheat_fast_build	All buildings queued now take 1 turn.	Fast building (Consul)	construction_positive.png	province
-consul_cheat_fast_research	Research is far faster.	Fast research (Consul)	construction_positive.png	faction
-consul_cheat_super_soldiers	All your soldiers are far stronger.	Super soldiers (Consul)	army_positive.png	faction
+consul_scriptum_aedificatio	All buildings queued now take 1 turn.	Consul Aedificatio	construction_positive.png	province
+consul_scriptum_scientia	Research is far faster.	Consul Scientia	construction_positive.png	faction
+consul_scriptum_virtus	All your soldiers are far stronger.	Consul Virtus	army_positive.png	faction
