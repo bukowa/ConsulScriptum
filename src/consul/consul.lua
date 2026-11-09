@@ -3600,11 +3600,14 @@ consul.console.write(
 			local clicked_script = click_map[context.string]
 			if clicked_script then
 				log:debug(clicked_script.log_msg)
+				local component = ui.find(clicked_script.component)
 				if clicked_script.script.once then
 					-- one-shot entries run on each click and don't stay green
+					component:SetState("active")
 					clicked_script.script.start()
+					component:SetState("default")
 				else
-					scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
+					scripts._on_click(clicked_script.script, component)
 				end
 			end
 		end,
