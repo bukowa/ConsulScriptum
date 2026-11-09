@@ -1,6 +1,20 @@
 # Mod package information
-# Game selection (Rome2 or Attila)
+# Game selection (Rome2, Attila, TOB)
 GAME ?= Attila
+
+# Support lowercase 'game' from command line
+ifdef game
+    GAME := $(game)
+endif
+
+# Case-insensitive normalization for GAME
+ifeq ($(filter $(GAME),Rome2 rome2 ROME2 Rome_2 rome_2 ROME_2 r2 R2),$(GAME))
+    override GAME := Rome2
+else ifeq ($(filter $(GAME),Attila attila ATTILA att ATT),$(GAME))
+    override GAME := Attila
+else ifeq ($(filter $(GAME),TOB tob Tob Thrones thrones THRONES),$(GAME))
+    override GAME := TOB
+endif
 # Development mode (1 to enable)
 DEV ?= 0
 # macOS Steam library the game is installed in (override for a custom library)
