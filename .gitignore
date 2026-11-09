@@ -35,3 +35,6 @@ package-lock.json
 # vscode
 .vscode
 CLAUDE.md
+
+# Python
+**/__pycache__
