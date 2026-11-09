@@ -11,5 +11,3 @@ accuracy_mod	consul_scriptum_virtus_strong	all_units
 ammo_mod	consul_scriptum_virtus_strong	all_units
 unit_xp_mod	consul_scriptum_virtus_strong	all_units
 general_aoe_mod	consul_scriptum_virtus_strong	all_units
-mod_land_movement_battle	consul_scriptum_virtus_move	all_units
-range_mod	consul_scriptum_virtus_move	all_units

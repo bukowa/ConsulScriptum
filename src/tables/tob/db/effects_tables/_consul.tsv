@@ -1,4 +1,3 @@
 effect	icon	priority	icon_negative	is_hidden
 #effects_tables;3;db/effects_tables/_consul				
 consul_scriptum_virtus_strong	army_positive.png	1	army_positive.png	false
-consul_scriptum_virtus_move	army_positive.png	1	army_positive.png	false

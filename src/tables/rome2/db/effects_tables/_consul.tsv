@@ -1,4 +1,3 @@
 effect	icon	priority	icon_negative
 #effects_tables;1;db/effects_tables/_consul			
 consul_scriptum_virtus_strong	data/ui/campaign ui/effect_bundles/army_positive.png	1	data/ui/campaign ui/effect_bundles/army_positive.png
-consul_scriptum_virtus_move	data/ui/campaign ui/effect_bundles/army_positive.png	1	data/ui/campaign ui/effect_bundles/army_positive.png
