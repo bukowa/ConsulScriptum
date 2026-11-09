@@ -14,6 +14,8 @@ def normalize_game(raw_game: str) -> str:
         return "Rome2"
     if value in ("attila",):
         return "Attila"
+    if value in ("tob", "thrones", "thrones of britannia", "thronesofbritannia"):
+        return "TOB"
     raise ValueError(f"Unsupported GAME value: {raw_game}")
 
 
@@ -154,7 +156,7 @@ def main():
 
     if game == "Rome2":
         update_rome2(consul_new_entry, consul_new_script, consul_new_tooltip, consul_new_latin)
-    else:
+    elif game in ("Attila", "TOB"):
         update_attila(consul_new_entry, consul_new_script, consul_new_tooltip, consul_new_latin)
 
 
