@@ -26,7 +26,7 @@ ifeq ($(GAME),Rome2)
     RPFM_GAME_ID := rome_2
     RPFM_SCHEMA_FILE := schema_rom2.ron
     INSTALL_ALONE_DIR := D:\Games\Total War - Rome 2 Steam
-    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Rome II
+    INSTALL_STEAM_DIR := C:\Program Files (x86)\Steam\steamapps\common\Total War Rome II
 	INSTALL_STEAM_MACOS_DIR := $(STEAM_LIBRARY_MACOS)/steamapps/common/Total War Rome II/TotalWarRome2Data
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Rome2/scripts
 	INSTALL_USER_SCRIPT_MACOS :=Z:/Library/Application Support/Feral Interactive/Total War ROME II/VFS/User/AppData/Roaming/The Creative Assembly/Rome2/scripts
@@ -38,7 +38,7 @@ else ifeq ($(GAME),TOB)
     RPFM_GAME_ID := thrones_of_britannia
     RPFM_SCHEMA_FILE := schema_tob.ron
     INSTALL_ALONE_DIR := E:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
-    INSTALL_STEAM_DIR := E:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
+    INSTALL_STEAM_DIR := G:\SteamLibrary\steamapps\common\Total War Saga Thrones of Britannia
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/ThronesofBritannia/scripts
     GAME_EXE := thrones.exe
     STEAM_APP_ID := 712100
@@ -48,7 +48,7 @@ else ifeq ($(GAME),Attila)
     RPFM_GAME_ID := attila
     RPFM_SCHEMA_FILE := schema_att.ron
     INSTALL_ALONE_DIR := C:\Games\Total War - Attila_16
-    INSTALL_STEAM_DIR := E:/SteamLibrary/steamapps/common/Total War Attila
+    INSTALL_STEAM_DIR := G:/SteamLibrary/steamapps/common/Total War Attila
 	INSTALL_STEAM_MACOS_DIR := $(STEAM_LIBRARY_MACOS)/steamapps/common/Total War Attila/TotalWarAttilaData
     INSTALL_USER_SCRIPT := C:/Users/$(USERNAME)/AppData/Roaming/The\ Creative\ Assembly/Attila/scripts
 	INSTALL_USER_SCRIPT_MACOS :=Z:/Library/Application Support/Feral Interactive/Total War ATTILA/VFS/User/AppData/Roaming/The Creative Assembly/Attila/scripts
@@ -207,6 +207,11 @@ CONTRIB_TARGETS := \
 	$(BUILD_DIR)/consul/profi/profi.lua \
 	$(BUILD_DIR)/consul/profile/profile.lua
 
+# database tables and text as TSV, turned into binary by rpfm when the pack is built
+TABLE_GAME := $(if $(filter Rome2,$(GAME)),rome2,$(if $(filter TOB,$(GAME)),tob,attila))
+TABLE_SRC := $(wildcard src/tables/$(TABLE_GAME)/db/*/*.tsv) $(wildcard src/tables/$(TABLE_GAME)/text/db/*.tsv)
+TABLE_TARGETS := $(patsubst src/tables/$(TABLE_GAME)/%,$(BUILD_DIR)/%,$(TABLE_SRC))
+
 LICENSE_TARGETS := \
 	$(BUILD_DIR)/consul/LICENSE \
 	$(BUILD_DIR)/consul/inspect/LICENSE \
@@ -216,12 +221,16 @@ LICENSE_TARGETS := \
 	$(BUILD_DIR)/consul/profile/LICENSE
 
 # Rule for creating the mod package with rpfm_cli
-$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS) $(LICENSE_TARGETS)
+$(MOD_PACKAGE): $(UI_TARGETS) $(LUA_TARGETS) $(CONTRIB_TARGETS) $(IMAGE_TARGETS) $(LICENSE_TARGETS) $(TABLE_TARGETS)
 	@{ \
 	  ${RPFM_CLI_CMD} pack create --pack-path=$@ && \
 	  ${RPFM_CLI_CMD} pack add --pack-path=$@ -F './$(BUILD_DIR)/;' -t ${RPFM_SCHEMA_PATH} && \
 	  echo "Pack file $@ built successfully." ; \
 	} || { rm $@; exit 1; }
+
+$(TABLE_TARGETS): $(BUILD_DIR)/%: src/tables/$(TABLE_GAME)/%
+	$(create_dir)
+	@cp "$<" "$@"
 
 define create_dir
 	@mkdir -p $(dir $@)
@@ -636,6 +645,11 @@ install: \
 
 # Install the built .pack file only if different for Steam
 install-steam: $(MOD_PACKAGE)
+	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+ifneq ($(SAVE),)
+	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+endif
 	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 install-steam-macos: $(MOD_PACKAGE)

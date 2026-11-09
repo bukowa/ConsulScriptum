@@ -12,7 +12,7 @@ description: "Check supported games and feature compatibility for Consul Scriptu
 
 | Feature | Rome II | Attila | ToB |
 |---------|:-------:|:------:|:---:|
-| **One-Click Scripts (Consul)** | ✅ Full | ✅ Full | ✅ Full |
+| **One-Click Scripts (Consul)** | ✅ Full (15) | ✅ Full (15) | ✅ 11 of 15 |
 | **Script Runner (Scriptum)** | ✅ Full | ✅ Full | ✅ Full |
 | **Lua Console** | ✅ Full | ✅ Full | ✅ Full |
 | **Commands** | ✅ Full | ⚠️ Partial | ⚠️ Partial |
@@ -46,5 +46,6 @@ Currently in a **General Alpha** phase. While core features (Consul Scripts, Scr
 Recently ported. Shares the same engine as Attila, so it inherits similar functionality and limitations.
 
 - **Status**: Alpha / Experimental
+- **Consul Scripts**: **11 of 15 scripts supported**. Includes all cheat actions (Aerarium, Aedificatio, Scientia, Virtus). The 4 legacy actions not present in ToB (growth points, garrison swapping, public order adjustments) are omitted.
 - **Commands**: **Partial Support**. Core commands are available, but game-specific interfaces are still being documented.
 - **Battle Mode**: **Native**. Works by default without extra steps.

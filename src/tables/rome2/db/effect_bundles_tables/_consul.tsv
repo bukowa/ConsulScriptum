@@ -1,0 +1,5 @@
+key	localised_description	localised_title	ui_icon	bundle_target
+#effect_bundles_tables;1;db/effect_bundles_tables/_consul				
+consul_scriptum_aedificatio	Mobilizes builders across all provinces so newly queued construction and conversions complete in 1 turn.	Consul Aedificatio	construction_positive.png	province
+consul_scriptum_scientia	Gathers scholars under state patronage so technological research completes in 1 turn.	Consul Scientia	construction_positive.png	faction
+consul_scriptum_virtus	Empowers all armies and fleets with overwhelming combat stats, morale, armour, and ammunition.	Consul Virtus	army_positive.png	faction

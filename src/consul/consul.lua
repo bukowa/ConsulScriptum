@@ -51,6 +51,8 @@ consul = {
 		table.insert(events.UICreated, consul.changelog.OnUICreated)
 		table.insert(events.UICreated, consul.uidebug.OnUICreated)
 		table.insert(events.UICreated, consul.ui.OnUICreated_HandleInitialVisibility)
+		table.insert(events.SavingGame, consul.state.on_saving_game)
+		table.insert(events.LoadingGame, consul.state.on_loading_game)
 
 		table.insert(events.UICreated, function()
 			local cfg = consul.config.read()
@@ -813,6 +815,52 @@ consul = {
 		end,
 	},
 
+	-- campaign save-game state persistence across Rome 2, Attila, and TOB
+	state = {
+		_values = {},
+
+		get = function(key, default)
+			local val = consul.state._values[key]
+			if val == nil then
+				return default
+			end
+			return val
+		end,
+
+		set = function(key, value)
+			consul.state._values[key] = value
+		end,
+
+		on_saving_game = function(context)
+			local log = consul.new_log("state:save")
+			local game = consul._game()
+			if not game then
+				log:warn("Could not find game_interface during SavingGame")
+				return
+			end
+			for _, bundle in pairs(consul.consul_scripts_v2.bundles) do
+				local val = consul.state.get(bundle, false)
+				log:debug("Saving " .. bundle .. " = " .. tostring(val))
+				game:save_named_value(bundle, val, context)
+			end
+		end,
+
+		on_loading_game = function(context)
+			local log = consul.new_log("state:load")
+			local game = consul._game()
+			if not game then
+				log:warn("Could not find game_interface during LoadingGame")
+				return
+			end
+			consul.state._values = {}
+			for _, bundle in pairs(consul.consul_scripts_v2.bundles) do
+				local val = game:load_named_value(bundle, false, context)
+				log:debug("Loaded " .. bundle .. " = " .. tostring(val))
+				consul.state._values[bundle] = val
+			end
+		end,
+	},
+
 	ui = {
 		-- contains all the components
 		root = (function()
@@ -875,6 +923,14 @@ consul = {
 		consul_sedatio_provinciae_script = "consul_sedatio_provinciae_script",
 		consul_incrementum_regio_entry = "consul_incrementum_regio_entry",
 		consul_incrementum_regio_script = "consul_incrementum_regio_script",
+		consul_aerarium_entry = "consul_aerarium_entry",
+		consul_aerarium_script = "consul_aerarium_script",
+		consul_aedificatio_entry = "consul_aedificatio_entry",
+		consul_aedificatio_script = "consul_aedificatio_script",
+		consul_scientia_entry = "consul_scientia_entry",
+		consul_scientia_script = "consul_scientia_script",
+		consul_virtus_entry = "consul_virtus_entry",
+		consul_virtus_script = "consul_virtus_script",
 
 		-- keep internals private
 		_UIRoot = nil, -- UIComponent(context.component)
@@ -3070,7 +3126,30 @@ consul.console.write(
 				end,
 				"Forcing vassal"
 			)
+
+			scripts.instances["aerarium"] = scripts.create_cheat_money(scripts.cheat_money)
+			scripts.instances["aedificatio"] = scripts.create_cheat_toggle(
+				"Aedificatio",
+				scripts.bundles.aedificatio,
+				consul.ui.consul_aedificatio_script
+			)
+			scripts.instances["scientia"] = scripts.create_cheat_toggle(
+				"Scientia",
+				scripts.bundles.scientia,
+				consul.ui.consul_scientia_script
+			)
+			scripts.instances["virtus"] = scripts.create_cheat_toggle(
+				"Virtus",
+				scripts.bundles.virtus,
+				consul.ui.consul_virtus_script
+			)
 		end,
+
+		bundles = {
+			aedificatio = "consul_scriptum_aedificatio",
+			scientia = "consul_scriptum_scientia",
+			virtus = "consul_scriptum_virtus",
+		},
 
 		instances = {
 			vexatio_provinciae = nil,
@@ -3079,7 +3158,93 @@ consul.console.write(
 			force_make_peace = nil,
 			force_make_war = nil,
 			force_make_vassal = nil,
+			aerarium = nil,
+			aedificatio = nil,
+			scientia = nil,
+			virtus = nil,
 		},
+
+		-- money added by Aerarium per click
+		cheat_money = 10000,
+
+		-- the faction the player controls
+		played_faction = function()
+			local list = consul._game():model():world():faction_list()
+			for i = 0, list:num_items() - 1 do
+				local faction = list:item_at(i)
+				if faction:is_human() then
+					return faction
+				end
+			end
+		end,
+
+		-- adds money to the played faction, once per click
+		create_cheat_money = function(amount)
+			local scripts2 = consul.consul_scripts_v2
+			local log = scripts2.__get_logger("aerarium")
+
+			local start = function()
+				local faction = scripts2.played_faction()
+				if not faction then
+					log:warn("No played human faction found")
+					return
+				end
+				local name = faction:name()
+				consul._game():treasury_mod(name, amount)
+			end
+
+			return {
+				-- runs once per click instead of switching on and off
+				once = true,
+				setup = scripts2.__wrap_setup(function() end, log),
+				start = scripts2.__wrap_start(start, log),
+				stop = scripts2.__wrap_stop(function() end, log),
+			}
+		end,
+
+		-- switches an effect bundle on the played faction on and off
+		-- active state is persisted in the campaign save via consul.state
+		create_cheat_toggle = function(label, bundle, component_id)
+			local scripts2 = consul.consul_scripts_v2
+			local log = scripts2.__get_logger(label)
+
+			local setup = function()
+				if consul.state.get(bundle, false) then
+					local comp = consul.ui.find(component_id)
+					if comp then
+						comp:SetState("active")
+					end
+				end
+			end
+
+			local start = function()
+				local faction = scripts2.played_faction()
+				if not faction then
+					log:warn("No played human faction found")
+					return
+				end
+				local name = faction:name()
+				consul._game():apply_effect_bundle(bundle, name, 0)
+				consul.state.set(bundle, true)
+			end
+
+			local stop = function()
+				local faction = scripts2.played_faction()
+				if not faction then
+					log:warn("No played human faction found")
+					return
+				end
+				local name = faction:name()
+				consul._game():remove_effect_bundle(bundle, name)
+				consul.state.set(bundle, false)
+			end
+
+			return {
+				setup = scripts2.__wrap_setup(setup, log),
+				start = scripts2.__wrap_start(start, log),
+				stop = scripts2.__wrap_stop(stop, log),
+			}
+		end,
 
 		__wrap_func_with_log = function(func, log, text)
 			return function()
@@ -3313,6 +3478,10 @@ consul.console.write(
 			scripts2.instances.vexatio_provinciae.setup()
 			scripts2.instances.sedatio_provinciae.setup()
 			scripts2.instances.incrementum_regio.setup()
+			scripts2.instances.aerarium.setup()
+			scripts2.instances.aedificatio.setup()
+			scripts2.instances.scientia.setup()
+			scripts2.instances.virtus.setup()
 
 			log:debug("Finished setting up scripts")
 
@@ -3333,6 +3502,11 @@ consul.console.write(
 			log:debug("Handling per game consul scripts setup.")
 			if consul_build == "TOB" then
 				scripts.games.TOB.setup()
+			end
+			-- lay the list out again, or the last entries can't be scrolled to
+			local last = consul.ui.find(consul.ui.consul_virtus_entry)
+			if last then
+				consul.ui._UIComponent(last:Parent()):Layout()
 			end
 			-- mark as ready
 			log:debug("Setup finished")
@@ -3411,12 +3585,37 @@ consul.console.write(
 					component = ui.consul_incrementum_regio_script,
 					log_msg = "Clicked on consul_incrementum_regio",
 				},
+				[ui.consul_aerarium_entry] = {
+					script = scripts2.instances.aerarium,
+					component = ui.consul_aerarium_script,
+					log_msg = "Clicked on consul_aerarium",
+				},
+				[ui.consul_aedificatio_entry] = {
+					script = scripts2.instances.aedificatio,
+					component = ui.consul_aedificatio_script,
+					log_msg = "Clicked on consul_aedificatio",
+				},
+				[ui.consul_scientia_entry] = {
+					script = scripts2.instances.scientia,
+					component = ui.consul_scientia_script,
+					log_msg = "Clicked on consul_scientia",
+				},
+				[ui.consul_virtus_entry] = {
+					script = scripts2.instances.virtus,
+					component = ui.consul_virtus_script,
+					log_msg = "Clicked on consul_virtus",
+				},
 			}
 
 			local clicked_script = click_map[context.string]
 			if clicked_script then
 				log:debug(clicked_script.log_msg)
-				scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
+				if clicked_script.script.once then
+					-- one-shot entries run on each click and don't stay green
+					clicked_script.script.start()
+				else
+					scripts._on_click(clicked_script.script, ui.find(clicked_script.component))
+				end
 			end
 		end,
 

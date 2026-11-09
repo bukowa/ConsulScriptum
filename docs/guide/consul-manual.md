@@ -40,7 +40,10 @@ outline: [2, 4]
 
 
 ### How It Works
-When you click a Consul entry, that script becomes active. While active, it listens for game events such as selecting a settlement or a character, and then executes its action when that event happens. If the script is not active, it does nothing. Clicking the same entry again turns the script off.
+Consul entries operate in two distinct modes:
+- **Instant actions**: Scripts such as **Aerarium** trigger immediately upon clicking (e.g. adding +10,000 treasury) and run on every click without toggling.
+- **Toggles & event listeners**: Scripts such as **Aedificatio**, **Scientia**, and **Virtus** apply persistent faction effects while active. Targeted scripts like **Exterminare** or **Adice Provinciam** listen for campaign map selections while active. Clicking an active entry deactivates it.
+- **Save persistence**: Active toggle states are automatically saved and restored across campaign save and load cycles.
 
 
 ## Available Scripts

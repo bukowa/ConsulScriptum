@@ -1,0 +1,5 @@
+effect_bundle_key	effect_key	effect_scope	value	advancement_stage
+#effect_bundles_to_effects_junctions_tables;2;db/effect_bundles_to_effects_junctions_tables/_consul				
+consul_scriptum_aedificatio	vik_build_time	faction_to_region_own	-100.0000	start_turn_completed
+consul_scriptum_scientia	vik_research_rate	faction_to_faction_own	10000.0000	start_turn_completed
+consul_scriptum_virtus	consul_scriptum_virtus_strong	faction_to_army_own	10000.0000	start_turn_completed
