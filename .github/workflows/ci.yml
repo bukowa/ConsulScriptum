@@ -1,0 +1,163 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security:
+    name: Security & Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks Secret Scanner
+        uses: gitleaks/gitleaks-action@v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build & Verify Packs
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '20'
+
+      - name: Install GNU Make and configure py launcher
+        shell: pwsh
+        run: |
+          if (-not (Get-Command make -ErrorAction SilentlyContinue)) {
+            Write-Host "Installing GNU Make via Chocolatey..."
+            choco install make --no-progress -y
+          }
+          if (-not (Get-Command py -ErrorAction SilentlyContinue)) {
+            $pyPath = (Get-Command python).Source
+            $pyDir = Split-Path $pyPath
+            Copy-Item "$pyPath" "$pyDir\py.exe" -Force
+            Write-Host "Configured py launcher alias at $pyDir\py.exe"
+          }
+
+      - name: Cache dependencies (.deps)
+        id: cache-deps
+        uses: actions/cache@v6.1.0
+        with:
+          path: .deps
+          key: deps-windows-${{ hashFiles('Makefile') }}
+          restore-keys: |
+            deps-windows-
+
+      - name: Setup Project Dependencies
+        run: make setup
+
+      - name: Verify Binary Dependencies Integrity (SHA-256)
+        shell: pwsh
+        run: |
+          $expectedHashes = @{
+            ".deps\rpfm_cli\rpfm_cli.exe" = "E87500455D92B0FE33EEF0808C765E95F000211E550AA641EACA4736820D8727"
+            ".deps\7zip\7za.exe"          = "C136B1467D669A725478A6110EBAAAB3CB88A3D389DFA688E06173C066B76FCF"
+            ".deps\ruby\bin\ruby.exe"     = "9C3A3C818B1DD054EF90FC38A20F0CC6A84A7C171A6756C4130AFECB5D908F21"
+            ".deps\lua\lua5.1.exe"        = "C9BF063327F6A719AA2D2C25A13A6FB006EBA3F23B53BCD6A629DC04507C18B6"
+          }
+          $failed = $false
+          foreach ($file in $expectedHashes.Keys) {
+            if (-not (Test-Path $file)) {
+              Write-Error "Missing expected binary tool: $file"
+              $failed = $true
+              continue
+            }
+            $actual = (Get-FileHash -Path $file -Algorithm SHA256).Hash
+            if ($actual -ne $expectedHashes[$file]) {
+              Write-Error "Hash mismatch for $file! Expected $($expectedHashes[$file]), got $actual"
+              $failed = $true
+            } else {
+              Write-Host "Verified SHA-256 integrity: $file"
+            }
+          }
+          if ($failed) {
+            exit 1
+          }
+
+      - name: Antivirus & Malware Scan (Microsoft Defender)
+        shell: pwsh
+        run: |
+          $mpCmd = "C:\Program Files\Windows Defender\MpCmdRun.exe"
+          if (Test-Path $mpCmd) {
+            Write-Host "Running Microsoft Defender on-demand scan on workspace..."
+            & $mpCmd -Scan -ScanType 3 -File "$pwd"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Microsoft Defender scan detected threats or failed (Exit code: $LASTEXITCODE)"
+              exit 1
+            }
+            Write-Host "Microsoft Defender scan passed cleanly."
+          } else {
+            Write-Warning "MpCmdRun.exe not found on runner image, skipping scan."
+          }
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_logging.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_game_events.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_game_events_attila.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_game_events_tob.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_commands.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_commands_dei.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_changelog.lua"))'
+          echo "All core Lua scripts passed Lua 5.1 syntax validation."
+
+      - name: Build Rome II Pack
+        run: make GAME=Rome2
+
+      - name: Build Attila Pack
+        run: make GAME=Attila
+
+      - name: Build Thrones of Britannia Pack
+        run: make GAME=TOB
+
+      - name: Verify Pack Contents
+        run: |
+          ./.deps/rpfm_cli/rpfm_cli.exe --game rome_2 pack list --pack-path consulscriptum.pack
+          ./.deps/rpfm_cli/rpfm_cli.exe --game attila pack list --pack-path consulscriptum_attila.pack
+          ./.deps/rpfm_cli/rpfm_cli.exe --game thrones_of_britannia pack list --pack-path consulscriptum_tob.pack
+
+      - name: Generate and Build Documentation Site
+        run: |
+          make docs-gen
+          cd docs
+          npm install
+          npm run docs:build
+
+      - name: Upload Pack Artifacts
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: consul-packs
+          path: |
+            consulscriptum.pack
+            consulscriptum_attila.pack
+            consulscriptum_tob.pack
+          retention-days: 7
