@@ -97,11 +97,15 @@ MOD_VERSION = 1.1.0
 # ============================================================
 
 ifeq ($(OS),Windows_NT)
-GIT_SH_CANDIDATES := $(wildcard C:/Program\ Files/Git/usr/bin/sh.exe) $(wildcard C:/Program\ Files/Git/bin/sh.exe) $(wildcard C:/Program\ Files\ \(x86\)/Git/usr/bin/sh.exe) $(wildcard C:/Program\ Files\ \(x86\)/Git/bin/sh.exe)
-ifneq ($(strip $(GIT_SH_CANDIDATES)),)
-else
-$(warning Git Bash / sh.exe was not found in a standard Windows install path. This Makefile's setup target uses POSIX shell syntax and is intended to run from Git Bash.)
-endif
+    # Default to Git Bash for all recipe execution on Windows
+    SHELL := C:/Program Files/Git/bin/bash.exe
+    ifeq ($(wildcard $(SHELL)),)
+        SHELL := C:/Program Files (x86)/Git/bin/bash.exe
+    endif
+    ifeq ($(wildcard $(SHELL)),)
+        SHELL := sh.exe
+    endif
+    .SHELLFLAGS := -c
 endif
 
 # Directories for dependencies and build files
@@ -119,11 +123,11 @@ MAKE_DIR          := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 # Binaries and paths
 RUBY_BIN          := $(RUBY_DIR)/bin/ruby.exe
-RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli
+RPFM_CLI_BIN      := $(RPFM_CLI_DIR)/rpfm_cli.exe
 XML2UI_BIN        := $(ETWNG_DIR)/ui/bin/xml2ui
 UI2XML_BIN        := $(ETWNG_DIR)/ui/bin/ui2xml
 RPFM_SCHEMA_PATH  := $(RPFM_SCHEMA_DIR)/$(RPFM_SCHEMA_FILE)
-RPFM_CLI_CMD      := $(realpath $(RPFM_CLI_BIN)) --game $(RPFM_GAME_ID)
+RPFM_CLI_CMD      = $(CURDIR)/$(RPFM_CLI_BIN) --game $(RPFM_GAME_ID)
 LUA_FOR_LDOC_PATH := $(LUA_DIR)/lua5.1.exe
 
 # Gems
