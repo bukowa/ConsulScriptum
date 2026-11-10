@@ -672,12 +672,14 @@ endif
 # Install with DEI
 install-dei: $(MOD_PACKAGE)
 	@echo 'mod "$(MOD_PACKAGE)";' > $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'mod "@@@@DeI136Beta.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'mod "_divide_et_impera_release_12_Part1.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 	@echo 'mod "_divide_et_impera_release_12_Part2.pack";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
+	@echo 'show_frontend_movies false;' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 ifneq ($(SAVE),)
 	@echo 'game_startup_mode campaign_load "$(SAVE).save";' >> $(INSTALL_USER_SCRIPT)/user.script.txt
 endif
-	$(call install-to-dir,$(INSTALL_ALONE_DIR)/data)
+	$(call install-to-dir,$(INSTALL_STEAM_DIR)/data)
 
 # Install with TDD
 install-tdd: $(MOD_PACKAGE)
@@ -750,6 +752,14 @@ run-steam: \
 	install-steam
 	@$(disable_outdated_mods_popup)
 	@powershell -Command start steam://rungameid/$(STEAM_APP_ID)
+
+# Launch the Steam version with DEI
+run-steam-dei: \
+	kill-game \
+	install-dei
+	@$(disable_outdated_mods_popup)
+	@powershell -Command start steam://rungameid/$(STEAM_APP_ID)
+
 copy-macos: \	
 	install-steam-macos
 	@$(disable_outdated_mods_popup)
@@ -760,6 +770,8 @@ alone: run-alone
 
 # Its strongly suggested to run steam in offline mode due to various bugs/
 steam: run-steam
+steam-dei: run-steam-dei
+run-dei: run-steam-dei
 
 # Commands used to insert new Consul entry into the xml ui files
 # We need to use XML2UI_BIN to convert the xml files to ui files and then back to xml files
@@ -852,10 +864,14 @@ bump-version:
 			install-steam \
 			install-steam-macos \
 			install-alone \
+			install-dei \
 		kill-game \
 		run-alone \
 		run-steam \
+		run-steam-dei \
 		steam \
+		steam-dei \
+		run-dei \
 		alone \
 		clean \
 		clean-all \
