@@ -145,11 +145,39 @@ jobs:
           ./.deps/rpfm_cli/rpfm_cli.exe --game attila pack list --pack-path consulscriptum_attila.pack
           ./.deps/rpfm_cli/rpfm_cli.exe --game thrones_of_britannia pack list --pack-path consulscriptum_tob.pack
 
-      - name: Generate and Build Documentation Site
+      - name: Scan pack security
+        run: py scripts/scan_pack_security.py
+
+      - name: Scan packs with Defender
+        shell: pwsh
         run: |
-          make docs-gen
+          $mpCmd = "C:\Program Files\Windows Defender\MpCmdRun.exe"
+          if (Test-Path $mpCmd) {
+            & $mpCmd -Scan -ScanType 3 -File "$pwd\consulscriptum.pack"
+            & $mpCmd -Scan -ScanType 3 -File "$pwd\consulscriptum_attila.pack"
+            & $mpCmd -Scan -ScanType 3 -File "$pwd\consulscriptum_tob.pack"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Microsoft Defender scan failed (exit code $LASTEXITCODE)"
+              exit 1
+            }
+          }
+
+      - name: Generate Documentation
+        run: make docs-gen
+
+      - name: Check doc drift
+        run: |
+          if [ -n "$(git status --porcelain docs/)" ]; then
+            git status --porcelain docs/
+            git diff docs/
+            echo "::error::Docs out of sync with source files. Run 'make docs-gen' and commit docs/."
+            exit 1
+          fi
+
+      - name: Build Documentation Site
+        run: |
           cd docs
-          npm install
+          npm ci
           npm run docs:build
 
       - name: Upload Pack Artifacts

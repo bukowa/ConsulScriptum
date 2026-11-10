@@ -1,0 +1,243 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build & Audit Release Packs
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install GNU Make and configure py launcher
+        shell: pwsh
+        run: |
+          if (-not (Get-Command make -ErrorAction SilentlyContinue)) {
+            choco install make --no-progress -y
+          }
+          if (-not (Get-Command py -ErrorAction SilentlyContinue)) {
+            $pyPath = (Get-Command python).Source
+            $pyDir = Split-Path $pyPath
+            Copy-Item "$pyPath" "$pyDir\py.exe" -Force
+          }
+
+      - name: Cache dependencies (.deps)
+        id: cache-deps
+        uses: actions/cache@v6.1.0
+        with:
+          path: .deps
+          key: deps-windows-${{ hashFiles('Makefile') }}
+          restore-keys: |
+            deps-windows-
+
+      - name: Setup Project Dependencies
+        run: make setup
+
+      - name: Verify Binary Dependencies Integrity (SHA-256)
+        shell: pwsh
+        run: |
+          $expectedHashes = @{
+            ".deps\rpfm_cli\rpfm_cli.exe" = "E87500455D92B0FE33EEF0808C765E95F000211E550AA641EACA4736820D8727"
+            ".deps\7zip\7za.exe"          = "C136B1467D669A725478A6110EBAAAB3CB88A3D389DFA688E06173C066B76FCF"
+            ".deps\ruby\bin\ruby.exe"     = "9C3A3C818B1DD054EF90FC38A20F0CC6A84A7C171A6756C4130AFECB5D908F21"
+            ".deps\lua\lua5.1.exe"        = "C9BF063327F6A719AA2D2C25A13A6FB006EBA3F23B53BCD6A629DC04507C18B6"
+          }
+          $failed = $false
+          foreach ($file in $expectedHashes.Keys) {
+            if (-not (Test-Path $file)) {
+              Write-Error "Missing expected binary tool: $file"
+              $failed = $true
+              continue
+            }
+            $actual = (Get-FileHash -Path $file -Algorithm SHA256).Hash
+            if ($actual -ne $expectedHashes[$file]) {
+              Write-Error "Hash mismatch for $file! Expected $($expectedHashes[$file]), got $actual"
+              $failed = $true
+            }
+          }
+          if ($failed) {
+            exit 1
+          }
+
+      - name: Antivirus & Malware Scan (Microsoft Defender)
+        shell: pwsh
+        run: |
+          $mpCmd = "C:\Program Files\Windows Defender\MpCmdRun.exe"
+          if (Test-Path $mpCmd) {
+            & $mpCmd -Scan -ScanType 3 -File "$pwd"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Microsoft Defender scan failed (exit code $LASTEXITCODE)"
+              exit 1
+            }
+          }
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_logging.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_game_events.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_game_events_attila.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_game_events_tob.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_commands.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_commands_dei.lua"))'
+          ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul_changelog.lua"))'
+
+      - name: Verify Git Tag Matches Project Version
+        run: |
+          TAG_VER="${GITHUB_REF_NAME#v}"
+          grep -F "VERSION = \"$TAG_VER\"" src/consul/consul.lua || {
+            echo "::error::Tag $TAG_VER does not match VERSION in src/consul/consul.lua"
+            exit 1
+          }
+          grep -F "MOD_VERSION = $TAG_VER" Makefile || {
+            echo "::error::Tag $TAG_VER does not match MOD_VERSION in Makefile"
+            exit 1
+          }
+
+      - name: Build Release Packs
+        run: |
+          make GAME=Rome2 release
+          make GAME=Attila release
+          make GAME=TOB release
+
+      - name: Verify Pack Contents
+        run: |
+          ./.deps/rpfm_cli/rpfm_cli.exe --game rome_2 pack list --pack-path release/consulscriptum.pack
+          ./.deps/rpfm_cli/rpfm_cli.exe --game attila pack list --pack-path release/consulscriptum_attila.pack
+          ./.deps/rpfm_cli/rpfm_cli.exe --game thrones_of_britannia pack list --pack-path release/consulscriptum_tob.pack
+
+      - name: Scan pack security
+        run: py scripts/scan_pack_security.py release/consulscriptum.pack release/consulscriptum_attila.pack release/consulscriptum_tob.pack
+
+      - name: Scan packs with Defender
+        shell: pwsh
+        run: |
+          $mpCmd = "C:\Program Files\Windows Defender\MpCmdRun.exe"
+          if (Test-Path $mpCmd) {
+            & $mpCmd -Scan -ScanType 3 -File "$pwd\release\consulscriptum.pack"
+            & $mpCmd -Scan -ScanType 3 -File "$pwd\release\consulscriptum_attila.pack"
+            & $mpCmd -Scan -ScanType 3 -File "$pwd\release\consulscriptum_tob.pack"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Defender scan failed (exit code $LASTEXITCODE)"
+              exit 1
+            }
+          }
+
+      - name: Generate SHA-256 Checksums
+        run: |
+          cd release
+          sha256sum consulscriptum.pack consulscriptum_attila.pack consulscriptum_tob.pack > checksums.txt
+          cat checksums.txt
+
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@v4.2.2
+        with:
+          subject-path: |
+            release/consulscriptum.pack
+            release/consulscriptum_attila.pack
+            release/consulscriptum_tob.pack
+
+      - name: Extract Release Notes
+        run: |
+          TAG_VER="${GITHUB_REF_NAME#v}"
+          py scripts/generate_changelog_docs.py --version "$TAG_VER" --output release/RELEASE_NOTES.md
+          PREV_TAG=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            printf "\n---\n\n**Full Changelog**: https://github.com/%s/compare/%s...%s\n" "${GITHUB_REPOSITORY}" "${PREV_TAG}" "${GITHUB_REF_NAME}" >> release/RELEASE_NOTES.md
+          fi
+          cat release/RELEASE_NOTES.md
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: release-assets
+          path: |
+            release/consulscriptum.pack
+            release/consulscriptum_attila.pack
+            release/consulscriptum_tob.pack
+            release/checksums.txt
+            release/RELEASE_NOTES.md
+          retention-days: 1
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: release-assets
+          path: release
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v3.0.4
+        with:
+          name: ${{ github.ref_name }}
+          body_path: release/RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+          files: |
+            release/consulscriptum.pack
+            release/consulscriptum_attila.pack
+            release/consulscriptum_tob.pack
+
+  deploy-docs:
+    name: Deploy Documentation
+    needs: [build, publish-release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '20'
+
+      - name: Build Documentation Site
+        run: |
+          cd docs
+          npm ci
+          npm run docs:build
+
+      - name: Deploy documentation to GitHub Pages
+        run: |
+          rm -rf docs/.vitepress/dist/.git
+          cd docs/.vitepress/dist
+          echo "consulscriptum.com" > CNAME
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy documentation for ${{ github.ref_name }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages

@@ -135,6 +135,12 @@ def format_markdown(entries):
     return "".join(md)
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate markdown changelog from Lua changelog notes.")
+    parser.add_argument("--version", help="Extract notes for a specific version only (e.g. 1.1.0 or v1.1.0)")
+    parser.add_argument("--output", help=f"Output markdown file (default: {OUTPUT_FILE})", default=OUTPUT_FILE)
+    args = parser.parse_args()
+
     if not os.path.exists(SOURCE_FILE):
         print(f"Error: {SOURCE_FILE} not found.")
         return
@@ -147,13 +153,26 @@ def main():
         print("Error: No changelog entries found.")
         return
 
-    md_output = format_markdown(entries)
-    
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    if args.version:
+        target = args.version.lstrip("v").strip()
+        matched = [e for e in entries if e[0].lstrip("v").strip() == target]
+        if not matched:
+            print(f"Warning: No changelog notes found for version '{args.version}'")
+            md_output = f"## v{target}\n\n*No release notes recorded in changelog for this version.*\n"
+        else:
+            md_output = format_markdown(matched)
+            # Remove trailing '---' if single version
+            md_output = re.sub(r'\n---\n\n$', '\n', md_output)
+    else:
+        md_output = format_markdown(entries)
+
+    out_dir = os.path.dirname(args.output)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    with open(args.output, 'w', encoding='utf-8') as f:
         f.write(md_output)
-        
-    print(f"Successfully generated {OUTPUT_FILE}")
+
+    print(f"Successfully generated {args.output}")
 
 if __name__ == "__main__":
     main()

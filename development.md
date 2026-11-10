@@ -32,6 +32,7 @@ git commit -m "release: bump version to 1.0.1"
 git tag v1.0.1
 git push origin master --tags
 ```
+*(Pushing a `v*` tag triggers the release workflow to build packs, publish GitHub Release, and deploy docs)*
 
 ---
 
