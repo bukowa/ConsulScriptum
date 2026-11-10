@@ -65,6 +65,8 @@ else ifeq ($(GAME),Shogun2)
     GAME_EXE := Shogun2.exe
     STEAM_APP_ID := 34330
     ALL_SCRIPTED_SRC := src/lua_scripts/all_scripted_shogun2.lua
+else
+    $(error Unknown or unsupported GAME='$(GAME)'. Expected Rome2, Attila, or TOB)
 endif
 
 MOD_VERSION = 1.0.1

@@ -102,7 +102,6 @@ consul = {
 		return require("consul_macos").resolve_path(filename)
 	end,
 	--- Opens a file, prepending the OS-specific base path for relative filenames.
-	
 	--- @function consul.io_open
 	--- @tparam string filename The filename (relative or absolute) to open.
 	--- @tparam string mode The mode string passed to io.open.

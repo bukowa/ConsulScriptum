@@ -117,6 +117,18 @@ def format_markdown(entries):
                 else:
                     md.append(f"{line}\n")
             md.append("\n")
+
+        if 'TOB' in data:
+            md.append("**Thrones of Britannia specific:**\n")
+            lines = data['TOB'].split('\n')
+            for line in lines:
+                line = line.strip()
+                if not line: continue
+                if not line.startswith('-'):
+                    md.append(f"- {line}\n")
+                else:
+                    md.append(f"{line}\n")
+            md.append("\n")
             
         md.append("---\n\n")
         

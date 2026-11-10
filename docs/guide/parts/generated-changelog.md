@@ -80,6 +80,9 @@
 - Fixed: Prevent multiple creations of consul UI in battle mode.
 - Added: Consul visibility can be toggled on/off via top left button like in Rome2.
 
+**Thrones of Britannia specific:**
+- Added: Ported Consul to Total War Saga: Thrones of Britannia.
+
 ---
 
 ## v0.7.2

@@ -362,7 +362,7 @@ local world = consul.game.world()
 
 #### `consul.io_open`
 
-
+Opens a file, prepending the OS-specific base path for relative filenames.
 
  Parameters:
 | Name | Type | Description |
