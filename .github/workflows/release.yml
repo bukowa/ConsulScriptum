@@ -24,6 +24,9 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Configure Git line endings
+        run: git config --global core.autocrlf false
+
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
         with:
@@ -212,32 +215,9 @@ jobs:
   deploy-docs:
     name: Deploy Documentation
     needs: [build, publish-release]
-    runs-on: ubuntu-latest
     permissions:
       contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7.0.1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7.1.0
-        with:
-          node-version: '20'
-
-      - name: Build Documentation Site
-        run: |
-          cd docs
-          npm ci
-          npm run docs:build
-
-      - name: Deploy documentation to GitHub Pages
-        run: |
-          rm -rf docs/.vitepress/dist/.git
-          cd docs/.vitepress/dist
-          echo "consulscriptum.com" > CNAME
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Deploy documentation for ${{ github.ref_name }}"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
+    uses: ./.github/workflows/docs.yml
+    with:
+      version_label: ${{ github.ref_name }}
+    secrets: inherit

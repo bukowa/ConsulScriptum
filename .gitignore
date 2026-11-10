@@ -28,7 +28,7 @@ release/
 
 # Node
 node_modules
-package-lock.json
+src/uidebugger/
 
 .DS_Store
 

@@ -35,6 +35,9 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Configure Git line endings
+        run: git config --global core.autocrlf false
+
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
 

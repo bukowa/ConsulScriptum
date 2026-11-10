@@ -1,0 +1,12 @@
+# Enforce LF line endings for all text files across all operating systems
+* text=auto eol=lf
+
+# Explicit binary files to prevent any line ending translation
+*.pack binary
+*.png binary
+*.tga binary
+*.dds binary
+*.exe binary
+*.dll binary
+*.zip binary
+*.7z binary

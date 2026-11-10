@@ -1,0 +1,57 @@
+name: Deploy Documentation
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_label:
+        description: 'Release version or ref label for commit message (e.g. v1.1.0)'
+        type: string
+        default: 'manual'
+  workflow_call:
+    inputs:
+      version_label:
+        description: 'Release version or ref label for commit message'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '20'
+
+      - name: Build Documentation Site
+        run: |
+          cd docs
+          npm ci
+          npm run docs:build
+
+      - name: Deploy documentation to GitHub Pages
+        run: |
+          rm -rf docs/.vitepress/dist/.git
+          cd docs/.vitepress/dist
+          echo "consulscriptum.com" > CNAME
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          LABEL="${{ inputs.version_label || github.ref_name }}"
+          git commit -m "Deploy documentation ($LABEL)"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
