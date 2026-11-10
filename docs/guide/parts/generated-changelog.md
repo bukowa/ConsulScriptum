@@ -1,4 +1,4 @@
-## Unreleased
+## v1.1.0
 **Common:**
 - Added: (thanks to Pawel Rut) 4 new Consul cheat commands across Rome II, Attila, and Thrones of Britannia: Aerarium (+10,000 treasury), Aedificatio (1-turn construction), Scientia (1-turn research), and Virtus (army combat stat boost).
 

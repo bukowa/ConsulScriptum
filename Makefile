@@ -69,7 +69,7 @@ else
     $(error Unknown or unsupported GAME='$(GAME)'. Expected Rome2, Attila, or TOB)
 endif
 
-MOD_VERSION = 1.0.1
+MOD_VERSION = 1.1.0
 
 # ============================================================
 # Instructions for Executing This Makefile on Windows
