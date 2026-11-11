@@ -169,7 +169,7 @@ def main():
     out_dir = os.path.dirname(args.output)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
-    with open(args.output, 'w', encoding='utf-8') as f:
+    with open(args.output, 'w', encoding='utf-8', newline='\n') as f:
         f.write(md_output)
 
     print(f"Successfully generated {args.output}")

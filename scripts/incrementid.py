@@ -24,7 +24,7 @@ def increment_ids_in_file(file_path):
     updated_content = i_pattern.sub(increment_id, updated_content)
 
     # Write the updated content back to the file
-    with open(file_path, 'w', encoding='utf-8') as file:
+    with open(file_path, 'w', encoding='utf-8', newline='\n') as file:
         file.write(updated_content)
 
     print(f"IDs in '{file_path}' have been incremented by 1 (skipping 0).")

@@ -85,7 +85,7 @@ def main():
     # Ensure output directory exists
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
     
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    with open(OUTPUT_FILE, 'w', encoding='utf-8', newline='\n') as f:
         f.writelines(all_content)
         
     print(f"Successfully generated {OUTPUT_FILE}")

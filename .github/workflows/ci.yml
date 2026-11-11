@@ -170,9 +170,11 @@ jobs:
 
       - name: Check doc drift
         run: |
+          git add --renormalize docs/
           if [ -n "$(git status --porcelain docs/)" ]; then
             git status --porcelain docs/
             git diff docs/
+            git diff --cached docs/
             echo "::error::Docs out of sync with source files. Run 'make docs-gen' and commit docs/."
             exit 1
           fi

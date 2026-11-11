@@ -121,7 +121,7 @@ def generate_consul_docs():
         # Ensure directory exists
         os.makedirs(os.path.dirname(md_path), exist_ok=True)
 
-        with open(md_path, 'w', encoding='utf-8') as f:
+        with open(md_path, 'w', encoding='utf-8', newline='\n') as f:
             f.write("\n".join(md_content))
 
         print(f"Successfully generated {md_path}")

@@ -44,7 +44,7 @@ def parse_dump(file_path):
     return tables
 
 def generate_markdown(tables, game_name, output_file):
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, 'w', encoding='utf-8', newline='\n') as f:
         f.write(f"# {game_name} API Reference\n\n")
         f.write(f"This is an automated API reference generated from the engine dump logs for {game_name}.\n\n")
         
