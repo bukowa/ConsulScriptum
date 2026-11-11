@@ -69,6 +69,8 @@ Database TSVs live under `src/tables/{rome2,attila,tob}/db/<table_dir>/` and loc
    - Use Latin Consul entry labels (`Aerarium`, `Aedificatio`, `Scientia`, `Virtus`), bundle titles formatted as `Consul <LatinName>`, and thematic in-world descriptions — never raw debug strings (`Fast building`, `Super soldiers`).
    - Avoid modifiers that break battle animations or physics (such as extreme battle movement speed multipliers) and verify exact numerical thresholds (`-100` for 1-turn build time, etc.).
 5. **Per-game schema fidelity & RPFM table extraction:** Rome II (`schema_rom2.ron`), Attila (`schema_att.ron`), and ToB (`schema_tob.ron`) differ in table versions, columns (`is_hidden`), valid vanilla `effect_key` / `bonus_value_id` names, icon paths (`data/ui/...` vs filename), effect scopes (`in_all_your_regions` vs `faction_to_region_own`), and required bonus junction tables (e.g., Attila's `effect_bonus_value_building_set_junctions_tables`).
+   - **Scope names:** Rome II requires `in_all_your_regions`; Attila and ToB require `faction_to_region_own`.
+   - **Attila building junctions:** Effect bundles affecting building values in Attila require entries in `effect_bonus_value_building_set_junctions_tables` linked to building sets (e.g., `att_building_set_all_buildings`), otherwise the game silently ignores the modifier.
    - **Recommended workflow:** Extract and inspect vanilla DB tables from all three games via RPFM or `rpfm_cli` (`./.deps/rpfm_cli/rpfm_cli --game <rome_2|attila|thrones_of_britannia> pack extract --pack-path <game_pack> -t ./.deps/rpfm_schema/<schema>.ron -F 'db/<table_dir>;<tmp_dir>'`) to compare real schemas, foreign keys, and vanilla examples before drawing conclusions and authoring TSVs. Never guess keys or blindly copy-paste Rome II TSV headers into Attila or ToB.
 
 ---
@@ -114,6 +116,32 @@ Most Consul entries are pure Lua and need **no DB tables**. Pick the matching pa
 3. Ensure `help = function() return "..." end` uses plain string literals so `scripts/generate_commands_docs.py` extracts it cleanly.
 4. If `setup(cfg)` hooks `events.*`, guard registration with a flag so `/reload_custom_commands` never registers duplicate listeners.
 5. Run `make docs-gen` in Git Bash to update `docs/reference/parts/generated-commands.md`.
+
+### Checklist C: Pre-PR & Feature Completion Workflow
+Before declaring any feature, fix, or refactor complete and opening a PR, execute these steps in order:
+1. **User-facing changelog:** Add a player-facing bullet under `["unreleased"] = { common = "..." }` in `src/consul/consul_changelog.lua`. Never bump versions in a PR.
+2. **Lua 5.1 syntax check:** Validate all modified `.lua` files:
+   ```bash
+   ./.deps/lua/lua5.1.exe -e 'assert(loadfile("src/consul/consul.lua"))'
+   ```
+3. **Multi-game pack compilation:** Build all three game packs in Git Bash:
+   ```bash
+   make GAME=Rome2
+   make GAME=Attila
+   make GAME=TOB
+   ```
+4. **RPFM asset inspection:** If database TSVs or table files were added/modified, list pack contents to verify binary tables are present:
+   ```bash
+   ./.deps/rpfm_cli/rpfm_cli --game rome_2 pack list --pack-path=consulscriptum.pack
+   ./.deps/rpfm_cli/rpfm_cli --game attila pack list --pack-path=consulscriptum_attila.pack
+   ./.deps/rpfm_cli/rpfm_cli --game thrones_of_britannia pack list --pack-path=consulscriptum_tob.pack
+   ```
+5. **Regenerate reference docs & test site build:**
+   ```bash
+   make docs-gen
+   cd docs && npm run docs:build
+   ```
+6. **Git cleanliness audit:** Stage modified source, changelog, and auto-generated doc markdown files (`docs/reference/parts/*.md`) together. Ensure no scratch files, test dumps, or temporary release downloads are tracked. Verify `git status` is clean before submitting. Never run `git push` or `git tag`.
 
 ---
 
@@ -162,6 +190,7 @@ Most Consul entries are pure Lua and need **no DB tables**. Pick the matching pa
     make GAME=TOB release
     ```
 - **Git hygiene:** Never commit temporary scratch files, and never run `git push`, `git tag`, or `make docs-deploy` unless explicitly instructed by the maintainer.
+- **Windows sandbox Git permissions:** Commands that write to `.git/` (such as `git add` or `git commit`) on Windows may require running outside the standard sandbox if the `.git` folder is write-protected in the local agent environment. Always verify working tree status with `git status` after committing.
 
 ---
 
