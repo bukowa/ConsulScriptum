@@ -824,6 +824,27 @@ run_release: clean kill-game install_release
 	@powershell -Command start steam://rungameid/$(STEAM_APP_ID)
 
 # ============================================================
+# Steam Workshop Publishing
+# ============================================================
+
+TAG ?=
+
+publish-workshop:
+	py scripts/publish_workshop.py --game $(shell echo $(GAME) | tr '[:upper:]' '[:lower:]') $(if $(TAG),--tag $(TAG),) $(WORKSHOP_FLAGS)
+
+publish-workshop-all:
+	py scripts/publish_workshop.py --game all $(if $(TAG),--tag $(TAG),) $(WORKSHOP_FLAGS)
+
+publish-workshop-dry-run:
+	py scripts/publish_workshop.py --game all $(if $(TAG),--tag $(TAG),) --dry-run
+
+verify-workshop:
+	py scripts/publish_workshop.py --verify --game $(shell echo $(GAME) | tr '[:upper:]' '[:lower:]') $(if $(TAG),--tag $(TAG),)
+
+verify-workshop-all:
+	py scripts/publish_workshop.py --verify --game all $(if $(TAG),--tag $(TAG),)
+
+# ============================================================
 # Documentation Targets
 # ============================================================
 
@@ -884,4 +905,9 @@ bump-version:
 		docs-gen \
 		docs-build \
 		docs-deploy \
-		bump-version
+		bump-version \
+		publish-workshop \
+		publish-workshop-all \
+		publish-workshop-dry-run \
+		verify-workshop \
+		verify-workshop-all

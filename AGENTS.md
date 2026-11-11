@@ -162,3 +162,12 @@ Most Consul entries are pure Lua and need **no DB tables**. Pick the matching pa
     make GAME=TOB release
     ```
 - **Git hygiene:** Never commit temporary scratch files, and never run `git push`, `git tag`, or `make docs-deploy` unless explicitly instructed by the maintainer.
+
+---
+
+## 8. Anti-AI Slop & Clean Code Discipline
+
+- **No AI-slop comments or pompous docstrings:** Never write pretentious file headers (e.g., `"""Consul Scriptum - Steam Workshop Automated Publisher Key Features: ..."""`), promotional feature bullet lists, or decorative ASCII divider lines (`# =====================`).
+- **No obvious play-by-play commentary:** Do not annotate self-explanatory code with mundane commentary (`# Base repository root`, `# Get current version`, `# Copy pack to staging`, `# Cryptographic Verification`). Write clean, self-documenting code.
+- **Terse CLI output:** Scripts and CLI tools must print minimal, functional log lines (`Downloading...`, `[OK]`, `[ERROR]`). Never print marketing slogans, theatrical greeting banners (`=== Consul Scriptum Steam Workshop Publisher ===`), or unnecessary visual noise.
+- **Explain 'why', not 'what':** Comments are strictly reserved for non-obvious engine bugs, workaround rationale, or hardware/OS quirks. If the code is clear, leave it uncommented.
