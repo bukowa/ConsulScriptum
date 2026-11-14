@@ -379,20 +379,26 @@ consul = {
 			end)
 
 			local sep = ""
+			local game_labels = {
+				Rome2 = "Rome II",
+				Attila = "Attila",
+				TOB = "Thrones of Britannia",
+			}
 			for _, v in ipairs(versions) do
 				local note = data.notes[v]
 				local note_text = ""
 
 				if type(note) == "table" then
+					local parts = {}
 					if note.common and note.common ~= "" then
-						note_text = note.common
+						table.insert(parts, note.common)
 					end
-					if note[consul_build] and note[consul_build] ~= "" then
-						if note_text ~= "" then
-							note_text = note_text .. "\n\n"
+					for _, g in ipairs({ "Rome2", "Attila", "TOB" }) do
+						if note[g] and note[g] ~= "" then
+							table.insert(parts, "[" .. game_labels[g] .. "]\n" .. note[g])
 						end
-						note_text = note_text .. "--- " .. consul_build .. " Specific ---\n" .. note[consul_build]
 					end
+					note_text = table.concat(parts, "\n\n")
 				else
 					note_text = tostring(note)
 				end

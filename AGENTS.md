@@ -178,7 +178,7 @@ Before declaring any feature, fix, or refactor complete and opening a PR, execut
 ## 7. Changelog, Versioning & Git Rules
 
 - **User-facing changelog only (`src/consul/consul_changelog.lua`):**
-  - Place pending notes under `["unreleased"] = { common = "..." }` (use `Rome2` or `Attila` subkeys only for strictly single-game notes).
+  - Place pending notes under `["unreleased"] = { common = "..." }`. For game-specific notes, use **exactly** these keys: `Rome2`, `Attila`, `TOB` (matching `consul_build` values and the `game_labels` lookup in `consul.changelog.format_all()`). The formatter iterates `{ "Rome2", "Attila", "TOB" }` and renders all present keys to every game — any other key name is silently ignored.
   - Write concise, player-facing `Added:` / `Fixed:` / `Changed:` lines. Credit external PR authors (`(thanks to Author Name)`).
   - **Do not** clutter the changelog with internal refactors, nil checks, helper renames, or technical plumbing.
 - **Never bump versions in feature or bugfix PRs:**
