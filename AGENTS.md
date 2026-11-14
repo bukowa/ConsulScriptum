@@ -72,6 +72,7 @@ Database TSVs live under `src/tables/{rome2,attila,tob}/db/<table_dir>/` and loc
    - **Scope names:** Rome II requires `in_all_your_regions`; Attila and ToB require `faction_to_region_own`.
    - **Attila building junctions:** Effect bundles affecting building values in Attila require entries in `effect_bonus_value_building_set_junctions_tables` linked to building sets (e.g., `att_building_set_all_buildings`), otherwise the game silently ignores the modifier.
    - **Recommended workflow:** Extract and inspect vanilla DB tables from all three games via RPFM or `rpfm_cli` (`./.deps/rpfm_cli/rpfm_cli --game <rome_2|attila|thrones_of_britannia> pack extract --pack-path <game_pack> -t ./.deps/rpfm_schema/<schema>.ron -F 'db/<table_dir>;<tmp_dir>'`) to compare real schemas, foreign keys, and vanilla examples before drawing conclusions and authoring TSVs. Never guess keys or blindly copy-paste Rome II TSV headers into Attila or ToB.
+6. **Effect Isolation & No Upstream Mutation:** Never add rows to `effect_bonus_value_*_junctions_tables` using a vanilla `effect_key`. Effects in Total War are global relational junction nodes; adding bonus values or target sets to a vanilla effect alters that effect across the entire game (corrupting vanilla technologies, decrees, incidents, and dilemmas). Always register a dedicated `consul_scriptum_*` effect in `effects_tables` and `_consul.loc.tsv` whenever custom bonus value mappings or target sets are required. See `.agents/docs/database-effects-isolation.md`.
 
 ---
 
@@ -200,3 +201,12 @@ Before declaring any feature, fix, or refactor complete and opening a PR, execut
 - **No obvious play-by-play commentary:** Do not annotate self-explanatory code with mundane commentary (`# Base repository root`, `# Get current version`, `# Copy pack to staging`, `# Cryptographic Verification`). Write clean, self-documenting code.
 - **Terse CLI output:** Scripts and CLI tools must print minimal, functional log lines (`Downloading...`, `[OK]`, `[ERROR]`). Never print marketing slogans, theatrical greeting banners (`=== Consul Scriptum Steam Workshop Publisher ===`), or unnecessary visual noise.
 - **Explain 'why', not 'what':** Comments are strictly reserved for non-obvious engine bugs, workaround rationale, or hardware/OS quirks. If the code is clear, leave it uncommented.
+
+---
+
+## 9. Agentic Knowledge Capture (`.agents/docs/`)
+
+When diagnosing or fixing complex, non-obvious engine behaviors, relational database quirks, or platform-specific hazards:
+- **Document high-level concepts in `.agents/docs/<topic>.md`:** Capture how the Total War engine functions internally, the causal relationships (why an issue occurs and how the engine processes it), and the architectural rules to prevent recurrence.
+- **Explain mechanics, not code play-by-play:** Focus strictly on architectural principles and engine behaviors. Avoid coupling documentation to temporary code snippets, fleeting bug lists, or ephemeral implementation details unless strictly necessary for illustration.
+- **Keep documentation evergreen:** Write documentation so that it remains accurate and valuable to future agents and contributors as the codebase evolves over time.
