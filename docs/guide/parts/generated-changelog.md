@@ -2,6 +2,9 @@
 **Rome II specific:**
 - Fixed: Aedificatio (1-turn construction) now covers all Rome II DLC/base building sets and Divide et Impera buildings (including temples, foreign quarters, wonders, resource buildings, and regional chains).
 
+**Thrones of Britannia specific:**
+- Fixed: Aedificatio (1-turn construction) now uses an isolated effect key instead of vanilla decree building time, preventing unintended construction bonuses from Royal Decrees.
+
 ---
 
 ## v1.1.0
