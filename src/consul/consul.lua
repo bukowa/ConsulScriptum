@@ -7,7 +7,7 @@ consul_os = package.config:sub(1, 1) == '\\' and "WINDOWS" or "MACOS" -- or "WIN
 
 consul = {
 
-	VERSION = "1.1.0",
+	VERSION = "1.1.1",
 	URL = "http://github.com/bukowa/ConsulScriptum",
 	AUTHOR = "Mateusz Kurowski",
 	CONTACT = "gitbukowa@gmail.com",

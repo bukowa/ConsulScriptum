@@ -1,4 +1,4 @@
-## Unreleased
+## v1.1.1
 **Rome II specific:**
 - Fixed: Aedificatio (1-turn construction) now covers all Rome II DLC/base building sets and Divide et Impera buildings (including temples, foreign quarters, wonders, resource buildings, and regional chains).
 

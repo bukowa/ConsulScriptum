@@ -1,7 +1,7 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
-        ["unreleased"] = {
+        ["1.1.1"] = {
             Rome2 = "Fixed: Aedificatio (1-turn construction) now covers all Rome II DLC/base building sets and Divide et Impera buildings (including temples, foreign quarters, wonders, resource buildings, and regional chains).",
             TOB = "Fixed: Aedificatio (1-turn construction) now uses an isolated effect key instead of vanilla decree building time, preventing unintended construction bonuses from Royal Decrees.",
             silent = true,
