@@ -1,6 +1,9 @@
 local changelog = {
     header = "--------------------------------------------------------------------------------\n>> To mark as read and hide, type: /changelog_read\n>> To read again, type: /changelog\n>> To read documentation visit https://consulscriptum.com\n --------------------------------------------------------------------------------\n\n",
     notes = {
+        ["unreleased"] = {
+            Rome2 = "Fixed: Aedificatio (1-turn construction) now covers all Rome II DLC/base building sets and Divide et Impera buildings (including temples, foreign quarters, wonders, resource buildings, and regional chains).",
+        },
         ["1.1.0"] = {
             common = "Added: (thanks to Pawel Rut) 4 new Consul cheat commands across Rome II, Attila, and Thrones of Britannia: Aerarium (+10,000 treasury), Aedificatio (1-turn construction), Scientia (1-turn research), and Virtus (army combat stat boost).",
         },
